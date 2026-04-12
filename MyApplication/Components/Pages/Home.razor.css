@@ -1,0 +1,79 @@
+﻿.home-topbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 24px 0 24px;
+}
+
+.home-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
+    padding: 0 24px;
+    gap: 28px;
+}
+
+::deep .home-greeting {
+    color: #ffffff;
+    font-weight: 600;
+    text-align: left;
+    width: 100%;
+    max-width: 680px;
+    line-height: 1.35;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* ========================================
+   Chat bar — barre de saisie sombre
+   ======================================== */
+.chat-bar {
+    width: 100%;
+    max-width: 680px;
+    background: rgba(23, 23, 35, 0.88);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border-radius: 20px;
+    padding: 16px 20px 12px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.chat-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--mud-palette-text-primary);
+    font-size: 15px;
+    font-family: inherit;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.chat-input::placeholder {
+    color: var(--mud-palette-text-secondary);
+    opacity: 0.7;
+}
+
+.chat-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+::deep .chat-action-btn {
+    color: var(--mud-palette-text-secondary) !important;
+}
+
+::deep .chat-model-btn {
+    color: var(--mud-palette-text-primary) !important;
+    font-size: 13px;
+    text-transform: none;
+    font-weight: 500;
+}
+
+.chat-spacer {
+    flex: 1;
+}
+

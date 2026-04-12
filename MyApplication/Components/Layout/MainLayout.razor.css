@@ -1,0 +1,118 @@
+﻿/* ========================================
+   App Shell — structure principale
+   ======================================== */
+.app-shell {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    overflow: hidden;
+    background: var(--mud-palette-background);
+}
+
+/* ========================================
+   Background layer (Image mode)
+   ======================================== */
+.app-background {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+    transition: opacity 0.4s ease;
+}
+
+.app-background-gradient {
+    /* Placeholder gradient – remplacez par une vraie image dans /images/ */
+    background: linear-gradient(160deg, #6aabd2 0%, #8ec5d6 25%, #b9dce3 45%, #c3d9b5 65%, #7ab661 100%);
+}
+
+/* ========================================
+   Sidebar (icônes uniquement par défaut, expansible)
+   ======================================== */
+.app-sidebar {
+    width: 56px;
+    min-width: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 0;
+    z-index: 2;
+    position: relative;
+    gap: 2px;
+    transition: width 0.3s cubic-bezier(.4,0,.2,1), min-width 0.3s cubic-bezier(.4,0,.2,1),
+                background 0.35s ease;
+    overflow: hidden;
+}
+
+.app-sidebar.sidebar-expanded {
+    width: 240px;
+    min-width: 240px;
+    padding: 14px 0;
+}
+
+/* ========================================
+   Main content — coins arrondis
+   ======================================== */
+.app-main {
+    flex: 1;
+    margin: 8px 8px 8px 0;
+    border-radius: 20px;
+    overflow: hidden;
+    z-index: 1;
+    position: relative;
+    transition: background-color 0.35s ease;
+}
+
+.app-main-inner {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* ========================================
+   Mode Palette — fond opaque, pas d'image
+   ======================================== */
+.app-shell.mode-palette {
+    background: var(--mud-palette-background);
+}
+
+.app-shell.mode-palette .app-sidebar {
+    background: transparent;
+}
+
+.app-shell.mode-palette .app-sidebar.sidebar-expanded {
+    background: var(--mud-palette-surface);
+}
+
+.app-shell.mode-palette .app-main {
+    background: var(--mud-palette-surface);
+}
+
+/* ========================================
+   Mode Image — fond d'image + effet glass
+   ======================================== */
+.app-shell.mode-image {
+    background: transparent;
+}
+
+.app-shell.mode-image .app-sidebar {
+    background: rgba(10, 10, 22, 0.30);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Sidebar étendue en mode image : plus opaque, texte lisible */
+.app-shell.mode-image .app-sidebar.sidebar-expanded {
+    background: rgba(10, 10, 22, 0.82);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border-right: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.app-shell.mode-image .app-main {
+    background: transparent;
+}
+

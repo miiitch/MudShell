@@ -1,0 +1,193 @@
+﻿/* ========================================
+   Conteneur nav
+   ======================================== */
+.nav-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    gap: 2px;
+    overflow: hidden;
+}
+
+.nav-container.nav-expanded {
+    align-items: flex-start;
+    padding: 0 8px;
+}
+
+/* ========================================
+   Bouton toggle
+   ======================================== */
+.nav-toggle-wrap {
+    align-self: center;
+    margin-bottom: 4px;
+}
+
+.nav-toggle-wrap.nav-toggle-wrap-expanded {
+    align-self: flex-end;
+}
+
+/* ========================================
+   Logo
+   ======================================== */
+.nav-logo {
+    margin-bottom: 16px;
+    padding: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo.nav-logo-wide {
+    gap: 10px;
+    padding: 4px 6px;
+}
+
+.nav-app-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--mud-palette-text-primary);
+    white-space: nowrap;
+    opacity: 1;
+}
+
+/* ========================================
+   Icônes de nav (mode collapsed)
+   ======================================== */
+.nav-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+}
+
+.nav-container.nav-expanded .nav-icons {
+    align-items: stretch;
+}
+
+.nav-icons ::deep .mud-icon-button {
+    color: var(--mud-palette-text-secondary);
+    transition: color 0.2s ease, background-color 0.2s ease;
+    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+}
+
+.nav-icons ::deep .mud-icon-button:hover {
+    color: var(--mud-palette-text-primary);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ========================================
+   Items de nav (mode expanded)
+   ======================================== */
+.nav-item-expanded {
+    width: 100%;
+}
+
+.nav-link-anchor {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--mud-palette-text-secondary);
+    transition: color 0.2s ease, background-color 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.nav-link-anchor:hover,
+.nav-link-clickable:hover {
+    color: var(--mud-palette-text-primary);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-link-clickable {
+    cursor: pointer;
+}
+
+.nav-icon-el {
+    flex-shrink: 0;
+    color: inherit;
+}
+
+.nav-item-label {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: inherit;
+}
+
+/* ========================================
+   Séparateur
+   ======================================== */
+.nav-divider {
+    width: 28px;
+    height: 1px;
+    background: var(--mud-palette-divider);
+    margin: 8px 0;
+    align-self: center;
+    transition: width 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+.nav-divider.nav-divider-wide {
+    width: calc(100% - 12px);
+}
+
+/* ========================================
+   Spacer
+   ======================================== */
+.nav-spacer {
+    flex: 1;
+}
+
+/* ========================================
+   Profil
+   ======================================== */
+.nav-profile {
+    padding-bottom: 4px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.nav-profile.nav-profile-row {
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.nav-profile.nav-profile-row:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-profile-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.nav-profile-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--mud-palette-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nav-profile-sub {
+    font-size: 11px;
+    color: var(--mud-palette-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

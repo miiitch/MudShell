@@ -1,0 +1,82 @@
+﻿@page "/library"
+
+<PageTitle>Bibliothèque</PageTitle>
+
+@* Header *@
+<div class="library-header">
+    <div></div>
+    <MudText Typo="Typo.h5" Style="font-weight: 600;">Bibliothèque</MudText>
+    <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
+               Class="library-create-btn">Créer une page</MudButton>
+</div>
+
+@* Onglets *@
+<div class="library-tabs-wrapper">
+    <MudToggleGroup T="string" @bind-Value="_selectedTab" Color="Color.Primary"
+                     CheckMark="false" Style="gap: 4px;">
+        <MudToggleItem Value="@("images")" Text="Images" />
+        <MudToggleItem Value="@("pages")" Text="Pages" />
+        <MudToggleItem Value="@("rapports")" Text="Rapports de recherche" />
+    </MudToggleGroup>
+    <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" Color="Color.Inherit" />
+</div>
+
+@* Grille de cartes *@
+@if (_selectedTab == "pages")
+{
+    <MudGrid Class="library-grid" Spacing="3">
+        @foreach (var doc in _pages)
+        {
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Class="library-card" Elevation="0">
+                    <div class="card-type">
+                        <MudIcon Icon="@Icons.Material.Outlined.Description" Size="Size.Small" />
+                        <MudText Typo="Typo.caption">Page</MudText>
+                    </div>
+                    <MudText Typo="Typo.subtitle1" Class="card-title">@doc.Title</MudText>
+                    <MudText Typo="Typo.body2" Class="card-description">@doc.Description</MudText>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+}
+
+@* CTA *@
+<div class="library-cta">
+    <MudText Typo="Typo.h5" Align="Align.Center" Style="font-weight: 500; line-height: 1.4;">
+        Organisez vos idées, modifiez<br />et partagez vos documents
+    </MudText>
+    <MudButton Variant="Variant.Filled" Size="Size.Large"
+               Style="background: rgba(255,255,255,0.1); color: var(--mud-palette-text-primary); border-radius: 24px; text-transform: none; padding: 10px 32px; margin-top: 20px;">
+        Créer une page
+    </MudButton>
+</div>
+
+@code {
+    private string _selectedTab = "pages";
+
+    [CascadingParameter]
+    public MainLayout MainLayoutRef { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        MainLayoutRef.SetBackgroundMode(MainLayout.BackgroundMode.Palette);
+    }
+
+    private readonly List<PageItem> _pages =
+    [
+        new("Things to do in Tokyo",
+            "Tokyo offers a vibrant mix of traditional culture and modern attractions. Here are some highlights to consider during your..."),
+        new("Cover Letter Draft",
+            "Dear [Hiring Manager], I am writing to express my interest in the [Position]. [Company Name]..."),
+        new("History Class Essay",
+            "The Industrial Revolution, which began in the late 18th century and continued into the mid-19th century, fundamentally..."),
+        new("Poem Draft",
+            "In morning light, the city wakes, With fog that dances, swirls and breaks. Cobalt skies emerge above...")
+    ];
+
+    private record PageItem(string Title, string Description);
+}
+
+
+

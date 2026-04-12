@@ -1,0 +1,44 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+@* Icône paramètres en haut à droite *@
+<div class="home-topbar">
+    <MudIconButton Icon="@Icons.Material.Outlined.Tune" Color="Color.Inherit" Size="Size.Small" />
+</div>
+
+@* Contenu centré verticalement *@
+<div class="home-content">
+    <MudText Typo="Typo.h4" Class="home-greeting">
+        C'est un plaisir te revoir, Michel.<br />
+        Quelles sont les dernières nouvelles?
+    </MudText>
+
+    @* Barre de chat *@
+    <div class="chat-bar">
+        <input type="text" class="chat-input" placeholder="Message Copilot ou @@ mentionnez un onglet" @bind="_chatMessage" />
+        <div class="chat-bar-actions">
+            <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" Class="chat-action-btn" />
+            <MudButton Variant="Variant.Text" Color="Color.Inherit" Size="Size.Small"
+                       EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
+                       Class="chat-model-btn">Smart</MudButton>
+            <div class="chat-spacer"></div>
+            <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Size="Size.Small" Color="Color.Inherit" Class="chat-action-btn" />
+        </div>
+    </div>
+</div>
+
+@code {
+    private string? _chatMessage;
+
+    [CascadingParameter]
+    public MainLayout MainLayoutRef { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        // Active le mode image sur Home avec l'image présente dans wwwroot/imgs.
+        MainLayoutRef.SetBackgroundMode(
+            MainLayout.BackgroundMode.Image,
+            "/imgs/bg1.jpg");
+    }
+}

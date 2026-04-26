@@ -24,6 +24,38 @@
             <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Size="Size.Small" Color="Color.Inherit" />
         </Actions>
     </MbxChatBar>
+
+    <div class="render-modes-links">
+        <MudText Typo="Typo.subtitle1" Class="render-modes-title">
+            <MudIcon Icon="@Icons.Material.Outlined.Devices" Size="Size.Small" Style="margin-right:8px; vertical-align:middle;" />
+            Modes de rendu Blazor
+        </MudText>
+
+        <div class="render-modes-grid">
+            <MudButton Variant="Variant.Outlined" Color="Color.Default" Href="/modes/ssr"
+                       StartIcon="@Icons.Material.Outlined.Article" Class="render-mode-btn">
+                Static SSR
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="/modes/server"
+                       StartIcon="@Icons.Material.Outlined.Hub" Class="render-mode-btn">
+                Interactive Server
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Success" Href="/modes/wasm"
+                       StartIcon="@Icons.Material.Outlined.Memory" Class="render-mode-btn">
+                Interactive WASM
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Warning" Href="/modes/auto"
+                       StartIcon="@Icons.Material.Outlined.AutoMode" Class="render-mode-btn">
+                Interactive Auto
+            </MudButton>
+        </div>
+
+        <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/modes"
+                   EndIcon="@Icons.Material.Filled.ArrowForward"
+                   Style="margin-top:4px; text-transform:none; font-weight:500;">
+            Voir toutes les combinaisons
+        </MudButton>
+    </div>
 </div>
 
 @code {

@@ -1,0 +1,17 @@
+@page "/modes/auto"
+@rendermode InteractiveAuto
+@layout DemoLayout
+@using MyApplication.Client.Layouts
+
+<PageTitle>Interactive Auto</PageTitle>
+
+<MbxPageHeader Title="Interactive Auto">
+    <StartContent><div></div></StartContent>
+    <EndContent>
+        <MudChip T="string" Color="Color.Warning" Size="Size.Small">Server → WASM</MudChip>
+    </EndContent>
+</MbxPageHeader>
+
+<ModeShowcase RenderModeName="Interactive Auto"
+              BadgeColor="auto"
+              BadgeIcon="@Icons.Material.Outlined.AutoMode" />

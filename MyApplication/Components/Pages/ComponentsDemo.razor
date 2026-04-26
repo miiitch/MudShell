@@ -1,0 +1,135 @@
+@page "/demo"
+@rendermode InteractiveServer
+
+<PageTitle>Composants Demo</PageTitle>
+
+@* ── Header ─────────────────────────────────────────────────────────── *@
+<MbxPageHeader Title="Design System — Vitrine">
+    <StartContent><div></div></StartContent>
+    <EndContent>
+        <MudChip T="string" Color="Color.Primary" Size="Size.Small">MudBlazorExtended</MudChip>
+    </EndContent>
+</MbxPageHeader>
+
+<div class="demo-content">
+
+    @* ── Section : ChatBar ──────────────────────────────────────────── *@
+    <section class="demo-section">
+        <MudText Typo="Typo.h6" Class="demo-section-title">MbxChatBar</MudText>
+        <div class="demo-chatbar-wrap">
+            <MbxChatBar Placeholder="@("Message Copilot ou @ mentionnez un onglet")"
+                        @bind-Value="_chatValue">
+                <Actions>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" />
+                    <MudButton Variant="Variant.Text" Color="Color.Inherit" Size="Size.Small"
+                               EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
+                               Style="font-size:13px;text-transform:none;font-weight:500;">Smart</MudButton>
+                    <div style="flex:1"></div>
+                    <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Size="Size.Small" Color="Color.Inherit" />
+                </Actions>
+            </MbxChatBar>
+            @if (!string.IsNullOrEmpty(_chatValue))
+            {
+                <MudText Typo="Typo.caption" Class="demo-preview">Valeur : @_chatValue</MudText>
+            }
+        </div>
+    </section>
+
+    @* ── Section : FilterTabBar ─────────────────────────────────────── *@
+    <section class="demo-section">
+        <MudText Typo="Typo.h6" Class="demo-section-title">MbxFilterTabBar</MudText>
+        <MbxFilterTabBar T="string" @bind-Value="_selectedTab" Items="@_tabs" />
+        <MudText Typo="Typo.caption" Class="demo-preview">Onglet actif : @_selectedTab</MudText>
+    </section>
+
+    @* ── Section : DocumentCard ─────────────────────────────────────── *@
+    <section class="demo-section">
+        <MudText Typo="Typo.h6" Class="demo-section-title">MbxDocumentCard</MudText>
+        <MudGrid Spacing="3">
+            <MudItem xs="12" sm="6" md="4" lg="3">
+                <MbxDocumentCard Icon="@Icons.Material.Outlined.Description"
+                                 TypeLabel="Page"
+                                 Title="Things to do in Tokyo"
+                                 Description="Tokyo offers a vibrant mix of traditional culture and modern attractions." />
+            </MudItem>
+            <MudItem xs="12" sm="6" md="4" lg="3">
+                <MbxDocumentCard Icon="@Icons.Material.Outlined.Image"
+                                 TypeLabel="Image"
+                                 Title="Aperçu du projet"
+                                 Description="Maquette haute fidélité pour la page d'accueil de l'application." />
+            </MudItem>
+            <MudItem xs="12" sm="6" md="4" lg="3">
+                <MbxDocumentCard Icon="@Icons.Material.Outlined.BarChart"
+                                 TypeLabel="Rapport"
+                                 Title="Rapport Q3 2024"
+                                 Description="Analyse des métriques d'engagement utilisateur sur le trimestre." />
+            </MudItem>
+        </MudGrid>
+    </section>
+
+    @* ── Section : PageHeader variants ─────────────────────────────── *@
+    <section class="demo-section">
+        <MudText Typo="Typo.h6" Class="demo-section-title">MbxPageHeader</MudText>
+        <div class="demo-card-wrap">
+            <MbxPageHeader Title="Titre de page simple" />
+            <MbxPageHeader Title="Avec action">
+                <StartContent><div></div></StartContent>
+                <EndContent>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
+                               Style="border-radius:20px;text-transform:none;">Action</MudButton>
+                </EndContent>
+            </MbxPageHeader>
+        </div>
+    </section>
+
+    @* ── Section : BottomNav preview ────────────────────────────────── *@
+    <section class="demo-section">
+        <MudText Typo="Typo.h6" Class="demo-section-title">MbxBottomNav <MudChip T="string" Size="Size.Small">xs / sm</MudChip></MudText>
+        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary); margin-bottom: 12px;">
+            Visible uniquement sur mobile (≤ 959 px). Aperçu forcé ci-dessous.
+        </MudText>
+        <div class="demo-bottom-nav-preview">
+            <MbxBottomNav Items="@_navItems" ActiveHref="/" />
+        </div>
+    </section>
+
+    @* ── Section : Responsive note ──────────────────────────────────── *@
+    <section class="demo-section">
+        <MudText Typo="Typo.h6" Class="demo-section-title">Breakpoints</MudText>
+        <MudSimpleTable Dense="true" Hover="true" Style="border-radius:12px; overflow:hidden;">
+            <thead>
+                <tr>
+                    <th>Alias</th><th>Largeur</th><th>Sidebar</th><th>BottomNav</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>xs</td><td>&lt; 600 px</td><td>cachée</td><td>visible</td></tr>
+                <tr><td>sm</td><td>600 – 959 px</td><td>cachée</td><td>visible</td></tr>
+                <tr><td>md</td><td>960 – 1279 px</td><td>icon-only</td><td>cachée</td></tr>
+                <tr><td>lg+</td><td>≥ 1280 px</td><td>icon-only / expanded</td><td>cachée</td></tr>
+            </tbody>
+        </MudSimpleTable>
+    </section>
+
+</div>
+
+@code {
+    private string _chatValue = string.Empty;
+    private string _selectedTab = "pages";
+
+    private readonly MbxTabItem<string>[] _tabs =
+    [
+        new("images",   "Images"),
+        new("pages",    "Pages"),
+        new("rapports", "Rapports de recherche"),
+        new("videos",   "Vidéos"),
+    ];
+
+    private readonly MbxNavItem[] _navItems =
+    [
+        new(Icons.Material.Outlined.GridView,    "Accueil",   "/"),
+        new(Icons.Material.Outlined.EditNote,    "Éditeur"),
+        new(Icons.Material.Outlined.ContentCopy, "Biblio",    "/library"),
+        new(Icons.Material.Outlined.CheckBox,    "Tâches"),
+    ];
+}

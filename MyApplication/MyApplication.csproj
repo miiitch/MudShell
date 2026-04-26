@@ -7,8 +7,13 @@
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
 
-
   <ItemGroup>
     <PackageReference Include="MudBlazor" Version="9.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MudBlazorExtended\MudBlazorExtended.csproj" />
+    <ProjectReference Include="..\MyApplication.Client\MyApplication.Client.csproj" />
   </ItemGroup>
 </Project>

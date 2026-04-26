@@ -1,0 +1,101 @@
+@namespace MyApplication.Client.Components
+
+<div class="showcase-wrap">
+
+    @* Render mode badge *@
+    <div class="showcase-badge showcase-badge-@BadgeColor">
+        <MudIcon Icon="@BadgeIcon" Size="Size.Small" />
+        <span>@RenderModeName</span>
+    </div>
+
+    @* Interactivity proof — counter *@
+    <section class="showcase-section">
+        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">✅ Preuve d'interactivité</MudText>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       OnClick="@(() => _count++)"
+                       Style="border-radius:12px; text-transform:none;">
+                Cliquer
+            </MudButton>
+            <MudText>Clics : <strong>@_count</strong></MudText>
+            @if (_count > 0)
+            {
+                <MudChip T="string" Color="Color.Success" Size="Size.Small">Interactif ✓</MudChip>
+            }
+        </div>
+    </section>
+
+    @* ChatBar *@
+    <section class="showcase-section">
+        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MbxChatBar</MudText>
+        <MbxChatBar Placeholder="@("Tapez un message pour tester le bind…")"
+                    @bind-Value="_chatValue" />
+        @if (!string.IsNullOrEmpty(_chatValue))
+        {
+            <MudText Typo="Typo.caption" Style="margin-top:6px; color: var(--mud-palette-text-secondary);">
+                Valeur liée : @_chatValue
+            </MudText>
+        }
+    </section>
+
+    @* FilterTabBar *@
+    <section class="showcase-section">
+        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MbxFilterTabBar</MudText>
+        <MbxFilterTabBar T="string" @bind-Value="_tab" Items="@_tabs" />
+        <MudText Typo="Typo.caption" Style="margin-top:6px; color: var(--mud-palette-text-secondary);">
+            Onglet sélectionné : @_tab
+        </MudText>
+    </section>
+
+    @* DocumentCards *@
+    <section class="showcase-section">
+        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MbxDocumentCard</MudText>
+        <MudGrid Spacing="3">
+            @foreach (var card in _cards)
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <MbxDocumentCard Icon="@card.Icon"
+                                     TypeLabel="@card.Type"
+                                     Title="@card.Title"
+                                     Description="@card.Desc"
+                                     OnClick="@(() => _lastCard = card.Title)" />
+                </MudItem>
+            }
+        </MudGrid>
+        @if (_lastCard is not null)
+        {
+            <MudText Typo="Typo.caption" Style="margin-top:8px; color: var(--mud-palette-text-secondary);">
+                Dernière carte cliquée : @_lastCard
+            </MudText>
+        }
+    </section>
+
+</div>
+
+@code {
+    [Parameter] public string RenderModeName { get; set; } = "Unknown";
+    [Parameter] public string BadgeColor     { get; set; } = "default";
+    [Parameter] public string BadgeIcon      { get; set; } = Icons.Material.Outlined.Info;
+
+    private int     _count     = 0;
+    private string  _chatValue = string.Empty;
+    private string  _tab       = "pages";
+    private string? _lastCard;
+
+    private readonly MbxTabItem<string>[] _tabs =
+    [
+        new("images",   "Images"),
+        new("pages",    "Pages"),
+        new("rapports", "Rapports"),
+    ];
+
+    private readonly (string Icon, string Type, string Title, string Desc)[] _cards =
+    [
+        (Icons.Material.Outlined.Description, "Page",    "Things to do in Tokyo",
+         "Tokyo offers a vibrant mix of traditional culture and modern attractions."),
+        (Icons.Material.Outlined.BarChart,    "Rapport", "Rapport Q3",
+         "Analyse des métriques d'engagement utilisateur sur le trimestre."),
+        (Icons.Material.Outlined.Image,       "Image",   "Aperçu du projet",
+         "Maquette haute fidélité pour la page d'accueil de l'application."),
+    ];
+}

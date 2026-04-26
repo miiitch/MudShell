@@ -1,0 +1,16 @@
+@page "/modes/server/bg"
+@rendermode InteractiveServer
+
+<PageTitle>Interactive Server — Fond actif</PageTitle>
+
+<MbxPageHeader Title="Interactive Server — Fond d'écran">
+    <StartContent><div></div></StartContent>
+    <EndContent>
+        <MudChip T="string" Color="Color.Info" Size="Size.Small">SignalR</MudChip>
+        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Style="margin-left:8px;">Fond actif 🖼</MudChip>
+    </EndContent>
+</MbxPageHeader>
+
+<ModeShowcase RenderModeName="Interactive Server"
+              BadgeColor="server"
+              BadgeIcon="@Icons.Material.Outlined.Hub" />

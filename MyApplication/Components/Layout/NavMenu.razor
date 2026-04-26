@@ -1,105 +1,64 @@
-﻿<div class="nav-container @(IsExpanded ? "nav-expanded" : "")">
+﻿@if (MobileMode)
+{
+    <MbxBottomNav Items="@_allItems" />
+}
+else
+{
+    <MbxSidebar IsExpanded="@IsExpanded"
+                OnToggle="@(() => ShellRef?.ToggleSidebar())"
+                PrimaryItems="@_primaryItems"
+                SecondaryItems="@_secondaryItems">
 
-    @* Bouton toggle expand/collapse *@
-    <div class="nav-toggle-wrap @(IsExpanded ? "nav-toggle-wrap-expanded" : "")">
-        <MudIconButton Icon="@(IsExpanded ? Icons.Material.Outlined.MenuOpen : Icons.Material.Outlined.Menu)"
-                       Color="Color.Inherit" Size="Size.Small"
-                       Class="nav-toggle-btn"
-                       OnClick="@(() => MainLayoutRef.ToggleSidebar())" />
-    </div>
+        <LogoContent>
+            <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Medium"
+                     Style="background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #7e6fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 28px; flex-shrink:0;" />
+            @if (IsExpanded)
+            {
+                <span class="nav-app-title">Copilot</span>
+            }
+        </LogoContent>
 
-    @* Logo *@
-    <div class="nav-logo @(IsExpanded ? "nav-logo-wide" : "")">
-        <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Medium"
-                 Style="background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #7e6fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 28px; flex-shrink:0;" />
-        @if (IsExpanded)
-        {
-            <span class="nav-app-title">Copilot</span>
-        }
-    </div>
+        <BottomContent>
+            <MudAvatar Size="Size.Small" Style="cursor: pointer; background: var(--mud-palette-gray-light); flex-shrink: 0;">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" />
+            </MudAvatar>
+            @if (IsExpanded)
+            {
+                <div class="nav-profile-info">
+                    <span class="nav-profile-name">Michel</span>
+                    <span class="nav-profile-sub">Microsoft 365</span>
+                </div>
+                <MudIconButton Icon="@(ShellRef?.IsDarkMode == true ? Icons.Material.Outlined.LightMode : Icons.Material.Outlined.DarkMode)"
+                               Size="Size.Small" Color="Color.Inherit"
+                               title="@(ShellRef?.IsDarkMode == true ? "Passer en mode clair" : "Passer en mode sombre")"
+                               OnClick="@(() => ShellRef?.ToggleDarkMode())"
+                               Style="flex-shrink:0; margin-left:auto;" />
+            }
+        </BottomContent>
 
-    @* Icônes de navigation principales *@
-    <div class="nav-icons">
-        @foreach (var item in _primaryItems)
-        {
-            @NavRow(item)
-        }
-    </div>
-
-    <div class="nav-divider @(IsExpanded ? "nav-divider-wide" : "")"></div>
-
-    @* Icônes secondaires *@
-    <div class="nav-icons">
-        @foreach (var item in _secondaryItems)
-        {
-            @NavRow(item)
-        }
-    </div>
-
-    <div class="nav-spacer"></div>
-
-    @* Profil en bas *@
-    <div class="nav-profile @(IsExpanded ? "nav-profile-row" : "")">
-        <MudAvatar Size="Size.Small" Style="cursor: pointer; background: var(--mud-palette-gray-light); flex-shrink: 0;">
-            <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" />
-        </MudAvatar>
-        @if (IsExpanded)
-        {
-            <div class="nav-profile-info">
-                <span class="nav-profile-name">Michel</span>
-                <span class="nav-profile-sub">Microsoft 365</span>
-            </div>
-        }
-    </div>
-</div>
+    </MbxSidebar>
+}
 
 @code {
-    [CascadingParameter]
-    public MainLayout MainLayoutRef { get; set; } = default!;
+    [Parameter] public MbxAppShell? ShellRef    { get; set; }
+    [Parameter] public bool          IsExpanded  { get; set; }
+    [Parameter] public bool          MobileMode  { get; set; } = false;
 
-    private bool IsExpanded => MainLayoutRef?.SidebarExpanded == true;
-
-    private record NavItem(string Icon, string Label, string? Href = null);
-
-    private readonly NavItem[] _primaryItems =
+    private readonly MbxNavItem[] _primaryItems =
     [
         new(Icons.Material.Outlined.GridView,      "Accueil",      "/"),
         new(Icons.Material.Outlined.EditNote,      "Éditeur"),
         new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque", "/library"),
         new(Icons.Material.Outlined.CheckBox,      "Tâches"),
+        new(Icons.Material.Outlined.Palette,       "Demo",         "/demo"),
+        new(Icons.Material.Outlined.DeveloperMode, "Render Modes", "/modes"),
     ];
 
-    private readonly NavItem[] _secondaryItems =
+    private readonly MbxNavItem[] _secondaryItems =
     [
         new(Icons.Material.Outlined.ChatBubbleOutline, "Conversations"),
         new(Icons.Material.Outlined.FileDownload,      "Téléchargements"),
     ];
 
-    private RenderFragment NavRow(NavItem item) => IsExpanded
-        ? @<div class="nav-item-expanded">
-              @if (item.Href != null)
-              {
-                  <a href="@item.Href" class="nav-link-anchor">
-                      <MudIcon Icon="@item.Icon" Size="Size.Small" Class="nav-icon-el" />
-                      <span class="nav-item-label">@item.Label</span>
-                  </a>
-              }
-              else
-              {
-                  <div class="nav-link-anchor nav-link-clickable">
-                      <MudIcon Icon="@item.Icon" Size="Size.Small" Class="nav-icon-el" />
-                      <span class="nav-item-label">@item.Label</span>
-                  </div>
-              }
-          </div>
-        : @<MudTooltip Text="@item.Label" Placement="Placement.Right">
-              @if (item.Href != null)
-              {
-                  <MudIconButton Href="@item.Href" Icon="@item.Icon" Color="Color.Inherit" Size="Size.Small" />
-              }
-              else
-              {
-                  <MudIconButton Icon="@item.Icon" Color="Color.Inherit" Size="Size.Small" />
-              }
-          </MudTooltip>;
+    private MbxNavItem[] _allItems => [.. _primaryItems, .. _secondaryItems];
 }

@@ -8,13 +8,5 @@
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/">Go to Home</MudButton>
 
-@code {
-    [CascadingParameter]
-    public MainLayout MainLayoutRef { get; set; } = default!;
 
-    protected override void OnInitialized()
-    {
-        MainLayoutRef.SetBackgroundMode(MainLayout.BackgroundMode.Palette);
-    }
-}
 

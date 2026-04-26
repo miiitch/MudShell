@@ -1,0 +1,61 @@
+@page "/modes/ssr/bg"
+
+<PageTitle>Static SSR — Fond actif</PageTitle>
+
+<MbxPageHeader Title="Static SSR — Fond d'écran">
+    <StartContent><div></div></StartContent>
+    <EndContent>
+        <span class="ssr-badge">Aucun circuit actif</span>
+        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Style="margin-left:8px;">Fond actif 🖼</MudChip>
+    </EndContent>
+</MbxPageHeader>
+
+<div class="ssr-content">
+
+    <div class="ssr-info-banner">
+        <MudIcon Icon="@Icons.Material.Outlined.Wallpaper" Size="Size.Small" />
+        <MudText Typo="Typo.body2">
+            Même page en <strong>Static SSR</strong>, avec le <strong>fond d'écran activé</strong>.
+            Le fond est déclenché automatiquement par le layout lorsque la route se termine par <code>/bg</code>.
+        </MudText>
+    </div>
+
+    <section class="ssr-section">
+        <MudText Typo="Typo.subtitle1" Class="ssr-section-title">MbxChatBar (statique)</MudText>
+        <MbxChatBar Placeholder="@("Rendu statique — les événements ne fonctionnent pas")" />
+    </section>
+
+    <section class="ssr-section">
+        <MudText Typo="Typo.subtitle1" Class="ssr-section-title">MbxDocumentCard (statique)</MudText>
+        <MudGrid Spacing="3">
+            <MudItem xs="12" sm="6" md="4">
+                <MbxDocumentCard Icon="@Icons.Material.Outlined.Description"
+                                 TypeLabel="Page"
+                                 Title="Things to do in Tokyo"
+                                 Description="Tokyo offers a vibrant mix of traditional culture and modern attractions." />
+            </MudItem>
+            <MudItem xs="12" sm="6" md="4">
+                <MbxDocumentCard Icon="@Icons.Material.Outlined.BarChart"
+                                 TypeLabel="Rapport"
+                                 Title="Rapport Q3"
+                                 Description="Analyse des métriques d'engagement sur le trimestre." />
+            </MudItem>
+        </MudGrid>
+    </section>
+
+    <section class="ssr-section">
+        <MudText Typo="Typo.subtitle1" Class="ssr-section-title">MbxPageHeader (statique)</MudText>
+        <div style="border:1px solid var(--mud-palette-lines-default); border-radius:16px; overflow:hidden;">
+            <MbxPageHeader Title="Titre de page">
+                <StartContent><div></div></StartContent>
+                <EndContent>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
+                               Style="border-radius:20px;text-transform:none;" disabled>
+                        Action (désactivée)
+                    </MudButton>
+                </EndContent>
+            </MbxPageHeader>
+        </div>
+    </section>
+
+</div>

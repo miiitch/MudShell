@@ -1,29 +1,28 @@
 ﻿@inherits LayoutComponentBase
+@implements IDisposable
+@inject NavigationManager Nav
 
-<MudThemeProvider Theme="@_theme" IsDarkMode="true" />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<MbxAppShell @ref="_shell"
+             BackgroundMode="@_bgMode"
+             BackgroundImageUrl="@_bgImageUrl"
+             IsDarkMode="@_isDarkMode"
+             IsDarkModeChanged="@(v => _isDarkMode = v)"
+             SidebarExpanded="@_sidebarExpanded"
+             SidebarExpandedChanged="@(v => _sidebarExpanded = v)">
 
-<CascadingValue Value="this">
-    <div class="app-shell @ModeClass">
-        @if (_backgroundMode == BackgroundMode.Image)
-        {
-            <div class="app-background @(string.IsNullOrEmpty(_backgroundImageUrl) ? "app-background-gradient" : "")"
-                 style="@BackgroundStyle"></div>
-        }
+    <SidebarContent>
+        <NavMenu ShellRef="@_shell" IsExpanded="@_sidebarExpanded" />
+    </SidebarContent>
 
-        <nav class="app-sidebar @(SidebarExpanded ? "sidebar-expanded" : "sidebar-collapsed")">
-            <NavMenu />
-        </nav>
+    <ChildContent>
+        @Body
+    </ChildContent>
 
-        <main class="app-main">
-            <div class="app-main-inner">
-                @Body
-            </div>
-        </main>
-    </div>
-</CascadingValue>
+    <BottomNavContent>
+        <NavMenu ShellRef="@_shell" IsExpanded="false" MobileMode="true" />
+    </BottomNavContent>
+
+</MbxAppShell>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
@@ -32,80 +31,38 @@
 </div>
 
 @code {
-    public enum BackgroundMode { Palette, Image }
-
-    private BackgroundMode _backgroundMode = BackgroundMode.Palette;
-    private string? _backgroundImageUrl;
-    private MudTheme? _theme;
-
-    public bool SidebarExpanded { get; private set; } = false;
-
-    public void ToggleSidebar()
-    {
-        SidebarExpanded = !SidebarExpanded;
-        StateHasChanged();
-    }
+    private MbxAppShell _shell = default!;
+    private MbxAppShell.MbxBackgroundMode _bgMode;
+    private string? _bgImageUrl;
+    private bool _sidebarExpanded = false;
+    private bool _isDarkMode = true;
 
     protected override void OnInitialized()
     {
-        _theme = new MudTheme
-        {
-            PaletteLight = _lightPalette,
-            PaletteDark = _darkPalette,
-            LayoutProperties = new LayoutProperties()
-        };
+        Nav.LocationChanged += OnLocationChanged;
+        ApplyRouteBackground(Nav.Uri);
     }
 
-    public void SetBackgroundMode(BackgroundMode mode, string? imageUrl = null)
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        if (_backgroundMode == mode && _backgroundImageUrl == imageUrl) return;
-        _backgroundMode = mode;
-        _backgroundImageUrl = imageUrl;
+        ApplyRouteBackground(e.Location);
         StateHasChanged();
     }
 
-    private string ModeClass => _backgroundMode == BackgroundMode.Image ? "mode-image" : "mode-palette";
-
-    private string BackgroundStyle => !string.IsNullOrEmpty(_backgroundImageUrl)
-        ? $"background-image: url('{_backgroundImageUrl}');"
-        : "";
-
-    private readonly PaletteLight _lightPalette = new()
+    private void ApplyRouteBackground(string uri)
     {
-        Black = "#110e2d",
-        AppbarText = "#424242",
-        AppbarBackground = "rgba(255,255,255,0.8)",
-        DrawerBackground = "#ffffff",
-        GrayLight = "#e8e8e8",
-        GrayLighter = "#f9f9f9",
-    };
+        var path = new Uri(uri).AbsolutePath.TrimEnd('/');
+        if (path is "" or "/" || path.EndsWith("/bg", StringComparison.OrdinalIgnoreCase))
+        {
+            _bgMode    = MbxAppShell.MbxBackgroundMode.Image;
+            _bgImageUrl = "/imgs/bg1.jpg";
+        }
+        else
+        {
+            _bgMode    = MbxAppShell.MbxBackgroundMode.Palette;
+            _bgImageUrl = null;
+        }
+    }
 
-    private readonly PaletteDark _darkPalette = new()
-    {
-        Primary = "#7e6fff",
-        Surface = "#1e1e2d",
-        Background = "#171723",
-        BackgroundGray = "#13131f",
-        AppbarText = "#92929f",
-        AppbarBackground = "rgba(23,23,35,0.85)",
-        DrawerBackground = "#171723",
-        ActionDefault = "#74718e",
-        ActionDisabled = "#9999994d",
-        ActionDisabledBackground = "#605f6d4d",
-        TextPrimary = "#b2b0bf",
-        TextSecondary = "#92929f",
-        TextDisabled = "#ffffff33",
-        DrawerIcon = "#92929f",
-        DrawerText = "#92929f",
-        GrayLight = "#2a2833",
-        GrayLighter = "#1e1e2d",
-        Info = "#4a86ff",
-        Success = "#3dcb6c",
-        Warning = "#ffb545",
-        Error = "#ff3f5f",
-        LinesDefault = "#33323e",
-        TableLines = "#33323e",
-        Divider = "#292838",
-        OverlayLight = "#1e1e2d80",
-    };
+    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
 }

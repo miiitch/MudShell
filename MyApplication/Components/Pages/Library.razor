@@ -1,47 +1,40 @@
-﻿@page "/library"
+@page "/library"
+@rendermode InteractiveServer
 
 <PageTitle>Bibliothèque</PageTitle>
 
-@* Header *@
-<div class="library-header">
-    <div></div>
-    <MudText Typo="Typo.h5" Style="font-weight: 600;">Bibliothèque</MudText>
-    <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
-               Class="library-create-btn">Créer une page</MudButton>
-</div>
+<MbxPageHeader Title="Bibliothèque">
+    <StartContent><div></div></StartContent>
+    <EndContent>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
+                   Style="border-radius:20px; text-transform:none;">Créer une page</MudButton>
+    </EndContent>
+</MbxPageHeader>
 
-@* Onglets *@
 <div class="library-tabs-wrapper">
-    <MudToggleGroup T="string" @bind-Value="_selectedTab" Color="Color.Primary"
-                     CheckMark="false" Style="gap: 4px;">
-        <MudToggleItem Value="@("images")" Text="Images" />
-        <MudToggleItem Value="@("pages")" Text="Pages" />
-        <MudToggleItem Value="@("rapports")" Text="Rapports de recherche" />
-    </MudToggleGroup>
-    <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" Color="Color.Inherit" />
+    <MbxFilterTabBar T="string" @bind-Value="_selectedTab"
+                     Items="@_tabs">
+        <TrailingContent>
+            <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" Color="Color.Inherit" />
+        </TrailingContent>
+    </MbxFilterTabBar>
 </div>
 
-@* Grille de cartes *@
 @if (_selectedTab == "pages")
 {
     <MudGrid Class="library-grid" Spacing="3">
         @foreach (var doc in _pages)
         {
-            <MudItem xs="12" sm="6" md="3">
-                <MudPaper Class="library-card" Elevation="0">
-                    <div class="card-type">
-                        <MudIcon Icon="@Icons.Material.Outlined.Description" Size="Size.Small" />
-                        <MudText Typo="Typo.caption">Page</MudText>
-                    </div>
-                    <MudText Typo="Typo.subtitle1" Class="card-title">@doc.Title</MudText>
-                    <MudText Typo="Typo.body2" Class="card-description">@doc.Description</MudText>
-                </MudPaper>
+            <MudItem xs="12" sm="6" md="4" lg="3">
+                <MbxDocumentCard Icon="@Icons.Material.Outlined.Description"
+                                 TypeLabel="Page"
+                                 Title="@doc.Title"
+                                 Description="@doc.Description" />
             </MudItem>
         }
     </MudGrid>
 }
 
-@* CTA *@
 <div class="library-cta">
     <MudText Typo="Typo.h5" Align="Align.Center" Style="font-weight: 500; line-height: 1.4;">
         Organisez vos idées, modifiez<br />et partagez vos documents
@@ -55,13 +48,12 @@
 @code {
     private string _selectedTab = "pages";
 
-    [CascadingParameter]
-    public MainLayout MainLayoutRef { get; set; } = default!;
-
-    protected override void OnInitialized()
-    {
-        MainLayoutRef.SetBackgroundMode(MainLayout.BackgroundMode.Palette);
-    }
+    private readonly MbxTabItem<string>[] _tabs =
+    [
+        new("images",   "Images"),
+        new("pages",    "Pages"),
+        new("rapports", "Rapports de recherche"),
+    ];
 
     private readonly List<PageItem> _pages =
     [
@@ -77,6 +69,3 @@
 
     private record PageItem(string Title, string Description);
 }
-
-
-

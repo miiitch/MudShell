@@ -1,0 +1,99 @@
+.modes-index-content {
+    padding: 0 32px 48px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.mode-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 24px;
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: 20px;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.mode-card-static {
+    transition: border-color 0.2s ease;
+}
+
+.mode-card-static:hover {
+    border-color: var(--mud-palette-primary);
+}
+
+.mode-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mode-icon-ssr    { background: var(--mbx-subtle-bg); color: var(--mud-palette-text-secondary); }
+.mode-icon-server { background: rgba(74,134,255,0.15);  color: #4a86ff; }
+.mode-icon-wasm   { background: rgba(61,203,108,0.15);  color: #3dcb6c; }
+.mode-icon-auto   { background: rgba(255,181,69,0.15);  color: #ffb545; }
+
+.mode-card-title {
+    font-weight: 600;
+    color: var(--mud-palette-text-primary);
+}
+
+.mode-card-desc {
+    color: var(--mud-palette-text-secondary);
+    flex: 1;
+    line-height: 1.5;
+}
+
+.mode-card-links {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+.mode-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+    flex: 1;
+    justify-content: center;
+}
+
+.mode-link-palette {
+    background: var(--mbx-subtle-bg);
+    color: var(--mud-palette-text-secondary);
+    border: 1px solid var(--mud-palette-lines-default);
+}
+
+.mode-link-palette:hover {
+    background: var(--mbx-subtle-bg-hover);
+    color: var(--mud-palette-text-primary);
+}
+
+.mode-link-bg {
+    background: rgba(126,111,255,0.12);
+    color: #7e6fff;
+    border: 1px solid rgba(126,111,255,0.25);
+}
+
+.mode-link-bg:hover {
+    background: rgba(126,111,255,0.22);
+}
+
+@media (max-width: 599px) {
+    .modes-index-content { padding: 0 16px 64px 16px; }
+    .mode-card-links { flex-direction: column; }
+}

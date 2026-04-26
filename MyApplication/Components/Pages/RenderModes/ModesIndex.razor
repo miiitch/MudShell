@@ -1,0 +1,72 @@
+@page "/modes"
+@rendermode InteractiveServer
+
+<PageTitle>Render Modes</PageTitle>
+
+<MbxPageHeader Title="Render Modes">
+    <StartContent><div></div></StartContent>
+    <EndContent>
+        <MudChip T="string" Color="Color.Default" Size="Size.Small">4 modes × 2 fonds</MudChip>
+    </EndContent>
+</MbxPageHeader>
+
+<div class="modes-index-content">
+
+    <MudText Typo="Typo.body1" Style="color: var(--mud-palette-text-secondary); max-width:680px; margin-bottom:8px;">
+        Cette section démontre que la bibliothèque <strong>MudBlazorExtended</strong> fonctionne
+        quel que soit le mode de rendu Blazor. Chaque mode propose deux variantes :
+        fond <strong>palette</strong> (sombre uni) et fond <strong>image</strong>.
+    </MudText>
+
+    <MudGrid Spacing="3">
+
+        @foreach (var mode in _modes)
+        {
+            <MudItem xs="12" sm="6" md="3">
+                <div class="mode-card mode-card-static">
+                    <div class="mode-card-icon @mode.IconClass">
+                        <MudIcon Icon="@mode.Icon" />
+                    </div>
+                    <MudText Typo="Typo.subtitle1" Class="mode-card-title">@mode.Title</MudText>
+                    <MudText Typo="Typo.body2" Class="mode-card-desc">@mode.Description</MudText>
+                    <div class="mode-card-links">
+                        <a href="@mode.Route" class="mode-link mode-link-palette">
+                            <MudIcon Icon="@Icons.Material.Outlined.Palette" Size="Size.Small" />
+                            Sans fond
+                        </a>
+                        <a href="@(mode.Route + "/bg")" class="mode-link mode-link-bg">
+                            <MudIcon Icon="@Icons.Material.Outlined.Wallpaper" Size="Size.Small" />
+                            Avec fond
+                        </a>
+                    </div>
+                </div>
+            </MudItem>
+        }
+
+    </MudGrid>
+
+</div>
+
+@code {
+    private record ModeInfo(string Icon, string IconClass, string Title, string Description, string Route);
+
+    private readonly ModeInfo[] _modes =
+    [
+        new(Icons.Material.Outlined.Article,     "mode-icon-ssr",
+            "Static SSR",
+            "Rendu serveur pur, aucun circuit SignalR ni WASM. HTML statique.",
+            "/modes/ssr"),
+        new(Icons.Material.Outlined.Hub,         "mode-icon-server",
+            "Interactive Server",
+            "Composants interactifs via SignalR. L'exécution reste sur le serveur.",
+            "/modes/server"),
+        new(Icons.Material.Outlined.Memory,      "mode-icon-wasm",
+            "Interactive WebAssembly",
+            "Composants interactifs dans le navigateur via WASM côté client.",
+            "/modes/wasm"),
+        new(Icons.Material.Outlined.AutoMode,    "mode-icon-auto",
+            "Interactive Auto",
+            "Démarre en Server, bascule en WASM une fois les ressources téléchargées.",
+            "/modes/auto"),
+    ];
+}

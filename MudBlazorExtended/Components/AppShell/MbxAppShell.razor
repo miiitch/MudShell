@@ -1,0 +1,93 @@
+@namespace MudBlazorExtended.Components.AppShell
+@using MudBlazorExtended.Theme
+
+<MudThemeProvider Theme="@_theme" IsDarkMode="@IsDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<CascadingValue Value="this">
+    <div class="mbx-shell @ModeClass @ThemeClass">
+
+        @* Background layer (image mode only) *@
+        @if (BackgroundMode == MbxBackgroundMode.Image)
+        {
+            <div class="mbx-bg @(string.IsNullOrEmpty(BackgroundImageUrl) ? "mbx-bg-gradient" : "")"
+                 style="@_bgStyle"></div>
+        }
+
+        @* Sidebar — hidden on xs/sm via CSS *@
+        <nav class="mbx-sidebar @(SidebarExpanded ? "mbx-sidebar-expanded" : "mbx-sidebar-collapsed")">
+            @SidebarContent
+        </nav>
+
+        @* Main content *@
+        <main class="mbx-main">
+            <div class="mbx-main-inner">
+                @ChildContent
+            </div>
+        </main>
+
+        @* Bottom nav — visible on xs/sm only via CSS *@
+        @if (BottomNavContent is not null)
+        {
+            <div class="mbx-bottom-nav-slot">
+                @BottomNavContent
+            </div>
+        }
+    </div>
+</CascadingValue>
+
+@code {
+    public enum MbxBackgroundMode { Palette, Image }
+
+    // ── Parameters ────────────────────────────────────────────────────────────
+
+    [Parameter] public RenderFragment? SidebarContent    { get; set; }
+    [Parameter] public RenderFragment? ChildContent      { get; set; }
+    [Parameter] public RenderFragment? BottomNavContent  { get; set; }
+
+    [Parameter] public MbxBackgroundMode BackgroundMode  { get; set; } = MbxBackgroundMode.Palette;
+    [Parameter] public string?           BackgroundImageUrl { get; set; }
+
+    [Parameter] public bool              SidebarExpanded  { get; set; } = false;
+    [Parameter] public EventCallback<bool> SidebarExpandedChanged { get; set; }
+
+    [Parameter] public bool                  IsDarkMode       { get; set; } = true;
+    [Parameter] public EventCallback<bool>   IsDarkModeChanged { get; set; }
+
+    // ── Private state ─────────────────────────────────────────────────────────
+
+    private MudTheme _theme = MbxTheme.CreateTheme();
+
+    private string ModeClass  => BackgroundMode == MbxBackgroundMode.Image ? "mbx-mode-image" : "mbx-mode-palette";
+    private string ThemeClass => IsDarkMode ? "" : "mbx-light";
+
+    private string _bgStyle => !string.IsNullOrEmpty(BackgroundImageUrl)
+        ? $"background-image: url('{BackgroundImageUrl}');"
+        : "";
+
+    // ── Public API (consumed by child components via CascadingParameter) ──────
+
+    public void ToggleSidebar()
+    {
+        SidebarExpanded = !SidebarExpanded;
+        SidebarExpandedChanged.InvokeAsync(SidebarExpanded);
+        StateHasChanged();
+    }
+
+    public void ToggleDarkMode()
+    {
+        IsDarkMode = !IsDarkMode;
+        IsDarkModeChanged.InvokeAsync(IsDarkMode);
+        StateHasChanged();
+    }
+
+    public void SetBackgroundMode(MbxBackgroundMode mode, string? imageUrl = null)
+    {
+        if (BackgroundMode == mode && BackgroundImageUrl == imageUrl) return;
+        BackgroundMode     = mode;
+        BackgroundImageUrl = imageUrl;
+        StateHasChanged();
+    }
+}

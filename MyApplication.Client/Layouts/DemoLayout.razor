@@ -1,0 +1,94 @@
+@namespace MyApplication.Client.Layouts
+@inherits LayoutComponentBase
+@implements IDisposable
+@inject NavigationManager Nav
+
+<MbxAppShell @ref="_shell"
+             BackgroundMode="@_bgMode"
+             BackgroundImageUrl="@_bgImageUrl"
+             IsDarkMode="@_isDarkMode"
+             IsDarkModeChanged="@(v => _isDarkMode = v)"
+             SidebarExpanded="@_expanded"
+             SidebarExpandedChanged="@(v => _expanded = v)">
+
+    <SidebarContent>
+        <MbxSidebar IsExpanded="@_expanded"
+                    OnToggle="@HandleToggle"
+                    PrimaryItems="@_navItems">
+            <LogoContent>
+                <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Medium"
+                         Style="background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #7e6fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 28px; flex-shrink:0;" />
+                @if (_expanded)
+                {
+                    <span style="font-size:17px; font-weight:600; white-space:nowrap;">Copilot</span>
+                }
+            </LogoContent>
+            <BottomContent>
+                <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Outlined.LightMode : Icons.Material.Outlined.DarkMode)"
+                               Size="Size.Small" Color="Color.Inherit"
+                               title="@(_isDarkMode ? "Mode clair" : "Mode sombre")"
+                               OnClick="@HandleToggleDark" />
+                @if (_expanded)
+                {
+                    <span style="font-size:13px; color:var(--mud-palette-text-secondary);">
+                        @(_isDarkMode ? "Mode sombre" : "Mode clair")
+                    </span>
+                }
+            </BottomContent>
+        </MbxSidebar>
+    </SidebarContent>
+
+    <ChildContent>@Body</ChildContent>
+
+    <BottomNavContent>
+        <MbxBottomNav Items="@_navItems" />
+    </BottomNavContent>
+
+</MbxAppShell>
+
+@code {
+    private MbxAppShell _shell = default!;
+    private bool _expanded;
+    private bool _isDarkMode = true;
+    private MbxAppShell.MbxBackgroundMode _bgMode;
+    private string? _bgImageUrl;
+
+    protected override void OnInitialized()
+    {
+        Nav.LocationChanged += OnLocationChanged;
+        ApplyRouteBackground(Nav.Uri);
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        ApplyRouteBackground(e.Location);
+        StateHasChanged();
+    }
+
+    private void ApplyRouteBackground(string uri)
+    {
+        var path = new Uri(uri).AbsolutePath.TrimEnd('/');
+        if (path.EndsWith("/bg", StringComparison.OrdinalIgnoreCase))
+        {
+            _bgMode    = MbxAppShell.MbxBackgroundMode.Image;
+            _bgImageUrl = "/imgs/bg1.jpg";
+        }
+        else
+        {
+            _bgMode    = MbxAppShell.MbxBackgroundMode.Palette;
+            _bgImageUrl = null;
+        }
+    }
+
+    private void HandleToggle() => _shell.ToggleSidebar();
+    private void HandleToggleDark() => _shell.ToggleDarkMode();
+
+    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
+
+    private readonly MbxNavItem[] _navItems =
+    [
+        new(Icons.Material.Outlined.GridView,    "Accueil",  "/"),
+        new(Icons.Material.Outlined.Palette,     "Demo",     "/demo"),
+        new(Icons.Material.Outlined.DeveloperMode, "Modes",  "/modes"),
+    ];
+}

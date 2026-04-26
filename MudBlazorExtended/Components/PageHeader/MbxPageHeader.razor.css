@@ -1,0 +1,55 @@
+/* =====================================================================
+   MbxPageHeader — header de page
+   ===================================================================== */
+.mbx-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 32px 12px 32px;
+    gap: 12px;
+}
+
+.mbx-page-header-title ::deep,
+.mbx-page-header-title {
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+}
+
+.mbx-page-header-start,
+.mbx-page-header-end {
+    display: flex;
+    align-items: center;
+    min-width: 80px;
+}
+
+.mbx-page-header-end {
+    justify-content: flex-end;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 599px) {
+    .mbx-page-header {
+        flex-wrap: wrap;
+        padding: 16px 16px 10px 16px;
+        justify-content: center;
+    }
+
+    .mbx-page-header-start {
+        order: 1;
+        min-width: unset;
+    }
+
+    .mbx-page-header-title {
+        order: 2;
+        flex-basis: 100%;
+        text-align: center;
+    }
+
+    .mbx-page-header-end {
+        order: 3;
+        min-width: unset;
+        justify-content: center;
+        width: 100%;
+    }
+}

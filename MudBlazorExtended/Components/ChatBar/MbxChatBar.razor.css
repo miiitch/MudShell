@@ -1,0 +1,45 @@
+/* =====================================================================
+   MbxChatBar — barre de saisie glassmorphisme
+   ===================================================================== */
+.mbx-chat-bar {
+    width: 100%;
+    background: var(--mbx-chat-bg);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border-radius: 20px;
+    padding: 16px 20px 12px 20px;
+    border: 1px solid var(--mbx-chat-border);
+    box-shadow: var(--mbx-chat-shadow);
+    box-sizing: border-box;
+}
+
+.mbx-chat-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--mud-palette-text-primary);
+    font-size: 15px;
+    font-family: inherit;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.mbx-chat-input::placeholder {
+    color: var(--mud-palette-text-secondary);
+    opacity: 0.7;
+}
+
+.mbx-chat-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 599px) {
+    .mbx-chat-bar {
+        border-radius: 16px;
+        padding: 12px 14px 10px 14px;
+    }
+}

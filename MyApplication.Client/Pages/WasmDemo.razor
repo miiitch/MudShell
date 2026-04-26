@@ -1,0 +1,17 @@
+@page "/modes/wasm"
+@rendermode InteractiveWebAssembly
+@layout DemoLayout
+@using MyApplication.Client.Layouts
+
+<PageTitle>Interactive WebAssembly</PageTitle>
+
+<MbxPageHeader Title="Interactive WebAssembly">
+    <StartContent><div></div></StartContent>
+    <EndContent>
+        <MudChip T="string" Color="Color.Success" Size="Size.Small">WASM</MudChip>
+    </EndContent>
+</MbxPageHeader>
+
+<ModeShowcase RenderModeName="Interactive WebAssembly"
+              BadgeColor="wasm"
+              BadgeIcon="@Icons.Material.Outlined.Memory" />

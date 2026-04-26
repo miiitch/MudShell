@@ -1,0 +1,18 @@
+@page "/modes/auto/bg"
+@rendermode InteractiveAuto
+@layout DemoLayout
+@using MyApplication.Client.Layouts
+
+<PageTitle>Interactive Auto — Fond actif</PageTitle>
+
+<MbxPageHeader Title="Interactive Auto — Fond d'écran">
+    <StartContent><div></div></StartContent>
+    <EndContent>
+        <MudChip T="string" Color="Color.Warning" Size="Size.Small">Server → WASM</MudChip>
+        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Style="margin-left:8px;">Fond actif 🖼</MudChip>
+    </EndContent>
+</MbxPageHeader>
+
+<ModeShowcase RenderModeName="Interactive Auto"
+              BadgeColor="auto"
+              BadgeIcon="@Icons.Material.Outlined.AutoMode" />

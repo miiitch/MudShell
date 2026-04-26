@@ -1,0 +1,24 @@
+﻿@page "/modes/wasm/grid"
+@rendermode InteractiveAuto
+@layout DemoLayout
+@using MyApplication.Client.Layouts
+
+<PageTitle>Interactive WebAssembly — Grid</PageTitle>
+
+<div class="fullpage-demo">
+    <MbxPageHeader Title="Interactive WebAssembly — Grid">
+        <StartContent><div></div></StartContent>
+        <EndContent>
+            <MudChip T="string" Color="Color.Success" Size="Size.Small">WASM</MudChip>
+            <MudChip T="string" Color="Color.Primary" Size="Size.Small" Style="margin-left:8px;">Grid</MudChip>
+        </EndContent>
+    </MbxPageHeader>
+
+    <div class="fullpage-body">
+        <GridShowcase RenderModeName="Interactive WebAssembly"
+                      BadgeColor="wasm"
+                      BadgeIcon="@Icons.Material.Outlined.Memory" />
+    </div>
+</div>
+
+

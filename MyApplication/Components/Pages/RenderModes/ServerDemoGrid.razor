@@ -1,0 +1,21 @@
+﻿@page "/modes/server/grid"
+@rendermode InteractiveServer
+
+<PageTitle>Interactive Server — Grid</PageTitle>
+
+<div class="fullpage-demo">
+    <MbxPageHeader Title="Interactive Server — Grid">
+        <StartContent><div></div></StartContent>
+        <EndContent>
+            <MudChip T="string" Color="Color.Info" Size="Size.Small">SignalR</MudChip>
+            <MudChip T="string" Color="Color.Primary" Size="Size.Small" Style="margin-left:8px;">Grid</MudChip>
+        </EndContent>
+    </MbxPageHeader>
+
+    <div class="fullpage-body">
+        <GridShowcase RenderModeName="Interactive Server"
+                      BadgeColor="server"
+                      BadgeIcon="@Icons.Material.Outlined.Hub" />
+    </div>
+</div>
+

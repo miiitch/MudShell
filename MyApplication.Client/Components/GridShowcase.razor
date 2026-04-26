@@ -1,0 +1,56 @@
+﻿@namespace MyApplication.Client.Components
+
+<div class="grid-showcase">
+
+    @* Render mode badge *@
+    <div class="showcase-badge showcase-badge-@BadgeColor">
+        <MudIcon Icon="@BadgeIcon" Size="Size.Small" />
+        <span>@RenderModeName</span>
+    </div>
+
+    @* Grid content — scrolls internally *@
+    <div class="grid-scroll-area">
+        <MudGrid Spacing="3">
+            @foreach (var card in _cards)
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Class="grid-card" Elevation="0">
+                        <div class="grid-card-icon" style="background:@card.IconBg; color:@card.IconColor;">
+                            <MudIcon Icon="@card.Icon" />
+                        </div>
+                        <MudText Typo="Typo.subtitle1" Style="font-weight:600;">@card.Title</MudText>
+                        <MudText Typo="Typo.body2" Style="color:var(--mud-palette-text-secondary); line-height:1.5;">
+                            @card.Description
+                        </MudText>
+                        <div style="margin-top:auto; padding-top:12px; display:flex; gap:8px;">
+                            <MudChip T="string" Size="Size.Small" Color="Color.Default">@card.Tag1</MudChip>
+                            <MudChip T="string" Size="Size.Small" Color="Color.Default">@card.Tag2</MudChip>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+            }
+        </MudGrid>
+    </div>
+
+</div>
+
+@code {
+    [Parameter] public string RenderModeName { get; set; } = "Unknown";
+    [Parameter] public string BadgeColor     { get; set; } = "default";
+    [Parameter] public string BadgeIcon      { get; set; } = Icons.Material.Outlined.Info;
+
+    private record CardInfo(string Icon, string IconBg, string IconColor, string Title, string Description, string Tag1, string Tag2);
+
+    private readonly CardInfo[] _cards =
+    [
+        new(Icons.Material.Outlined.Analytics,    "rgba(74,134,255,0.15)",  "#4a86ff",  "Tableau de bord",     "Vue d'ensemble des KPIs et métriques principales de l'application.",          "Analytics",   "KPI"),
+        new(Icons.Material.Outlined.Group,         "rgba(61,203,108,0.15)",  "#3dcb6c",  "Utilisateurs",        "Gestion des comptes utilisateurs, rôles et permissions d'accès.",            "IAM",         "RBAC"),
+        new(Icons.Material.Outlined.Inventory2,    "rgba(255,181,69,0.15)",  "#ffb545",  "Inventaire",          "Suivi en temps réel des stocks, alertes de seuil et réapprovisionnement.",   "Stock",       "Alertes"),
+        new(Icons.Material.Outlined.Paid,          "rgba(233,69,96,0.15)",   "#e94560",  "Facturation",         "Historique de facturation, abonnements actifs et méthodes de paiement.",     "Billing",     "SaaS"),
+        new(Icons.Material.Outlined.Cloud,         "rgba(126,111,255,0.15)", "#7e6fff",  "Infrastructure",      "Monitoring des services cloud, latence et disponibilité des endpoints.",      "Cloud",       "Monitoring"),
+        new(Icons.Material.Outlined.Security,      "rgba(0,188,212,0.15)",   "#00bcd4",  "Sécurité",            "Audit des accès, détection d'anomalies et conformité réglementaire.",        "Audit",       "Compliance"),
+        new(Icons.Material.Outlined.IntegrationInstructions, "rgba(255,112,67,0.15)", "#ff7043", "Intégrations", "Connecteurs API tiers, webhooks et pipelines d'automatisation.",             "API",         "Webhooks"),
+        new(Icons.Material.Outlined.SupportAgent,  "rgba(156,39,176,0.15)", "#9c27b0",  "Support",             "Tickets ouverts, SLA et satisfaction client sur les 30 derniers jours.",      "Tickets",     "SLA"),
+    ];
+}
+

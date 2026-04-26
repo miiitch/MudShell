@@ -1,5 +1,6 @@
 @page "/"
 @rendermode InteractiveServer
+@inject NavigationManager Nav
 
 <PageTitle>Home</PageTitle>
 
@@ -32,7 +33,8 @@
         </MudText>
 
         <div class="render-modes-grid">
-            <MudButton Variant="Variant.Outlined" Color="Color.Default" Href="/modes/ssr"
+            <MudButton Variant="Variant.Outlined" Color="Color.Default"
+                       OnClick="@(() => Nav.NavigateTo("/modes/ssr", true))"
                        StartIcon="@Icons.Material.Outlined.Article" Class="render-mode-btn">
                 Static SSR
             </MudButton>
@@ -42,7 +44,7 @@
             </MudButton>
             <MudButton Variant="Variant.Outlined" Color="Color.Success" Href="/modes/wasm"
                        StartIcon="@Icons.Material.Outlined.Memory" Class="render-mode-btn">
-                Interactive WASM
+                Auto (WASM)
             </MudButton>
             <MudButton Variant="Variant.Outlined" Color="Color.Warning" Href="/modes/auto"
                        StartIcon="@Icons.Material.Outlined.AutoMode" Class="render-mode-btn">

@@ -1,0 +1,23 @@
+﻿@page "/modes/auto/table"
+@rendermode InteractiveAuto
+@layout DemoLayout
+@using MyApplication.Client.Layouts
+
+<PageTitle>Interactive Auto — Table</PageTitle>
+
+<div class="fullpage-demo">
+    <MbxPageHeader Title="Interactive Auto — Table">
+        <StartContent><div></div></StartContent>
+        <EndContent>
+            <MudChip T="string" Color="Color.Warning" Size="Size.Small">Server → WASM</MudChip>
+            <MudChip T="string" Color="Color.Primary" Size="Size.Small" Style="margin-left:8px;">Table</MudChip>
+        </EndContent>
+    </MbxPageHeader>
+
+    <div class="fullpage-body">
+        <TableShowcase RenderModeName="Interactive Auto"
+                       BadgeColor="auto"
+                       BadgeIcon="@Icons.Material.Outlined.AutoMode" />
+    </div>
+</div>
+

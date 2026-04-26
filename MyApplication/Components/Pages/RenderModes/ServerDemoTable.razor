@@ -1,0 +1,21 @@
+﻿@page "/modes/server/table"
+@rendermode InteractiveServer
+
+<PageTitle>Interactive Server — Table</PageTitle>
+
+<div class="fullpage-demo">
+    <MbxPageHeader Title="Interactive Server — Table">
+        <StartContent><div></div></StartContent>
+        <EndContent>
+            <MudChip T="string" Color="Color.Info" Size="Size.Small">SignalR</MudChip>
+            <MudChip T="string" Color="Color.Primary" Size="Size.Small" Style="margin-left:8px;">Table</MudChip>
+        </EndContent>
+    </MbxPageHeader>
+
+    <div class="fullpage-body">
+        <TableShowcase RenderModeName="Interactive Server"
+                       BadgeColor="server"
+                       BadgeIcon="@Icons.Material.Outlined.Hub" />
+    </div>
+</div>
+

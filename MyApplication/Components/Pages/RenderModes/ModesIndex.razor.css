@@ -53,6 +53,7 @@
 
 .mode-card-links {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-top: auto;
     padding-top: 4px;
@@ -91,6 +92,26 @@
 
 .mode-link-bg:hover {
     background: rgba(126,111,255,0.22);
+}
+
+.mode-link-grid {
+    background: rgba(74,134,255,0.12);
+    color: #4a86ff;
+    border: 1px solid rgba(74,134,255,0.25);
+}
+
+.mode-link-grid:hover {
+    background: rgba(74,134,255,0.22);
+}
+
+.mode-link-table {
+    background: rgba(0,188,212,0.12);
+    color: #00bcd4;
+    border: 1px solid rgba(0,188,212,0.25);
+}
+
+.mode-link-table:hover {
+    background: rgba(0,188,212,0.22);
 }
 
 @media (max-width: 599px) {

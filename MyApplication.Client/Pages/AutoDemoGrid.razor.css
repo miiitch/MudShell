@@ -1,0 +1,13 @@
+﻿.fullpage-demo {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.fullpage-body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+

@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MudBlazorExtended\MudBlazorExtended.csproj" />
+    <ProjectReference Include="..\..\src\MudBlazorExtended\MudBlazorExtended.csproj" />
     <ProjectReference Include="..\MyApplication.Client\MyApplication.Client.csproj" />
   </ItemGroup>
 </Project>

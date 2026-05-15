@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="MudBlazorExtended/MudBlazorExtended.csproj" />
-  <Project Path="MyApplication.Client/MyApplication.Client.csproj" />
-  <Project Path="MyApplication/MyApplication.csproj" />
+  <Project Path="src/MudBlazorExtended/MudBlazorExtended.csproj" />
+  <Project Path="samples/MyApplication.Client/MyApplication.Client.csproj" />
+  <Project Path="samples/MyApplication/MyApplication.csproj" />
 </Solution>

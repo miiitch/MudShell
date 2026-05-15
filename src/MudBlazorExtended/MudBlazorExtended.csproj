@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>MudBlazorExtended</RootNamespace>
+
+    <!-- NuGet package metadata -->
+    <PackageId>MudBlazorExtended</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>miiitch</Authors>
+    <Description>Opinionated Blazor components built on top of MudBlazor 9, designed for dark-mode AI-shell style applications. Includes AppShell, Sidebar, BottomNav, ChatBar, DocumentCard, FilterTabBar and PageHeader.</Description>
+    <PackageTags>blazor;mudblazor;components;ui;dark-mode;shell;razor</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/miiitch/MudBlazorExt</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://miiitch.github.io/MudBlazorExt</PackageProjectUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="9.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

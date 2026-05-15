@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "website/**"
-      - "src/MudBlazorExtended/docs/**"
+      - "src/MudShell/docs/**"
   workflow_dispatch:
 
 permissions:

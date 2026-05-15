@@ -25,7 +25,7 @@ jobs:
         run: dotnet build testdesign_blazor.slnx --no-restore --configuration Release
 
       - name: Pack
-        run: dotnet pack src/MudBlazorExtended/MudBlazorExtended.csproj --no-build --configuration Release --output ./artifacts
+        run: dotnet pack src/MudShell.csproj --no-build --configuration Release --output ./artifacts
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4

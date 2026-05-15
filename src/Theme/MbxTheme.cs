@@ -1,9 +1,9 @@
 using MudBlazor;
 
-namespace MudBlazorExtended.Theme;
+namespace MudShell.Theme;
 
 /// <summary>
-/// Central theme configuration for MudBlazorExtended.
+/// Central theme configuration for MudShell.
 /// Call <see cref="CreateDarkTheme"/> to get a fully configured <see cref="MudTheme"/>.
 /// </summary>
 public static class MbxTheme

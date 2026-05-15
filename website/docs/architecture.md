@@ -6,7 +6,7 @@ sidebar_position: 4
 
 ## Shell pattern
 
-The core of MudBlazorExtended is the **shell pattern**: a single root component (`MbxAppShell`) owns the layout and exposes named `RenderFragment` slots.
+The core of MudShell is the **shell pattern**: a single root component (`MbxAppShell`) owns the layout and exposes named `RenderFragment` slots.
 
 ```
 MbxAppShell
@@ -63,11 +63,11 @@ void Toggle() => Shell.ToggleSidebar();
 
 ## Component namespace convention
 
-All library components live under `MudBlazorExtended.Components.<ComponentName>` and use the `Mbx` prefix to avoid collision with MudBlazor's `Mud` prefix.
+All library components live under `MudShell.Components.<ComponentName>` and use the `Mbx` prefix to avoid collision with MudBlazor's `Mud` prefix.
 
 ```
-MudBlazorExtended.Components.AppShell.MbxAppShell
-MudBlazorExtended.Components.Sidebar.MbxSidebar
-MudBlazorExtended.Components.Sidebar.MbxNavItem   ← shared record
+MudShell.Components.AppShell.MbxAppShell
+MudShell.Components.Sidebar.MbxSidebar
+MudShell.Components.Sidebar.MbxNavItem   ← shared record
 ...
 ```

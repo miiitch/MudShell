@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using MudBlazorExtended;
+using MudShell;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.Services.AddMudBlazorExtended();
+builder.Services.AddMudShell();
 
 await builder.Build().RunAsync();

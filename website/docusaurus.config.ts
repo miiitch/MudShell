@@ -3,7 +3,7 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'MudBlazorExtended',
+  title: 'MudShell',
   tagline: 'Opinionated Blazor components built on top of MudBlazor 9',
   favicon: 'img/favicon.ico',
 
@@ -47,9 +47,9 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'MudBlazorExtended',
+      title: 'MudShell',
       logo: {
-        alt: 'MudBlazorExtended Logo',
+        alt: 'MudShell Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -60,7 +60,7 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          href: 'https://www.nuget.org/packages/MudBlazorExtended',
+          href: 'https://www.nuget.org/packages/MudShell',
           label: 'NuGet',
           position: 'right',
         },
@@ -86,7 +86,7 @@ const config: Config = {
           title: 'More',
           items: [
             {label: 'GitHub', href: 'https://github.com/miiitch/MudBlazorExt'},
-            {label: 'NuGet', href: 'https://www.nuget.org/packages/MudBlazorExtended'},
+            {label: 'NuGet', href: 'https://www.nuget.org/packages/MudShell'},
           ],
         },
       ],

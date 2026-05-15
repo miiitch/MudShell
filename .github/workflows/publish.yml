@@ -18,10 +18,10 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Restore
-        run: dotnet restore src/MudBlazorExtended/MudBlazorExtended.csproj
+        run: dotnet restore src/MudShell.csproj
 
       - name: Pack
-        run: dotnet pack src/MudBlazorExtended/MudBlazorExtended.csproj --configuration Release --output ./artifacts
+        run: dotnet pack src/MudShell.csproj --configuration Release --output ./artifacts
 
       - name: Push to NuGet.org
         run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

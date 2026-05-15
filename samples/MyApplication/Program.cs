@@ -1,9 +1,9 @@
 using MyApplication.Components;
-using MudBlazorExtended;
+using MudShell;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMudBlazorExtended();
+builder.Services.AddMudShell();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()

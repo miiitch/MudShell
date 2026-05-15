@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Getting Started
 
-![MudBlazorExtended — AppShell with dark background, collapsible sidebar and ChatBar](/img/screenshots/home.png)
+![MudShell — AppShell with dark background, collapsible sidebar and ChatBar](/img/screenshots/home.png)
 
 *Sample app: `MbxAppShell` with background palette mode, icon-only sidebar, and `MbxChatBar`.*
 
@@ -19,7 +19,7 @@ In your app's `.csproj`:
 
 ```xml
 <ItemGroup>
-  <ProjectReference Include="..\MudBlazorExtended\MudBlazorExtended.csproj" />
+  <ProjectReference Include="..\MudShell\MudShell.csproj" />
 </ItemGroup>
 ```
 
@@ -28,7 +28,7 @@ In your app's `.csproj`:
 In `Program.cs`, replace `AddMudServices()` (or call it in addition):
 
 ```csharp
-builder.Services.AddMudBlazorExtended();
+builder.Services.AddMudShell();
 ```
 
 ## Step 3 — Add imports
@@ -36,14 +36,14 @@ builder.Services.AddMudBlazorExtended();
 In your app's `_Imports.razor`:
 
 ```razor
-@using MudBlazorExtended
-@using MudBlazorExtended.Components.AppShell
-@using MudBlazorExtended.Components.Sidebar
-@using MudBlazorExtended.Components.BottomNav
-@using MudBlazorExtended.Components.ChatBar
-@using MudBlazorExtended.Components.DocumentCard
-@using MudBlazorExtended.Components.FilterTabBar
-@using MudBlazorExtended.Components.PageHeader
+@using MudShell
+@using MudShell.Components.AppShell
+@using MudShell.Components.Sidebar
+@using MudShell.Components.BottomNav
+@using MudShell.Components.ChatBar
+@using MudShell.Components.DocumentCard
+@using MudShell.Components.FilterTabBar
+@using MudShell.Components.PageHeader
 ```
 
 ## Step 4 — Set up the layout

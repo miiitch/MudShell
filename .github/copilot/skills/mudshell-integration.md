@@ -1,14 +1,14 @@
-# MudBlazorExtended — Copilot Integration Skill
+# MudShell — Copilot Integration Skill
 
-> This file provides GitHub Copilot with context about the **MudBlazorExtended** library so it can suggest correct component usage, prop names, and integration patterns.
+> This file provides GitHub Copilot with context about the **MudShell** library so it can suggest correct component usage, prop names, and integration patterns.
 
 ---
 
-## What is MudBlazorExtended?
+## What is MudShell?
 
 A Razor Class Library of opinionated Blazor components built on top of **MudBlazor 9**, designed for dark-mode AI-shell style applications. Targets **.NET 10**.
 
-NuGet package ID: `MudBlazorExtended`
+NuGet package ID: `MudShell`
 
 ---
 
@@ -16,25 +16,25 @@ NuGet package ID: `MudBlazorExtended`
 
 ### 1. Add package reference
 ```xml
-<PackageReference Include="MudBlazorExtended" Version="0.*" />
+<PackageReference Include="MudShell" Version="0.*" />
 ```
 
 ### 2. Register services in `Program.cs`
 ```csharp
-builder.Services.AddMudBlazorExtended();
+builder.Services.AddMudShell();
 // This also calls AddMudServices() — do NOT call both.
 ```
 
 ### 3. Add to `_Imports.razor`
 ```razor
-@using MudBlazorExtended
-@using MudBlazorExtended.Components.AppShell
-@using MudBlazorExtended.Components.Sidebar
-@using MudBlazorExtended.Components.BottomNav
-@using MudBlazorExtended.Components.ChatBar
-@using MudBlazorExtended.Components.DocumentCard
-@using MudBlazorExtended.Components.FilterTabBar
-@using MudBlazorExtended.Components.PageHeader
+@using MudShell
+@using MudShell.Components.AppShell
+@using MudShell.Components.Sidebar
+@using MudShell.Components.BottomNav
+@using MudShell.Components.ChatBar
+@using MudShell.Components.DocumentCard
+@using MudShell.Components.FilterTabBar
+@using MudShell.Components.PageHeader
 ```
 
 ### 4. Add MudBlazor CSS to `App.razor` or `index.html`
@@ -218,7 +218,7 @@ Three-column page header: start | centred title | end. Stacks on mobile.
 
 To customise:
 ```csharp
-using MudBlazorExtended.Theme;
+using MudShell.Theme;
 
 var theme = MbxTheme.CreateDarkTheme();
 theme.PaletteDark.Primary = "#ff6b6b";
@@ -234,7 +234,7 @@ Key CSS variables (override in `app.css`):
 ## Common pitfalls
 
 1. **Missing MudBlazor CSS/JS** — components will render without styles. Always include `_content/MudBlazor/MudBlazor.min.css` and the JS script.
-2. **Calling both `AddMudServices()` and `AddMudBlazorExtended()`** — `AddMudBlazorExtended()` already calls `AddMudServices()`. Calling both is harmless but redundant.
+2. **Calling both `AddMudServices()` and `AddMudShell()`** — `AddMudShell()` already calls `AddMudServices()`. Calling both is harmless but redundant.
 3. **`MbxAppShell` ref is null on first render** — use `@ref="_shell"` and call methods only after `OnAfterRenderAsync` with `firstRender: true`.
 4. **Sidebar visible on mobile** — by design, use `MbxBottomNav` inside `BottomNavContent` for mobile navigation.
 5. **Render mode** — when using Blazor Web App (interactive), ensure components have a compatible render mode (`InteractiveServer` or `InteractiveWebAssembly`).

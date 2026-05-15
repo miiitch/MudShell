@@ -1,4 +1,4 @@
-# MudBlazorExtended
+# MudShell
 
 > A Razor Class Library of opinionated Blazor components built on top of **MudBlazor 9**, designed for dark-mode AI-shell style applications.
 
@@ -18,7 +18,7 @@
 ```xml
 <!-- YourApp.csproj -->
 <ItemGroup>
-  <ProjectReference Include="..\MudBlazorExtended\MudBlazorExtended.csproj" />
+  <ProjectReference Include="..\MudShell\MudShell.csproj" />
 </ItemGroup>
 ```
 
@@ -26,21 +26,21 @@
 
 ```csharp
 // Program.cs
-builder.Services.AddMudBlazorExtended();
+builder.Services.AddMudShell();
 ```
 
 ### 3. Add global imports
 
 ```razor
 @* _Imports.razor *@
-@using MudBlazorExtended
-@using MudBlazorExtended.Components.AppShell
-@using MudBlazorExtended.Components.Sidebar
-@using MudBlazorExtended.Components.BottomNav
-@using MudBlazorExtended.Components.ChatBar
-@using MudBlazorExtended.Components.DocumentCard
-@using MudBlazorExtended.Components.FilterTabBar
-@using MudBlazorExtended.Components.PageHeader
+@using MudShell
+@using MudShell.Components.AppShell
+@using MudShell.Components.Sidebar
+@using MudShell.Components.BottomNav
+@using MudShell.Components.ChatBar
+@using MudShell.Components.DocumentCard
+@using MudShell.Components.FilterTabBar
+@using MudShell.Components.PageHeader
 ```
 
 ### 4. Use `MbxAppShell` in your layout

@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Responsive Design
 
-MudBlazorExtended follows **MudBlazor's breakpoints** (Material Design):
+MudShell follows **MudBlazor's breakpoints** (Material Design):
 
 | Alias | Range | Layout behaviour |
 |---|---|---|

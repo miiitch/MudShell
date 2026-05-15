@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Theming
 
-MudBlazorExtended ships with a pre-configured `MudTheme` accessed via `MbxTheme`.
+MudShell ships with a pre-configured `MudTheme` accessed via `MbxTheme`.
 
 ## Using the built-in dark theme
 
@@ -13,7 +13,7 @@ MudBlazorExtended ships with a pre-configured `MudTheme` accessed via `MbxTheme`
 ## Accessing the palettes directly
 
 ```csharp
-using MudBlazorExtended.Theme;
+using MudShell.Theme;
 
 // Read a token
 string primary = MbxTheme.DarkPalette.Primary; // "#7e6fff"
@@ -33,7 +33,7 @@ Then pass it to `MbxAppShell` — add a `Theme` parameter if needed, or extend t
 
 ## CSS custom properties
 
-MudBlazor exposes its palette as CSS variables. MudBlazorExtended components consume them:
+MudBlazor exposes its palette as CSS variables. MudShell components consume them:
 
 | Variable | Usage |
 |---|---|

@@ -7,6 +7,12 @@ sidebar_position: 3
 Mobile-only fixed bottom navigation bar. Visible on xs/sm (≤ 959 px), hidden on md+.
 Place it inside the `BottomNavContent` slot of `MbxAppShell`.
 
+![MbxBottomNav — fixed bottom bar on mobile viewport with active highlight](/img/screenshots/home-mobile.png)
+
+*`MbxBottomNav` at the bottom of a 390 px viewport. Sidebar is hidden; bottom nav takes over.*
+
+
+
 ## Parameters
 
 | Parameter | Type | Default | Description |

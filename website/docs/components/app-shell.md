@@ -6,6 +6,10 @@ sidebar_position: 1
 
 Full-page layout shell. Owns the sidebar, main content area, background layer, and bottom nav slot.
 
+![MbxAppShell — desktop, icon-only sidebar, background palette mode](/img/screenshots/home.png)
+
+*Desktop (1280 px): icon-only sidebar collapsed, `Palette` background mode.*
+
 ## Parameters
 
 | Parameter | Type | Default | Description |

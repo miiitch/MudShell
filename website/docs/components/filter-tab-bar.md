@@ -6,6 +6,11 @@ sidebar_position: 6
 
 Pill-style tab bar wrapping `MudToggleGroup`. Supports any type `T` and scrolls horizontally on mobile.
 
+![MbxFilterTabBar — pill tab bar with active tab highlighted in purple](/img/screenshots/library.png)
+
+*`MbxFilterTabBar` with string tabs; active tab (`PAGES`) highlighted with primary colour.*
+
+
 ## Type parameter
 
 `T` — the type of the tab value (typically `string`, `int`, or an enum).

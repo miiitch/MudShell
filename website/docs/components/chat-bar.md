@@ -7,6 +7,12 @@ sidebar_position: 4
 Glassmorphism input bar inspired by AI chat interfaces.
 Uses `backdrop-filter: blur` for the frosted glass effect.
 
+![MbxChatBar — glassmorphism input bar with action buttons](/img/screenshots/components-demo.png)
+
+*`MbxChatBar` with `Actions` slot — `+` button, Smart dropdown and audio icon.*
+
+
+
 ## Parameters
 
 | Parameter | Type | Default | Description |

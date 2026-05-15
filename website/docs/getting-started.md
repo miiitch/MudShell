@@ -4,6 +4,10 @@ sidebar_position: 1
 
 # Getting Started
 
+![MudBlazorExtended — AppShell with dark background, collapsible sidebar and ChatBar](/img/screenshots/home.png)
+
+*Sample app: `MbxAppShell` with background palette mode, icon-only sidebar, and `MbxChatBar`.*
+
 ## Prerequisites
 
 - .NET 10 SDK

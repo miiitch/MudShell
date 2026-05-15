@@ -7,6 +7,12 @@ sidebar_position: 5
 Card displaying a document or item with a type icon, title, and description.
 Hover state highlights with the primary colour.
 
+![MbxDocumentCard — grid of document cards with icon, type label, title and description](/img/screenshots/library.png)
+
+*`MbxDocumentCard` in a `MudGrid`, combined with `MbxFilterTabBar` and `MbxPageHeader`.*
+
+
+
 ## Parameters
 
 | Parameter | Type | Default | Description |

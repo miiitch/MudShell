@@ -7,6 +7,10 @@ sidebar_position: 2
 Collapsible vertical navigation. Renders as icon-only (56 px) by default and expands to 240 px with labels.
 On mobile (≤ 959 px) the sidebar is hidden — use `MbxBottomNav` instead.
 
+![MbxSidebar — icon-only collapsed state on the left](/img/screenshots/home.png)
+
+
+
 ## Parameters
 
 | Parameter | Type | Default | Description |

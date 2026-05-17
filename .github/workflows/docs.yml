@@ -2,11 +2,15 @@ name: Deploy Docs
 
 on:
   push:
-    branches: [main]
-    paths:
-      - "website/**"
-      - "src/MudShell/docs/**"
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to display in docs (e.g. 1.2.3)'
+        required: false
+        default: 'dev'
 
 permissions:
   contents: read
@@ -38,6 +42,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          MUDSHELL_VERSION: ${{ github.ref_name != '' && !startsWith(github.ref, 'refs/heads/') && github.ref_name || inputs.version || 'dev' }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

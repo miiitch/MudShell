@@ -1,8 +1,10 @@
 name: Publish to NuGet.org
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-*'
 
 jobs:
   publish:
@@ -20,8 +22,11 @@ jobs:
       - name: Restore
         run: dotnet restore src/MudShell.csproj
 
+      - name: Build
+        run: dotnet build src/MudShell.csproj --no-restore --configuration Release
+
       - name: Pack
-        run: dotnet pack src/MudShell.csproj --configuration Release --output ./artifacts
+        run: dotnet pack src/MudShell.csproj --no-build --configuration Release --output ./artifacts -p:Version=${{ github.ref_name }}
 
       - name: Push to NuGet.org
         run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

@@ -90,7 +90,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} miiitch. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} miiitch. v${process.env.MUDSHELL_VERSION ?? 'dev'} — Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

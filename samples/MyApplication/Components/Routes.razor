@@ -1,4 +1,11 @@
-﻿<Router AppAssembly="typeof(Program).Assembly"
+﻿@using MudShell.Theme
+
+<MudThemeProvider Theme="@_theme" IsDarkMode="true" />
+<MudPopoverProvider />
+<MudSnackbarProvider />
+<MudDialogProvider />
+
+<Router AppAssembly="typeof(Program).Assembly"
         AdditionalAssemblies="new[] { typeof(MyApplication.Client._Imports).Assembly }"
         NotFoundPage="typeof(Pages.NotFound)">
     <Found Context="routeData">
@@ -6,3 +13,7 @@
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
 </Router>
+
+@code {
+    private readonly MudTheme _theme = MbxTheme.CreateTheme();
+}

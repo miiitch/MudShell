@@ -24,6 +24,37 @@ jobs:
       - name: Build
         run: dotnet build MudShell.slnx --no-restore --configuration Release
 
+      - name: Install Playwright browsers
+        run: dotnet tool install --global Microsoft.Playwright.CLI && playwright install --with-deps chromium
+
+      - name: Start sample app
+        run: |
+          nohup dotnet run --project samples/MyApplication/MyApplication.csproj \
+            --no-build --configuration Release > /tmp/sample-app.log 2>&1 &
+        env:
+          ASPNETCORE_URLS: http://localhost:5265
+          ASPNETCORE_ENVIRONMENT: Development
+
+      - name: Wait for sample app
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:5265 > /dev/null 2>&1 && echo "App is ready after ${i}s" && break
+            echo "Waiting ($i/30)..."
+            sleep 2
+          done
+
+      - name: Run UI tests
+        run: dotnet test tests/MudShell.UITests/MudShell.UITests.csproj --no-build --configuration Release --logger "trx;LogFileName=ui-tests.trx"
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: http://localhost:5265
+
+      - name: Upload UI test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-results
+          path: tests/MudShell.UITests/TestResults/ui-tests.trx
+
       - name: Pack
         run: dotnet pack src/MudShell.csproj --no-build --configuration Release --output ./artifacts
 

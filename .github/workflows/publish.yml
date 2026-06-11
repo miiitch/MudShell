@@ -54,7 +54,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ui-test-results
-          path: tests/MudShell.UITests/TestResults/ui-tests.trx
+          path: |
+            tests/MudShell.UITests/TestResults/ui-tests.trx
+            screenshots/
 
       - name: Pack
         run: dotnet pack src/MudShell.csproj --no-build --configuration Release --output ./artifacts -p:Version=${{ github.ref_name }}

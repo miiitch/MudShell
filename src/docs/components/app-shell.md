@@ -2,6 +2,13 @@
 
 Full-page layout shell. Owns the sidebar, main content area, background layer, and bottom nav slot.
 
+## Important — MudBlazor providers
+
+`MbxAppShell` is a pure layout shell and does **not** register MudBlazor providers internally.
+You must declare `<MudThemeProvider>`, `<MudPopoverProvider>`, `<MudSnackbarProvider>`, and
+`<MudDialogProvider>` **once** in your app's root component (e.g. `Routes.razor`).
+Registering them in both places causes a `System.InvalidOperationException` (duplicate section ID).
+
 ## Parameters
 
 | Parameter | Type | Default | Description |

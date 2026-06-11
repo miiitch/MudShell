@@ -19,10 +19,10 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Restore
-        run: dotnet restore testdesign_blazor.slnx
+        run: dotnet restore MudShell.slnx
 
       - name: Build
-        run: dotnet build testdesign_blazor.slnx --no-restore --configuration Release
+        run: dotnet build MudShell.slnx --no-restore --configuration Release
 
       - name: Pack
         run: dotnet pack src/MudShell.csproj --no-build --configuration Release --output ./artifacts

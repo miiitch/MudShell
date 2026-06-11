@@ -8,7 +8,6 @@
 
     <!-- NuGet package metadata -->
     <PackageId>MudShell</PackageId>
-    <Version>0.0.2</Version>
     <Authors>miiitch</Authors>
     <Description>Opinionated Blazor shell components built on top of MudBlazor 9, designed for dark-mode AI-shell style applications. Includes AppShell, Sidebar, BottomNav, ChatBar, DocumentCard, FilterTabBar and PageHeader.</Description>
     <PackageTags>blazor;mudblazor;components;ui;dark-mode;shell;razor;mudshell</PackageTags>

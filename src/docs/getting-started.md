@@ -38,7 +38,25 @@ In your app's `_Imports.razor`:
 @using MudShell.Components.PageHeader
 ```
 
-## Step 4 — Set up the layout
+## Step 4 — Add MudBlazor providers
+
+`MbxAppShell` is a pure layout shell — it does **not** register MudBlazor providers internally.
+Declare them once in your app's root component (e.g. `Routes.razor`) to avoid a duplicate
+section-ID crash at runtime:
+
+```razor
+@* Routes.razor *@
+<MudThemeProvider Theme="@myTheme" />
+<MudPopoverProvider />
+<MudSnackbarProvider />
+<MudDialogProvider />
+
+<Router AppAssembly="typeof(App).Assembly">
+    ...
+</Router>
+```
+
+## Step 5 — Set up the layout
 
 Replace the contents of `MainLayout.razor` with:
 
@@ -70,7 +88,7 @@ Replace the contents of `MainLayout.razor` with:
 }
 ```
 
-## Step 5 — Run
+## Step 6 — Run
 
 ```bash
 dotnet run --project YourApp

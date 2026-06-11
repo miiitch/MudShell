@@ -43,7 +43,25 @@ builder.Services.AddMudShell();
 @using MudShell.Components.PageHeader
 ```
 
-### 4. Use `MbxAppShell` in your layout
+### 4. Add MudBlazor providers to your root component
+
+`MbxAppShell` is a pure layout shell — it does **not** register MudBlazor providers internally.
+You must declare them once in your app's root component (e.g. `Routes.razor`) to avoid a
+duplicate section-ID crash at runtime:
+
+```razor
+@* Routes.razor *@
+<MudThemeProvider Theme="@myTheme" />
+<MudPopoverProvider />
+<MudSnackbarProvider />
+<MudDialogProvider />
+
+<Router AppAssembly="typeof(App).Assembly">
+    ...
+</Router>
+```
+
+### 5. Use `MbxAppShell` in your layout
 
 ```razor
 @* MainLayout.razor *@

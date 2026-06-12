@@ -6,6 +6,7 @@
 
 - 🎨 Pre-configured dark/light `MudTheme` — just call `CreateDarkTheme()`
 - 🗂 `MbxAppShell` — full-page shell with collapsible sidebar, background image/palette modes
+- 🌲 Unified hierarchical navigation with `MbxNavTree` (`MbxSidebarNav`, `MbxContextNavPanel`, `MbxMobileDrilldownNav`)
 - 📱 Fully **responsive** — sidebar on desktop, `MbxBottomNav` on mobile (≤ 959 px)
 - 💬 `MbxChatBar` — glassmorphism input bar
 - 🃏 `MbxDocumentCard`, `MbxFilterTabBar`, `MbxPageHeader`
@@ -71,6 +72,9 @@ duplicate section-ID crash at runtime:
   <SidebarContent>
     <!-- your nav -->
   </SidebarContent>
+  <ContextPanelContent>
+    <!-- optional level-2/3 context panel -->
+  </ContextPanelContent>
   <ChildContent>
     @Body
   </ChildContent>
@@ -78,6 +82,33 @@ duplicate section-ID crash at runtime:
     <MbxBottomNav Items="@navItems" />
   </BottomNavContent>
 </MbxAppShell>
+```
+
+### Hierarchical single-source navigation
+
+```razor
+<MbxAppShell @ref="_shell"
+  ContextPanelExpanded="@_contextExpanded"
+  ContextPanelExpandedChanged="@(v => _contextExpanded = v)"
+  ContextPanelWidth="320"
+  ContextPanelCollapsedWidth="72">
+  <SidebarContent>
+    <MbxSidebarNav Tree="@AppNav.Tree" />
+  </SidebarContent>
+  <ContextPanelContent>
+    <MbxContextNavPanel Tree="@AppNav.Tree" IsExpanded="@_contextExpanded" />
+  </ContextPanelContent>
+  <BottomNavContent>
+    <MbxMobileDrilldownNav Tree="@AppNav.Tree" />
+  </BottomNavContent>
+  <ChildContent>@Body</ChildContent>
+</MbxAppShell>
+```
+
+You can collapse/expand the level-2 panel at runtime with:
+
+```csharp
+_shell.ToggleContextPanel();
 ```
 
 ## Documentation

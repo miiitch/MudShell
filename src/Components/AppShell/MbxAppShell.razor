@@ -2,7 +2,7 @@
 @using MudShell.Theme
 
 <CascadingValue Value="this">
-    <div class="mbx-shell @ModeClass @ThemeClass">
+    <div class="mbx-shell @ModeClass @ThemeClass @ContextLayoutClass">
 
         @* Background layer (image mode only) *@
         @if (BackgroundMode == MbxBackgroundMode.Image)
@@ -15,6 +15,14 @@
         <nav class="mbx-sidebar @(SidebarExpanded ? "mbx-sidebar-expanded" : "mbx-sidebar-collapsed")">
             @SidebarContent
         </nav>
+
+        @if (ContextPanelContent is not null)
+        {
+            <aside class="mbx-context-panel @(ContextPanelExpanded ? "mbx-context-panel-expanded" : "mbx-context-panel-collapsed")"
+                   style="@ContextPanelStyle">
+                @ContextPanelContent
+            </aside>
+        }
 
         @* Main content *@
         <main class="mbx-main">
@@ -39,6 +47,7 @@
     // ── Parameters ────────────────────────────────────────────────────────────
 
     [Parameter] public RenderFragment? SidebarContent    { get; set; }
+    [Parameter] public RenderFragment? ContextPanelContent { get; set; }
     [Parameter] public RenderFragment? ChildContent      { get; set; }
     [Parameter] public RenderFragment? BottomNavContent  { get; set; }
 
@@ -50,6 +59,10 @@
 
     [Parameter] public bool                  IsDarkMode       { get; set; } = true;
     [Parameter] public EventCallback<bool>   IsDarkModeChanged { get; set; }
+    [Parameter] public bool                  ContextPanelExpanded { get; set; } = true;
+    [Parameter] public EventCallback<bool>   ContextPanelExpandedChanged { get; set; }
+    [Parameter] public int                   ContextPanelWidth { get; set; } = 288;
+    [Parameter] public int                   ContextPanelCollapsedWidth { get; set; } = 72;
 
     // ── Private state ─────────────────────────────────────────────────────────
 
@@ -57,10 +70,13 @@
 
     private string ModeClass  => BackgroundMode == MbxBackgroundMode.Image ? "mbx-mode-image" : "mbx-mode-palette";
     private string ThemeClass => IsDarkMode ? "" : "mbx-light";
+    private string ContextLayoutClass => ContextPanelContent is null ? "mbx-no-context-panel" : "mbx-has-context-panel";
 
     private string _bgStyle => !string.IsNullOrEmpty(BackgroundImageUrl)
         ? $"background-image: url('{BackgroundImageUrl}');"
         : "";
+    private string ContextPanelStyle =>
+        $"--mbx-context-panel-width:{Math.Max(ContextPanelWidth, 160)}px; --mbx-context-panel-collapsed-width:{Math.Max(ContextPanelCollapsedWidth, 56)}px;";
 
     // ── Public API (consumed by child components via CascadingParameter) ──────
 
@@ -75,6 +91,13 @@
     {
         IsDarkMode = !IsDarkMode;
         IsDarkModeChanged.InvokeAsync(IsDarkMode);
+        StateHasChanged();
+    }
+
+    public void ToggleContextPanel()
+    {
+        ContextPanelExpanded = !ContextPanelExpanded;
+        ContextPanelExpandedChanged.InvokeAsync(ContextPanelExpanded);
         StateHasChanged();
     }
 

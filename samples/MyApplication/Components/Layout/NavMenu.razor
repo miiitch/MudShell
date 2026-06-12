@@ -6,8 +6,7 @@ else
 {
     <MbxSidebar IsExpanded="@IsExpanded"
                 OnToggle="@(() => ShellRef?.ToggleSidebar())"
-                PrimaryItems="@_primaryItems"
-                SecondaryItems="@_secondaryItems">
+                PrimaryItems="@_primaryItems">
 
         <LogoContent>
             <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Medium"
@@ -47,18 +46,11 @@ else
     private readonly MbxNavItem[] _primaryItems =
     [
         new(Icons.Material.Outlined.GridView,      "Accueil",      "/"),
-        new(Icons.Material.Outlined.EditNote,      "Éditeur"),
         new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque", "/library"),
-        new(Icons.Material.Outlined.CheckBox,      "Tâches"),
+        new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque BG", "/library/bg"),
         new(Icons.Material.Outlined.Palette,       "Demo",         "/demo"),
         new(Icons.Material.Outlined.DeveloperMode, "Render Modes", "/modes"),
     ];
 
-    private readonly MbxNavItem[] _secondaryItems =
-    [
-        new(Icons.Material.Outlined.ChatBubbleOutline, "Conversations"),
-        new(Icons.Material.Outlined.FileDownload,      "Téléchargements"),
-    ];
-
-    private MbxNavItem[] _allItems => [.. _primaryItems, .. _secondaryItems];
+    private MbxNavItem[] _allItems => _primaryItems;
 }

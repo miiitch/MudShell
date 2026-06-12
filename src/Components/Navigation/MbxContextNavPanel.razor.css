@@ -1,0 +1,116 @@
+.mbx-context-nav-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.mbx-context-nav-panel.mbx-context-nav-panel-collapsed {
+    align-items: center;
+    gap: 6px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.mbx-context-collapsed-btn {
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--mud-palette-text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.mbx-context-collapsed-btn:hover:not(:disabled) {
+    color: var(--mud-palette-text-primary);
+    background: var(--mbx-nav-hover-bg);
+}
+
+.mbx-context-collapsed-btn-active {
+    color: var(--mud-palette-primary);
+    background: var(--mbx-nav-hover-bg);
+}
+
+.mbx-context-nav-empty {
+    color: var(--mud-palette-text-secondary);
+    font-size: 13px;
+    padding: 8px;
+}
+
+.mbx-context-row {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.mbx-context-row-active > .mbx-context-node-btn {
+    color: var(--mud-palette-text-primary);
+    background: var(--mbx-nav-hover-bg);
+}
+
+.mbx-context-node-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--mud-palette-text-secondary);
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: left;
+}
+
+.mbx-context-node-btn:hover:not(:disabled) {
+    color: var(--mud-palette-text-primary);
+    background: var(--mbx-nav-hover-bg);
+}
+
+.mbx-context-node-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.mbx-context-node-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mbx-context-subentries {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 2px 8px 8px 24px;
+}
+
+.mbx-context-subentry {
+    border: 0;
+    background: transparent;
+    color: var(--mud-palette-text-secondary);
+    text-align: left;
+    text-decoration: none;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.mbx-context-subentry:hover:not(:disabled) {
+    color: var(--mud-palette-text-primary);
+    background: var(--mbx-nav-hover-bg);
+}
+
+.mbx-context-subentry-active {
+    color: var(--mud-palette-primary);
+    background: var(--mbx-nav-hover-bg);
+}

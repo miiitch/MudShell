@@ -2,12 +2,18 @@
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject NavigationManager Nav
+@using MudShell.Components.Navigation.Models
 
 <MbxAppShell @ref="_shell"
              BackgroundMode="@_bgMode"
              BackgroundImageUrl="@_bgImageUrl"
              IsDarkMode="@_isDarkMode"
              IsDarkModeChanged="@(v => _isDarkMode = v)"
+             ContextPanelExpanded="@_contextPanelExpanded"
+             ContextPanelExpandedChanged="@(v => _contextPanelExpanded = v)"
+             ContextPanelWidth="288"
+             ContextPanelCollapsedWidth="72"
+             ContextPanelContent="@ContextPanel"
              SidebarExpanded="@_expanded"
              SidebarExpandedChanged="@(v => _expanded = v)">
 
@@ -52,6 +58,56 @@
     private bool _isDarkMode = true;
     private MbxAppShell.MbxBackgroundMode _bgMode;
     private string? _bgImageUrl;
+    private bool _showContextPanel;
+    private bool _contextPanelExpanded = true;
+    private RenderFragment? ContextPanel => _showContextPanel
+        ? @<div>
+              <div style="display:flex; justify-content:flex-end; padding:8px 8px 0;">
+                  <MudIconButton Icon="@(_contextPanelExpanded ? Icons.Material.Outlined.KeyboardDoubleArrowLeft : Icons.Material.Outlined.KeyboardDoubleArrowRight)"
+                                 Size="Size.Small"
+                                 Color="Color.Inherit"
+                                 title="Réduire/agrandir le panneau contextuel"
+                                 OnClick="@(() => _shell.ToggleContextPanel())" />
+              </div>
+              <MbxContextNavPanel Tree="@_libraryContextTree" IsExpanded="@_contextPanelExpanded" />
+          </div>
+        : null;
+
+    private static readonly MbxNavTree _libraryContextTree = new(
+    [
+        new(
+            id: "library",
+            text: "Bibliothèque",
+            icon: Icons.Material.Outlined.ContentCopy,
+            href: "/library/bg",
+            match: MbxNavMatchMode.Prefix,
+            children:
+            [
+                new(
+                    id: "library.documents",
+                    text: "Mes documents",
+                    icon: Icons.Material.Outlined.Folder,
+                    href: "/library/bg",
+                    match: MbxNavMatchMode.Prefix,
+                    children:
+                    [
+                        new(
+                            id: "library.documents.folder1",
+                            text: "Dossier 1",
+                            href: "/library/bg"),
+                        new(
+                            id: "library.documents.folder2",
+                            text: "Dossier 2",
+                            href: "/library/bg")
+                    ],
+                    defaultExpanded: true),
+                new(
+                    id: "library.history",
+                    text: "Historique",
+                    icon: Icons.Material.Outlined.History,
+                    href: "/library/bg")
+            ])
+    ]);
 
     protected override void OnInitialized()
     {
@@ -68,6 +124,8 @@
     private void ApplyRouteBackground(string uri)
     {
         var path = new Uri(uri).AbsolutePath.TrimEnd('/');
+        _showContextPanel = path.StartsWith("/library", StringComparison.OrdinalIgnoreCase);
+
         if (path.EndsWith("/bg", StringComparison.OrdinalIgnoreCase))
         {
             _bgMode    = MbxAppShell.MbxBackgroundMode.Image;
@@ -87,8 +145,10 @@
 
     private readonly MbxNavItem[] _navItems =
     [
-        new(Icons.Material.Outlined.GridView,    "Accueil",  "/"),
-        new(Icons.Material.Outlined.Palette,     "Demo",     "/demo"),
-        new(Icons.Material.Outlined.DeveloperMode, "Modes",  "/modes"),
+        new(Icons.Material.Outlined.GridView,      "Accueil",         "/"),
+        new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque",    "/library"),
+        new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque BG", "/library/bg"),
+        new(Icons.Material.Outlined.Palette,       "Demo",            "/demo"),
+        new(Icons.Material.Outlined.DeveloperMode, "Render Modes",    "/modes"),
     ];
 }

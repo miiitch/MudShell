@@ -1,0 +1,42 @@
+@page "/library/bg"
+@rendermode InteractiveAuto
+@layout DemoLayout
+@using MyApplication.Client.Layouts
+
+<PageTitle>Bibliothèque — fond image</PageTitle>
+
+<MbxPageHeader Title="Bibliothèque (fond image)">
+    <StartContent><div></div></StartContent>
+    <EndContent>
+        <MudChip T="string" Color="Color.Primary" Size="Size.Small">Image BG</MudChip>
+    </EndContent>
+</MbxPageHeader>
+
+<MudGrid Class="library-grid" Spacing="3">
+    @foreach (var doc in _pages)
+    {
+        <MudItem xs="12" sm="6" md="4" lg="3">
+            <MbxDocumentCard Icon="@Icons.Material.Outlined.Description"
+                             TypeLabel="Page"
+                             Title="@doc.Title"
+                             Description="@doc.Description" />
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+    private readonly List<PageItem> _pages =
+    [
+        new("Things to do in Tokyo",
+            "Tokyo offers a vibrant mix of traditional culture and modern attractions."),
+        new("Cover Letter Draft",
+            "Dear [Hiring Manager], I am writing to express my interest in the position."),
+        new("History Class Essay",
+            "The Industrial Revolution transformed modern societies."),
+        new("Poem Draft",
+            "In morning light, the city wakes with fog that dances and breaks.")
+    ];
+
+    private record PageItem(string Title, string Description);
+}
+

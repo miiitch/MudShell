@@ -66,6 +66,7 @@ public class ResponsiveMobileTests : PlaywrightTestBase
     public Task Mobile_MainContentAreaIsFullWidth() => RunAsync(nameof(Mobile_MainContentAreaIsFullWidth), async () =>
     {
         await Page.GotoAsync("/");
+        await Assertions.Expect(Page.Locator(".mbx-main")).ToBeVisibleAsync();
 
         // On mobile, .mbx-main has margin:0 and border-radius:0 — it should fill the viewport width.
         var box = await Page.Locator(".mbx-main").BoundingBoxAsync();

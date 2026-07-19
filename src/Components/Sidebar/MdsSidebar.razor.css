@@ -1,0 +1,170 @@
+/* =====================================================================
+   MdsSidebar — navigation latérale
+   ===================================================================== */
+.mbx-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    gap: var(--mbx-space-1);
+    overflow: hidden;
+}
+
+.mbx-nav.mbx-nav-expanded {
+    align-items: flex-start;
+    padding: 0 var(--mbx-space-2);
+}
+
+.mbx-sidebar-icon-link {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--mbx-radius-md);
+    color: var(--mud-palette-text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* ── Toggle ──────────────────────────────────────────────────────────── */
+.mbx-nav-toggle {
+    align-self: center;
+    margin-bottom: var(--mbx-space-1);
+}
+
+.mbx-nav-toggle.mbx-nav-toggle-expanded {
+    align-self: flex-end;
+}
+
+/* ── Logo ────────────────────────────────────────────────────────────── */
+.mbx-nav-logo {
+    margin-bottom: var(--mbx-space-4);
+    padding: var(--mbx-space-1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.mbx-nav-logo.mbx-nav-logo-wide {
+    gap: var(--mbx-space-2);
+    padding: var(--mbx-space-1) 6px;
+}
+
+/* ── Nav items list ──────────────────────────────────────────────────── */
+.mbx-nav-items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--mbx-space-1);
+    width: 100%;
+}
+
+.mbx-nav.mbx-nav-expanded .mbx-nav-items {
+    align-items: stretch;
+}
+
+.mbx-nav-items ::deep .mud-icon-button {
+    color: var(--mud-palette-text-secondary);
+    transition: color 0.2s ease, background-color 0.2s ease;
+    border-radius: var(--mbx-radius-md);
+    width: 40px;
+    height: 40px;
+}
+
+/* ── Expanded items ──────────────────────────────────────────────────── */
+.mbx-nav-item-expanded {
+    width: 100%;
+}
+
+.mbx-nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--mbx-space-3);
+    padding: var(--mbx-space-2) 10px;
+    border-radius: var(--mbx-radius-md);
+    text-decoration: none;
+    color: var(--mud-palette-text-secondary);
+    transition: color 0.2s ease, background-color 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.mbx-nav-link:hover,
+.mbx-nav-link-clickable:hover,
+.mbx-sidebar-icon-link:hover,
+.mbx-nav-items ::deep .mud-icon-button:hover {
+    color: var(--mud-palette-text-primary);
+    background-color: var(--mbx-nav-hover-bg);
+}
+
+.mbx-nav-link-clickable {
+    cursor: pointer;
+}
+
+.mbx-nav-link:focus-visible,
+.mbx-nav-items ::deep .mud-icon-button:focus-visible,
+.mbx-nav-bottom.mbx-nav-bottom-expanded:focus-visible {
+    outline: 2px solid var(--mbx-focus-ring);
+    outline-offset: 2px;
+}
+
+.mbx-nav-link.mbx-nav-link-active,
+.mbx-sidebar-icon-link.mbx-sidebar-icon-link-active {
+    color: var(--mud-palette-primary);
+    background-color: var(--mbx-subtle-bg);
+}
+
+.mbx-nav-icon {
+    flex-shrink: 0;
+    color: inherit;
+}
+
+.mbx-nav-label {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: inherit;
+}
+
+/* ── Divider ─────────────────────────────────────────────────────────── */
+.mbx-nav-divider {
+    width: 28px;
+    height: 1px;
+    background: var(--mud-palette-divider);
+    margin: var(--mbx-space-2) 0;
+    align-self: center;
+    transition: width 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+.mbx-nav-divider.mbx-nav-divider-wide {
+    width: calc(100% - 12px);
+}
+
+/* ── Spacer ──────────────────────────────────────────────────────────── */
+.mbx-nav-spacer {
+    flex: 1;
+}
+
+/* ── Bottom slot ─────────────────────────────────────────────────────── */
+.mbx-nav-bottom {
+    padding-bottom: var(--mbx-space-1);
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.mbx-nav-bottom.mbx-nav-bottom-expanded {
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--mbx-space-3);
+    padding: var(--mbx-space-2) 10px;
+    border-radius: var(--mbx-radius-md);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.mbx-nav-bottom.mbx-nav-bottom-expanded:hover {
+    background-color: var(--mbx-nav-hover-bg);
+}

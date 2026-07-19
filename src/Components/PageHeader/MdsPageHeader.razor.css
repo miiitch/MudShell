@@ -1,0 +1,46 @@
+/* =====================================================================
+   MdsPageHeader — header de page
+   ===================================================================== */
+.mbx-page-header {
+    padding: var(--mbx-space-5) var(--mbx-space-6) var(--mbx-space-3) var(--mbx-space-6);
+    gap: var(--mbx-space-3);
+}
+
+.mbx-page-header-title ::deep,
+.mbx-page-header-title {
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+}
+
+.mbx-page-header-start,
+.mbx-page-header-end {
+    min-width: 80px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 599px) {
+    .mbx-page-header {
+        flex-wrap: wrap;
+        padding: var(--mbx-space-4) var(--mbx-space-4) var(--mbx-space-2) var(--mbx-space-4);
+        justify-content: center;
+    }
+
+    .mbx-page-header-start {
+        order: 1;
+        min-width: unset;
+    }
+
+    .mbx-page-header-title {
+        order: 2;
+        flex-basis: 100%;
+        text-align: center;
+    }
+
+    .mbx-page-header-end {
+        order: 3;
+        min-width: unset;
+        justify-content: center;
+        width: 100%;
+    }
+}

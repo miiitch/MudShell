@@ -1,0 +1,21 @@
+@namespace MudShell.Components.DocumentCard
+
+<button type="button" class="mbx-doc-card" disabled="@Disabled" @onclick="HandleClick">
+    <div class="mbx-doc-card-type d-flex align-center">
+        <MudIcon Icon="@Icon" Size="Size.Small" />
+        <MudText Typo="Typo.caption">@TypeLabel</MudText>
+    </div>
+    <MudText Typo="Typo.subtitle1" Class="mbx-doc-card-title">@Title</MudText>
+    <MudText Typo="Typo.body2"     Class="mbx-doc-card-desc">@Description</MudText>
+</button>
+
+@code {
+    [Parameter] public string  Icon        { get; set; } = Icons.Material.Outlined.Description;
+    [Parameter] public string? TypeLabel   { get; set; } = "Document";
+    [Parameter] public string? Title       { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private async Task HandleClick() => await OnClick.InvokeAsync();
+}

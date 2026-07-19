@@ -1,0 +1,41 @@
+/* =====================================================================
+   MdsFilterTabBar — onglets pills
+   ===================================================================== */
+.mbx-filter-tabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* Horizontal scroll on mobile */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.mbx-filter-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.mbx-filter-tabs ::deep .mud-toggle-group {
+    padding: 4px;
+    border-radius: var(--mbx-radius-lg);
+    background: var(--mbx-content-surface);
+    border: 1px solid var(--mbx-content-border);
+}
+
+.mbx-filter-tabs ::deep .mud-toggle-item {
+    min-height: 34px;
+    border-radius: var(--mbx-radius-md);
+    color: var(--mud-palette-text-secondary);
+    text-transform: none;
+    font-weight: 500;
+}
+
+.mbx-filter-tabs ::deep .mud-toggle-item:hover {
+    background: var(--mbx-subtle-bg);
+    color: var(--mud-palette-text-primary);
+}
+
+.mbx-filter-tabs ::deep .mud-toggle-item.mud-toggle-item-selected {
+    background: var(--mbx-subtle-bg-hover);
+    color: var(--mud-palette-primary);
+}

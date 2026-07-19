@@ -4,8 +4,8 @@ using Xunit;
 namespace MudShell.UITests;
 
 /// <summary>
-/// Verifies that MbxAppShell renders correctly under each Blazor render mode.
-/// Each page uses DemoLayout which wraps content in MbxAppShell.
+/// Verifies that MdsAppShell renders correctly under each Blazor render mode.
+/// Each page uses DemoLayout which wraps content in MdsAppShell.
 /// </summary>
 public class RenderModeTests : PlaywrightTestBase
 {

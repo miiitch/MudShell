@@ -1,4 +1,4 @@
-# MbxFilterTabBar
+# MdsFilterTabBar
 
 Pill-style tab bar wrapping `MudToggleGroup`. Supports any type `T` and scrolls horizontally on mobile.
 
@@ -24,11 +24,11 @@ public record MbxTabItem<T>(T Value, string Label);
 ## Example
 
 ```razor
-<MbxFilterTabBar T="string" @bind-Value="_tab" Items="@_tabs">
+<MdsFilterTabBar T="string" @bind-Value="_tab" Items="@_tabs">
   <TrailingContent>
     <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" />
   </TrailingContent>
-</MbxFilterTabBar>
+</MdsFilterTabBar>
 
 @code {
     private string _tab = "all";

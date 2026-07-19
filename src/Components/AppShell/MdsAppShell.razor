@@ -1,0 +1,105 @@
+@namespace MudShell.Components.AppShell
+<CascadingValue Value="this">
+    <div class="mbx-shell @ModeClass @ThemeClass @ContextLayoutClass">
+
+        @* Background layer (image mode only) *@
+        @if (BackgroundMode == MbxBackgroundMode.Image)
+        {
+            <div class="mbx-bg @(string.IsNullOrEmpty(BackgroundImageUrl) ? "mbx-bg-gradient" : "")"
+                 style="@_bgStyle"></div>
+        }
+
+        @* Sidebar — hidden on xs/sm via CSS *@
+        <nav class="mbx-sidebar @(SidebarExpanded ? "mbx-sidebar-expanded" : "mbx-sidebar-collapsed")">
+            @SidebarContent
+        </nav>
+
+        @if (ContextPanelContent is not null)
+        {
+            <aside class="mbx-context-panel @(ContextPanelExpanded ? "mbx-context-panel-expanded" : "mbx-context-panel-collapsed")"
+                   style="@ContextPanelStyle">
+                @ContextPanelContent
+            </aside>
+        }
+
+        @* Main content *@
+        <main class="mbx-main">
+            <div class="mbx-main-inner">
+                @ChildContent
+            </div>
+        </main>
+
+        @* Bottom nav — visible on xs/sm only via CSS *@
+        @if (BottomNavContent is not null)
+        {
+            <div class="mbx-bottom-nav-slot">
+                @BottomNavContent
+            </div>
+        }
+    </div>
+</CascadingValue>
+
+@code {
+    public enum MbxBackgroundMode { Palette, Image }
+
+    // ── Parameters ────────────────────────────────────────────────────────────
+
+    [Parameter] public RenderFragment? SidebarContent    { get; set; }
+    [Parameter] public RenderFragment? ContextPanelContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent      { get; set; }
+    [Parameter] public RenderFragment? BottomNavContent  { get; set; }
+
+    [Parameter] public MbxBackgroundMode BackgroundMode  { get; set; } = MbxBackgroundMode.Palette;
+    [Parameter] public string?           BackgroundImageUrl { get; set; }
+
+    [Parameter] public bool              SidebarExpanded  { get; set; } = false;
+    [Parameter] public EventCallback<bool> SidebarExpandedChanged { get; set; }
+
+    [Parameter] public bool                  IsDarkMode       { get; set; } = true;
+    [Parameter] public EventCallback<bool>   IsDarkModeChanged { get; set; }
+    [Parameter] public bool                  ContextPanelExpanded { get; set; } = true;
+    [Parameter] public EventCallback<bool>   ContextPanelExpandedChanged { get; set; }
+    [Parameter] public int                   ContextPanelWidth { get; set; } = 288;
+    [Parameter] public int                   ContextPanelCollapsedWidth { get; set; } = 72;
+
+    private string ModeClass  => BackgroundMode == MbxBackgroundMode.Image ? "mbx-mode-image" : "mbx-mode-palette";
+    private string ThemeClass => IsDarkMode ? "" : "mbx-light";
+    private string ContextLayoutClass => ContextPanelContent is null ? "mbx-no-context-panel" : "mbx-has-context-panel";
+
+    private string _bgStyle => !string.IsNullOrEmpty(BackgroundImageUrl)
+        ? $"background-image: url('{BackgroundImageUrl}');"
+        : "";
+    private string ContextPanelStyle =>
+        $"--mbx-context-panel-width:{Math.Max(ContextPanelWidth, 160)}px; --mbx-context-panel-collapsed-width:{Math.Max(ContextPanelCollapsedWidth, 56)}px;";
+
+    // ── Public API (consumed by child components via CascadingParameter) ──────
+
+    public void ToggleSidebar()
+    {
+        SidebarExpanded = !SidebarExpanded;
+        SidebarExpandedChanged.InvokeAsync(SidebarExpanded);
+        StateHasChanged();
+    }
+
+    public void ToggleDarkMode()
+    {
+        IsDarkMode = !IsDarkMode;
+        IsDarkModeChanged.InvokeAsync(IsDarkMode);
+        StateHasChanged();
+    }
+
+    public void ToggleContextPanel()
+    {
+        ContextPanelExpanded = !ContextPanelExpanded;
+        ContextPanelExpandedChanged.InvokeAsync(ContextPanelExpanded);
+        StateHasChanged();
+    }
+
+    public void SetBackgroundMode(MbxBackgroundMode mode, string? imageUrl = null)
+    {
+        if (BackgroundMode == mode && BackgroundImageUrl == imageUrl) return;
+        BackgroundMode     = mode;
+        BackgroundImageUrl = imageUrl;
+        StateHasChanged();
+    }
+}

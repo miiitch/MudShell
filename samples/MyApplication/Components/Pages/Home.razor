@@ -4,61 +4,74 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="home-topbar">
-    <MudIconButton Icon="@Icons.Material.Outlined.Tune" Color="Color.Inherit" Size="Size.Small" />
-</div>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+<MudStack Spacing="3">
+    <MudStack Row="true" Justify="Justify.FlexEnd">
+        <MudIconButton Icon="@Icons.Material.Outlined.Tune" Color="Color.Inherit" Size="Size.Small" />
+    </MudStack>
 
-<div class="home-content">
-    <MudText Typo="Typo.h4" Class="home-greeting">
+    <MudText Typo="Typo.h4">
         C'est un plaisir te revoir, Michel.<br />
         Quelles sont les dernières nouvelles?
     </MudText>
 
-    <MbxChatBar Placeholder="@("Message Copilot ou @ mentionnez un onglet")"
+    <MdsChatBar Placeholder="@("Message Copilot ou @ mentionnez un onglet")"
                 @bind-Value="_chatMessage">
         <Actions>
             <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" />
             <MudButton Variant="Variant.Text" Color="Color.Inherit" Size="Size.Small"
                        EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
-                       Style="font-size:13px; text-transform:none; font-weight:500;">Smart</MudButton>
-            <div style="flex:1"></div>
+                       Class="text-none">Smart</MudButton>
+            <MudSpacer />
             <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Size="Size.Small" Color="Color.Inherit" />
         </Actions>
-    </MbxChatBar>
+    </MdsChatBar>
 
-    <div class="render-modes-links">
-        <MudText Typo="Typo.subtitle1" Class="render-modes-title">
-            <MudIcon Icon="@Icons.Material.Outlined.Devices" Size="Size.Small" Style="margin-right:8px; vertical-align:middle;" />
-            Modes de rendu Blazor
-        </MudText>
+    <MudPaper Outlined="true" Class="pa-4">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mds-u-inline-title">
+            <MudIcon Icon="@Icons.Material.Outlined.Devices" Size="Size.Small" />
+            <MudText Typo="Typo.subtitle1">Modes de rendu Blazor</MudText>
+        </MudStack>
 
-        <div class="render-modes-grid">
+        <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="1" Class="mt-2">
             <MudButton Variant="Variant.Outlined" Color="Color.Default"
                        OnClick="@(() => Nav.NavigateTo("/modes/ssr", true))"
-                       StartIcon="@Icons.Material.Outlined.Article" Class="render-mode-btn">
+                       StartIcon="@Icons.Material.Outlined.Article">
                 Static SSR
             </MudButton>
             <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="/modes/server"
-                       StartIcon="@Icons.Material.Outlined.Hub" Class="render-mode-btn">
+                       StartIcon="@Icons.Material.Outlined.Hub">
                 Interactive Server
             </MudButton>
             <MudButton Variant="Variant.Outlined" Color="Color.Success" Href="/modes/wasm"
-                       StartIcon="@Icons.Material.Outlined.Memory" Class="render-mode-btn">
+                       StartIcon="@Icons.Material.Outlined.Memory">
                 Auto (WASM)
             </MudButton>
             <MudButton Variant="Variant.Outlined" Color="Color.Warning" Href="/modes/auto"
-                       StartIcon="@Icons.Material.Outlined.AutoMode" Class="render-mode-btn">
+                       StartIcon="@Icons.Material.Outlined.AutoMode">
                 Interactive Auto
             </MudButton>
-        </div>
+        </MudStack>
 
         <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/modes"
                    EndIcon="@Icons.Material.Filled.ArrowForward"
-                   Style="margin-top:4px; text-transform:none; font-weight:500;">
+                   Class="mt-1 text-none">
             Voir toutes les combinaisons
         </MudButton>
-    </div>
-</div>
+    </MudPaper>
+
+    <MudPaper Outlined="true" Class="pa-4">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mds-u-inline-title">
+            <MudIcon Icon="@Icons.Material.Outlined.TableChart" Size="Size.Small" />
+            <MudText Typo="Typo.subtitle2">Acces rapide</MudText>
+        </MudStack>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/europe-cities"
+                   StartIcon="@Icons.Material.Outlined.TravelExplore" Class="text-none">
+            Ouvrir le dashboard Villes Europe
+        </MudButton>
+    </MudPaper>
+</MudStack>
+ </MudContainer>
 
 @code {
     private string _chatMessage = string.Empty;

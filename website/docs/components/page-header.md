@@ -2,7 +2,7 @@
 sidebar_position: 7
 ---
 
-# MbxPageHeader
+# MdsPageHeader
 
 Three-column page header: start slot | centred title | end slot.
 Stacks vertically with centred title on small screens.
@@ -18,7 +18,7 @@ Stacks vertically with centred title on small screens.
 ## Example — with action button
 
 ```razor
-<MbxPageHeader Title="Bibliothèque">
+<MdsPageHeader Title="Bibliothèque">
   <StartContent><div></div></StartContent>
   <EndContent>
     <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
@@ -26,13 +26,13 @@ Stacks vertically with centred title on small screens.
       Créer une page
     </MudButton>
   </EndContent>
-</MbxPageHeader>
+</MdsPageHeader>
 ```
 
 ## Example — title only
 
 ```razor
-<MbxPageHeader Title="Paramètres" />
+<MdsPageHeader Title="Paramètres" />
 ```
 
 ## Responsive

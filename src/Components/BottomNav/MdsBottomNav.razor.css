@@ -1,0 +1,54 @@
+/* =====================================================================
+   MdsBottomNav — barre de navigation mobile
+   Hidden on md+ via parent slot (mbx-bottom-nav-slot display:none)
+   ===================================================================== */
+.mbx-bottom-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 60px;
+    background: var(--mbx-content-surface);
+    border-top: 1px solid var(--mbx-content-border);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    padding: 0 var(--mbx-space-2);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.mbx-bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    flex: 1;
+    padding: var(--mbx-space-2) var(--mbx-space-1);
+    border-radius: var(--mbx-radius-md);
+    text-decoration: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: var(--mud-palette-text-secondary);
+    transition: color 0.2s ease, background-color 0.2s ease;
+    min-width: 0;
+}
+
+.mbx-bottom-nav-item:hover {
+    color: var(--mud-palette-text-primary);
+    background-color: var(--mbx-nav-hover-bg);
+}
+
+.mbx-bottom-nav-item.mbx-bottom-nav-item-active {
+    color: var(--mud-palette-primary);
+    background-color: var(--mbx-subtle-bg);
+}
+
+.mbx-bottom-nav-label {
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}

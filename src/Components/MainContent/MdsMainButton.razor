@@ -1,0 +1,35 @@
+@namespace MudShell.Components.MainContent
+
+<MudButton Variant="@Variant"
+           Color="@Color"
+           Size="@Size"
+           StartIcon="@StartIcon"
+           EndIcon="@EndIcon"
+           Href="@Href"
+           Disabled="@Disabled"
+           FullWidth="@FullWidth"
+           OnClick="@OnClick"
+           Class="@RootClass"
+           Style="@Style"
+           data-testid="@DataTestId">
+    @ChildContent
+</MudButton>
+
+@code {
+    [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? StartIcon { get; set; }
+    [Parameter] public string? EndIcon { get; set; }
+    [Parameter] public Variant Variant { get; set; } = Variant.Filled;
+    [Parameter] public Color Color { get; set; } = Color.Primary;
+    [Parameter] public Size Size { get; set; } = Size.Medium;
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool FullWidth { get; set; }
+    [Parameter] public bool Compact { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public string? DataTestId { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+
+    private string RootClass => $"mbx-main-button {(Compact ? "mbx-main-button-compact" : string.Empty)} {Class}".Trim();
+}

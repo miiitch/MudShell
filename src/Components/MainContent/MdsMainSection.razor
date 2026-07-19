@@ -1,0 +1,54 @@
+@namespace MudShell.Components.MainContent
+
+<MudPaper Outlined="true" Elevation="0" Class="@RootClass" Style="@Style">
+    <MudStack Spacing="3">
+        @if (!string.IsNullOrWhiteSpace(Title))
+        {
+            <MudStack Spacing="1">
+                <div class="mbx-main-section-title-wrap d-flex align-center gap-2">
+                    @if (!string.IsNullOrWhiteSpace(Icon))
+                    {
+                        <MudIcon Icon="@Icon" Color="@TitleColor" />
+                    }
+                    <MudText Typo="Typo.h6" Color="@TitleColor">@Title</MudText>
+                    @if (HeaderRight is not null)
+                    {
+                        <div class="ml-auto">@HeaderRight</div>
+                    }
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Description))
+                {
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">@Description</MudText>
+                }
+                <MudDivider />
+            </MudStack>
+        }
+
+        @if (IsLoading)
+        {
+            <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="py-6">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                <MudText Color="Color.Secondary">@LoadingText</MudText>
+            </MudStack>
+        }
+        else
+        {
+            @ChildContent
+        }
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public Color TitleColor { get; set; } = Color.Primary;
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public string LoadingText { get; set; } = "Chargement...";
+    [Parameter] public RenderFragment? HeaderRight { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+
+    private string RootClass => $"mbx-main-section my-2 {Class}".Trim();
+}

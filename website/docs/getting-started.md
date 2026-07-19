@@ -6,7 +6,7 @@ sidebar_position: 1
 
 ![MudShell — AppShell with dark background, collapsible sidebar and ChatBar](/img/screenshots/home.png)
 
-*Sample app: `MbxAppShell` with background palette mode, icon-only sidebar, and `MbxChatBar`.*
+*Sample app: `MdsAppShell` with background palette mode, icon-only sidebar, and `MdsChatBar`.*
 
 ## Prerequisites
 
@@ -53,21 +53,21 @@ Replace the contents of `MainLayout.razor` with:
 ```razor
 @inherits LayoutComponentBase
 
-<MbxAppShell @ref="_shell"
-             BackgroundMode="MbxAppShell.MbxBackgroundMode.Palette">
+<MdsAppShell @ref="_shell"
+             BackgroundMode="MdsAppShell.MbxBackgroundMode.Palette">
   <SidebarContent>
-    <MbxSidebar IsExpanded="@_expanded"
+    <MdsSidebar IsExpanded="@_expanded"
                 OnToggle="@(() => _shell.ToggleSidebar())"
                 PrimaryItems="@_navItems" />
   </SidebarContent>
   <ChildContent>@Body</ChildContent>
   <BottomNavContent>
-    <MbxBottomNav Items="@_navItems" />
+    <MdsBottomNav Items="@_navItems" />
   </BottomNavContent>
-</MbxAppShell>
+</MdsAppShell>
 
 @code {
-    private MbxAppShell _shell = default!;
+    private MdsAppShell _shell = default!;
     private bool _expanded;
 
     private readonly MbxNavItem[] _navItems =

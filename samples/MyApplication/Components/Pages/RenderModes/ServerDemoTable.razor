@@ -3,19 +3,19 @@
 
 <PageTitle>Interactive Server — Table</PageTitle>
 
-<div class="fullpage-demo">
-    <MbxPageHeader Title="Interactive Server — Table">
+<MudStack Spacing="0">
+    <MdsPageHeader Title="Interactive Server — Table">
         <StartContent><div></div></StartContent>
         <EndContent>
-            <MudChip T="string" Color="Color.Info" Size="Size.Small">SignalR</MudChip>
-            <MudChip T="string" Color="Color.Primary" Size="Size.Small" Style="margin-left:8px;">Table</MudChip>
+            <MudStack Row="true" Spacing="1" Class="mds-u-chip-row">
+                <MudChip T="string" Color="Color.Info" Size="Size.Small">SignalR</MudChip>
+                <MudChip T="string" Color="Color.Primary" Size="Size.Small">Table</MudChip>
+            </MudStack>
         </EndContent>
-    </MbxPageHeader>
+    </MdsPageHeader>
 
-    <div class="fullpage-body">
-        <TableShowcase RenderModeName="Interactive Server"
-                       BadgeColor="server"
-                       BadgeIcon="@Icons.Material.Outlined.Hub" />
-    </div>
-</div>
+    <TableShowcase RenderModeName="Interactive Server"
+                   BadgeColor="server"
+                   BadgeIcon="@Icons.Material.Outlined.Hub" />
+</MudStack>
 

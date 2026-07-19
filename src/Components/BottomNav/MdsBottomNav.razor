@@ -1,0 +1,36 @@
+@namespace MudShell.Components.BottomNav
+@using Microsoft.AspNetCore.Components.Routing
+@using MudShell.Components.Sidebar
+
+<div class="@RootClass">
+    @foreach (var item in Items ?? [])
+    {
+        if (!string.IsNullOrWhiteSpace(item.Href))
+        {
+            var isForcedActive = string.Equals(item.Href, ActiveHref, StringComparison.OrdinalIgnoreCase);
+            var navClass = $"mbx-bottom-nav-item {(isForcedActive ? "mbx-bottom-nav-item-active" : string.Empty)}".Trim();
+            <NavLink href="@item.Href"
+                     Match="NavLinkMatch.Prefix"
+                     class="@navClass"
+                     ActiveClass="mbx-bottom-nav-item-active">
+                <MudIcon Icon="@item.Icon" Size="Size.Small" />
+                <span class="mbx-bottom-nav-label">@item.Label</span>
+            </NavLink>
+        }
+        else
+        {
+            <button type="button" class="mbx-bottom-nav-item" disabled>
+                <MudIcon Icon="@item.Icon" Size="Size.Small" />
+                <span class="mbx-bottom-nav-label">@item.Label</span>
+            </button>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public MbxNavItem[]? Items     { get; set; }
+    [Parameter] public string?       ActiveHref { get; set; }
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mbx-bottom-nav {Class}".Trim();
+}

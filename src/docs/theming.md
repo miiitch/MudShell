@@ -1,50 +1,44 @@
 # Theming
 
-MudShell ships with a pre-configured `MudTheme` accessed via `MbxTheme`.
+MudShell uses a generated `MudTheme` from `MbxTheme` and exposes palette tokens as CSS variables consumed by components.
 
-## Using the built-in dark theme
-
-`MbxAppShell` calls `MbxTheme.CreateDarkTheme()` internally — you don't need to configure anything.
-
-## Accessing the palettes directly
+## Creating the built-in theme
 
 ```csharp
 using MudShell.Theme;
 
-// Read a token
-string primary = MbxTheme.DarkPalette.Primary; // "#7e6fff"
+MudTheme theme = MbxTheme.CreateTheme(); // default preset
+MudTheme emeraldTheme = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Emerald);
+MudTheme customTheme = MbxTheme.CreateThemeFromPrimary("#6f63ff");
 ```
 
-## Creating a custom theme
+`MdsAppShell` already wires the theme, so explicit configuration is optional unless you need custom branding.
 
-Override individual tokens by starting from the built-in palette:
+## Contrast policy
 
-```csharp
-var myTheme = MbxTheme.CreateDarkTheme();
-myTheme.PaletteDark.Primary = "#ff6b6b";
-myTheme.PaletteDark.Surface = "#1a1a2e";
-```
+- Target **WCAG AA for text** across light/dark surfaces.
+- Decorative chips/badges may use softer contrast when they do not carry critical text.
+- Keep branding gradients fixed, but ensure adjacent text remains readable.
+- Keep a stable hierarchy: page background < secondary background < content surface.
+- In light mode, content surfaces should stay near white; in dark mode, keep dark surfaces slightly tinted by theme.
 
-Then pass it to `MbxAppShell` — add a `Theme` parameter if needed, or extend the component in your own project.
+## Recommended token mapping
 
-## CSS custom properties
-
-MudBlazor exposes its palette as CSS variables. MudShell components consume them:
-
-| Variable | Usage |
+| Usage | Preferred token |
 |---|---|
-| `--mud-palette-background` | App background |
-| `--mud-palette-surface` | Card / sidebar background |
-| `--mud-palette-primary` | Accent colour (active state, borders on hover) |
-| `--mud-palette-text-primary` | Main text |
-| `--mud-palette-text-secondary` | Muted text, icons |
-| `--mud-palette-divider` | Dividers, borders |
-| `--mud-palette-lines-default` | Card borders |
+| App/page background | `--mud-palette-background` |
+| Elevated surface (cards, panels) | `--mud-palette-surface` |
+| Secondary surface / contextual panels | `--mud-palette-background-gray` |
+| Primary action / active state | `--mud-palette-primary` |
+| Main text | `--mud-palette-text-primary` |
+| Muted text / icons | `--mud-palette-text-secondary` |
+| Borders / separators | `--mud-palette-lines-default`, `--mud-palette-divider` |
+| Overlays / shadows | `--mud-palette-overlay-light` |
+| Status accents | `--mud-palette-info`, `--mud-palette-success`, `--mud-palette-warning`, `--mud-palette-error` |
 
-You can override any of these in your own `app.css`:
+## Component styling guidance
 
-```css
-:root {
-  --mud-palette-primary: #ff6b6b;
-}
-```
+1. Prefer palette variables over hardcoded hex/rgba values.
+2. For subtle hovers/tints, use `color-mix` with palette tokens (for example, primary mixed with transparent).
+3. Keep visual behavior consistent between `src/` components and `samples/` showcases.
+4. For spacing rhythm, prefer MudBlazor utility-style conventions (`ma/mx/my`, `pa/px/py`) to avoid ad-hoc inline spacing.

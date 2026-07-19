@@ -1,0 +1,6 @@
+.mbx-main-toolbar {
+    padding: var(--mbx-space-4);
+    border-radius: var(--mbx-radius-lg);
+    background: var(--mbx-content-surface);
+    border-color: var(--mbx-content-border);
+}

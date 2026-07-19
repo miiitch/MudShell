@@ -1,0 +1,6 @@
+.mbx-main-part {
+    border-radius: var(--mbx-radius-lg);
+    background: var(--mbx-content-surface);
+    border-color: var(--mbx-content-border);
+    padding: var(--mbx-space-5);
+}

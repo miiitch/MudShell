@@ -1,0 +1,23 @@
+.mbx-main-button {
+    border-radius: var(--mbx-radius-md);
+    text-transform: none;
+    font-weight: 600;
+    letter-spacing: 0;
+    box-shadow: none;
+    transition: transform 0.16s ease, filter 0.16s ease;
+}
+
+.mbx-main-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.mbx-main-button:focus-visible {
+    outline: 2px solid var(--mbx-focus-ring);
+    outline-offset: 2px;
+}
+
+.mbx-main-button-compact {
+    min-height: 32px;
+    padding-left: 12px;
+    padding-right: 12px;
+}

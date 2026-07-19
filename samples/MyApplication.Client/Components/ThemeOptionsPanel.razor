@@ -1,0 +1,101 @@
+@namespace MyApplication.Client.Components
+@using MudShell.Components.AppShell
+@using MudShell.Theme
+@inject ThemeState ThemeState
+@implements IDisposable
+
+<div class="theme-panel">
+    <MudText Typo="Typo.subtitle2">Theme</MudText>
+
+    <div class="theme-panel-row">
+        <MudSelect T="MbxTheme.MbxThemePreset"
+                   Label="Preset"
+                   Dense="true"
+                   Variant="Variant.Outlined"
+                   Value="@_selectedPreset"
+                   ValueChanged="@OnPresetChanged"
+                   Class="theme-panel-select">
+            @foreach (var preset in ThemeState.Presets)
+            {
+                <MudSelectItem Value="@preset.Preset">@preset.Label</MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudSwitch T="bool"
+                   Color="Color.Primary"
+                   Value="@ThemeState.IsDarkMode"
+                   ValueChanged="@ThemeState.SetDarkMode"
+                   Label="@(ThemeState.IsDarkMode ? "Dark" : "Light")" />
+    </div>
+
+    <div class="theme-panel-row">
+        <MudSwitch T="bool"
+                   Color="Color.Primary"
+                   Value="@IsImageMode"
+                   ValueChanged="@OnBackgroundModeChanged"
+                   Label="@(IsImageMode ? "Fond image" : "Fond palette")" />
+    </div>
+
+    <div class="theme-panel-row theme-panel-row-colors">
+        <label class="theme-color-field">
+            <span>Primary</span>
+            <input type="color" @bind="_primary" />
+        </label>
+        <MudButton Variant="Variant.Text" Size="Size.Small" Color="Color.Primary" OnClick="ApplyPrimary">
+            Appliquer
+        </MudButton>
+    </div>
+
+    <div class="theme-panel-row theme-panel-row-colors">
+        <label class="theme-color-field">
+            <span>T2</span>
+            <input type="color" @bind="_triad2" />
+        </label>
+        <label class="theme-color-field">
+            <span>T3</span>
+            <input type="color" @bind="_triad3" />
+        </label>
+        <MudButton Variant="Variant.Text" Size="Size.Small" Color="Color.Secondary" OnClick="ApplyTriad">
+            Triad
+        </MudButton>
+    </div>
+</div>
+
+@code {
+    private MbxTheme.MbxThemePreset _selectedPreset = MbxTheme.MbxThemePreset.Indigo;
+    private string _primary = "#6f63ff";
+    private string _triad2 = "#2f7fd9";
+    private string _triad3 = "#1f9d78";
+
+    protected override void OnInitialized()
+    {
+        _selectedPreset = ThemeState.SelectedPreset;
+        _primary = MbxTheme.GetPresetPrimary(_selectedPreset);
+        ThemeState.Changed += OnThemeChanged;
+    }
+
+    private void OnThemeChanged() => InvokeAsync(StateHasChanged);
+
+    private void OnPresetChanged(MbxTheme.MbxThemePreset preset)
+    {
+        _selectedPreset = preset;
+        _primary = MbxTheme.GetPresetPrimary(preset);
+        ThemeState.ApplyPreset(preset);
+    }
+
+    private bool IsImageMode => ThemeState.BackgroundMode == MdsAppShell.MbxBackgroundMode.Image;
+
+    private void OnBackgroundModeChanged(bool useImageBackground)
+    {
+        var mode = useImageBackground ? MdsAppShell.MbxBackgroundMode.Image : MdsAppShell.MbxBackgroundMode.Palette;
+        ThemeState.SetBackgroundMode(mode, "/imgs/bg1.jpg");
+    }
+
+    private void ApplyPrimary() => ThemeState.ApplyPrimary(_primary);
+
+    private void ApplyTriad() => ThemeState.ApplyTriad(_primary, _triad2, _triad3);
+
+    public void Dispose() => ThemeState.Changed -= OnThemeChanged;
+}
+
+

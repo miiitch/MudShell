@@ -40,7 +40,7 @@ In your app's `_Imports.razor`:
 
 ## Step 4 — Add MudBlazor providers
 
-`MbxAppShell` is a pure layout shell — it does **not** register MudBlazor providers internally.
+`MdsAppShell` is a pure layout shell — it does **not** register MudBlazor providers internally.
 Declare them once in your app's root component (e.g. `Routes.razor`) to avoid a duplicate
 section-ID crash at runtime:
 
@@ -63,21 +63,21 @@ Replace the contents of `MainLayout.razor` with:
 ```razor
 @inherits LayoutComponentBase
 
-<MbxAppShell @ref="_shell"
-             BackgroundMode="MbxAppShell.MbxBackgroundMode.Palette">
+<MdsAppShell @ref="_shell"
+             BackgroundMode="MdsAppShell.MbxBackgroundMode.Palette">
   <SidebarContent>
-    <MbxSidebar IsExpanded="@_expanded"
+    <MdsSidebar IsExpanded="@_expanded"
                 OnToggle="@(() => _shell.ToggleSidebar())"
                 PrimaryItems="@_navItems" />
   </SidebarContent>
   <ChildContent>@Body</ChildContent>
   <BottomNavContent>
-    <MbxBottomNav Items="@_navItems" />
+    <MdsBottomNav Items="@_navItems" />
   </BottomNavContent>
-</MbxAppShell>
+</MdsAppShell>
 
 @code {
-    private MbxAppShell _shell = default!;
+    private MdsAppShell _shell = default!;
     private bool _expanded;
 
     private readonly MbxNavItem[] _navItems =

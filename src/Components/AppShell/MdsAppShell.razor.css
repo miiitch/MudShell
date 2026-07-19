@@ -1,0 +1,270 @@
+/* =====================================================================
+   MdsAppShell — shell principal
+   ===================================================================== */
+
+/* ── CSS custom properties (cascade to all children) ────────────────── */
+.mbx-shell {
+    /* v2 design tokens */
+    --mbx-space-1:                4px;
+    --mbx-space-2:                8px;
+    --mbx-space-3:                12px;
+    --mbx-space-4:                16px;
+    --mbx-space-5:                20px;
+    --mbx-space-6:                24px;
+    --mbx-radius-sm:              10px;
+    --mbx-radius-md:              14px;
+    --mbx-radius-lg:              18px;
+    --mbx-radius-xl:              22px;
+    --mbx-content-surface:        color-mix(in srgb, var(--mud-palette-primary, #594AE2) 6%, var(--mud-palette-surface, #121212));
+    --mbx-content-surface-hover:  color-mix(in srgb, var(--mud-palette-primary, #594AE2) 12%, var(--mbx-content-surface));
+    --mbx-content-border:         color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 70%, var(--mud-palette-surface, #121212));
+    --mbx-focus-ring:             color-mix(in srgb, var(--mud-palette-primary, #594AE2) 56%, transparent);
+    --mbx-main-content-padding:   var(--mbx-space-4);
+
+    /* dark defaults */
+    --mbx-chat-bg:                color-mix(in srgb, var(--mud-palette-surface, #121212) 92%, transparent);
+    --mbx-chat-border:            color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 55%, transparent);
+    --mbx-chat-shadow:            0 8px 32px color-mix(in srgb, var(--mud-palette-overlay-light, rgba(0, 0, 0, 0.6)) 58%, transparent);
+    --mbx-nav-hover-bg:           color-mix(in srgb, var(--mud-palette-primary, #594AE2) 14%, transparent);
+    --mbx-sidebar-glass-sm:       rgba(10, 10, 22, 0.30);
+    --mbx-sidebar-glass-lg:       rgba(10, 10, 22, 0.82);
+    --mbx-sidebar-glass-border:   rgba(255, 255, 255, 0.08);
+    --mbx-subtle-bg:              color-mix(in srgb, var(--mud-palette-primary, #594AE2) 10%, transparent);
+    --mbx-subtle-bg-hover:        color-mix(in srgb, var(--mud-palette-primary, #594AE2) 16%, transparent);
+
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    overflow: hidden;
+    background: var(--mud-palette-background);
+}
+
+/* light overrides */
+.mbx-shell.mbx-light {
+    --mbx-chat-bg:                color-mix(in srgb, var(--mud-palette-surface, #ffffff) 96%, transparent);
+    --mbx-chat-border:            color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 70%, transparent);
+    --mbx-chat-shadow:            0 4px 24px color-mix(in srgb, var(--mud-palette-overlay-light, rgba(0, 0, 0, 0.2)) 24%, transparent);
+    --mbx-nav-hover-bg:           color-mix(in srgb, var(--mud-palette-primary, #594AE2) 9%, transparent);
+    --mbx-sidebar-glass-sm:       rgba(188, 207, 240, 0.40);
+    --mbx-sidebar-glass-lg:       rgba(224, 234, 251, 0.82);
+    --mbx-sidebar-glass-border:   rgba(107, 136, 186, 0.24);
+    --mbx-subtle-bg:              color-mix(in srgb, var(--mud-palette-primary, #594AE2) 7%, transparent);
+    --mbx-subtle-bg-hover:        color-mix(in srgb, var(--mud-palette-primary, #594AE2) 12%, transparent);
+    --mbx-content-surface:        color-mix(in srgb, var(--mud-palette-surface, #ffffff) 98%, var(--mud-palette-background, #f8f9fc));
+    --mbx-content-surface-hover:  color-mix(in srgb, var(--mud-palette-primary, #594AE2) 8%, var(--mbx-content-surface));
+}
+
+/* ── Background layer ────────────────────────────────────────────────── */
+.mbx-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+    transition: opacity 0.4s ease;
+}
+
+.mbx-bg-gradient {
+    background: linear-gradient(160deg, #6aabd2 0%, #8ec5d6 25%, #b9dce3 45%, #c3d9b5 65%, #7ab661 100%);
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────── */
+.mbx-sidebar {
+    width: 56px;
+    min-width: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 0;
+    z-index: 2;
+    position: relative;
+    gap: 2px;
+    transition: width 0.3s cubic-bezier(.4,0,.2,1),
+                min-width 0.3s cubic-bezier(.4,0,.2,1),
+                background 0.35s ease;
+    overflow: hidden;
+}
+
+.mbx-sidebar.mbx-sidebar-expanded {
+    width: 240px;
+    min-width: 240px;
+}
+
+/* ── Context panel (desktop / tablet) ─────────────────────────────────── */
+.mbx-context-panel {
+    width: var(--mbx-context-panel-width, 288px);
+    min-width: var(--mbx-context-panel-width, 288px);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    z-index: 2;
+    position: relative;
+    overflow: hidden;
+    transition: width 0.3s cubic-bezier(.4,0,.2,1), min-width 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+.mbx-context-panel.mbx-context-panel-collapsed {
+    width: var(--mbx-context-panel-collapsed-width, 72px);
+    min-width: var(--mbx-context-panel-collapsed-width, 72px);
+}
+
+/* ── Main content ────────────────────────────────────────────────────── */
+.mbx-main {
+    flex: 1;
+    margin: 8px 8px 8px 0;
+    border-radius: var(--mbx-radius-xl);
+    overflow: hidden;
+    z-index: 1;
+    position: relative;
+    transition: background-color 0.35s ease;
+}
+
+.mbx-shell.mbx-has-context-panel .mbx-main {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.mbx-main-inner {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--mbx-main-content-padding);
+    box-sizing: border-box;
+}
+
+/* ── Bottom nav slot ─────────────────────────────────────────────────── */
+.mbx-bottom-nav-slot {
+    display: none; /* shown via media query */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+/* ── Palette mode ────────────────────────────────────────────────────── */
+.mbx-shell.mbx-mode-palette {
+    background: var(--mud-palette-drawer-background);
+}
+
+.mbx-shell.mbx-mode-palette .mbx-sidebar {
+    background: var(--mud-palette-drawer-background);
+}
+
+.mbx-shell.mbx-mode-palette .mbx-context-panel {
+    background: var(--mud-palette-background-gray);
+}
+
+.mbx-shell.mbx-mode-palette.mbx-has-context-panel .mbx-context-panel {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.mbx-shell.mbx-mode-palette .mbx-main {
+    background: var(--mud-palette-surface);
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+}
+
+/* Sidebar étendue : même surface que la zone principale */
+.mbx-shell.mbx-mode-palette.mbx-light .mbx-sidebar.mbx-sidebar-expanded {
+    border-right: 1px solid var(--mud-palette-drawer-background);
+}
+
+/* ── Image mode ──────────────────────────────────────────────────────── */
+.mbx-shell.mbx-mode-image {
+    background: transparent;
+    --mbx-content-surface: color-mix(in srgb, var(--mud-palette-primary, #594AE2) 9%, var(--mud-palette-surface, #121212));
+    --mbx-content-border: color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 62%, transparent);
+}
+
+.mbx-shell.mbx-mode-image.mbx-light {
+    --mbx-content-surface: color-mix(in srgb, var(--mud-palette-primary, #594AE2) 4%, var(--mud-palette-surface, #ffffff));
+    --mbx-content-border: color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 68%, transparent);
+}
+
+.mbx-shell.mbx-mode-image .mbx-sidebar {
+    background: var(--mbx-sidebar-glass-sm);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border-right: 1px solid var(--mbx-sidebar-glass-border);
+}
+
+.mbx-shell.mbx-mode-image .mbx-sidebar.mbx-sidebar-expanded {
+    background: var(--mbx-sidebar-glass-lg);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+}
+
+.mbx-shell.mbx-mode-image .mbx-context-panel {
+    background: var(--mbx-sidebar-glass-lg);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border-right: 1px solid var(--mbx-sidebar-glass-border);
+    margin-top: 0;
+    margin-bottom: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.mbx-shell.mbx-mode-image .mbx-main {
+    background: transparent;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* ── Utility classes (available to app pages via AppShell) ───────────── */
+::deep .mds-u-inline-title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mbx-space-2);
+}
+
+::deep .mds-u-chip-row {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mbx-space-2);
+}
+
+::deep .mds-u-section-title {
+    font-weight: 600;
+    padding-bottom: var(--mbx-space-2);
+    border-bottom: 1px solid var(--mud-palette-divider);
+}
+
+::deep .mds-u-surface-wrap {
+    overflow: hidden;
+    border-radius: var(--mbx-radius-md);
+}
+
+/* =====================================================================
+   Responsive — mobile (xs / sm  ≤ 959 px)
+   ===================================================================== */
+@media (max-width: 959px) {
+    /* Hide sidebar, full-edge main */
+    .mbx-sidebar {
+        display: none;
+    }
+
+    .mbx-context-panel {
+        display: none;
+    }
+
+    .mbx-main {
+        margin: 0;
+        border-radius: 0;
+    }
+
+    /* Padding-bottom so content isn't hidden behind bottom nav */
+    .mbx-main-inner {
+        padding: var(--mbx-space-2) var(--mbx-space-2) calc(56px + var(--mbx-space-2));
+    }
+
+    /* Show bottom nav slot */
+    .mbx-bottom-nav-slot {
+        display: block;
+    }
+}

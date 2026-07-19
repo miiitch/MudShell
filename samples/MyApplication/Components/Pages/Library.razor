@@ -3,30 +3,29 @@
 
 <PageTitle>Bibliothèque</PageTitle>
 
-<MbxPageHeader Title="Bibliothèque">
+<MdsPageHeader Title="Bibliothèque">
     <StartContent><div></div></StartContent>
     <EndContent>
-        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
-                   Style="border-radius:20px; text-transform:none;">Créer une page</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">Créer une page</MudButton>
     </EndContent>
-</MbxPageHeader>
+</MdsPageHeader>
 
-<div class="library-tabs-wrapper">
-    <MbxFilterTabBar T="string" @bind-Value="_selectedTab"
+<MudStack AlignItems="AlignItems.Center" Class="px-4 py-2">
+    <MdsFilterTabBar T="string" @bind-Value="_selectedTab"
                      Items="@_tabs">
         <TrailingContent>
             <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" Color="Color.Inherit" />
         </TrailingContent>
-    </MbxFilterTabBar>
-</div>
+    </MdsFilterTabBar>
+</MudStack>
 
 @if (_selectedTab == "pages")
 {
-    <MudGrid Class="library-grid" Spacing="3">
+    <MudGrid Spacing="3" Class="px-4">
         @foreach (var doc in _pages)
         {
             <MudItem xs="12" sm="6" md="4" lg="3">
-                <MbxDocumentCard Icon="@Icons.Material.Outlined.Description"
+                <MdsDocumentCard Icon="@Icons.Material.Outlined.Description"
                                  TypeLabel="Page"
                                  Title="@doc.Title"
                                  Description="@doc.Description" />
@@ -35,15 +34,14 @@
     </MudGrid>
 }
 
-<div class="library-cta">
-    <MudText Typo="Typo.h5" Align="Align.Center" Style="font-weight: 500; line-height: 1.4;">
+<MudStack AlignItems="AlignItems.Center" Class="pa-8">
+    <MudText Typo="Typo.h5" Align="Align.Center">
         Organisez vos idées, modifiez<br />et partagez vos documents
     </MudText>
-    <MudButton Variant="Variant.Filled" Size="Size.Large"
-               Style="background: rgba(255,255,255,0.1); color: var(--mud-palette-text-primary); border-radius: 24px; text-transform: none; padding: 10px 32px; margin-top: 20px;">
+    <MudButton Variant="Variant.Filled" Size="Size.Large">
         Créer une page
     </MudButton>
-</div>
+</MudStack>
 
 @code {
     private string _selectedTab = "pages";

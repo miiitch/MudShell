@@ -1,10 +1,10 @@
-# MbxAppShell
+# MdsAppShell
 
 Full-page layout shell. Owns the sidebar, main content area, background layer, and bottom nav slot.
 
 ## Important — MudBlazor providers
 
-`MbxAppShell` is a pure layout shell and does **not** register MudBlazor providers internally.
+`MdsAppShell` is a pure layout shell and does **not** register MudBlazor providers internally.
 You must declare `<MudThemeProvider>`, `<MudPopoverProvider>`, `<MudSnackbarProvider>`, and
 `<MudDialogProvider>` **once** in your app's root component (e.g. `Routes.razor`).
 Registering them in both places causes a `System.InvalidOperationException` (duplicate section ID).
@@ -37,32 +37,32 @@ Registering them in both places causes a `System.InvalidOperationException` (dup
 ## Minimal example
 
 ```razor
-<MbxAppShell @ref="_shell"
-             BackgroundMode="MbxAppShell.MbxBackgroundMode.Palette"
+<MdsAppShell @ref="_shell"
+             BackgroundMode="MdsAppShell.MbxBackgroundMode.Palette"
              ContextPanelExpanded="@_contextExpanded"
              ContextPanelExpandedChanged="@(v => _contextExpanded = v)"
              ContextPanelWidth="320"
              ContextPanelCollapsedWidth="72">
   <SidebarContent>
-    <MbxSidebar OnToggle="@(() => _shell.ToggleSidebar())" ... />
+    <MdsSidebar OnToggle="@(() => _shell.ToggleSidebar())" ... />
   </SidebarContent>
   <ContextPanelContent>
-    <MbxContextNavPanel Tree="@navTree" IsExpanded="@_contextExpanded" />
+    <MdsContextNavPanel Tree="@navTree" IsExpanded="@_contextExpanded" />
   </ContextPanelContent>
   <ChildContent>@Body</ChildContent>
   <BottomNavContent>
-    <MbxBottomNav Items="@navItems" />
+    <MdsBottomNav Items="@navItems" />
   </BottomNavContent>
-</MbxAppShell>
+</MdsAppShell>
 ```
 
 ## With background image
 
 ```razor
-<MbxAppShell BackgroundMode="MbxAppShell.MbxBackgroundMode.Image"
+<MdsAppShell BackgroundMode="MdsAppShell.MbxBackgroundMode.Image"
              BackgroundImageUrl="/images/hero.jpg">
   ...
-</MbxAppShell>
+</MdsAppShell>
 ```
 
 ## Switching mode from a page
@@ -71,5 +71,5 @@ Registering them in both places causes a `System.InvalidOperationException` (dup
 [CascadingParameter] public MainLayout MainLayoutRef { get; set; } = default!;
 
 protected override void OnInitialized()
-    => MainLayoutRef.SetBackgroundMode(MbxAppShell.MbxBackgroundMode.Image, "/images/bg.jpg");
+    => MainLayoutRef.SetBackgroundMode(MdsAppShell.MbxBackgroundMode.Image, "/images/bg.jpg");
 ```

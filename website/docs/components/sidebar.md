@@ -2,12 +2,12 @@
 sidebar_position: 2
 ---
 
-# MbxSidebar
+# MdsSidebar
 
 Collapsible vertical navigation. Renders as icon-only (56 px) by default and expands to 240 px with labels.
-On mobile (≤ 959 px) the sidebar is hidden — use `MbxBottomNav` instead.
+On mobile (≤ 959 px) the sidebar is hidden — use `MdsBottomNav` instead.
 
-![MbxSidebar — icon-only collapsed state on the left](/img/screenshots/home.png)
+![MdsSidebar — icon-only collapsed state on the left](/img/screenshots/home.png)
 
 
 
@@ -34,7 +34,7 @@ Items with an `Href` render as `<a>` tags with client-side navigation.
 ## Example
 
 ```razor
-<MbxSidebar IsExpanded="@_expanded"
+<MdsSidebar IsExpanded="@_expanded"
             OnToggle="@(() => _shell.ToggleSidebar())"
             PrimaryItems="@_nav">
   <LogoContent>
@@ -43,7 +43,7 @@ Items with an `Href` render as `<a>` tags with client-side navigation.
   <BottomContent>
     <MudAvatar>MP</MudAvatar>
   </BottomContent>
-</MbxSidebar>
+</MdsSidebar>
 
 @code {
     private readonly MbxNavItem[] _nav =

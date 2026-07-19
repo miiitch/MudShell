@@ -5,11 +5,11 @@
 ## Features
 
 - 🎨 Pre-configured dark/light `MudTheme` — just call `CreateDarkTheme()`
-- 🗂 `MbxAppShell` — full-page shell with collapsible sidebar, background image/palette modes
-- 🌲 Unified hierarchical navigation with `MbxNavTree` (`MbxSidebarNav`, `MbxContextNavPanel`, `MbxMobileDrilldownNav`)
-- 📱 Fully **responsive** — sidebar on desktop, `MbxBottomNav` on mobile (≤ 959 px)
-- 💬 `MbxChatBar` — glassmorphism input bar
-- 🃏 `MbxDocumentCard`, `MbxFilterTabBar`, `MbxPageHeader`
+- 🗂 `MdsAppShell` — full-page shell with collapsible sidebar, background image/palette modes
+- 🌲 Unified hierarchical navigation with `MbxNavTree` (`MdsSidebarNav`, `MdsContextNavPanel`, `MbxMobileDrilldownNav`)
+- 📱 Fully **responsive** — sidebar on desktop, `MdsBottomNav` on mobile (≤ 959 px)
+- 💬 `MdsChatBar` — glassmorphism input bar
+- 🃏 `MdsDocumentCard`, `MdsFilterTabBar`, `MdsPageHeader`
 - All components use **scoped CSS** — zero global style pollution
 
 ## Quick start
@@ -46,7 +46,7 @@ builder.Services.AddMudShell();
 
 ### 4. Add MudBlazor providers to your root component
 
-`MbxAppShell` is a pure layout shell — it does **not** register MudBlazor providers internally.
+`MdsAppShell` is a pure layout shell — it does **not** register MudBlazor providers internally.
 You must declare them once in your app's root component (e.g. `Routes.razor`) to avoid a
 duplicate section-ID crash at runtime:
 
@@ -62,13 +62,13 @@ duplicate section-ID crash at runtime:
 </Router>
 ```
 
-### 5. Use `MbxAppShell` in your layout
+### 5. Use `MdsAppShell` in your layout
 
 ```razor
 @* MainLayout.razor *@
 @inherits LayoutComponentBase
 
-<MbxAppShell BackgroundMode="MbxAppShell.MbxBackgroundMode.Palette">
+<MdsAppShell BackgroundMode="MdsAppShell.MbxBackgroundMode.Palette">
   <SidebarContent>
     <!-- your nav -->
   </SidebarContent>
@@ -79,30 +79,30 @@ duplicate section-ID crash at runtime:
     @Body
   </ChildContent>
   <BottomNavContent>
-    <MbxBottomNav Items="@navItems" />
+    <MdsBottomNav Items="@navItems" />
   </BottomNavContent>
-</MbxAppShell>
+</MdsAppShell>
 ```
 
 ### Hierarchical single-source navigation
 
 ```razor
-<MbxAppShell @ref="_shell"
+<MdsAppShell @ref="_shell"
   ContextPanelExpanded="@_contextExpanded"
   ContextPanelExpandedChanged="@(v => _contextExpanded = v)"
   ContextPanelWidth="320"
   ContextPanelCollapsedWidth="72">
   <SidebarContent>
-    <MbxSidebarNav Tree="@AppNav.Tree" />
+    <MdsSidebarNav Tree="@AppNav.Tree" />
   </SidebarContent>
   <ContextPanelContent>
-    <MbxContextNavPanel Tree="@AppNav.Tree" IsExpanded="@_contextExpanded" />
+    <MdsContextNavPanel Tree="@AppNav.Tree" IsExpanded="@_contextExpanded" />
   </ContextPanelContent>
   <BottomNavContent>
     <MbxMobileDrilldownNav Tree="@AppNav.Tree" />
   </BottomNavContent>
   <ChildContent>@Body</ChildContent>
-</MbxAppShell>
+</MdsAppShell>
 ```
 
 You can collapse/expand the level-2 panel at runtime with:

@@ -1,4 +1,4 @@
-# MbxDocumentCard
+# MdsDocumentCard
 
 Card displaying a document or item with a type icon, title, and description.
 Hover state highlights with the primary colour.
@@ -16,7 +16,7 @@ Hover state highlights with the primary colour.
 ## Example
 
 ```razor
-<MbxDocumentCard Icon="@Icons.Material.Outlined.Description"
+<MdsDocumentCard Icon="@Icons.Material.Outlined.Description"
                  TypeLabel="Page"
                  Title="Things to do in Tokyo"
                  Description="Tokyo offers a vibrant mix of traditional culture..."
@@ -30,7 +30,7 @@ Hover state highlights with the primary colour.
   @foreach (var doc in docs)
   {
     <MudItem xs="12" sm="6" md="4" lg="3">
-      <MbxDocumentCard Title="@doc.Title" Description="@doc.Body" />
+      <MdsDocumentCard Title="@doc.Title" Description="@doc.Body" />
     </MudItem>
   }
 </MudGrid>

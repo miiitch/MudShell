@@ -1,0 +1,5 @@
+.mbx-main-status-badge {
+    border-radius: var(--mbx-radius-sm);
+    font-weight: 600;
+    border: 1px solid var(--mbx-content-border);
+}

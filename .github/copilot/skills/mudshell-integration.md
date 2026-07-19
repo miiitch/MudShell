@@ -51,7 +51,7 @@ And at the bottom:
 
 ## Component reference
 
-### `MbxAppShell`
+### `MdsAppShell`
 Full-page layout shell with sidebar, main content, and bottom nav slots.
 
 **Parameters:**
@@ -68,18 +68,18 @@ Full-page layout shell with sidebar, main content, and bottom nav slots.
 **Public methods:** `ToggleSidebar()`, `SetBackgroundMode(mode, imageUrl?)`
 
 ```razor
-<MbxAppShell @ref="_shell" BackgroundMode="MbxAppShell.MbxBackgroundMode.Palette">
+<MdsAppShell @ref="_shell" BackgroundMode="MdsAppShell.MbxBackgroundMode.Palette">
   <SidebarContent>
-    <MbxSidebar OnToggle="@(() => _shell.ToggleSidebar())" PrimaryItems="@_nav" />
+    <MdsSidebar OnToggle="@(() => _shell.ToggleSidebar())" PrimaryItems="@_nav" />
   </SidebarContent>
   <ChildContent>@Body</ChildContent>
   <BottomNavContent>
-    <MbxBottomNav Items="@_nav" />
+    <MdsBottomNav Items="@_nav" />
   </BottomNavContent>
-</MbxAppShell>
+</MdsAppShell>
 
 @code {
-    private MbxAppShell _shell = default!;
+    private MdsAppShell _shell = default!;
     private readonly MbxNavItem[] _nav =
     [
         new(Icons.Material.Outlined.Home, "Home", "/"),
@@ -90,7 +90,7 @@ Full-page layout shell with sidebar, main content, and bottom nav slots.
 
 ---
 
-### `MbxSidebar`
+### `MdsSidebar`
 Collapsible vertical navigation. Hidden on mobile (≤959 px).
 
 **Parameters:**
@@ -110,7 +110,7 @@ public record MbxNavItem(string Icon, string Label, string? Href = null);
 
 ---
 
-### `MbxBottomNav`
+### `MdsBottomNav`
 Mobile-only fixed bottom navigation bar (visible ≤959 px).
 
 **Parameters:**
@@ -121,12 +121,12 @@ Mobile-only fixed bottom navigation bar (visible ≤959 px).
 
 ```razor
 @inject NavigationManager Nav
-<MbxBottomNav Items="@_nav" ActiveHref="@Nav.Uri" />
+<MdsBottomNav Items="@_nav" ActiveHref="@Nav.Uri" />
 ```
 
 ---
 
-### `MbxChatBar`
+### `MdsChatBar`
 Glassmorphism AI-style input bar with `backdrop-filter: blur`.
 
 **Parameters:**
@@ -139,16 +139,16 @@ Glassmorphism AI-style input bar with `backdrop-filter: blur`.
 | `MaxWidth` | `string` | `"680px"` |
 
 ```razor
-<MbxChatBar @bind-Value="_message" Placeholder="Ask anything…" MaxWidth="720px">
+<MdsChatBar @bind-Value="_message" Placeholder="Ask anything…" MaxWidth="720px">
   <Actions>
     <MudIconButton Icon="@Icons.Material.Filled.Send" Color="Color.Primary" />
   </Actions>
-</MbxChatBar>
+</MdsChatBar>
 ```
 
 ---
 
-### `MbxDocumentCard`
+### `MdsDocumentCard`
 Card for a document/item with icon, type label, title, description.
 
 **Parameters:**
@@ -161,12 +161,12 @@ Card for a document/item with icon, type label, title, description.
 | `OnClick` | `EventCallback` | — |
 
 ```razor
-<MbxDocumentCard Title="My Doc" Description="Summary…" OnClick="@Open" />
+<MdsDocumentCard Title="My Doc" Description="Summary…" OnClick="@Open" />
 ```
 
 ---
 
-### `MbxFilterTabBar<T>`
+### `MdsFilterTabBar<T>`
 Pill-style tab/filter bar. Scrolls horizontally on mobile.
 
 **Parameters:**
@@ -180,7 +180,7 @@ Pill-style tab/filter bar. Scrolls horizontally on mobile.
 **`MbxTabItem<T>` record:** `(T Value, string Label)`
 
 ```razor
-<MbxFilterTabBar T="string" @bind-Value="_tab" Items="@_tabs" />
+<MdsFilterTabBar T="string" @bind-Value="_tab" Items="@_tabs" />
 @code {
     private string _tab = "all";
     private readonly MbxTabItem<string>[] _tabs =
@@ -192,7 +192,7 @@ Pill-style tab/filter bar. Scrolls horizontally on mobile.
 
 ---
 
-### `MbxPageHeader`
+### `MdsPageHeader`
 Three-column page header: start | centred title | end. Stacks on mobile.
 
 **Parameters:**
@@ -203,18 +203,18 @@ Three-column page header: start | centred title | end. Stacks on mobile.
 | `EndContent` | `RenderFragment?` | `null` |
 
 ```razor
-<MbxPageHeader Title="Library">
+<MdsPageHeader Title="Library">
   <EndContent>
     <MudButton Variant="Variant.Outlined" Color="Color.Primary">New</MudButton>
   </EndContent>
-</MbxPageHeader>
+</MdsPageHeader>
 ```
 
 ---
 
 ## Theming
 
-`MbxAppShell` applies `MbxTheme.CreateDarkTheme()` automatically.
+`MdsAppShell` applies `MbxTheme.CreateDarkTheme()` automatically.
 
 To customise:
 ```csharp
@@ -235,6 +235,6 @@ Key CSS variables (override in `app.css`):
 
 1. **Missing MudBlazor CSS/JS** — components will render without styles. Always include `_content/MudBlazor/MudBlazor.min.css` and the JS script.
 2. **Calling both `AddMudServices()` and `AddMudShell()`** — `AddMudShell()` already calls `AddMudServices()`. Calling both is harmless but redundant.
-3. **`MbxAppShell` ref is null on first render** — use `@ref="_shell"` and call methods only after `OnAfterRenderAsync` with `firstRender: true`.
-4. **Sidebar visible on mobile** — by design, use `MbxBottomNav` inside `BottomNavContent` for mobile navigation.
+3. **`MdsAppShell` ref is null on first render** — use `@ref="_shell"` and call methods only after `OnAfterRenderAsync` with `firstRender: true`.
+4. **Sidebar visible on mobile** — by design, use `MdsBottomNav` inside `BottomNavContent` for mobile navigation.
 5. **Render mode** — when using Blazor Web App (interactive), ensure components have a compatible render mode (`InteractiveServer` or `InteractiveWebAssembly`).

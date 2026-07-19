@@ -1,0 +1,72 @@
+@namespace MudShell.Components.MainContent
+
+<MudPaper Outlined="true" Elevation="0" Class="@RootClass" Style="@Style">
+    <MudStack Spacing="2">
+        @if (!string.IsNullOrWhiteSpace(Title) || HeaderActions is not null)
+        {
+            <div class="mbx-main-part-header d-flex align-center justify-space-between gap-3">
+                <div class="mbx-main-part-title-wrap d-flex align-center gap-2">
+                    @if (!string.IsNullOrWhiteSpace(Icon))
+                    {
+                        <MudIcon Icon="@Icon" Color="@TitleColor" />
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Title))
+                    {
+                        <MudText Typo="Typo.h6" Color="@TitleColor">@Title</MudText>
+                    }
+                </div>
+                @if (HeaderActions is not null)
+                {
+                    <div class="mbx-main-part-actions d-flex align-center gap-2">@HeaderActions</div>
+                }
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Subtitle))
+            {
+                <MudText Typo="Typo.body2" Color="Color.Secondary">@Subtitle</MudText>
+            }
+        }
+
+        @if (IsLoading)
+        {
+            <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="py-6">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                <MudText Color="Color.Secondary">@LoadingText</MudText>
+            </MudStack>
+        }
+        else if (!string.IsNullOrWhiteSpace(Error))
+        {
+            <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Start">
+                @Error
+                @if (OnRetry.HasDelegate)
+                {
+                    <div class="mt-2">
+                        <MdsMainButton Variant="Variant.Text" Color="Color.Error" Size="Size.Small" OnClick="@OnRetry">
+                            Réessayer
+                        </MdsMainButton>
+                    </div>
+                }
+            </MudAlert>
+        }
+        else
+        {
+            @ChildContent
+        }
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public Color TitleColor { get; set; } = Color.Primary;
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public string LoadingText { get; set; } = "Chargement...";
+    [Parameter] public string? Error { get; set; }
+    [Parameter] public EventCallback OnRetry { get; set; }
+    [Parameter] public RenderFragment? HeaderActions { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+
+    private string RootClass => $"mbx-main-part my-2 {Class}".Trim();
+}

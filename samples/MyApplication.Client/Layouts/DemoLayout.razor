@@ -2,13 +2,15 @@
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject NavigationManager Nav
+@inject ThemeState ThemeState
+@inject IDialogService DialogService
 @using MudShell.Components.Navigation.Models
 
-<MbxAppShell @ref="_shell"
-             BackgroundMode="@_bgMode"
-             BackgroundImageUrl="@_bgImageUrl"
-             IsDarkMode="@_isDarkMode"
-             IsDarkModeChanged="@(v => _isDarkMode = v)"
+<MdsAppShell @ref="_shell"
+             BackgroundMode="@ThemeState.BackgroundMode"
+             BackgroundImageUrl="@ThemeState.BackgroundImageUrl"
+             IsDarkMode="@ThemeState.IsDarkMode"
+             IsDarkModeChanged="@ThemeState.SetDarkMode"
              ContextPanelExpanded="@_contextPanelExpanded"
              ContextPanelExpandedChanged="@(v => _contextPanelExpanded = v)"
              ContextPanelWidth="288"
@@ -18,7 +20,7 @@
              SidebarExpandedChanged="@(v => _expanded = v)">
 
     <SidebarContent>
-        <MbxSidebar IsExpanded="@_expanded"
+        <MdsSidebar IsExpanded="@_expanded"
                     OnToggle="@HandleToggle"
                     PrimaryItems="@_navItems">
             <LogoContent>
@@ -30,34 +32,31 @@
                 }
             </LogoContent>
             <BottomContent>
-                <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Outlined.LightMode : Icons.Material.Outlined.DarkMode)"
+                <MudIconButton Icon="@Icons.Material.Outlined.ColorLens"
                                Size="Size.Small" Color="Color.Inherit"
-                               title="@(_isDarkMode ? "Mode clair" : "Mode sombre")"
-                               OnClick="@HandleToggleDark" />
+                               title="Thème et fond"
+                               OnClick="@OpenThemeDialog" />
                 @if (_expanded)
                 {
                     <span style="font-size:13px; color:var(--mud-palette-text-secondary);">
-                        @(_isDarkMode ? "Mode sombre" : "Mode clair")
+                        Thème et fond
                     </span>
                 }
             </BottomContent>
-        </MbxSidebar>
+        </MdsSidebar>
     </SidebarContent>
 
     <ChildContent>@Body</ChildContent>
 
     <BottomNavContent>
-        <MbxBottomNav Items="@_navItems" />
+        <MdsBottomNav Items="@_navItems" />
     </BottomNavContent>
 
-</MbxAppShell>
+</MdsAppShell>
 
 @code {
-    private MbxAppShell _shell = default!;
+    private MdsAppShell _shell = default!;
     private bool _expanded;
-    private bool _isDarkMode = true;
-    private MbxAppShell.MbxBackgroundMode _bgMode;
-    private string? _bgImageUrl;
     private bool _showContextPanel;
     private bool _contextPanelExpanded = true;
     private RenderFragment? ContextPanel => _showContextPanel
@@ -69,7 +68,7 @@
                                  title="Réduire/agrandir le panneau contextuel"
                                  OnClick="@(() => _shell.ToggleContextPanel())" />
               </div>
-              <MbxContextNavPanel Tree="@_libraryContextTree" IsExpanded="@_contextPanelExpanded" />
+              <MdsContextNavPanel Tree="@_libraryContextTree" IsExpanded="@_contextPanelExpanded" />
           </div>
         : null;
 
@@ -112,42 +111,54 @@
     protected override void OnInitialized()
     {
         Nav.LocationChanged += OnLocationChanged;
-        ApplyRouteBackground(Nav.Uri);
+        ThemeState.Changed += OnThemeChanged;
+        ApplyRouteLayout(Nav.Uri);
     }
+
+    private void OnThemeChanged() => InvokeAsync(StateHasChanged);
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        ApplyRouteBackground(e.Location);
+        ApplyRouteLayout(e.Location);
         StateHasChanged();
     }
 
-    private void ApplyRouteBackground(string uri)
+    private void ApplyRouteLayout(string uri)
     {
         var path = new Uri(uri).AbsolutePath.TrimEnd('/');
         _showContextPanel = path.StartsWith("/library", StringComparison.OrdinalIgnoreCase);
 
-        if (path.EndsWith("/bg", StringComparison.OrdinalIgnoreCase))
-        {
-            _bgMode    = MbxAppShell.MbxBackgroundMode.Image;
-            _bgImageUrl = "/imgs/bg1.jpg";
-        }
-        else
-        {
-            _bgMode    = MbxAppShell.MbxBackgroundMode.Palette;
-            _bgImageUrl = null;
-        }
+        var isBgRoute = path.EndsWith("/bg", StringComparison.OrdinalIgnoreCase);
+        ThemeState.SetBackgroundMode(isBgRoute
+            ? MdsAppShell.MbxBackgroundMode.Image
+            : MdsAppShell.MbxBackgroundMode.Palette);
     }
 
     private void HandleToggle() => _shell.ToggleSidebar();
-    private void HandleToggleDark() => _shell.ToggleDarkMode();
 
-    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
+    private async Task OpenThemeDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        await DialogService.ShowAsync<ThemeOptionsPanel>("Thème et fond", options);
+    }
+
+    public void Dispose()
+    {
+        Nav.LocationChanged -= OnLocationChanged;
+        ThemeState.Changed -= OnThemeChanged;
+    }
 
     private readonly MbxNavItem[] _navItems =
     [
         new(Icons.Material.Outlined.GridView,      "Accueil",         "/"),
         new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque",    "/library"),
-        new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque BG", "/library/bg"),
+        new(Icons.Material.Outlined.Widgets,       "Composants",      "/main-components"),
         new(Icons.Material.Outlined.Palette,       "Demo",            "/demo"),
         new(Icons.Material.Outlined.DeveloperMode, "Render Modes",    "/modes"),
     ];

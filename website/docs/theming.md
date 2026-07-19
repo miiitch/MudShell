@@ -8,7 +8,7 @@ MudShell ships with a pre-configured `MudTheme` accessed via `MbxTheme`.
 
 ## Using the built-in dark theme
 
-`MbxAppShell` calls `MbxTheme.CreateDarkTheme()` internally — you don't need to configure anything.
+`MdsAppShell` calls `MbxTheme.CreateDarkTheme()` internally — you don't need to configure anything.
 
 ## Accessing the palettes directly
 
@@ -29,7 +29,7 @@ myTheme.PaletteDark.Primary = "#ff6b6b";
 myTheme.PaletteDark.Surface = "#1a1a2e";
 ```
 
-Then pass it to `MbxAppShell` — add a `Theme` parameter if needed, or extend the component in your own project.
+Then pass it to `MdsAppShell` — add a `Theme` parameter if needed, or extend the component in your own project.
 
 ## CSS custom properties
 

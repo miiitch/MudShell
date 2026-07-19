@@ -1,0 +1,84 @@
+@page "/main-components"
+@rendermode InteractiveServer
+
+<PageTitle>Composants principaux</PageTitle>
+
+<MdsPageHeader Title="Composants principaux">
+    <StartContent><div></div></StartContent>
+    <EndContent>
+        <MdsMainButton Variant="Variant.Outlined" Color="Color.Inherit" Href="/main-components/bg" Compact="true">
+            Voir version BG
+        </MdsMainButton>
+    </EndContent>
+</MdsPageHeader>
+
+<MudStack Spacing="4" Class="my-2">
+    <MdsMainToolbar>
+        <MdsMainButton StartIcon="@Icons.Material.Outlined.Add" OnClick="@(() => _counter++)">Nouvel élément</MdsMainButton>
+        <MdsMainButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Outlined.FilterList">Filtrer</MdsMainButton>
+        <MdsMainStatusBadge Label="Actif" Status="active" />
+        <MdsMainStatusBadge Label="En attente" Status="pending" />
+        <MudSpacer />
+        <MudText Typo="Typo.body2" Color="Color.Secondary">Actions déclenchées: @_counter</MudText>
+    </MdsMainToolbar>
+
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="7">
+            <MdsMainSection Title="Section catalogue"
+                            Description="Wrapper de section cohérent avec le thème MudShell."
+                            Icon="@Icons.Material.Outlined.ViewAgenda">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.body2"><MudIcon Icon="@Icons.Material.Outlined.Description" Size="Size.Small" Class="mr-2" />Pages</MudText>
+                    <MudText Typo="Typo.body2"><MudIcon Icon="@Icons.Material.Outlined.Image" Size="Size.Small" Class="mr-2" />Images</MudText>
+                    <MudText Typo="Typo.body2"><MudIcon Icon="@Icons.Material.Outlined.TableChart" Size="Size.Small" Class="mr-2" />Rapports</MudText>
+                </MudStack>
+            </MdsMainSection>
+        </MudItem>
+
+        <MudItem xs="12" md="5">
+            <MdsMainPart Title="Part état"
+                         Subtitle="Loading / error / content via API unique"
+                         Icon="@Icons.Material.Outlined.DataObject"
+                         IsLoading="@_isLoading"
+                         Error="@_error"
+                         OnRetry="@RetryPart">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.body2">Contenu principal de la part.</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">Dernière mise à jour: @DateTime.Now.ToString("HH:mm:ss")</MudText>
+                </MudStack>
+            </MdsMainPart>
+            <MudStack Row="true" Spacing="1" Class="mt-2">
+                <MdsMainButton Variant="Variant.Text" Color="Color.Inherit" Compact="true" OnClick="@ToggleLoading">Toggle loading</MdsMainButton>
+                <MdsMainButton Variant="Variant.Text" Color="Color.Error" Compact="true" OnClick="@ToggleError">Toggle error</MdsMainButton>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+
+    <MdsMainEmptyState Title="Aucun document filtré"
+                       Description="Ajustez vos filtres ou créez un nouveau document pour alimenter la zone principale."
+                       Icon="@Icons.Material.Outlined.Inbox">
+        <Action>
+            <MdsMainButton StartIcon="@Icons.Material.Outlined.CreateNewFolder">Créer un document</MdsMainButton>
+        </Action>
+    </MdsMainEmptyState>
+</MudStack>
+
+@code {
+    private int _counter;
+    private bool _isLoading;
+    private string? _error;
+
+    private void ToggleLoading() => _isLoading = !_isLoading;
+
+    private void ToggleError()
+    {
+        _error = _error is null ? "Impossible de charger les données pour le moment." : null;
+        _isLoading = false;
+    }
+
+    private void RetryPart()
+    {
+        _error = null;
+        _isLoading = true;
+    }
+}

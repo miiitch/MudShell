@@ -4,99 +4,102 @@
 <PageTitle>Composants Demo</PageTitle>
 
 @* ── Header ─────────────────────────────────────────────────────────── *@
-<MbxPageHeader Title="Design System — Vitrine">
+<MdsPageHeader Title="Design System — Vitrine">
     <StartContent><div></div></StartContent>
     <EndContent>
         <MudChip T="string" Color="Color.Primary" Size="Size.Small">MudShell</MudChip>
     </EndContent>
-</MbxPageHeader>
+</MdsPageHeader>
 
-<div class="demo-content">
-
+<MudStack Spacing="6" Class="px-4 pb-6">
     @* ── Section : ChatBar ──────────────────────────────────────────── *@
-    <section class="demo-section">
-        <MudText Typo="Typo.h6" Class="demo-section-title">MbxChatBar</MudText>
-        <div class="demo-chatbar-wrap">
-            <MbxChatBar Placeholder="@("Message Copilot ou @ mentionnez un onglet")"
+    <MudStack Spacing="2">
+        <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsChatBar</MudText>
+        <MudStack Spacing="1" AlignItems="AlignItems.Center">
+            <MdsChatBar Placeholder="@("Message Copilot ou @ mentionnez un onglet")"
                         @bind-Value="_chatValue">
                 <Actions>
                     <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" />
                     <MudButton Variant="Variant.Text" Color="Color.Inherit" Size="Size.Small"
                                EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
-                               Style="font-size:13px;text-transform:none;font-weight:500;">Smart</MudButton>
-                    <div style="flex:1"></div>
+                               Class="text-none">Smart</MudButton>
+                    <MudSpacer />
                     <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Size="Size.Small" Color="Color.Inherit" />
                 </Actions>
-            </MbxChatBar>
+            </MdsChatBar>
             @if (!string.IsNullOrEmpty(_chatValue))
             {
-                <MudText Typo="Typo.caption" Class="demo-preview">Valeur : @_chatValue</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">Valeur : @_chatValue</MudText>
             }
-        </div>
-    </section>
+        </MudStack>
+    </MudStack>
 
     @* ── Section : FilterTabBar ─────────────────────────────────────── *@
-    <section class="demo-section">
-        <MudText Typo="Typo.h6" Class="demo-section-title">MbxFilterTabBar</MudText>
-        <MbxFilterTabBar T="string" @bind-Value="_selectedTab" Items="@_tabs" />
-        <MudText Typo="Typo.caption" Class="demo-preview">Onglet actif : @_selectedTab</MudText>
-    </section>
+    <MudStack Spacing="2">
+        <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsFilterTabBar</MudText>
+        <MdsFilterTabBar T="string" @bind-Value="_selectedTab" Items="@_tabs" />
+        <MudText Typo="Typo.caption" Color="Color.Secondary">Onglet actif : @_selectedTab</MudText>
+    </MudStack>
 
     @* ── Section : DocumentCard ─────────────────────────────────────── *@
-    <section class="demo-section">
-        <MudText Typo="Typo.h6" Class="demo-section-title">MbxDocumentCard</MudText>
+    <MudStack Spacing="2">
+        <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsDocumentCard</MudText>
         <MudGrid Spacing="3">
             <MudItem xs="12" sm="6" md="4" lg="3">
-                <MbxDocumentCard Icon="@Icons.Material.Outlined.Description"
+                <MdsDocumentCard Icon="@Icons.Material.Outlined.Description"
                                  TypeLabel="Page"
                                  Title="Things to do in Tokyo"
                                  Description="Tokyo offers a vibrant mix of traditional culture and modern attractions." />
             </MudItem>
             <MudItem xs="12" sm="6" md="4" lg="3">
-                <MbxDocumentCard Icon="@Icons.Material.Outlined.Image"
+                <MdsDocumentCard Icon="@Icons.Material.Outlined.Image"
                                  TypeLabel="Image"
                                  Title="Aperçu du projet"
                                  Description="Maquette haute fidélité pour la page d'accueil de l'application." />
             </MudItem>
             <MudItem xs="12" sm="6" md="4" lg="3">
-                <MbxDocumentCard Icon="@Icons.Material.Outlined.BarChart"
+                <MdsDocumentCard Icon="@Icons.Material.Outlined.BarChart"
                                  TypeLabel="Rapport"
                                  Title="Rapport Q3 2024"
                                  Description="Analyse des métriques d'engagement utilisateur sur le trimestre." />
             </MudItem>
         </MudGrid>
-    </section>
+    </MudStack>
 
     @* ── Section : PageHeader variants ─────────────────────────────── *@
-    <section class="demo-section">
-        <MudText Typo="Typo.h6" Class="demo-section-title">MbxPageHeader</MudText>
-        <div class="demo-card-wrap">
-            <MbxPageHeader Title="Titre de page simple" />
-            <MbxPageHeader Title="Avec action">
+    <MudStack Spacing="2">
+        <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsPageHeader</MudText>
+        <MudPaper Outlined="true" Class="mds-u-surface-wrap">
+            <MudStack Spacing="0">
+            <MdsPageHeader Title="Titre de page simple" />
+            <MdsPageHeader Title="Avec action">
                 <StartContent><div></div></StartContent>
                 <EndContent>
                     <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
-                               Style="border-radius:20px;text-transform:none;">Action</MudButton>
+                               Class="text-none">Action</MudButton>
                 </EndContent>
-            </MbxPageHeader>
-        </div>
-    </section>
+            </MdsPageHeader>
+            </MudStack>
+        </MudPaper>
+    </MudStack>
 
     @* ── Section : BottomNav preview ────────────────────────────────── *@
-    <section class="demo-section">
-        <MudText Typo="Typo.h6" Class="demo-section-title">MbxBottomNav <MudChip T="string" Size="Size.Small">xs / sm</MudChip></MudText>
-        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary); margin-bottom: 12px;">
+    <MudStack Spacing="2">
+        <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsBottomNav <MudChip T="string" Size="Size.Small">xs / sm</MudChip></MudText>
+        <MudText Typo="Typo.body2" Color="Color.Secondary">
             Visible uniquement sur mobile (≤ 959 px). Aperçu forcé ci-dessous.
         </MudText>
-        <div class="demo-bottom-nav-preview">
-            <MbxBottomNav Items="@_navItems" ActiveHref="/" />
-        </div>
-    </section>
+        <MudContainer MaxWidth="MaxWidth.Small" Class="pa-0 ma-0">
+            <MudPaper Outlined="true" Class="mds-u-surface-wrap">
+                <MdsBottomNav Items="@_navItems" ActiveHref="/" />
+            </MudPaper>
+        </MudContainer>
+    </MudStack>
 
     @* ── Section : Responsive note ──────────────────────────────────── *@
-    <section class="demo-section">
-        <MudText Typo="Typo.h6" Class="demo-section-title">Breakpoints</MudText>
-        <MudSimpleTable Dense="true" Hover="true" Style="border-radius:12px; overflow:hidden;">
+    <MudStack Spacing="2">
+        <MudText Typo="Typo.h6" Class="mds-u-section-title">Breakpoints</MudText>
+        <MudSimpleTable Dense="true" Hover="true">
             <thead>
                 <tr>
                     <th>Alias</th><th>Largeur</th><th>Sidebar</th><th>BottomNav</th>
@@ -109,9 +112,9 @@
                 <tr><td>lg+</td><td>≥ 1280 px</td><td>icon-only / expanded</td><td>cachée</td></tr>
             </tbody>
         </MudSimpleTable>
-    </section>
+    </MudStack>
 
-</div>
+</MudStack>
 
 @code {
     private string _chatValue = string.Empty;

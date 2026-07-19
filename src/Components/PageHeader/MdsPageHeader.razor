@@ -1,0 +1,16 @@
+@namespace MudShell.Components.PageHeader
+
+<div class="@RootClass">
+    <div class="mbx-page-header-start d-flex align-center">@StartContent</div>
+    <MudText Typo="Typo.h5" Class="mbx-page-header-title">@Title</MudText>
+    <div class="mbx-page-header-end d-flex align-center justify-end">@EndContent</div>
+</div>
+
+@code {
+    [Parameter] public string?         Title        { get; set; }
+    [Parameter] public RenderFragment? StartContent { get; set; }
+    [Parameter] public RenderFragment? EndContent   { get; set; }
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mbx-page-header d-flex align-center justify-space-between {Class}".Trim();
+}

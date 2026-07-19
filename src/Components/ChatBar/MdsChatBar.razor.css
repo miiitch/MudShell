@@ -1,0 +1,50 @@
+/* =====================================================================
+   MdsChatBar — barre de saisie glassmorphisme
+   ===================================================================== */
+.mbx-chat-bar {
+    width: 100%;
+    background: var(--mbx-chat-bg);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border-radius: var(--mbx-radius-xl);
+    padding: var(--mbx-space-4) var(--mbx-space-5) var(--mbx-space-3) var(--mbx-space-5);
+    border: 1px solid var(--mbx-chat-border);
+    box-shadow: var(--mbx-chat-shadow);
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mbx-chat-bar:focus-within {
+    border-color: var(--mbx-focus-ring);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--mbx-focus-ring) 35%, transparent), var(--mbx-chat-shadow);
+}
+
+.mbx-chat-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--mud-palette-text-primary);
+    font-size: 15px;
+    font-family: inherit;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.mbx-chat-input::placeholder {
+    color: var(--mud-palette-text-secondary);
+    opacity: 0.7;
+}
+
+.mbx-chat-input:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 599px) {
+    .mbx-chat-bar {
+        border-radius: var(--mbx-radius-lg);
+        padding: var(--mbx-space-3) var(--mbx-space-4) var(--mbx-space-2) var(--mbx-space-4);
+    }
+}

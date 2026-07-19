@@ -1,6 +1,7 @@
-﻿@using MudShell.Theme
+﻿@implements IDisposable
+@inject ThemeState ThemeState
 
-<MudThemeProvider Theme="@_theme" IsDarkMode="true" />
+<MudThemeProvider Theme="@ThemeState.CurrentTheme" IsDarkMode="@ThemeState.IsDarkMode" />
 <MudPopoverProvider />
 <MudSnackbarProvider />
 <MudDialogProvider />
@@ -15,5 +16,9 @@
 </Router>
 
 @code {
-    private readonly MudTheme _theme = MbxTheme.CreateTheme();
+    protected override void OnInitialized() => ThemeState.Changed += OnThemeChanged;
+
+    private void OnThemeChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => ThemeState.Changed -= OnThemeChanged;
 }

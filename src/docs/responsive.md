@@ -29,19 +29,19 @@ MudShell follows **MudBlazor's breakpoints** (Material Design):
 
 ## Component-level behaviour
 
-### MbxChatBar
+### MdsChatBar
 - Desktop: `max-width` defaults to `680px`, centred
 - Mobile: `max-width: 100%`, reduced padding (`12px 14px`)
 
-### MbxFilterTabBar
+### MdsFilterTabBar
 - Desktop: normal flex row
 - Mobile: horizontal scroll (`overflow-x: auto`, `scrollbar-width: none`)
 
-### MbxPageHeader
+### MdsPageHeader
 - Desktop: three-column flex (`start | title | end`)
 - Mobile (≤ 599 px): wraps — start, then title (full width, centred), then end
 
-### MbxDocumentCard
+### MdsDocumentCard
 The card itself is not opinionated about layout width.
 Recommended `MudGrid` usage:
 
@@ -50,7 +50,7 @@ Recommended `MudGrid` usage:
   @foreach (var doc in docs)
   {
     <MudItem xs="12" sm="6" md="4" lg="3">
-      <MbxDocumentCard ... />
+      <MdsDocumentCard ... />
     </MudItem>
   }
 </MudGrid>

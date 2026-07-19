@@ -1,0 +1,43 @@
+.theme-panel {
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--mud-palette-lines-default);
+    background: var(--mud-palette-background-gray);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.theme-panel-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.theme-panel-select {
+    min-width: 190px;
+}
+
+.theme-panel-row-colors {
+    gap: 8px;
+}
+
+.theme-color-field {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--mud-palette-text-secondary);
+}
+
+.theme-color-field input {
+    width: 30px;
+    height: 26px;
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: 6px;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+

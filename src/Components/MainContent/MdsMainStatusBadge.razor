@@ -1,0 +1,50 @@
+@namespace MudShell.Components.MainContent
+
+<MudChip T="string"
+         Icon="@ResolvedIcon"
+         Color="@ResolvedColor"
+         Variant="@Variant"
+         Size="Size.Small"
+         Class="@RootClass">
+    @Label
+</MudChip>
+
+@code {
+    [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
+    [Parameter] public string? Status { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public Color Color { get; set; } = Color.Default;
+    [Parameter] public Variant Variant { get; set; } = Variant.Filled;
+    [Parameter] public bool ResolveFromStatus { get; set; } = true;
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mbx-main-status-badge {Class}".Trim();
+
+    private Color ResolvedColor
+        => ResolveFromStatus && !string.IsNullOrWhiteSpace(Status)
+            ? GetStatusColor(Status)
+            : Color;
+
+    private string? ResolvedIcon
+        => Icon ?? (ResolveFromStatus && !string.IsNullOrWhiteSpace(Status) ? GetStatusIcon(Status) : null);
+
+    public static Color GetStatusColor(string status) => status?.Trim().ToLowerInvariant() switch
+    {
+        "active" or "success" or "completed" => Color.Success,
+        "inactive" or "disabled" => Color.Default,
+        "pending" or "warning" => Color.Warning,
+        "error" or "failed" or "critical" => Color.Error,
+        "info" or "information" => Color.Info,
+        _ => Color.Default
+    };
+
+    public static string? GetStatusIcon(string status) => status?.Trim().ToLowerInvariant() switch
+    {
+        "active" or "success" or "completed" => Icons.Material.Filled.CheckCircle,
+        "inactive" or "disabled" => Icons.Material.Filled.Cancel,
+        "pending" or "warning" => Icons.Material.Filled.Warning,
+        "error" or "failed" or "critical" => Icons.Material.Filled.Error,
+        "info" or "information" => Icons.Material.Filled.Info,
+        _ => null
+    };
+}

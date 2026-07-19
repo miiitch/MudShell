@@ -1,0 +1,20 @@
+@namespace MudShell.Components.MainContent
+
+<MudPaper Outlined="true" Elevation="0" Class="@RootClass" Style="@Style">
+    <MudStack Row="true"
+              AlignItems="AlignItems.Center"
+              Spacing="@Spacing"
+              Wrap="@(AllowWrap ? MudBlazor.Wrap.Wrap : MudBlazor.Wrap.NoWrap)">
+        @ChildContent
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public int Spacing { get; set; } = 2;
+    [Parameter] public bool AllowWrap { get; set; } = true;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+
+    private string RootClass => $"mbx-main-toolbar my-2 {Class}".Trim();
+}

@@ -3,13 +3,15 @@
 
 <PageTitle>Interactive Server — Fond actif</PageTitle>
 
-<MbxPageHeader Title="Interactive Server — Fond d'écran">
+<MdsPageHeader Title="Interactive Server — Fond d'écran">
     <StartContent><div></div></StartContent>
     <EndContent>
-        <MudChip T="string" Color="Color.Info" Size="Size.Small">SignalR</MudChip>
-        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Style="margin-left:8px;">Fond actif 🖼</MudChip>
+        <MudStack Row="true" Spacing="1" Class="mds-u-chip-row">
+            <MudChip T="string" Color="Color.Info" Size="Size.Small">SignalR</MudChip>
+            <MudChip T="string" Color="Color.Primary" Size="Size.Small">Fond actif 🖼</MudChip>
+        </MudStack>
     </EndContent>
-</MbxPageHeader>
+</MdsPageHeader>
 
 <ModeShowcase RenderModeName="Interactive Server"
               BadgeColor="server"

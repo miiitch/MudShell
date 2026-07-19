@@ -1,4 +1,4 @@
-# MbxChatBar
+# MdsChatBar
 
 Glassmorphism input bar inspired by AI chat interfaces.
 Uses `backdrop-filter: blur` for the frosted glass effect.
@@ -16,7 +16,7 @@ Uses `backdrop-filter: blur` for the frosted glass effect.
 ## Example
 
 ```razor
-<MbxChatBar Placeholder="Ask anything…"
+<MdsChatBar Placeholder="Ask anything…"
             @bind-Value="_message"
             MaxWidth="720px">
   <Actions>
@@ -24,7 +24,7 @@ Uses `backdrop-filter: blur` for the frosted glass effect.
     <div style="flex:1"></div>
     <MudIconButton Icon="@Icons.Material.Filled.Send" Size="Size.Small" Color="Color.Primary" />
   </Actions>
-</MbxChatBar>
+</MdsChatBar>
 ```
 
 ## Responsive

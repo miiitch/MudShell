@@ -1,7 +1,6 @@
 @namespace MyApplication.Client.Components
 
 <div class="showcase-wrap">
-
     @* Render mode badge *@
     <div class="showcase-badge showcase-badge-@BadgeColor">
         <MudIcon Icon="@BadgeIcon" Size="Size.Small" />
@@ -27,8 +26,8 @@
 
     @* ChatBar *@
     <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MbxChatBar</MudText>
-        <MbxChatBar Placeholder="@("Tapez un message pour tester le bind…")"
+        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsChatBar</MudText>
+        <MdsChatBar Placeholder="@("Tapez un message pour tester le bind…")"
                     @bind-Value="_chatValue" />
         @if (!string.IsNullOrEmpty(_chatValue))
         {
@@ -40,8 +39,8 @@
 
     @* FilterTabBar *@
     <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MbxFilterTabBar</MudText>
-        <MbxFilterTabBar T="string" @bind-Value="_tab" Items="@_tabs" />
+        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsFilterTabBar</MudText>
+        <MdsFilterTabBar T="string" @bind-Value="_tab" Items="@_tabs" />
         <MudText Typo="Typo.caption" Style="margin-top:6px; color: var(--mud-palette-text-secondary);">
             Onglet sélectionné : @_tab
         </MudText>
@@ -49,12 +48,12 @@
 
     @* DocumentCards *@
     <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MbxDocumentCard</MudText>
+        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsDocumentCard</MudText>
         <MudGrid Spacing="3">
             @foreach (var card in _cards)
             {
                 <MudItem xs="12" sm="6" md="4">
-                    <MbxDocumentCard Icon="@card.Icon"
+                    <MdsDocumentCard Icon="@card.Icon"
                                      TypeLabel="@card.Type"
                                      Title="@card.Title"
                                      Description="@card.Desc"

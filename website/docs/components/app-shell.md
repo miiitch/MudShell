@@ -2,11 +2,11 @@
 sidebar_position: 1
 ---
 
-# MbxAppShell
+# MdsAppShell
 
 Full-page layout shell. Owns the sidebar, main content area, background layer, and bottom nav slot.
 
-![MbxAppShell — desktop, icon-only sidebar, background palette mode](/img/screenshots/home.png)
+![MdsAppShell — desktop, icon-only sidebar, background palette mode](/img/screenshots/home.png)
 
 *Desktop (1280 px): icon-only sidebar collapsed, `Palette` background mode.*
 
@@ -38,32 +38,32 @@ Full-page layout shell. Owns the sidebar, main content area, background layer, a
 ## Minimal example
 
 ```razor
-<MbxAppShell @ref="_shell"
-             BackgroundMode="MbxAppShell.MbxBackgroundMode.Palette"
+<MdsAppShell @ref="_shell"
+             BackgroundMode="MdsAppShell.MbxBackgroundMode.Palette"
              ContextPanelExpanded="@_contextExpanded"
              ContextPanelExpandedChanged="@(v => _contextExpanded = v)"
              ContextPanelWidth="320"
              ContextPanelCollapsedWidth="72">
   <SidebarContent>
-    <MbxSidebar OnToggle="@(() => _shell.ToggleSidebar())" ... />
+    <MdsSidebar OnToggle="@(() => _shell.ToggleSidebar())" ... />
   </SidebarContent>
   <ContextPanelContent>
-    <MbxContextNavPanel Tree="@navTree" IsExpanded="@_contextExpanded" />
+    <MdsContextNavPanel Tree="@navTree" IsExpanded="@_contextExpanded" />
   </ContextPanelContent>
   <ChildContent>@Body</ChildContent>
   <BottomNavContent>
-    <MbxBottomNav Items="@navItems" />
+    <MdsBottomNav Items="@navItems" />
   </BottomNavContent>
-</MbxAppShell>
+</MdsAppShell>
 ```
 
 ## With background image
 
 ```razor
-<MbxAppShell BackgroundMode="MbxAppShell.MbxBackgroundMode.Image"
+<MdsAppShell BackgroundMode="MdsAppShell.MbxBackgroundMode.Image"
              BackgroundImageUrl="/images/hero.jpg">
   ...
-</MbxAppShell>
+</MdsAppShell>
 ```
 
 ## Switching mode from a page
@@ -72,5 +72,5 @@ Full-page layout shell. Owns the sidebar, main content area, background layer, a
 [CascadingParameter] public MainLayout MainLayoutRef { get; set; } = default!;
 
 protected override void OnInitialized()
-    => MainLayoutRef.SetBackgroundMode(MbxAppShell.MbxBackgroundMode.Image, "/images/bg.jpg");
+    => MainLayoutRef.SetBackgroundMode(MdsAppShell.MbxBackgroundMode.Image, "/images/bg.jpg");
 ```

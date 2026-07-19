@@ -1,10 +1,12 @@
-﻿@if (MobileMode)
+﻿@inject IDialogService DialogService
+
+@if (MobileMode)
 {
-    <MbxBottomNav Items="@_allItems" />
+    <MdsBottomNav Items="@_allItems" />
 }
 else
 {
-    <MbxSidebar IsExpanded="@IsExpanded"
+    <MdsSidebar IsExpanded="@IsExpanded"
                 OnToggle="@(() => ShellRef?.ToggleSidebar())"
                 PrimaryItems="@_primaryItems">
 
@@ -27,19 +29,19 @@ else
                     <span class="nav-profile-name">Michel</span>
                     <span class="nav-profile-sub">Microsoft 365</span>
                 </div>
-                <MudIconButton Icon="@(ShellRef?.IsDarkMode == true ? Icons.Material.Outlined.LightMode : Icons.Material.Outlined.DarkMode)"
+                <MudIconButton Icon="@Icons.Material.Outlined.ColorLens"
                                Size="Size.Small" Color="Color.Inherit"
-                               title="@(ShellRef?.IsDarkMode == true ? "Passer en mode clair" : "Passer en mode sombre")"
-                               OnClick="@(() => ShellRef?.ToggleDarkMode())"
+                               title="Thème et fond"
+                               OnClick="@OpenThemeDialog"
                                Style="flex-shrink:0; margin-left:auto;" />
             }
         </BottomContent>
 
-    </MbxSidebar>
+    </MdsSidebar>
 }
 
 @code {
-    [Parameter] public MbxAppShell? ShellRef    { get; set; }
+    [Parameter] public MdsAppShell? ShellRef    { get; set; }
     [Parameter] public bool          IsExpanded  { get; set; }
     [Parameter] public bool          MobileMode  { get; set; } = false;
 
@@ -47,10 +49,23 @@ else
     [
         new(Icons.Material.Outlined.GridView,      "Accueil",      "/"),
         new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque", "/library"),
-        new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque BG", "/library/bg"),
+        new(Icons.Material.Outlined.TableChart,    "Villes Europe", "/europe-cities"),
+        new(Icons.Material.Outlined.Widgets,       "Composants",   "/main-components"),
         new(Icons.Material.Outlined.Palette,       "Demo",         "/demo"),
         new(Icons.Material.Outlined.DeveloperMode, "Render Modes", "/modes"),
     ];
 
     private MbxNavItem[] _allItems => _primaryItems;
+
+    private async Task OpenThemeDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        await DialogService.ShowAsync<ThemeOptionsPanel>("Thème et fond", options);
+    }
 }

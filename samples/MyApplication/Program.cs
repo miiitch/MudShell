@@ -1,9 +1,11 @@
 using MyApplication.Components;
+using MyApplication.Client.Theme;
 using MudShell;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMudShell();
+builder.Services.AddScoped<ThemeState>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()

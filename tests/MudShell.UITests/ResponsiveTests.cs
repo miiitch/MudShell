@@ -4,7 +4,7 @@ using Xunit;
 namespace MudShell.UITests;
 
 /// <summary>
-/// Verifies MbxAppShell responsive behaviour.
+/// Verifies MdsAppShell responsive behaviour.
 /// Breakpoint: ≤ 959 px → sidebar hidden, bottom-nav visible.
 ///             ≥ 960 px → sidebar visible, bottom-nav slot hidden.
 /// </summary>

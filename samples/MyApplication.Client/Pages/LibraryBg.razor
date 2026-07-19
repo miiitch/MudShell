@@ -5,18 +5,18 @@
 
 <PageTitle>Bibliothèque — fond image</PageTitle>
 
-<MbxPageHeader Title="Bibliothèque (fond image)">
+<MdsPageHeader Title="Bibliothèque (fond image)">
     <StartContent><div></div></StartContent>
     <EndContent>
         <MudChip T="string" Color="Color.Primary" Size="Size.Small">Image BG</MudChip>
     </EndContent>
-</MbxPageHeader>
+</MdsPageHeader>
 
 <MudGrid Class="library-grid" Spacing="3">
     @foreach (var doc in _pages)
     {
         <MudItem xs="12" sm="6" md="4" lg="3">
-            <MbxDocumentCard Icon="@Icons.Material.Outlined.Description"
+            <MdsDocumentCard Icon="@Icons.Material.Outlined.Description"
                              TypeLabel="Page"
                              Title="@doc.Title"
                              Description="@doc.Description" />

@@ -4,16 +4,15 @@
 
 <PageTitle>Render Modes</PageTitle>
 
-<MbxPageHeader Title="Render Modes">
+<MdsPageHeader Title="Render Modes">
     <StartContent><div></div></StartContent>
     <EndContent>
         <MudChip T="string" Color="Color.Default" Size="Size.Small">4 modes × variantes</MudChip>
     </EndContent>
-</MbxPageHeader>
+</MdsPageHeader>
 
-<div class="modes-index-content">
-
-    <MudText Typo="Typo.body1" Style="color: var(--mud-palette-text-secondary); max-width:680px; margin-bottom:8px;">
+<MudStack Spacing="3" Class="px-4 pb-6">
+    <MudText Typo="Typo.body1" Color="Color.Secondary">
         Cette section démontre que la bibliothèque <strong>MudShell</strong> fonctionne
         quel que soit le mode de rendu Blazor. Chaque mode propose deux variantes :
         fond <strong>palette</strong> (sombre uni), fond <strong>image</strong>,
@@ -30,51 +29,49 @@
             var fl         = mode.NeedsFullReload;
 
             <MudItem xs="12" sm="6" md="3">
-                <div class="mode-card mode-card-static">
-                    <div class="mode-card-icon @mode.IconClass">
-                        <MudIcon Icon="@mode.Icon" />
-                    </div>
-                    <MudText Typo="Typo.subtitle1" Class="mode-card-title">@mode.Title</MudText>
-                    <MudText Typo="Typo.body2" Class="mode-card-desc">@mode.Description</MudText>
-                    <div class="mode-card-links">
-                        <a href="@mode.Route" class="mode-link mode-link-palette"
-                           @onclick="() => Navigate(mode.Route, fl)"
-                           @onclick:preventDefault="fl">
-                            <MudIcon Icon="@Icons.Material.Outlined.Palette" Size="Size.Small" />
-                            Sans fond
-                        </a>
-                        <a href="@bgRoute" class="mode-link mode-link-bg"
-                           @onclick="() => Navigate(bgRoute, fl)"
-                           @onclick:preventDefault="fl">
-                            <MudIcon Icon="@Icons.Material.Outlined.Wallpaper" Size="Size.Small" />
-                            Avec fond
-                        </a>
-                        @if (mode.HasInteractive)
-                        {
-                            <a href="@gridRoute" class="mode-link mode-link-grid"
-                               @onclick="() => Navigate(gridRoute, fl)"
-                               @onclick:preventDefault="fl">
-                                <MudIcon Icon="@Icons.Material.Outlined.GridView" Size="Size.Small" />
-                                Grid
-                            </a>
-                            <a href="@tableRoute" class="mode-link mode-link-table"
-                               @onclick="() => Navigate(tableRoute, fl)"
-                               @onclick:preventDefault="fl">
-                                <MudIcon Icon="@Icons.Material.Outlined.TableChart" Size="Size.Small" />
-                                Table
-                            </a>
-                        }
-                    </div>
-                </div>
+                <MudPaper Outlined="true" Class="pa-3">
+                    <MudStack Spacing="2">
+                        <MudAvatar Variant="Variant.Outlined" Color="Color.Default" Size="Size.Large">
+                            <MudIcon Icon="@mode.Icon" />
+                        </MudAvatar>
+                        <MudText Typo="Typo.subtitle1">@mode.Title</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">@mode.Description</MudText>
+                        <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="1">
+                            <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Default"
+                                       @onclick="() => Navigate(mode.Route, fl)"
+                                       StartIcon="@Icons.Material.Outlined.Palette">
+                                Sans fond
+                            </MudButton>
+                            <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Info"
+                                       @onclick="() => Navigate(bgRoute, fl)"
+                                       StartIcon="@Icons.Material.Outlined.Wallpaper">
+                                Avec fond
+                            </MudButton>
+                            @if (mode.HasInteractive)
+                            {
+                                <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Success"
+                                           @onclick="() => Navigate(gridRoute, fl)"
+                                           StartIcon="@Icons.Material.Outlined.GridView">
+                                    Grid
+                                </MudButton>
+                                <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Warning"
+                                           @onclick="() => Navigate(tableRoute, fl)"
+                                           StartIcon="@Icons.Material.Outlined.TableChart">
+                                    Table
+                                </MudButton>
+                            }
+                        </MudStack>
+                    </MudStack>
+                </MudPaper>
             </MudItem>
         }
 
     </MudGrid>
 
-</div>
+</MudStack>
 
 @code {
-    private record ModeInfo(string Icon, string IconClass, string Title, string Description, string Route, bool HasInteractive, bool NeedsFullReload);
+    private record ModeInfo(string Icon, string Title, string Description, string Route, bool HasInteractive, bool NeedsFullReload);
 
     private void Navigate(string url, bool forceLoad)
     {
@@ -83,19 +80,19 @@
 
     private readonly ModeInfo[] _modes =
     [
-        new(Icons.Material.Outlined.Article,     "mode-icon-ssr",
+        new(Icons.Material.Outlined.Article,
             "Static SSR",
             "Rendu serveur pur, aucun circuit SignalR ni WASM. HTML statique.",
             "/modes/ssr", false, true),
-        new(Icons.Material.Outlined.Hub,         "mode-icon-server",
+        new(Icons.Material.Outlined.Hub,
             "Interactive Server",
             "Composants interactifs via SignalR. L'exécution reste sur le serveur.",
             "/modes/server", true, false),
-        new(Icons.Material.Outlined.Memory,      "mode-icon-wasm",
+        new(Icons.Material.Outlined.Memory,
             "Interactive Auto (WASM)",
             "Démarre en Server, bascule en WASM. Le code s'exécute côté client.",
             "/modes/wasm", true, false),
-        new(Icons.Material.Outlined.AutoMode,    "mode-icon-auto",
+        new(Icons.Material.Outlined.AutoMode,
             "Interactive Auto",
             "Démarre en Server, bascule en WASM une fois les ressources téléchargées.",
             "/modes/auto", true, false),

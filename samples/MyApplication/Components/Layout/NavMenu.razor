@@ -1,4 +1,5 @@
 ﻿@inject IDialogService DialogService
+@inject ThemeState ThemeState
 
 @if (MobileMode)
 {
@@ -29,11 +30,16 @@ else
                     <span class="nav-profile-name">Michel</span>
                     <span class="nav-profile-sub">Microsoft 365</span>
                 </div>
+                <MudIconButton Icon="@(ThemeState.IsDarkMode ? Icons.Material.Outlined.LightMode : Icons.Material.Outlined.DarkMode)"
+                               Size="Size.Small" Color="Color.Inherit"
+                               title="@(ThemeState.IsDarkMode ? "Mode clair" : "Mode sombre")"
+                               OnClick="@(() => ThemeState.SetDarkMode(!ThemeState.IsDarkMode))"
+                               Style="flex-shrink:0;" />
                 <MudIconButton Icon="@Icons.Material.Outlined.ColorLens"
                                Size="Size.Small" Color="Color.Inherit"
                                title="Thème et fond"
                                OnClick="@OpenThemeDialog"
-                               Style="flex-shrink:0; margin-left:auto;" />
+                               Style="flex-shrink:0; margin-left:0;" />
             }
         </BottomContent>
 
@@ -47,12 +53,13 @@ else
 
     private readonly MbxNavItem[] _primaryItems =
     [
-        new(Icons.Material.Outlined.GridView,      "Accueil",      "/"),
-        new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque", "/library"),
+        new(Icons.Material.Outlined.GridView,      "Accueil",       "/"),
+        new(Icons.Material.Outlined.Cloud,         "Météo",         "/meteo"),
         new(Icons.Material.Outlined.TableChart,    "Villes Europe", "/europe-cities"),
-        new(Icons.Material.Outlined.Widgets,       "Composants",   "/main-components"),
-        new(Icons.Material.Outlined.Palette,       "Demo",         "/demo"),
-        new(Icons.Material.Outlined.DeveloperMode, "Render Modes", "/modes"),
+        new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque",  "/library"),
+        new(Icons.Material.Outlined.Widgets,       "Composants",    "/main-components"),
+        new(Icons.Material.Outlined.Palette,       "Demo",          "/demo"),
+        new(Icons.Material.Outlined.DeveloperMode, "Render Modes",  "/modes"),
     ];
 
     private MbxNavItem[] _allItems => _primaryItems;

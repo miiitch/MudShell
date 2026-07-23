@@ -9,8 +9,8 @@ public sealed class ThemeState
     public event Action? Changed;
 
     public bool IsDarkMode { get; private set; } = true;
-    public MbxTheme.MbxThemePreset SelectedPreset { get; private set; } = MbxTheme.MbxThemePreset.Indigo;
-    public MudTheme CurrentTheme { get; private set; } = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Indigo);
+    public MbxTheme.MbxThemePreset SelectedPreset { get; private set; } = MbxTheme.MbxThemePreset.Cobalt;
+    public MudTheme CurrentTheme { get; private set; } = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Cobalt);
     public MdsAppShell.MbxBackgroundMode BackgroundMode { get; private set; } = MdsAppShell.MbxBackgroundMode.Palette;
     public string? BackgroundImageUrl { get; private set; }
 

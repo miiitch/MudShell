@@ -1,0 +1,132 @@
+@page "/meteo"
+@rendermode InteractiveServer
+
+<PageTitle>Météo</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="pa-4">
+
+    <MdsPageHeader Title="Météo">
+        <StartContent>
+            <MudIcon Icon="@Icons.Material.Outlined.Cloud" Size="Size.Small" Class="mr-2" />
+        </StartContent>
+        <EndContent>
+            <MudBreadcrumbs Items="@_breadcrumbs" />
+        </EndContent>
+    </MdsPageHeader>
+
+    <MdsMainToolbar>
+        <MudChip T="string"
+                 Color="@(_selectedPeriod == "today" ? Color.Primary : Color.Default)"
+                 Variant="@(_selectedPeriod == "today" ? Variant.Filled : Variant.Outlined)"
+                 OnClick="@(() => _selectedPeriod = "today")">Aujourd'hui</MudChip>
+        <MudChip T="string"
+                 Color="@(_selectedPeriod == "week" ? Color.Primary : Color.Default)"
+                 Variant="@(_selectedPeriod == "week" ? Variant.Filled : Variant.Outlined)"
+                 OnClick="@(() => _selectedPeriod = "week")">Cette semaine</MudChip>
+        <MudChip T="string"
+                 Color="@(_selectedPeriod == "month" ? Color.Primary : Color.Default)"
+                 Variant="@(_selectedPeriod == "month" ? Variant.Filled : Variant.Outlined)"
+                 OnClick="@(() => _selectedPeriod = "month")">Ce mois</MudChip>
+        <MudSpacer />
+        <MudSelect T="string" @bind-Value="_selectedCity" Label="Ville"
+                   Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width:160px">
+            <MudSelectItem Value="@("Paris")">Paris</MudSelectItem>
+            <MudSelectItem Value="@("Lyon")">Lyon</MudSelectItem>
+            <MudSelectItem Value="@("Marseille")">Marseille</MudSelectItem>
+        </MudSelect>
+    </MdsMainToolbar>
+
+    <MdsMainPart Title="Résumé" Icon="@Icons.Material.Outlined.WbSunny">
+        <MudGrid Spacing="3">
+            @foreach (var tile in _tiles)
+            {
+                <MudItem xs="12" sm="6" md="3">
+                    <MudStack AlignItems="AlignItems.Start" Spacing="1"
+                              Style="background:var(--mud-palette-background-grey); border-radius:8px;"
+                              Class="pa-3">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@tile.Icon" Size="Size.Small" Color="Color.Secondary" />
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">@tile.Label</MudText>
+                        </MudStack>
+                        <MudText Typo="Typo.h4" Color="@tile.ValueColor">@tile.Value</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">@tile.Sub</MudText>
+                    </MudStack>
+                </MudItem>
+            }
+        </MudGrid>
+    </MdsMainPart>
+
+    <MdsMainPart Title="Prévisions horaires" Icon="@Icons.Material.Outlined.Schedule">
+        <MudTable T="HourlyRow" Items="@_hourly" Hover="true" Dense="true" Elevation="0">
+            <HeaderContent>
+                <MudTh>Heure</MudTh>
+                <MudTh>Conditions</MudTh>
+                <MudTh>Temp. (°C)</MudTh>
+                <MudTh>Vent (km/h)</MudTh>
+                <MudTh>Humidité</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Heure">@context.Hour</MudTd>
+                <MudTd DataLabel="Conditions">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@context.Icon" Size="Size.Small" />
+                        <MudText Typo="Typo.body2">@context.Condition</MudText>
+                    </MudStack>
+                </MudTd>
+                <MudTd DataLabel="Temp.">
+                    <MudText Color="@(context.Temp >= 25 ? Color.Warning : context.Temp <= 5 ? Color.Info : Color.Default)">
+                        @context.Temp°
+                    </MudText>
+                </MudTd>
+                <MudTd DataLabel="Vent">@context.Wind</MudTd>
+                <MudTd DataLabel="Humidité">
+                    <MudChip T="string" Size="Size.Small"
+                             Color="@(context.Humidity >= 80 ? Color.Info : Color.Default)"
+                             Variant="Variant.Text">@context.Humidity%</MudChip>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="[8, 24]" />
+            </PagerContent>
+        </MudTable>
+    </MdsMainPart>
+
+</MudContainer>
+
+@code {
+    private string _selectedPeriod = "today";
+    private string _selectedCity = "Paris";
+
+    private readonly List<BreadcrumbItem> _breadcrumbs =
+    [
+        new("Accueil", href: "/"),
+        new("Météo", href: null, disabled: true)
+    ];
+
+    private readonly TileItem[] _tiles =
+    [
+        new(Icons.Material.Outlined.Thermostat, "Température", "23°C",    "Ressenti 21°C",        Color.Warning),
+        new(Icons.Material.Outlined.WaterDrop,  "Humidité",    "60%",     "Normale pour la saison", Color.Info),
+        new(Icons.Material.Outlined.Air,         "Vent",        "12 km/h", "Direction SO",          Color.Default),
+        new(Icons.Material.Outlined.LightMode,  "Indice UV",   "4",       "Modéré",                Color.Success),
+    ];
+
+    private static readonly HourlyRow[] _hourly =
+    [
+        new("08:00", Icons.Material.Outlined.WbSunny,      "Ensoleillé",   18, 8,  52),
+        new("09:00", Icons.Material.Outlined.WbSunny,      "Ensoleillé",   19, 9,  50),
+        new("10:00", Icons.Material.Outlined.WbSunny,      "Ensoleillé",   20, 10, 48),
+        new("11:00", Icons.Material.Outlined.WbCloudy,     "Nuageux",      21, 12, 50),
+        new("12:00", Icons.Material.Outlined.WbCloudy,     "Nuageux",      23, 14, 54),
+        new("13:00", Icons.Material.Outlined.WbSunny,      "Ensoleillé",   24, 13, 53),
+        new("14:00", Icons.Material.Outlined.WbSunny,      "Ensoleillé",   25, 12, 51),
+        new("15:00", Icons.Material.Outlined.Cloud,        "Couvert",      23, 15, 57),
+        new("16:00", Icons.Material.Outlined.Cloud,        "Couvert",      22, 16, 60),
+        new("17:00", Icons.Material.Outlined.Thunderstorm, "Orageux",      20, 20, 72),
+        new("18:00", Icons.Material.Outlined.Umbrella,     "Pluie légère", 19, 18, 78),
+        new("19:00", Icons.Material.Outlined.WbTwilight,   "Éclaircie",    18, 14, 70),
+    ];
+
+    private sealed record TileItem(string Icon, string Label, string Value, string Sub, Color ValueColor);
+    private sealed record HourlyRow(string Hour, string Icon, string Condition, int Temp, int Wind, int Humidity);
+}

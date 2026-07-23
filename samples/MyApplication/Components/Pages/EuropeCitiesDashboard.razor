@@ -3,8 +3,9 @@
 
 <PageTitle>Tables Villes Europe</PageTitle>
 
-<MudStack Spacing="3" Class="pa-4">
-    <MdsPageHeader Title="Tables">
+<MudContainer MaxWidth="MaxWidth.False" Class="pa-4">
+
+    <MdsPageHeader Title="Villes Europe">
         <StartContent>
             <MudChip T="string" Color="Color.Info" Size="Size.Small" Variant="Variant.Outlined">1000 lignes</MudChip>
         </StartContent>
@@ -13,82 +14,79 @@
         </EndContent>
     </MdsPageHeader>
 
-    <MudPaper Outlined="true" Class="pa-4">
-        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-3">
-            <MudText Typo="Typo.h5">Business Widgets</MudText>
+    <MdsMainPart Title="Business Widgets">
+        <HeaderActions>
             <MudStack Row="true" Spacing="1">
                 <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.FilterList">Filtres</MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.Download">Exporter</MudButton>
             </MudStack>
-        </MudStack>
+        </HeaderActions>
+        <ChildContent>
+            <MudGrid Spacing="2">
+                @foreach (var widget in _widgets)
+                {
+                    <MudItem xs="12" sm="6" lg="3">
+                        <MudStack AlignItems="AlignItems.Start" Spacing="0" Class="pa-3"
+                                  Style="background:var(--mud-palette-background-grey); border-radius:8px;">
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">@widget.Label</MudText>
+                            <MudText Typo="Typo.h4">@widget.Value</MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Success">@widget.Trend</MudText>
+                        </MudStack>
+                    </MudItem>
+                }
+            </MudGrid>
+        </ChildContent>
+    </MdsMainPart>
 
-        <MudGrid Spacing="2">
-            @foreach (var widget in _widgets)
+    <MdsMainToolbar>
+        <MudTextField @bind-Value="_searchText"
+                      Placeholder="Rechercher une ville, un pays ou un fuseau"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Outlined.Search"
+                      Immediate="true" />
+        <MudSelect T="string" @bind-Value="_selectedCountry" Label="Pays" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true">
+            @foreach (var country in _countries)
             {
-                <MudItem xs="12" sm="6" lg="3">
-                    <MudPaper Outlined="true" Class="pa-3">
-                        <MudText Typo="Typo.caption">@widget.Label</MudText>
-                        <MudText Typo="Typo.h4">@widget.Value</MudText>
-                        <MudText Typo="Typo.caption" Color="Color.Success">@widget.Trend</MudText>
-                    </MudPaper>
-                </MudItem>
+                <MudSelectItem Value="@country">@country</MudSelectItem>
             }
-        </MudGrid>
-    </MudPaper>
+        </MudSelect>
+        <MudSelect T="string" @bind-Value="_selectedRegion" Label="Région" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true">
+            @foreach (var region in _regions)
+            {
+                <MudSelectItem Value="@region">@region</MudSelectItem>
+            }
+        </MudSelect>
+    </MdsMainToolbar>
 
-    <MudPaper Outlined="true">
-        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="pa-4 pb-2">
-            <MudText Typo="Typo.h5">Basic Tables</MudText>
-            <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.Code">Show Code</MudButton>
-        </MudStack>
+    <MdsMainPart Title="Basic Tables">
+        <ChildContent>
+            <MudTable T="CityRow" Items="@_rows" Filter="FilterRows" Hover="true" Dense="true" RowsPerPage="25" Elevation="0">
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.City)">Ville</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.Country)">Pays</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.Region)">Région</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.Population)">Population</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.LocalGdpMEur)">PIB local (M EUR)</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.TimeZone)">Fuseau</MudTableSortLabel></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Ville">@context.City</MudTd>
+                    <MudTd DataLabel="Pays">@context.Country</MudTd>
+                    <MudTd DataLabel="Région">@context.Region</MudTd>
+                    <MudTd DataLabel="Population">@context.Population.ToString("N0")</MudTd>
+                    <MudTd DataLabel="PIB local (M EUR)">@context.LocalGdpMEur.ToString("N0")</MudTd>
+                    <MudTd DataLabel="Fuseau">@context.TimeZone</MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="[10, 25, 50, 100]" />
+                </PagerContent>
+            </MudTable>
+        </ChildContent>
+    </MdsMainPart>
 
-        <MudStack Row="true" Spacing="2" Class="px-4 pb-3" Wrap="Wrap.Wrap">
-            <MudTextField @bind-Value="_searchText"
-                          Placeholder="Rechercher une ville, un pays ou un fuseau"
-                          Variant="Variant.Outlined"
-                          Margin="Margin.Dense"
-                          Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Outlined.Search"
-                          Immediate="true" />
-
-            <MudSelect T="string" @bind-Value="_selectedCountry" Label="Pays" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true">
-                @foreach (var country in _countries)
-                {
-                    <MudSelectItem Value="@country">@country</MudSelectItem>
-                }
-            </MudSelect>
-
-            <MudSelect T="string" @bind-Value="_selectedRegion" Label="Region" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true">
-                @foreach (var region in _regions)
-                {
-                    <MudSelectItem Value="@region">@region</MudSelectItem>
-                }
-            </MudSelect>
-        </MudStack>
-
-        <MudTable T="CityRow" Items="@_rows" Filter="FilterRows" Hover="true" Dense="true" RowsPerPage="25">
-            <HeaderContent>
-                <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.City)">Ville</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.Country)">Pays</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.Region)">Region</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.Population)">Population</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.LocalGdpMEur)">PIB local (M EUR)</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.TimeZone)">Fuseau</MudTableSortLabel></MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Ville">@context.City</MudTd>
-                <MudTd DataLabel="Pays">@context.Country</MudTd>
-                <MudTd DataLabel="Region">@context.Region</MudTd>
-                <MudTd DataLabel="Population">@context.Population.ToString("N0")</MudTd>
-                <MudTd DataLabel="PIB local (M EUR)">@context.LocalGdpMEur.ToString("N0")</MudTd>
-                <MudTd DataLabel="Fuseau">@context.TimeZone</MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager PageSizeOptions="[10, 25, 50, 100]" />
-            </PagerContent>
-        </MudTable>
-    </MudPaper>
-</MudStack>
+</MudContainer>
 
 @code {
     private readonly List<BreadcrumbItem> _breadcrumbItems =

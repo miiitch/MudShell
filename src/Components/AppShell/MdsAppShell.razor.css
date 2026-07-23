@@ -163,7 +163,7 @@
 }
 
 .mbx-shell.mbx-mode-palette .mbx-main {
-    background: var(--mud-palette-surface);
+    background: var(--mud-palette-background);
     margin: 0;
     border: 0;
     box-shadow: none;

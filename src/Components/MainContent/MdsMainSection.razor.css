@@ -1,6 +1,1 @@
-.mbx-main-section {
-    border-radius: var(--mbx-radius-lg);
-    background: var(--mbx-content-surface);
-    border-color: var(--mbx-content-border);
-    padding: var(--mbx-space-5);
-}
+/* MdsMainSection — no overrides; MudPaper Elevation handles all visual styling */

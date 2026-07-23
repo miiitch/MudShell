@@ -1,6 +1,1 @@
-.mbx-main-toolbar {
-    padding: var(--mbx-space-4);
-    border-radius: var(--mbx-radius-lg);
-    background: var(--mbx-content-surface);
-    border-color: var(--mbx-content-border);
-}
+/* MdsMainToolbar — no overrides; MudPaper Elevation handles all visual styling */

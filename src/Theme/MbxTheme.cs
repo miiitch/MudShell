@@ -11,31 +11,31 @@ public static class MbxTheme
 {
     public enum MbxThemePreset
     {
-        Indigo,
-        Emerald,
-        Rose,
-        Amber,
-        Ocean,
+        Cobalt,
+        Teal,
         Violet,
+        Forest,
+        Amber,
+        Crimson,
     }
 
     public sealed record PresetInfo(MbxThemePreset Preset, string Label, string PrimaryColor);
 
     public static readonly IReadOnlyList<PresetInfo> Presets =
     [
-        new(MbxThemePreset.Indigo, "Indigo", "#6f63ff"),
-        new(MbxThemePreset.Emerald, "Emerald", "#1f9d78"),
-        new(MbxThemePreset.Rose, "Rose", "#d4457f"),
-        new(MbxThemePreset.Amber, "Amber", "#d98a14"),
-        new(MbxThemePreset.Ocean, "Ocean", "#2f7fd9"),
-        new(MbxThemePreset.Violet, "Violet", "#8a55d8"),
+        new(MbxThemePreset.Cobalt,  "Cobalt",  "#1D4ED8"), // Bleu enterprise profond
+        new(MbxThemePreset.Teal,    "Teal",    "#0D9488"), // Teal moderne
+        new(MbxThemePreset.Violet,  "Violet",  "#7C3AED"), // Violet premium
+        new(MbxThemePreset.Forest,  "Forest",  "#16A34A"), // Vert finance/nature
+        new(MbxThemePreset.Amber,   "Amber",   "#B45309"), // Ambre profond
+        new(MbxThemePreset.Crimson, "Crimson", "#BE123C"), // Cramoisi professionnel
     ];
 
     public static string GetPresetPrimary(MbxThemePreset preset)
         => Presets.First(p => p.Preset == preset).PrimaryColor;
 
     /// <summary>Returns a <see cref="MudTheme"/> pre-configured with both palettes.</summary>
-    public static MudTheme CreateTheme() => CreateTheme(MbxThemePreset.Indigo);
+    public static MudTheme CreateTheme() => CreateTheme(MbxThemePreset.Cobalt);
 
     /// <summary>Creates a theme from a curated preset.</summary>
     public static MudTheme CreateTheme(MbxThemePreset preset)
@@ -75,15 +75,18 @@ public static class MbxTheme
 
     private static MudTheme CreateThemeCore(HexColor primary, HexColor info, HexColor success, HexColor warning, HexColor error)
     {
-        var darkSidebar = Mix(primary, ParseHex("#212b40"), 0.58);
-        var darkSubSection = Mix(primary, ParseHex("#192236"), 0.70);
-        var darkMain = Mix(primary, ParseHex("#131b2d"), 0.80);
-        var darkBackground = Mix(primary, ParseHex("#0d1424"), 0.87);
+        // ── Dark mode: DrawerBackground > Surface > BackgroundGray > Background ──
+        // Surface (cards) MUST be lighter than BackgroundGray (page area) so cards pop
+        var darkSidebar    = Mix(primary, ParseHex("#2a2d4a"), 0.50); // DrawerBackground — lightest
+        var darkMain       = Mix(primary, ParseHex("#1a1d33"), 0.72); // Surface — cards (medium)
+        var darkSubSection = Mix(primary, ParseHex("#12142a"), 0.85); // BackgroundGray — page area (darker)
+        var darkBackground = Mix(primary, ParseHex("#0a0c1c"), 0.91); // Background — darkest
 
-        var lightSidebar = Mix(primary, ParseHex("#c7d2ea"), 0.55);
-        var lightSubSection = Mix(primary, ParseHex("#e6edf9"), 0.80);
-        var lightMain = Mix(primary, ParseHex("#ffffff"), 0.94);
-        var lightBackground = Mix(primary, ParseHex("#ffffff"), 0.97);
+        // ── Light mode: Surface=white, BackgroundGray=subtle tint, DrawerBackground=most tinted ──
+        var lightSidebar    = Mix(primary, ParseHex("#e0e0f4"), 0.65); // DrawerBackground — clearly tinted
+        var lightSubSection = Mix(primary, ParseHex("#f5f5ff"), 0.93); // BackgroundGray — subtle
+        var lightBackground = Mix(primary, ParseHex("#ffffff"), 0.99); // Background — near-white page area
+        var lightMain       = ParseHex("#ffffff");                      // Surface — pure white
 
         var darkPalette = new PaletteDark
         {

@@ -1,6 +1,6 @@
 @namespace MudShell.Components.MainContent
 
-<MudPaper Outlined="true" Elevation="0" Class="@RootClass" Style="@Style">
+<MudPaper Elevation="2" Class="@RootClass" Style="@Style">
     <MudStack Row="true"
               AlignItems="AlignItems.Center"
               Spacing="@Spacing"
@@ -16,5 +16,5 @@
     [Parameter] public string? Class { get; set; }
     [Parameter] public string? Style { get; set; }
 
-    private string RootClass => $"mbx-main-toolbar my-2 {Class}".Trim();
+    private string RootClass => $"pa-3 mb-3 {Class}".Trim();
 }

@@ -4,9 +4,7 @@ using Xunit;
 namespace MudShell.UITests;
 
 /// <summary>
-/// Verifies MdsAppShell responsive behaviour.
-/// Breakpoint: ≤ 959 px → sidebar hidden, bottom-nav visible.
-///             ≥ 960 px → sidebar visible, bottom-nav slot hidden.
+/// Verifies desktop shell behaviour.
 /// </summary>
 public class ResponsiveDesktopTests : PlaywrightTestBase
 {
@@ -26,51 +24,98 @@ public class ResponsiveDesktopTests : PlaywrightTestBase
     });
 
     [Fact]
-    public Task Desktop_BottomNavSlotIsHidden() => RunAsync(nameof(Desktop_BottomNavSlotIsHidden), async () =>
+    public Task Desktop_SidebarCollapsedWidth_StaysFixedOnResize() => RunAsync(nameof(Desktop_SidebarCollapsedWidth_StaysFixedOnResize), async () =>
     {
         await Page.GotoAsync("/");
 
-        await Assertions.Expect(Page.Locator(".mbx-bottom-nav-slot")).ToBeHiddenAsync();
-    });
-}
+        var sidebar = Page.Locator(".mbx-sidebar").First;
+        await Assertions.Expect(sidebar).ToBeVisibleAsync();
 
-/// <summary>
-/// Mobile viewport (390 × 844 — iPhone 14).
-/// </summary>
-public class ResponsiveMobileTests : PlaywrightTestBase
-{
-    protected override BrowserNewContextOptions ContextOptions => new()
-    {
-        BaseURL = BaseUrl,
-        IgnoreHTTPSErrors = true,
-        ViewportSize = new() { Width = 390, Height = 844 },
-    };
+        var widthBefore = await sidebar.EvaluateAsync<double>("el => el.getBoundingClientRect().width");
+        Assert.InRange(widthBefore, 54, 58);
 
-    [Fact]
-    public Task Mobile_SidebarIsHidden() => RunAsync(nameof(Mobile_SidebarIsHidden), async () =>
-    {
-        await Page.GotoAsync("/");
+        await Page.SetViewportSizeAsync(720, 800);
+        await Page.WaitForTimeoutAsync(150);
 
-        await Assertions.Expect(Page.Locator(".mbx-sidebar")).ToBeHiddenAsync();
+        var widthAfter = await sidebar.EvaluateAsync<double>("el => el.getBoundingClientRect().width");
+        Assert.InRange(widthAfter, 54, 58);
     });
 
     [Fact]
-    public Task Mobile_BottomNavSlotIsVisible() => RunAsync(nameof(Mobile_BottomNavSlotIsVisible), async () =>
+    public Task Desktop_SidebarExpandedWidth_StaysFixedOnResize() => RunAsync(nameof(Desktop_SidebarExpandedWidth_StaysFixedOnResize), async () =>
     {
         await Page.GotoAsync("/");
 
-        await Assertions.Expect(Page.Locator(".mbx-bottom-nav-slot")).ToBeVisibleAsync();
+        await Page.Locator(".mbx-nav-toggle-btn").First.ClickAsync();
+        await Page.WaitForTimeoutAsync(200);
+
+        var sidebar = Page.Locator(".mbx-sidebar").First;
+        var widthBefore = await sidebar.EvaluateAsync<double>("el => el.getBoundingClientRect().width");
+        Assert.InRange(widthBefore, 238, 242);
+
+        await Page.SetViewportSizeAsync(900, 800);
+        await Page.WaitForTimeoutAsync(150);
+
+        var widthAfter = await sidebar.EvaluateAsync<double>("el => el.getBoundingClientRect().width");
+        Assert.InRange(widthAfter, 238, 242);
     });
 
     [Fact]
-    public Task Mobile_MainContentAreaIsFullWidth() => RunAsync(nameof(Mobile_MainContentAreaIsFullWidth), async () =>
+    public Task Desktop_MainContent_OffsetMatchesCollapsedSidebarWidth() => RunAsync(nameof(Desktop_MainContent_OffsetMatchesCollapsedSidebarWidth), async () =>
     {
         await Page.GotoAsync("/");
-        await Assertions.Expect(Page.Locator(".mbx-main")).ToBeVisibleAsync();
 
-        // On mobile, .mbx-main has margin:0 and border-radius:0 — it should fill the viewport width.
-        var box = await Page.Locator(".mbx-main").BoundingBoxAsync();
-        Assert.NotNull(box);
-        Assert.Equal(390, (int)box.Width);
+        var marginLeft = await Page.Locator(".mud-main-content.mbx-main-outer")
+            .EvaluateAsync<string>("el => window.getComputedStyle(el).marginLeft");
+
+        Assert.Equal("56px", marginLeft);
+    });
+
+    [Fact]
+    public Task Desktop_MainContent_RemainsVisible_WhenExpandedAndViewportNarrows() => RunAsync(nameof(Desktop_MainContent_RemainsVisible_WhenExpandedAndViewportNarrows), async () =>
+    {
+        await Page.GotoAsync("/");
+        await Page.Locator(".mbx-nav-toggle-btn").First.ClickAsync();
+        await Page.WaitForTimeoutAsync(200);
+
+        await Page.SetViewportSizeAsync(820, 800);
+        await Page.WaitForTimeoutAsync(150);
+
+        var mainWidth = await Page.Locator(".mbx-main").EvaluateAsync<double>("el => el.getBoundingClientRect().width");
+        Assert.True(mainWidth > 400, $"Expected .mbx-main width > 400px, got {mainWidth}px.");
+    });
+
+    [Fact]
+    public Task Desktop_ContextPanel_NotHiddenBySidebar_WhenCollapsed() => RunAsync(nameof(Desktop_ContextPanel_NotHiddenBySidebar_WhenCollapsed), async () =>
+    {
+        await Page.GotoAsync("/library");
+
+        var sidebar = Page.Locator(".mbx-sidebar").First;
+        var panel = Page.Locator(".mbx-context-panel").First;
+        await Assertions.Expect(panel).ToBeVisibleAsync();
+
+        var sidebarRight = await sidebar.EvaluateAsync<double>("el => el.getBoundingClientRect().right");
+        var panelLeft = await panel.EvaluateAsync<double>("el => el.getBoundingClientRect().left");
+
+        Assert.True(panelLeft >= sidebarRight - 1, $"Context panel is overlapped: panelLeft={panelLeft}, sidebarRight={sidebarRight}");
+    });
+
+    [Fact]
+    public Task Desktop_ContextPanel_NotHiddenBySidebar_WhenExpanded_AndAfterResize() => RunAsync(nameof(Desktop_ContextPanel_NotHiddenBySidebar_WhenExpanded_AndAfterResize), async () =>
+    {
+        await Page.GotoAsync("/library");
+        await Page.Locator(".mbx-nav-toggle-btn").First.ClickAsync();
+        await Page.WaitForTimeoutAsync(200);
+        await Page.SetViewportSizeAsync(920, 800);
+        await Page.WaitForTimeoutAsync(150);
+
+        var sidebar = Page.Locator(".mbx-sidebar").First;
+        var panel = Page.Locator(".mbx-context-panel").First;
+        await Assertions.Expect(panel).ToBeVisibleAsync();
+
+        var sidebarRight = await sidebar.EvaluateAsync<double>("el => el.getBoundingClientRect().right");
+        var panelLeft = await panel.EvaluateAsync<double>("el => el.getBoundingClientRect().left");
+
+        Assert.True(panelLeft >= sidebarRight - 1, $"Context panel is overlapped after resize: panelLeft={panelLeft}, sidebarRight={sidebarRight}");
     });
 }

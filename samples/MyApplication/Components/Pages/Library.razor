@@ -1,27 +1,29 @@
 @page "/library"
 @rendermode InteractiveServer
 
-<PageTitle>Bibliothèque</PageTitle>
+<PageTitle>Library</PageTitle>
 
-<MdsPageHeader Title="Bibliothèque">
-    <StartContent><div></div></StartContent>
-    <EndContent>
-        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">Créer une page</MudButton>
-    </EndContent>
-</MdsPageHeader>
+<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
+<MdsPageHeader Title="Library" />
 
-<MudStack AlignItems="AlignItems.Center" Class="px-4 py-2">
-    <MdsFilterTabBar T="string" @bind-Value="_selectedTab"
-                     Items="@_tabs">
-        <TrailingContent>
-            <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowDown" Size="Size.Small" Color="Color.Inherit" />
-        </TrailingContent>
-    </MdsFilterTabBar>
+<MdsMainToolbar>
+    <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">Create page</MudButton>
+</MdsMainToolbar>
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Wrap="MudBlazor.Wrap.Wrap" Class="mb-3">
+    <MudText Typo="Typo.caption" Color="Color.Secondary">Type</MudText>
+    @foreach (var tab in _tabs)
+    {
+        <MudChip T="string"
+                 Color="@(_selectedTab == tab.Value ? Color.Primary : Color.Default)"
+                 Variant="@(_selectedTab == tab.Value ? Variant.Filled : Variant.Outlined)"
+                 OnClick="@(() => _selectedTab = tab.Value)">@tab.Label</MudChip>
+    }
 </MudStack>
 
 @if (_selectedTab == "pages")
 {
-    <MudGrid Spacing="3" Class="px-4">
+    <MudGrid Spacing="3">
         @foreach (var doc in _pages)
         {
             <MudItem xs="12" sm="6" md="4" lg="3">
@@ -34,14 +36,15 @@
     </MudGrid>
 }
 
-<MudStack AlignItems="AlignItems.Center" Class="pa-8">
+<MudStack AlignItems="AlignItems.Center" Class="px-4 py-8">
     <MudText Typo="Typo.h5" Align="Align.Center">
-        Organisez vos idées, modifiez<br />et partagez vos documents
+        Organize your ideas, edit<br />and share your documents
     </MudText>
     <MudButton Variant="Variant.Filled" Size="Size.Large">
-        Créer une page
+        Create page
     </MudButton>
 </MudStack>
+</MudContainer>
 
 @code {
     private string _selectedTab = "pages";
@@ -50,7 +53,7 @@
     [
         new("images",   "Images"),
         new("pages",    "Pages"),
-        new("rapports", "Rapports de recherche"),
+        new("reports", "Research reports"),
     ];
 
     private readonly List<PageItem> _pages =

@@ -9,33 +9,32 @@
                  style="@_bgStyle"></div>
         }
 
-        @* Sidebar — hidden on xs/sm via CSS *@
-        <nav class="mbx-sidebar @(SidebarExpanded ? "mbx-sidebar-expanded" : "mbx-sidebar-collapsed")">
-            @SidebarContent
-        </nav>
+        <MudLayout Class="mbx-layout">
+            <MudDrawer Open="true"
+                       Variant="DrawerVariant.Persistent"
+                       Elevation="0"
+                       ClipMode="DrawerClipMode.Never"
+                       Class="mbx-sidebar"
+                       Style="@SidebarDrawerStyle">
+                @SidebarContent
+            </MudDrawer>
 
-        @if (ContextPanelContent is not null)
-        {
-            <aside class="mbx-context-panel @(ContextPanelExpanded ? "mbx-context-panel-expanded" : "mbx-context-panel-collapsed")"
-                   style="@ContextPanelStyle">
-                @ContextPanelContent
-            </aside>
-        }
+            <MudMainContent Class="mbx-main-outer" Style="@MainContentStyle">
+                @if (ContextPanelContent is not null)
+                {
+                    <aside class="mbx-context-panel @(ContextPanelExpanded ? "mbx-context-panel-expanded" : "mbx-context-panel-collapsed")"
+                           style="@ContextPanelStyle">
+                        @ContextPanelContent
+                    </aside>
+                }
+                <div class="mbx-main @(ContextPanelContent is not null ? "mbx-main-with-context" : "")">
+                    <div class="mbx-main-inner">
+                        @ChildContent
+                    </div>
+                </div>
+            </MudMainContent>
+        </MudLayout>
 
-        @* Main content *@
-        <main class="mbx-main">
-            <div class="mbx-main-inner">
-                @ChildContent
-            </div>
-        </main>
-
-        @* Bottom nav — visible on xs/sm only via CSS *@
-        @if (BottomNavContent is not null)
-        {
-            <div class="mbx-bottom-nav-slot">
-                @BottomNavContent
-            </div>
-        }
     </div>
 </CascadingValue>
 
@@ -47,13 +46,14 @@
     [Parameter] public RenderFragment? SidebarContent    { get; set; }
     [Parameter] public RenderFragment? ContextPanelContent { get; set; }
     [Parameter] public RenderFragment? ChildContent      { get; set; }
-    [Parameter] public RenderFragment? BottomNavContent  { get; set; }
 
     [Parameter] public MbxBackgroundMode BackgroundMode  { get; set; } = MbxBackgroundMode.Palette;
     [Parameter] public string?           BackgroundImageUrl { get; set; }
 
     [Parameter] public bool              SidebarExpanded  { get; set; } = false;
     [Parameter] public EventCallback<bool> SidebarExpandedChanged { get; set; }
+    [Parameter] public int               SidebarWidth { get; set; } = 240;
+    [Parameter] public int               SidebarCollapsedWidth { get; set; } = 56;
 
     [Parameter] public bool                  IsDarkMode       { get; set; } = true;
     [Parameter] public EventCallback<bool>   IsDarkModeChanged { get; set; }
@@ -65,6 +65,12 @@
     private string ModeClass  => BackgroundMode == MbxBackgroundMode.Image ? "mbx-mode-image" : "mbx-mode-palette";
     private string ThemeClass => IsDarkMode ? "" : "mbx-light";
     private string ContextLayoutClass => ContextPanelContent is null ? "mbx-no-context-panel" : "mbx-has-context-panel";
+    private int SidebarWidthPx => Math.Max(SidebarWidth, 120);
+    private int SidebarCollapsedWidthPx => Math.Max(Math.Min(SidebarCollapsedWidth, SidebarWidthPx), 40);
+    private string SidebarDrawerStyle => SidebarExpanded
+        ? $"width:{SidebarWidthPx}px !important;min-width:{SidebarWidthPx}px !important;max-width:{SidebarWidthPx}px !important;flex:0 0 {SidebarWidthPx}px !important;"
+        : $"width:{SidebarCollapsedWidthPx}px !important;min-width:{SidebarCollapsedWidthPx}px !important;max-width:{SidebarCollapsedWidthPx}px !important;flex:0 0 {SidebarCollapsedWidthPx}px !important;";
+    private string MainContentStyle => $"margin-left:{(SidebarExpanded ? SidebarWidthPx : SidebarCollapsedWidthPx)}px !important;";
 
     private string _bgStyle => !string.IsNullOrEmpty(BackgroundImageUrl)
         ? $"background-image: url('{BackgroundImageUrl}');"

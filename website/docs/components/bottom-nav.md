@@ -4,12 +4,11 @@ sidebar_position: 3
 
 # MdsBottomNav
 
-Mobile-only fixed bottom navigation bar. Visible on xs/sm (≤ 959 px), hidden on md+.
-Place it inside the `BottomNavContent` slot of `MdsAppShell`.
+Compact bottom navigation bar component you can place in your own layouts.
 
 ![MdsBottomNav — fixed bottom bar on mobile viewport with active highlight](/img/screenshots/home-mobile.png)
 
-*`MdsBottomNav` at the bottom of a 390 px viewport. Sidebar is hidden; bottom nav takes over.*
+*`MdsBottomNav` rendered in a compact container.*
 
 
 
@@ -20,22 +19,12 @@ Place it inside the `BottomNavContent` slot of `MdsAppShell`.
 | `Items` | `MbxNavItem[]?` | `null` | Navigation items (shares the same record as `MdsSidebar`) |
 | `ActiveHref` | `string?` | `null` | Href of the currently active item — highlighted with primary colour |
 
-## Layout
-
-- Fixed `position: fixed; bottom: 0; left: 0; right: 0`
-- Height: 56 px
-- `MdsAppShell` automatically adds `padding-bottom: 56px` to the main content so nothing is hidden behind it
-
 ## Example
 
 ```razor
-@* Inside MainLayout.razor *@
-<MdsAppShell @ref="_shell" ...>
-  ...
-  <BottomNavContent>
-    <MdsBottomNav Items="@_navItems" ActiveHref="@_currentHref" />
-  </BottomNavContent>
-</MdsAppShell>
+<MudPaper Outlined="true">
+  <MdsBottomNav Items="@_navItems" ActiveHref="@_currentHref" />
+</MudPaper>
 
 @code {
     private readonly MbxNavItem[] _navItems =

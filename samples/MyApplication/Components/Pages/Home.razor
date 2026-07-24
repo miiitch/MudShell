@@ -4,18 +4,18 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+<MudContainer MaxWidth="MaxWidth.Medium" Class="px-4 pb-4 pt-0">
 <MudStack Spacing="3">
     <MudStack Row="true" Justify="Justify.FlexEnd">
         <MudIconButton Icon="@Icons.Material.Outlined.Tune" Color="Color.Inherit" Size="Size.Small" />
     </MudStack>
 
     <MudText Typo="Typo.h4">
-        C'est un plaisir te revoir, Michel.<br />
-        Quelles sont les dernières nouvelles?
+        Great to see you again, Michel.<br />
+        What's the latest?
     </MudText>
 
-    <MdsChatBar Placeholder="@("Message Copilot ou @ mentionnez un onglet")"
+    <MdsChatBar Placeholder="@("Message Copilot or @mention a tab")"
                 @bind-Value="_chatMessage">
         <Actions>
             <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" />
@@ -30,7 +30,7 @@
     <MudPaper Outlined="true" Class="pa-4">
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mds-u-inline-title">
             <MudIcon Icon="@Icons.Material.Outlined.Devices" Size="Size.Small" />
-            <MudText Typo="Typo.subtitle1">Modes de rendu Blazor</MudText>
+            <MudText Typo="Typo.subtitle1">Blazor render modes</MudText>
         </MudStack>
 
         <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="1" Class="mt-2">
@@ -56,18 +56,18 @@
         <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/modes"
                    EndIcon="@Icons.Material.Filled.ArrowForward"
                    Class="mt-1 text-none">
-            Voir toutes les combinaisons
+            View all combinations
         </MudButton>
     </MudPaper>
 
     <MudPaper Outlined="true" Class="pa-4">
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mds-u-inline-title">
             <MudIcon Icon="@Icons.Material.Outlined.TableChart" Size="Size.Small" />
-            <MudText Typo="Typo.subtitle2">Acces rapide</MudText>
+            <MudText Typo="Typo.subtitle2">Quick access</MudText>
         </MudStack>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/europe-cities"
                    StartIcon="@Icons.Material.Outlined.TravelExplore" Class="text-none">
-            Ouvrir le dashboard Villes Europe
+            Open Europe Cities dashboard
         </MudButton>
     </MudPaper>
 </MudStack>

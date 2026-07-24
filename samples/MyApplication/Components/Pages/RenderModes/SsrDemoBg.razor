@@ -1,13 +1,13 @@
 @page "/modes/ssr/bg"
 
-<PageTitle>Static SSR — Fond actif</PageTitle>
+<PageTitle>Static SSR — Active background</PageTitle>
 
-<MdsPageHeader Title="Static SSR — Fond d'écran">
+<MdsPageHeader Title="Static SSR — Background image">
     <StartContent><div></div></StartContent>
     <EndContent>
         <MudStack Row="true" Spacing="1" Class="mds-u-chip-row">
-            <MudChip T="string" Color="Color.Default" Size="Size.Small" Variant="Variant.Outlined">Aucun circuit actif</MudChip>
-            <MudChip T="string" Color="Color.Primary" Size="Size.Small">Fond actif 🖼</MudChip>
+            <MudChip T="string" Color="Color.Default" Size="Size.Small" Variant="Variant.Outlined">No active circuit</MudChip>
+            <MudChip T="string" Color="Color.Primary" Size="Size.Small">Active background 🖼</MudChip>
         </MudStack>
     </EndContent>
 </MdsPageHeader>
@@ -18,19 +18,19 @@
         <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Start">
             <MudIcon Icon="@Icons.Material.Outlined.Wallpaper" Size="Size.Small" />
             <MudText Typo="Typo.body2">
-                Même page en <strong>Static SSR</strong>, avec le <strong>fond d'écran activé</strong>.
-                Le fond est déclenché automatiquement par le layout lorsque la route se termine par <code>/bg</code>.
+                Same page in <strong>Static SSR</strong>, with the <strong>background image enabled</strong>.
+                The background is automatically activated by the layout when the route ends with <code>/bg</code>.
             </MudText>
         </MudStack>
     </MudPaper>
 
     <MudStack Spacing="2">
-        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsChatBar (statique)</MudText>
-        <MdsChatBar Placeholder="@("Rendu statique — les événements ne fonctionnent pas")" />
+        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsChatBar (static)</MudText>
+        <MdsChatBar Placeholder="@("Static render - events do not work")" />
     </MudStack>
 
     <MudStack Spacing="2">
-        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsDocumentCard (statique)</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsDocumentCard (static)</MudText>
         <MudGrid Spacing="3">
             <MudItem xs="12" sm="6" md="4">
                 <MdsDocumentCard Icon="@Icons.Material.Outlined.Description"
@@ -40,22 +40,22 @@
             </MudItem>
             <MudItem xs="12" sm="6" md="4">
                 <MdsDocumentCard Icon="@Icons.Material.Outlined.BarChart"
-                                 TypeLabel="Rapport"
-                                 Title="Rapport Q3"
-                                 Description="Analyse des métriques d'engagement sur le trimestre." />
+                                 TypeLabel="Report"
+                                 Title="Q3 report"
+                                 Description="Engagement metrics analysis for the quarter." />
             </MudItem>
         </MudGrid>
     </MudStack>
 
     <MudStack Spacing="2">
-        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsPageHeader (statique)</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsPageHeader (static)</MudText>
         <MudPaper Outlined="true" Class="mds-u-surface-wrap">
-            <MdsPageHeader Title="Titre de page">
+            <MdsPageHeader Title="Page title">
                 <StartContent><div></div></StartContent>
                 <EndContent>
                     <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
                                disabled>
-                        Action (désactivée)
+                        Action (disabled)
                     </MudButton>
                 </EndContent>
             </MdsPageHeader>

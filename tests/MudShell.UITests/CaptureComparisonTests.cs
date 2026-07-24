@@ -48,28 +48,3 @@ public class CaptureDesktopPagesTests : PlaywrightTestBase
         await Page.ScreenshotAsync(new() { Path = path, FullPage = false });
     }
 }
-
-public class CaptureMobilePagesTests : PlaywrightTestBase
-{
-    protected override BrowserNewContextOptions ContextOptions => new()
-    {
-        BaseURL = BaseUrl,
-        IgnoreHTTPSErrors = true,
-        ViewportSize = new() { Width = 390, Height = 844 },
-    };
-
-    [Theory]
-    [InlineData("/", "home-mobile.png")]
-    [InlineData("/demo", "demo-mobile.png")]
-    public Task Capture_MobilePage(string route, string fileName) => RunAsync($"{nameof(Capture_MobilePage)}_{fileName}", async () =>
-    {
-        await Page.GotoAsync(route, new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle, Timeout = 60_000 });
-        await Assertions.Expect(Page.Locator(".mbx-shell")).ToBeVisibleAsync();
-        await Page.WaitForTimeoutAsync(350);
-
-        var dir = Path.Combine(Directory.GetCurrentDirectory(), "screenshots", "current");
-        Directory.CreateDirectory(dir);
-        var path = Path.Combine(dir, fileName);
-        await Page.ScreenshotAsync(new() { Path = path, FullPage = false });
-    });
-}

@@ -18,16 +18,9 @@ MudShell follows **MudBlazor's breakpoints** (Material Design):
 
 ## Shell behaviour
 
-### Desktop (md+)
+### Desktop-first shell
 - **Sidebar** visible, icon-only (56 px wide)
 - Toggle button expands to 240 px with labels
-- **BottomNav** hidden (`display: none` on `.mbx-bottom-nav-slot`)
-
-### Mobile (xs / sm — ≤ 959 px)
-- **Sidebar** hidden (`display: none` on `.mbx-sidebar`)
-- **BottomNav** appears — fixed at the bottom, 56 px tall
-- `app-main` loses its margin and border-radius → full-bleed content
-- `mbx-main-inner` gets `padding-bottom: 56px` to avoid content hidden behind BottomNav
 
 ---
 

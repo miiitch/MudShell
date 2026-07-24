@@ -32,12 +32,12 @@ else
                 </div>
                 <MudIconButton Icon="@(ThemeState.IsDarkMode ? Icons.Material.Outlined.LightMode : Icons.Material.Outlined.DarkMode)"
                                Size="Size.Small" Color="Color.Inherit"
-                               title="@(ThemeState.IsDarkMode ? "Mode clair" : "Mode sombre")"
+                               title="@(ThemeState.IsDarkMode ? "Light mode" : "Dark mode")"
                                OnClick="@(() => ThemeState.SetDarkMode(!ThemeState.IsDarkMode))"
                                Style="flex-shrink:0;" />
                 <MudIconButton Icon="@Icons.Material.Outlined.ColorLens"
                                Size="Size.Small" Color="Color.Inherit"
-                               title="Thème et fond"
+                               title="Theme and background"
                                OnClick="@OpenThemeDialog"
                                Style="flex-shrink:0; margin-left:0;" />
             }
@@ -53,13 +53,12 @@ else
 
     private readonly MbxNavItem[] _primaryItems =
     [
-        new(Icons.Material.Outlined.GridView,      "Accueil",       "/"),
-        new(Icons.Material.Outlined.Cloud,         "Météo",         "/meteo"),
-        new(Icons.Material.Outlined.TableChart,    "Villes Europe", "/europe-cities"),
-        new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque",  "/library"),
-        new(Icons.Material.Outlined.Widgets,       "Composants",    "/main-components"),
+        new(Icons.Material.Outlined.GridView,      "Home",          "/"),
+        new(Icons.Material.Outlined.Cloud,         "Weather",       "/meteo"),
+        new(Icons.Material.Outlined.TableChart,    "Europe Cities", "/europe-cities"),
+        new(Icons.Material.Outlined.ContentCopy,   "Library",       "/library"),
         new(Icons.Material.Outlined.Palette,       "Demo",          "/demo"),
-        new(Icons.Material.Outlined.DeveloperMode, "Render Modes",  "/modes"),
+        new(Icons.Material.Outlined.Widgets,       "Components",    "/components"),
     ];
 
     private MbxNavItem[] _allItems => _primaryItems;
@@ -73,6 +72,6 @@ else
             FullWidth = true
         };
 
-        await DialogService.ShowAsync<ThemeOptionsPanel>("Thème et fond", options);
+        await DialogService.ShowAsync<ThemeOptionsPanel>("Theme and background", options);
     }
 }

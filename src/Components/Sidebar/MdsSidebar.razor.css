@@ -16,26 +16,23 @@
     padding: 0 var(--mbx-space-2);
 }
 
-.mbx-sidebar-icon-link {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--mbx-radius-md);
-    color: var(--mud-palette-text-secondary);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.2s ease, background-color 0.2s ease;
-}
-
 /* ── Toggle ──────────────────────────────────────────────────────────── */
 .mbx-nav-toggle {
     align-self: center;
-    margin-bottom: var(--mbx-space-1);
+    height: 40px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
 }
 
 .mbx-nav-toggle.mbx-nav-toggle-expanded {
     align-self: flex-end;
+}
+
+.mbx-nav-toggle ::deep .mud-icon-button {
+    margin: 0 !important;
 }
 
 /* ── Logo ────────────────────────────────────────────────────────────── */
@@ -65,81 +62,64 @@
     align-items: stretch;
 }
 
-.mbx-nav-items ::deep .mud-icon-button {
-    color: var(--mud-palette-text-secondary);
-    transition: color 0.2s ease, background-color 0.2s ease;
-    border-radius: var(--mbx-radius-md);
+/* ── MudNavMenu overrides ─────────────────────────────────────────────── */
+.mbx-sidebar-mud-nav {
+    width: 100%;
+}
+
+/* Override MudNavLink to match our design */
+::deep .mbx-sidebar-mud-nav .mud-nav-link {
+    color: var(--mud-palette-text-secondary) !important;
+    border-radius: var(--mbx-radius-md) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    transition: color 0.2s ease, background-color 0.2s ease !important;
+}
+
+::deep .mbx-sidebar-mud-nav .mud-nav-link:hover {
+    color: var(--mud-palette-text-primary) !important;
+    background-color: var(--mbx-nav-hover-bg) !important;
+}
+
+::deep .mbx-sidebar-mud-nav .mud-nav-link.mbx-nav-link-active,
+::deep .mbx-sidebar-mud-nav .mud-nav-link.active {
+    color: var(--mud-palette-primary) !important;
+    background-color: var(--mbx-subtle-bg) !important;
+}
+
+/* ── Icon-only mode (collapsed) ─────────────────────────────────────── */
+.mbx-sidebar-icon-link {
     width: 40px;
     height: 40px;
-}
-
-/* ── Expanded items ──────────────────────────────────────────────────── */
-.mbx-nav-item-expanded {
-    width: 100%;
-}
-
-.mbx-nav-link {
-    display: flex;
-    align-items: center;
-    gap: var(--mbx-space-3);
-    padding: var(--mbx-space-2) 10px;
     border-radius: var(--mbx-radius-md);
-    text-decoration: none;
     color: var(--mud-palette-text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: color 0.2s ease, background-color 0.2s ease;
-    width: 100%;
-    box-sizing: border-box;
 }
 
-.mbx-nav-link:hover,
-.mbx-nav-link-clickable:hover,
-.mbx-sidebar-icon-link:hover,
-.mbx-nav-items ::deep .mud-icon-button:hover {
+.mbx-sidebar-icon-link:hover {
     color: var(--mud-palette-text-primary);
     background-color: var(--mbx-nav-hover-bg);
 }
 
-.mbx-nav-link-clickable {
-    cursor: pointer;
-}
-
-.mbx-nav-link:focus-visible,
-.mbx-nav-items ::deep .mud-icon-button:focus-visible,
-.mbx-nav-bottom.mbx-nav-bottom-expanded:focus-visible {
-    outline: 2px solid var(--mbx-focus-ring);
-    outline-offset: 2px;
-}
-
-.mbx-nav-link.mbx-nav-link-active,
 .mbx-sidebar-icon-link.mbx-sidebar-icon-link-active {
     color: var(--mud-palette-primary);
     background-color: var(--mbx-subtle-bg);
 }
 
-.mbx-nav-icon {
-    flex-shrink: 0;
-    color: inherit;
-}
-
-.mbx-nav-label {
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap;
-    color: inherit;
-}
-
 /* ── Divider ─────────────────────────────────────────────────────────── */
 .mbx-nav-divider {
-    width: 28px;
+    width: 28px !important;
     height: 1px;
-    background: var(--mud-palette-divider);
-    margin: var(--mbx-space-2) 0;
-    align-self: center;
+    margin: var(--mbx-space-2) auto !important;
     transition: width 0.3s cubic-bezier(.4,0,.2,1);
 }
 
 .mbx-nav-divider.mbx-nav-divider-wide {
-    width: calc(100% - 12px);
+    width: calc(100% - 12px) !important;
 }
 
 /* ── Spacer ──────────────────────────────────────────────────────────── */

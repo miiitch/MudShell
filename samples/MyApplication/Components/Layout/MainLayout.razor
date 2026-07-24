@@ -26,10 +26,6 @@
         @Body
     </ChildContent>
 
-    <BottomNavContent>
-        <NavMenu ShellRef="@_shell" IsExpanded="false" MobileMode="true" />
-    </BottomNavContent>
-
 </MdsAppShell>
 
 <div id="blazor-error-ui" data-nosnippet>
@@ -45,11 +41,12 @@
     private bool _contextPanelExpanded = true;
     private RenderFragment? ContextPanel => _showContextPanel
         ? @<div>
-              <div style="display:flex; justify-content:flex-end; padding:8px 8px 0;">
+              <div style="display:flex; justify-content:flex-end; align-items:center; height:40px; padding:0 8px;">
                   <MudIconButton Icon="@(_contextPanelExpanded ? Icons.Material.Outlined.KeyboardDoubleArrowLeft : Icons.Material.Outlined.KeyboardDoubleArrowRight)"
                                  Size="Size.Small"
                                  Color="Color.Inherit"
-                                 title="Réduire/agrandir le panneau contextuel"
+                                 Style="margin:0;"
+                                 title="Collapse/expand context panel"
                                  OnClick="@(() => _shell.ToggleContextPanel())" />
               </div>
               <MdsContextNavPanel Tree="@_navTree" IsExpanded="@_contextPanelExpanded" />
@@ -60,13 +57,13 @@
     [
         new(
             id: "home",
-            text: "Accueil",
+            text: "Home",
             icon: Icons.Material.Outlined.GridView,
             href: "/",
             match: MbxNavMatchMode.All),
         new(
             id: "library",
-            text: "Bibliothèque",
+            text: "Library",
             icon: Icons.Material.Outlined.ContentCopy,
             href: "/library",
             match: MbxNavMatchMode.Prefix,
@@ -74,7 +71,7 @@
             [
                 new(
                     id: "library.documents",
-                    text: "Mes documents",
+                    text: "My documents",
                     icon: Icons.Material.Outlined.Folder,
                     href: "/library",
                     match: MbxNavMatchMode.Prefix,
@@ -82,20 +79,75 @@
                     [
                         new(
                             id: "library.documents.folder1",
-                            text: "Dossier 1",
+                            text: "Folder 1",
                             href: "/library"),
                         new(
                             id: "library.documents.folder2",
-                            text: "Dossier 2",
+                            text: "Folder 2",
                             href: "/library")
                     ],
                     defaultExpanded: true),
                 new(
                     id: "library.history",
-                    text: "Historique",
+                    text: "History",
                     icon: Icons.Material.Outlined.History,
                     href: "/library"),
-            ])
+            ]),
+        new(
+            id: "demo",
+            text: "Demo",
+            icon: Icons.Material.Outlined.Palette,
+            href: "/demo",
+            match: MbxNavMatchMode.Prefix,
+            children:
+            [
+                new(
+                    id: "demo.showcase",
+                    text: "Showcase",
+                    icon: Icons.Material.Outlined.Palette,
+                    href: "/demo"),
+                new(
+                    id: "demo.render-modes",
+                    text: "Render Modes",
+                    icon: Icons.Material.Outlined.DeveloperMode,
+                    href: "/modes"),
+                new(
+                    id: "demo.ssr",
+                    text: "Static SSR",
+                    icon: Icons.Material.Outlined.Article,
+                    href: "/modes/ssr"),
+                new(
+                    id: "demo.server",
+                    text: "Interactive Server",
+                    icon: Icons.Material.Outlined.Hub,
+                    href: "/modes/server")
+            ],
+            defaultExpanded: true),
+        new(
+            id: "components",
+            text: "Components",
+            icon: Icons.Material.Outlined.Widgets,
+            href: "/components",
+            match: MbxNavMatchMode.Prefix,
+            children:
+            [
+                new(
+                    id: "components.index",
+                    text: "Components Home",
+                    icon: Icons.Material.Outlined.GridView,
+                    href: "/components"),
+                new(
+                    id: "components.main",
+                    text: "Main Components",
+                    icon: Icons.Material.Outlined.ViewAgenda,
+                    href: "/main-components"),
+                new(
+                    id: "components.main-bg",
+                    text: "Main Components BG",
+                    icon: Icons.Material.Outlined.Wallpaper,
+                    href: "/main-components/bg")
+            ],
+            defaultExpanded: true)
     ]);
 
     protected override void OnInitialized()
@@ -117,7 +169,12 @@
     {
         var path = new Uri(uri).AbsolutePath.TrimEnd('/');
 
-        _showContextPanel = path.StartsWith("/library", StringComparison.OrdinalIgnoreCase);
+        _showContextPanel =
+            path.StartsWith("/library", StringComparison.OrdinalIgnoreCase)
+            || path.StartsWith("/components", StringComparison.OrdinalIgnoreCase)
+            || path.StartsWith("/main-components", StringComparison.OrdinalIgnoreCase)
+            || path.StartsWith("/demo", StringComparison.OrdinalIgnoreCase)
+            || path.StartsWith("/modes", StringComparison.OrdinalIgnoreCase);
 
         var isBgRoute = path.EndsWith("/bg", StringComparison.OrdinalIgnoreCase);
         ThemeState.SetBackgroundMode(isBgRoute

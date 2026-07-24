@@ -1,16 +1,16 @@
 /* =====================================================================
    MdsBottomNav — barre de navigation mobile
-   Hidden on md+ via parent slot (mbx-bottom-nav-slot display:none)
    ===================================================================== */
+
 .mbx-bottom-nav {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    height: 60px;
     background: var(--mbx-content-surface);
     border-top: 1px solid var(--mbx-content-border);
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
+    height: 60px;
     padding: 0 var(--mbx-space-2);
     width: 100%;
     box-sizing: border-box;

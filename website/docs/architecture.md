@@ -11,11 +11,10 @@ The core of MudShell is the **shell pattern**: a single root component (`MdsAppS
 ```
 MdsAppShell
 ├── SidebarContent  ← RenderFragment (nav, logo, profile)
-├── ChildContent    ← RenderFragment (routed page body)
-└── BottomNavContent ← RenderFragment (mobile bottom nav)
+└── ChildContent    ← RenderFragment (routed page body)
 ```
 
-This separates structure (AppShell) from content (page) and navigation (Sidebar/BottomNav), making each piece independently replaceable.
+This separates structure (AppShell) from content (page) and navigation (Sidebar), making each piece independently replaceable.
 
 ---
 
@@ -28,18 +27,18 @@ This separates structure (AppShell) from content (page) and navigation (Sidebar/
 | `Palette` | Opaque background using `--mud-palette-background`. Sidebar and main use `--mud-palette-surface`. |
 | `Image` | A full-bleed background image with glassmorphism sidebar (`backdrop-filter: blur`). Main area is transparent. |
 
-Switch mode from any page:
+In the sample app, background mode is coordinated through a state container injected into the layout:
 
 ```razor
-[CascadingParameter] public MainLayout MainLayoutRef { get; set; } = default!;
+@inject ThemeState ThemeState
 
 protected override void OnInitialized()
 {
-    MainLayoutRef.SetBackgroundMode(MdsAppShell.MbxBackgroundMode.Image, "/images/bg.jpg");
+    ThemeState.SetBackgroundMode(MdsAppShell.MbxBackgroundMode.Image, "/imgs/bg1.jpg");
 }
 ```
 
-> `MainLayout` exposes `SetBackgroundMode()` which delegates to the `_shell` reference.
+For simpler apps, you can also bind `BackgroundMode` and `BackgroundImageUrl` directly on `MdsAppShell`.
 
 ---
 

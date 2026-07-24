@@ -25,7 +25,7 @@ In your app's `.csproj`:
 
 ## Step 2 — Register services
 
-In `Program.cs`, replace `AddMudServices()` (or call it in addition):
+In `Program.cs`, register MudShell and do **not** call `AddMudServices()` separately:
 
 ```csharp
 builder.Services.AddMudShell();
@@ -43,6 +43,7 @@ In your app's `_Imports.razor`:
 @using MudShell.Components.ChatBar
 @using MudShell.Components.DocumentCard
 @using MudShell.Components.FilterTabBar
+@using MudShell.Components.MainContent
 @using MudShell.Components.PageHeader
 ```
 
@@ -61,9 +62,6 @@ Replace the contents of `MainLayout.razor` with:
                 PrimaryItems="@_navItems" />
   </SidebarContent>
   <ChildContent>@Body</ChildContent>
-  <BottomNavContent>
-    <MdsBottomNav Items="@_navItems" />
-  </BottomNavContent>
 </MdsAppShell>
 
 @code {
@@ -85,10 +83,12 @@ dotnet run --project YourApp
 ```
 
 Navigate to `https://localhost:5001`. You should see the dark shell with a collapsible sidebar.
-On a narrow viewport (≤ 959 px) the sidebar disappears and a bottom navigation bar appears.
 
 ## Next steps
 
 - [Theming](theming.md) — customise colours
+- [MudBlazor integration](mudblazor-integration.md) — integrate MudShell into an existing MudBlazor app
+- [Page blueprint](page-blueprint.md) — build pages with the recommended structure
+- [Model](model.md) — understand the MudShell composition model
 - [Architecture](architecture.md) — understand the shell pattern
 - [Responsive](responsive.md) — breakpoint behaviour

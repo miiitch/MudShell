@@ -1,22 +1,23 @@
 @page "/demo"
 @rendermode InteractiveServer
 
-<PageTitle>Composants Demo</PageTitle>
+<PageTitle>Components Demo</PageTitle>
 
+<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
 @* ── Header ─────────────────────────────────────────────────────────── *@
-<MdsPageHeader Title="Design System — Vitrine">
+<MdsPageHeader Title="Design System — Showcase">
     <StartContent><div></div></StartContent>
     <EndContent>
         <MudChip T="string" Color="Color.Primary" Size="Size.Small">MudShell</MudChip>
     </EndContent>
 </MdsPageHeader>
 
-<MudStack Spacing="6" Class="px-4 pb-6">
+<MudStack Spacing="6" Class="pb-2">
     @* ── Section : ChatBar ──────────────────────────────────────────── *@
     <MudStack Spacing="2">
         <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsChatBar</MudText>
         <MudStack Spacing="1" AlignItems="AlignItems.Center">
-            <MdsChatBar Placeholder="@("Message Copilot ou @ mentionnez un onglet")"
+            <MdsChatBar Placeholder="@("Message Copilot or @mention a tab")"
                         @bind-Value="_chatValue">
                 <Actions>
                     <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" />
@@ -29,7 +30,7 @@
             </MdsChatBar>
             @if (!string.IsNullOrEmpty(_chatValue))
             {
-                <MudText Typo="Typo.caption" Color="Color.Secondary">Valeur : @_chatValue</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Secondary">Value: @_chatValue</MudText>
             }
         </MudStack>
     </MudStack>
@@ -38,7 +39,7 @@
     <MudStack Spacing="2">
         <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsFilterTabBar</MudText>
         <MdsFilterTabBar T="string" @bind-Value="_selectedTab" Items="@_tabs" />
-        <MudText Typo="Typo.caption" Color="Color.Secondary">Onglet actif : @_selectedTab</MudText>
+        <MudText Typo="Typo.caption" Color="Color.Secondary">Active tab: @_selectedTab</MudText>
     </MudStack>
 
     @* ── Section : DocumentCard ─────────────────────────────────────── *@
@@ -54,14 +55,14 @@
             <MudItem xs="12" sm="6" md="4" lg="3">
                 <MdsDocumentCard Icon="@Icons.Material.Outlined.Image"
                                  TypeLabel="Image"
-                                 Title="Aperçu du projet"
-                                 Description="Maquette haute fidélité pour la page d'accueil de l'application." />
+                                 Title="Project preview"
+                                 Description="High-fidelity mockup for the app home page." />
             </MudItem>
             <MudItem xs="12" sm="6" md="4" lg="3">
                 <MdsDocumentCard Icon="@Icons.Material.Outlined.BarChart"
-                                 TypeLabel="Rapport"
-                                 Title="Rapport Q3 2024"
-                                 Description="Analyse des métriques d'engagement utilisateur sur le trimestre." />
+                                 TypeLabel="Report"
+                                 Title="Q3 2024 report"
+                                 Description="Analysis of user engagement metrics for the quarter." />
             </MudItem>
         </MudGrid>
     </MudStack>
@@ -71,8 +72,8 @@
         <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsPageHeader</MudText>
         <MudPaper Outlined="true" Class="mds-u-surface-wrap">
             <MudStack Spacing="0">
-            <MdsPageHeader Title="Titre de page simple" />
-            <MdsPageHeader Title="Avec action">
+            <MdsPageHeader Title="Simple page title" />
+            <MdsPageHeader Title="With action">
                 <StartContent><div></div></StartContent>
                 <EndContent>
                     <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
@@ -83,38 +84,24 @@
         </MudPaper>
     </MudStack>
 
-    @* ── Section : BottomNav preview ────────────────────────────────── *@
-    <MudStack Spacing="2">
-        <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsBottomNav <MudChip T="string" Size="Size.Small">xs / sm</MudChip></MudText>
-        <MudText Typo="Typo.body2" Color="Color.Secondary">
-            Visible uniquement sur mobile (≤ 959 px). Aperçu forcé ci-dessous.
-        </MudText>
-        <MudContainer MaxWidth="MaxWidth.Small" Class="pa-0 ma-0">
-            <MudPaper Outlined="true" Class="mds-u-surface-wrap">
-                <MdsBottomNav Items="@_navItems" ActiveHref="/" />
-            </MudPaper>
-        </MudContainer>
-    </MudStack>
-
     @* ── Section : Responsive note ──────────────────────────────────── *@
     <MudStack Spacing="2">
-        <MudText Typo="Typo.h6" Class="mds-u-section-title">Breakpoints</MudText>
+        <MudText Typo="Typo.h6" Class="mds-u-section-title">Desktop breakpoints</MudText>
         <MudSimpleTable Dense="true" Hover="true">
             <thead>
                 <tr>
-                    <th>Alias</th><th>Largeur</th><th>Sidebar</th><th>BottomNav</th>
+                    <th>Alias</th><th>Width</th><th>Sidebar</th>
                 </tr>
             </thead>
             <tbody>
-                <tr><td>xs</td><td>&lt; 600 px</td><td>cachée</td><td>visible</td></tr>
-                <tr><td>sm</td><td>600 – 959 px</td><td>cachée</td><td>visible</td></tr>
-                <tr><td>md</td><td>960 – 1279 px</td><td>icon-only</td><td>cachée</td></tr>
-                <tr><td>lg+</td><td>≥ 1280 px</td><td>icon-only / expanded</td><td>cachée</td></tr>
+                <tr><td>md</td><td>960 – 1279 px</td><td>icon-only</td></tr>
+                <tr><td>lg+</td><td>≥ 1280 px</td><td>icon-only / expanded</td></tr>
             </tbody>
         </MudSimpleTable>
     </MudStack>
 
 </MudStack>
+</MudContainer>
 
 @code {
     private string _chatValue = string.Empty;
@@ -124,15 +111,8 @@
     [
         new("images",   "Images"),
         new("pages",    "Pages"),
-        new("rapports", "Rapports de recherche"),
-        new("videos",   "Vidéos"),
+        new("reports", "Research reports"),
+        new("videos",  "Videos"),
     ];
 
-    private readonly MbxNavItem[] _navItems =
-    [
-        new(Icons.Material.Outlined.GridView,    "Accueil",   "/"),
-        new(Icons.Material.Outlined.EditNote,    "Éditeur"),
-        new(Icons.Material.Outlined.ContentCopy, "Biblio",    "/library"),
-        new(Icons.Material.Outlined.CheckBox,    "Tâches"),
-    ];
 }

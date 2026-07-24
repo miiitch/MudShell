@@ -1,13 +1,14 @@
 @page "/main-components/bg"
 @rendermode InteractiveServer
 
-<PageTitle>Composants principaux BG</PageTitle>
+<PageTitle>Main components BG</PageTitle>
 
-<MdsPageHeader Title="Composants principaux (BG)">
+<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
+<MdsPageHeader Title="Main components (BG)">
     <StartContent><div></div></StartContent>
     <EndContent>
         <MdsMainButton Variant="Variant.Outlined" Color="Color.Inherit" Href="/main-components" Compact="true">
-            Revenir palette
+            Back to palette
         </MdsMainButton>
     </EndContent>
 </MdsPageHeader>
@@ -18,27 +19,28 @@
         <MdsMainStatusBadge Label="Theme compatible" Status="success" />
         <MudSpacer />
         <MdsMainButton Variant="Variant.Text" Color="Color.Inherit" StartIcon="@Icons.Material.Outlined.ColorLens">
-            Changer thème
+            Change theme
         </MdsMainButton>
     </MdsMainToolbar>
 
-    <MdsMainSection Title="Rendu en mode BG"
-                    Description="Les wrappers restent lisibles au-dessus du fond image."
+    <MdsMainSection Title="Rendering in BG mode"
+                    Description="Wrappers stay readable above the background image."
                     Icon="@Icons.Material.Outlined.Wallpaper">
         <MudGrid Spacing="2">
             <MudItem xs="12" sm="6">
-                <MdsMainPart Title="Bloc 1" Subtitle="Surface harmonisée">
-                    <MudText Typo="Typo.body2">Utilisez les wrappers au lieu des composants Mud bruts pour garder une cohérence visuelle.</MudText>
+                <MdsMainPart Title="Block 1" Subtitle="Harmonized surface">
+                    <MudText Typo="Typo.body2">Use wrappers instead of raw Mud components to keep visual consistency.</MudText>
                 </MdsMainPart>
             </MudItem>
             <MudItem xs="12" sm="6">
-                <MdsMainPart Title="Bloc 2" Subtitle="Actions standardisées">
+                <MdsMainPart Title="Block 2" Subtitle="Standardized actions">
                     <MudStack Row="true" Spacing="1">
-                        <MdsMainButton Compact="true">Action primaire</MdsMainButton>
-                        <MdsMainButton Compact="true" Variant="Variant.Outlined" Color="Color.Default">Secondaire</MdsMainButton>
+                        <MdsMainButton Compact="true">Primary action</MdsMainButton>
+                        <MdsMainButton Compact="true" Variant="Variant.Outlined" Color="Color.Default">Secondary</MdsMainButton>
                     </MudStack>
                 </MdsMainPart>
             </MudItem>
         </MudGrid>
     </MdsMainSection>
 </MudStack>
+</MudContainer>

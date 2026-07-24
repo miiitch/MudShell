@@ -1,46 +1,67 @@
 /* =====================================================================
    MdsPageHeader — header de page
    ===================================================================== */
-.mbx-page-header {
+::deep .mbx-page-header.mud-toolbar {
     padding: var(--mbx-space-5) var(--mbx-space-6) var(--mbx-space-3) var(--mbx-space-6);
-    gap: var(--mbx-space-3);
+    gap: var(--mbx-space-4);
+    min-height: 48px;
+    height: auto;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.mbx-page-header-title ::deep,
-.mbx-page-header-title {
+.mbx-page-header-core {
+    display: flex;
+    align-items: center;
+    gap: var(--mbx-space-3);
+    min-height: 36px;
+    flex-wrap: wrap;
+}
+
+::deep .mbx-page-header-title {
     font-weight: 600;
-    flex: 1;
-    text-align: center;
+    margin: 0;
+    line-height: 1.2;
+}
+
+::deep .mbx-page-header-icon {
+    color: var(--mud-palette-primary);
+    flex: 0 0 auto;
+}
+
+::deep .mbx-page-header-breadcrumbs {
+    display: inline-flex;
+    align-items: center;
 }
 
 .mbx-page-header-start,
 .mbx-page-header-end {
-    min-width: 80px;
+    min-height: 36px;
 }
 
-/* ── Responsive ──────────────────────────────────────────────────────── */
+.mbx-page-header-end {
+    margin-left: auto;
+    gap: var(--mbx-space-2);
+}
+
 @media (max-width: 599px) {
-    .mbx-page-header {
+    ::deep .mbx-page-header.mud-toolbar {
         flex-wrap: wrap;
-        padding: var(--mbx-space-4) var(--mbx-space-4) var(--mbx-space-2) var(--mbx-space-4);
-        justify-content: center;
+        padding: var(--mbx-space-4);
+        justify-content: flex-start;
     }
 
-    .mbx-page-header-start {
-        order: 1;
-        min-width: unset;
+    .mbx-page-header-core {
+        width: 100%;
     }
 
     .mbx-page-header-title {
-        order: 2;
-        flex-basis: 100%;
-        text-align: center;
+        font-size: 1.25rem;
     }
 
     .mbx-page-header-end {
-        order: 3;
-        min-width: unset;
-        justify-content: center;
         width: 100%;
+        justify-content: flex-start;
+        margin-left: 0;
     }
 }

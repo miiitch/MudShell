@@ -4,7 +4,7 @@
 
 /* ── CSS custom properties (cascade to all children) ────────────────── */
 .mbx-shell {
-    /* v2 design tokens */
+    /* design tokens */
     --mbx-space-1:                4px;
     --mbx-space-2:                8px;
     --mbx-space-3:                12px;
@@ -21,7 +21,6 @@
     --mbx-focus-ring:             color-mix(in srgb, var(--mud-palette-primary, #594AE2) 56%, transparent);
     --mbx-main-content-padding:   var(--mbx-space-4);
 
-    /* dark defaults */
     --mbx-chat-bg:                color-mix(in srgb, var(--mud-palette-surface, #121212) 92%, transparent);
     --mbx-chat-border:            color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 55%, transparent);
     --mbx-chat-shadow:            0 8px 32px color-mix(in srgb, var(--mud-palette-overlay-light, rgba(0, 0, 0, 0.6)) 58%, transparent);
@@ -32,7 +31,6 @@
     --mbx-subtle-bg:              color-mix(in srgb, var(--mud-palette-primary, #594AE2) 10%, transparent);
     --mbx-subtle-bg-hover:        color-mix(in srgb, var(--mud-palette-primary, #594AE2) 16%, transparent);
 
-    display: flex;
     height: 100vh;
     width: 100vw;
     position: relative;
@@ -70,35 +68,37 @@
     background: linear-gradient(160deg, #6aabd2 0%, #8ec5d6 25%, #b9dce3 45%, #c3d9b5 65%, #7ab661 100%);
 }
 
-/* ── Sidebar ─────────────────────────────────────────────────────────── */
-.mbx-sidebar {
-    width: 56px;
-    min-width: 56px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 14px 0;
-    z-index: 2;
+/* ── MudLayout fill ──────────────────────────────────────────────────── */
+::deep .mbx-layout {
+    height: 100%;
+    overflow: hidden;
     position: relative;
-    gap: 2px;
-    transition: width 0.3s cubic-bezier(.4,0,.2,1),
-                min-width 0.3s cubic-bezier(.4,0,.2,1),
-                background 0.35s ease;
+    z-index: 1;
+}
+
+/* ── MudDrawer sidebar overrides ─────────────────────────────────────── */
+::deep .mud-drawer.mbx-sidebar {
+    border-right: none;
+    box-shadow: none;
+    flex-shrink: 0;
+    transition: width 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── MudMainContent flex layout ──────────────────────────────────────── */
+::deep .mud-main-content.mbx-main-outer {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    height: 100%;
     overflow: hidden;
 }
 
-.mbx-sidebar.mbx-sidebar-expanded {
-    width: 240px;
-    min-width: 240px;
-}
-
-/* ── Context panel (desktop / tablet) ─────────────────────────────────── */
+/* ── Context panel ───────────────────────────────────────────────────── */
 .mbx-context-panel {
     width: var(--mbx-context-panel-width, 288px);
     min-width: var(--mbx-context-panel-width, 288px);
     display: flex;
     flex-direction: column;
-    margin: 0;
     z-index: 2;
     position: relative;
     overflow: hidden;
@@ -110,18 +110,17 @@
     min-width: var(--mbx-context-panel-collapsed-width, 72px);
 }
 
-/* ── Main content ────────────────────────────────────────────────────── */
+/* ── Main content area ───────────────────────────────────────────────── */
 .mbx-main {
     flex: 1;
-    margin: 8px 8px 8px 0;
-    border-radius: var(--mbx-radius-xl);
+    min-width: 0;
     overflow: hidden;
     z-index: 1;
     position: relative;
     transition: background-color 0.35s ease;
 }
 
-.mbx-shell.mbx-has-context-panel .mbx-main {
+.mbx-main-with-context {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
@@ -129,19 +128,9 @@
 .mbx-main-inner {
     height: 100%;
     overflow-y: auto;
-    overflow-x: hidden;
-    padding: var(--mbx-main-content-padding);
+    overflow-x: auto;
+    padding: var(--mbx-space-2) var(--mbx-main-content-padding) var(--mbx-main-content-padding);
     box-sizing: border-box;
-}
-
-/* ── Bottom nav slot ─────────────────────────────────────────────────── */
-.mbx-bottom-nav-slot {
-    display: none; /* shown via media query */
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 10;
 }
 
 /* ── Palette mode ────────────────────────────────────────────────────── */
@@ -149,7 +138,7 @@
     background: var(--mud-palette-drawer-background);
 }
 
-.mbx-shell.mbx-mode-palette .mbx-sidebar {
+.mbx-shell.mbx-mode-palette ::deep .mud-drawer.mbx-sidebar {
     background: var(--mud-palette-drawer-background);
 }
 
@@ -169,8 +158,7 @@
     box-shadow: none;
 }
 
-/* Sidebar étendue : même surface que la zone principale */
-.mbx-shell.mbx-mode-palette.mbx-light .mbx-sidebar.mbx-sidebar-expanded {
+.mbx-shell.mbx-mode-palette.mbx-light ::deep .mud-drawer.mbx-sidebar.mud-drawer-open {
     border-right: 1px solid var(--mud-palette-drawer-background);
 }
 
@@ -186,15 +174,15 @@
     --mbx-content-border: color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 68%, transparent);
 }
 
-.mbx-shell.mbx-mode-image .mbx-sidebar {
-    background: var(--mbx-sidebar-glass-sm);
+.mbx-shell.mbx-mode-image ::deep .mud-drawer.mbx-sidebar {
+    background: var(--mbx-sidebar-glass-sm) !important;
     backdrop-filter: blur(22px) saturate(180%);
     -webkit-backdrop-filter: blur(22px) saturate(180%);
     border-right: 1px solid var(--mbx-sidebar-glass-border);
 }
 
-.mbx-shell.mbx-mode-image .mbx-sidebar.mbx-sidebar-expanded {
-    background: var(--mbx-sidebar-glass-lg);
+.mbx-shell.mbx-mode-image ::deep .mud-drawer.mbx-sidebar.mud-drawer-open {
+    background: var(--mbx-sidebar-glass-lg) !important;
     backdrop-filter: blur(40px) saturate(200%);
     -webkit-backdrop-filter: blur(40px) saturate(200%);
 }
@@ -204,19 +192,13 @@
     backdrop-filter: blur(40px) saturate(200%);
     -webkit-backdrop-filter: blur(40px) saturate(200%);
     border-right: 1px solid var(--mbx-sidebar-glass-border);
-    margin-top: 0;
-    margin-bottom: 0;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
 }
 
 .mbx-shell.mbx-mode-image .mbx-main {
     background: transparent;
-    margin-top: 0;
-    margin-bottom: 0;
 }
 
-/* ── Utility classes (available to app pages via AppShell) ───────────── */
+/* ── Utility classes ─────────────────────────────────────────────────── */
 ::deep .mds-u-inline-title {
     display: inline-flex;
     align-items: center;
@@ -238,33 +220,4 @@
 ::deep .mds-u-surface-wrap {
     overflow: hidden;
     border-radius: var(--mbx-radius-md);
-}
-
-/* =====================================================================
-   Responsive — mobile (xs / sm  ≤ 959 px)
-   ===================================================================== */
-@media (max-width: 959px) {
-    /* Hide sidebar, full-edge main */
-    .mbx-sidebar {
-        display: none;
-    }
-
-    .mbx-context-panel {
-        display: none;
-    }
-
-    .mbx-main {
-        margin: 0;
-        border-radius: 0;
-    }
-
-    /* Padding-bottom so content isn't hidden behind bottom nav */
-    .mbx-main-inner {
-        padding: var(--mbx-space-2) var(--mbx-space-2) calc(56px + var(--mbx-space-2));
-    }
-
-    /* Show bottom nav slot */
-    .mbx-bottom-nav-slot {
-        display: block;
-    }
 }

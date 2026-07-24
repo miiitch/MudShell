@@ -1,6 +1,6 @@
 # MdsAppShell
 
-Full-page layout shell. Owns the sidebar, main content area, background layer, and bottom nav slot.
+Full-page layout shell. Owns the sidebar, main content area, and background layer.
 
 ## Important — MudBlazor providers
 
@@ -15,11 +15,12 @@ Registering them in both places causes a `System.InvalidOperationException` (dup
 |---|---|---|---|
 | `SidebarContent` | `RenderFragment?` | — | Content rendered inside the sidebar nav |
 | `ChildContent` | `RenderFragment?` | — | Main page body |
-| `BottomNavContent` | `RenderFragment?` | — | Shown in the fixed bottom slot on mobile (≤ 959 px) |
 | `BackgroundMode` | `MbxBackgroundMode` | `Palette` | `Palette` or `Image` |
 | `BackgroundImageUrl` | `string?` | `null` | URL of the background image (Image mode only) |
 | `SidebarExpanded` | `bool` | `false` | Controls sidebar width (icon-only vs. labelled) |
 | `SidebarExpandedChanged` | `EventCallback<bool>` | — | Two-way bind support |
+| `SidebarWidth` | `int` | `240` | Expanded sidebar width (px) |
+| `SidebarCollapsedWidth` | `int` | `56` | Collapsed sidebar width (px) |
 | `ContextPanelContent` | `RenderFragment?` | — | Optional secondary/context panel content (level 2/3 nav) |
 | `ContextPanelExpanded` | `bool` | `true` | Expanded/collapsed state of the context panel |
 | `ContextPanelExpandedChanged` | `EventCallback<bool>` | — | Two-way bind support for context panel state |
@@ -50,9 +51,6 @@ Registering them in both places causes a `System.InvalidOperationException` (dup
     <MdsContextNavPanel Tree="@navTree" IsExpanded="@_contextExpanded" />
   </ContextPanelContent>
   <ChildContent>@Body</ChildContent>
-  <BottomNavContent>
-    <MdsBottomNav Items="@navItems" />
-  </BottomNavContent>
 </MdsAppShell>
 ```
 
@@ -65,11 +63,11 @@ Registering them in both places causes a `System.InvalidOperationException` (dup
 </MdsAppShell>
 ```
 
-## Switching mode from a page
+## Switching mode from app state
 
 ```razor
-[CascadingParameter] public MainLayout MainLayoutRef { get; set; } = default!;
+@inject ThemeState ThemeState
 
 protected override void OnInitialized()
-    => MainLayoutRef.SetBackgroundMode(MdsAppShell.MbxBackgroundMode.Image, "/images/bg.jpg");
+    => ThemeState.SetBackgroundMode(MdsAppShell.MbxBackgroundMode.Image, "/imgs/bg1.jpg");
 ```

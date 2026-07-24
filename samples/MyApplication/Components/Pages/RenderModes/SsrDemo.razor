@@ -5,7 +5,7 @@
 <MdsPageHeader Title="Static SSR">
     <StartContent><div></div></StartContent>
     <EndContent>
-        <MudChip T="string" Color="Color.Default" Size="Size.Small" Variant="Variant.Outlined">Aucun circuit actif</MudChip>
+        <MudChip T="string" Color="Color.Default" Size="Size.Small" Variant="Variant.Outlined">No active circuit</MudChip>
     </EndContent>
 </MdsPageHeader>
 
@@ -15,21 +15,21 @@
         <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Start">
         <MudIcon Icon="@Icons.Material.Outlined.Article" Size="Size.Small" />
         <MudText Typo="Typo.body2">
-            Cette page utilise le <strong>rendu statique côté serveur (SSR)</strong>.
-            Aucun circuit SignalR n'est établi et aucun code WASM n'est téléchargé.
-            Le HTML est généré une fois et envoyé tel quel. Les gestionnaires d'événements
-            (@@onclick, @@bind…) ne fonctionnent pas.
+            This page uses <strong>static server-side rendering (SSR)</strong>.
+            No SignalR circuit is established and no WASM code is downloaded.
+            The HTML is generated once and returned as-is. Event handlers
+            (@@onclick, @@bind...) do not work.
         </MudText>
         </MudStack>
     </MudPaper>
 
     <MudStack Spacing="2">
-        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsChatBar (statique)</MudText>
-        <MdsChatBar Placeholder="@("Rendu statique — les événements ne fonctionnent pas")" />
+        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsChatBar (static)</MudText>
+        <MdsChatBar Placeholder="@("Static render - events do not work")" />
     </MudStack>
 
     <MudStack Spacing="2">
-        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsDocumentCard (statique)</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsDocumentCard (static)</MudText>
         <MudGrid Spacing="3">
             <MudItem xs="12" sm="6" md="4">
                 <MdsDocumentCard Icon="@Icons.Material.Outlined.Description"
@@ -39,22 +39,22 @@
             </MudItem>
             <MudItem xs="12" sm="6" md="4">
                 <MdsDocumentCard Icon="@Icons.Material.Outlined.BarChart"
-                                 TypeLabel="Rapport"
-                                 Title="Rapport Q3"
-                                 Description="Analyse des métriques d'engagement sur le trimestre." />
+                                 TypeLabel="Report"
+                                 Title="Q3 report"
+                                 Description="Engagement metrics analysis for the quarter." />
             </MudItem>
         </MudGrid>
     </MudStack>
 
     <MudStack Spacing="2">
-        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsPageHeader (statique)</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsPageHeader (static)</MudText>
         <MudPaper Outlined="true" Class="mds-u-surface-wrap">
-            <MdsPageHeader Title="Titre de page">
+            <MdsPageHeader Title="Page title">
                 <StartContent><div></div></StartContent>
                 <EndContent>
                     <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
                                disabled>
-                        Action (désactivée)
+                        Action (disabled)
                     </MudButton>
                 </EndContent>
             </MdsPageHeader>

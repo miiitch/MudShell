@@ -7,16 +7,16 @@
 <MdsPageHeader Title="Render Modes">
     <StartContent><div></div></StartContent>
     <EndContent>
-        <MudChip T="string" Color="Color.Default" Size="Size.Small">4 modes × variantes</MudChip>
+        <MudChip T="string" Color="Color.Default" Size="Size.Small">4 modes x variants</MudChip>
     </EndContent>
 </MdsPageHeader>
 
 <MudStack Spacing="3" Class="px-4 pb-6">
     <MudText Typo="Typo.body1" Color="Color.Secondary">
-        Cette section démontre que la bibliothèque <strong>MudShell</strong> fonctionne
-        quel que soit le mode de rendu Blazor. Chaque mode propose deux variantes :
-        fond <strong>palette</strong> (sombre uni), fond <strong>image</strong>,
-        <strong>grid</strong> et <strong>table</strong> (sans scroll de page).
+        This section shows that the <strong>MudShell</strong> library works
+        across every Blazor render mode. Each mode has two variants:
+        <strong>palette</strong> background (solid dark), <strong>image</strong> background,
+        plus <strong>grid</strong> and <strong>table</strong> layouts (no page scrolling).
     </MudText>
 
     <MudGrid Spacing="3">
@@ -40,12 +40,12 @@
                             <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Default"
                                        @onclick="() => Navigate(mode.Route, fl)"
                                        StartIcon="@Icons.Material.Outlined.Palette">
-                                Sans fond
+                                No background
                             </MudButton>
                             <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Info"
                                        @onclick="() => Navigate(bgRoute, fl)"
                                        StartIcon="@Icons.Material.Outlined.Wallpaper">
-                                Avec fond
+                                With background
                             </MudButton>
                             @if (mode.HasInteractive)
                             {
@@ -82,19 +82,19 @@
     [
         new(Icons.Material.Outlined.Article,
             "Static SSR",
-            "Rendu serveur pur, aucun circuit SignalR ni WASM. HTML statique.",
+            "Pure server rendering, no SignalR circuit and no WASM. Static HTML.",
             "/modes/ssr", false, true),
         new(Icons.Material.Outlined.Hub,
             "Interactive Server",
-            "Composants interactifs via SignalR. L'exécution reste sur le serveur.",
+            "Interactive components over SignalR. Execution stays on the server.",
             "/modes/server", true, false),
         new(Icons.Material.Outlined.Memory,
             "Interactive Auto (WASM)",
-            "Démarre en Server, bascule en WASM. Le code s'exécute côté client.",
+            "Starts in Server mode, then switches to WASM. Code runs on the client.",
             "/modes/wasm", true, false),
         new(Icons.Material.Outlined.AutoMode,
             "Interactive Auto",
-            "Démarre en Server, bascule en WASM une fois les ressources téléchargées.",
+            "Starts in Server mode, then switches to WASM once resources are loaded.",
             "/modes/auto", true, false),
     ];
 }

@@ -1,7 +1,6 @@
 # MdsSidebar
 
 Collapsible vertical navigation. Renders as icon-only (56 px) by default and expands to 240 px with labels.
-On mobile (≤ 959 px) the sidebar is hidden — use `MdsBottomNav` instead.
 
 ## Parameters
 

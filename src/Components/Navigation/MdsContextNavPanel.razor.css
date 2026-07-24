@@ -1,7 +1,7 @@
 .mbx-context-nav-panel {
     display: flex;
     flex-direction: column;
-    gap: var(--mbx-space-2);
+    gap: var(--mbx-space-1);
     padding: var(--mbx-space-4) var(--mbx-space-2);
     width: 100%;
     box-sizing: border-box;
@@ -9,93 +9,63 @@
 
 .mbx-context-nav-panel.mbx-context-nav-panel-collapsed {
     align-items: center;
-    gap: var(--mbx-space-1);
     padding-left: 0;
     padding-right: 0;
 }
 
-.mbx-context-collapsed-btn {
+/* Collapsed icon links */
+.mbx-context-collapsed-link {
     width: 40px;
     height: 40px;
-    border: 0;
     border-radius: var(--mbx-radius-md);
-    background: transparent;
     color: var(--mud-palette-text-secondary);
+    text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-.mbx-context-nav-empty {
-    color: var(--mud-palette-text-secondary);
-    font-size: 13px;
-    padding: 8px;
-}
-
-.mbx-context-row {
-    border-radius: var(--mbx-radius-md);
-    overflow: hidden;
-}
-
-.mbx-context-node-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--mbx-space-2);
-    border: 0;
-    outline: none;
-    background: transparent;
-    color: var(--mud-palette-text-secondary);
-    padding: 10px var(--mbx-space-3);
-    border-radius: var(--mbx-radius-md);
-    cursor: pointer;
-    font-size: 14px;
-    text-align: left;
-}
-
-.mbx-context-node-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.mbx-context-subentries {
-    display: flex;
-    flex-direction: column;
-    gap: var(--mbx-space-1);
-    padding: 2px var(--mbx-space-2) var(--mbx-space-2) calc(var(--mbx-space-5) + var(--mbx-space-1));
-}
-
-.mbx-context-subentry {
-    border: 0;
-    background: transparent;
-    color: var(--mud-palette-text-secondary);
-    text-align: left;
-    text-decoration: none;
-    border-radius: var(--mbx-radius-sm);
-    padding: var(--mbx-space-2) 10px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.mbx-context-collapsed-btn:hover:not(:disabled),
-.mbx-context-row-active > .mbx-context-node-btn,
-.mbx-context-node-btn:hover:not(:disabled),
-.mbx-context-subentry:hover:not(:disabled) {
+.mbx-context-collapsed-link:hover {
     color: var(--mud-palette-text-primary);
-    background: var(--mbx-nav-hover-bg);
+    background-color: var(--mbx-nav-hover-bg);
 }
 
-.mbx-context-collapsed-btn:focus-visible,
-.mbx-context-node-btn:focus-visible,
-.mbx-context-subentry:focus-visible {
-    outline: 2px solid var(--mbx-focus-ring);
-    outline-offset: 2px;
-}
-
-.mbx-context-collapsed-btn-active,
-.mbx-context-subentry-active {
+.mbx-context-collapsed-link-active {
     color: var(--mud-palette-primary);
-    background: var(--mbx-nav-hover-bg);
+    background-color: var(--mbx-nav-hover-bg);
+}
+
+/* MudNavMenu overrides for context panel */
+.mbx-context-mud-nav {
+    width: 100%;
+}
+
+::deep .mbx-context-mud-nav .mud-nav-link {
+    color: var(--mud-palette-text-secondary) !important;
+    border-radius: var(--mbx-radius-md) !important;
+    font-size: 13px !important;
+    transition: color 0.2s ease, background-color 0.2s ease !important;
+}
+
+::deep .mbx-context-mud-nav .mud-nav-link:hover {
+    color: var(--mud-palette-text-primary) !important;
+    background-color: var(--mbx-nav-hover-bg) !important;
+}
+
+::deep .mbx-context-mud-nav .mud-nav-link.mbx-context-nav-active {
+    color: var(--mud-palette-primary) !important;
+    background-color: var(--mbx-nav-hover-bg) !important;
+}
+
+::deep .mbx-context-mud-nav .mud-nav-group-title {
+    color: var(--mud-palette-text-secondary) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    border-radius: var(--mbx-radius-md) !important;
+}
+
+::deep .mbx-context-mud-nav .mud-nav-group-title:hover {
+    color: var(--mud-palette-text-primary) !important;
+    background-color: var(--mbx-nav-hover-bg) !important;
 }

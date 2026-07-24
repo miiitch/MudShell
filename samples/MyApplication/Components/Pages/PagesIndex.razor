@@ -1,0 +1,49 @@
+@page "/components"
+@rendermode InteractiveServer
+
+<PageTitle>Components</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
+
+    <MdsPageHeader Title="Components">
+        <StartContent><div></div></StartContent>
+        <EndContent>
+            <MudChip T="string" Color="Color.Default" Size="Size.Small">Subsection</MudChip>
+        </EndContent>
+    </MdsPageHeader>
+
+    <MdsMainPart Title="Component pages">
+        <ChildContent>
+            <MudGrid Spacing="2">
+                <MudItem xs="12" md="4">
+                    <MudPaper Outlined="true" Class="pa-3">
+                        <MudStack Spacing="1">
+                            <MudText Typo="Typo.subtitle1">Main Components</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Toolbar, sections, part states, and empty states.</MudText>
+                            <MudButton Variant="Variant.Outlined" Href="/main-components" StartIcon="@Icons.Material.Outlined.ArrowForward">Open</MudButton>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudPaper Outlined="true" Class="pa-3">
+                        <MudStack Spacing="1">
+                            <MudText Typo="Typo.subtitle1">Main Components (BG)</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Same main components on background-image mode.</MudText>
+                            <MudButton Variant="Variant.Outlined" Href="/main-components/bg" StartIcon="@Icons.Material.Outlined.ArrowForward">Open</MudButton>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudPaper Outlined="true" Class="pa-3">
+                        <MudStack Spacing="1">
+                            <MudText Typo="Typo.subtitle1">Library</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Documents, cards, and filter-chip browsing layout.</MudText>
+                            <MudButton Variant="Variant.Outlined" Href="/library" StartIcon="@Icons.Material.Outlined.ArrowForward">Open</MudButton>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </ChildContent>
+    </MdsMainPart>
+
+</MudContainer>

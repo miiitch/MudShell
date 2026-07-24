@@ -1,240 +1,343 @@
-# MudShell — Copilot Integration Skill
+# MudShell — Integration and Page Structure Skill
 
-> This file provides GitHub Copilot with context about the **MudShell** library so it can suggest correct component usage, prop names, and integration patterns.
-
----
-
-## What is MudShell?
-
-A Razor Class Library of opinionated Blazor components built on top of **MudBlazor 9**, designed for dark-mode AI-shell style applications. Targets **.NET 10**.
-
-NuGet package ID: `MudShell`
+> Use this skill when integrating **MudShell** into an existing **MudBlazor** app, when building new pages with MudShell conventions, or when refactoring pages to the recommended structure.
 
 ---
 
-## Setup
+## What MudShell is
 
-### 1. Add package reference
+MudShell is a Razor Class Library built on **MudBlazor 9** for app-shell and page composition patterns.
+
+Targets:
+
+- **.NET 10**
+- Blazor Web App / Server / WebAssembly scenarios
+
+MudShell is best understood as three layers:
+
+1. **shell** — `MdsAppShell`
+2. **navigation** — `MdsSidebar`, `MdsContextNavPanel`, `MbxNavTree`
+3. **page composition** — `MdsPageHeader`, `MdsMainToolbar`, `MdsMainPart`, `MdsMainSection`, `MdsMainEmptyState`
+
+It does **not** replace MudBlazor content components. Use MudShell for layout and composition, then keep using `MudGrid`, `MudTable`, `MudForm`, `MudChip`, and other MudBlazor primitives inside those wrappers.
+
+---
+
+## Integration into an existing MudBlazor app
+
+### 1. Add the package
+
 ```xml
 <PackageReference Include="MudShell" Version="0.*" />
 ```
 
-### 2. Register services in `Program.cs`
-```csharp
-builder.Services.AddMudShell();
-// This also calls AddMudServices() — do NOT call both.
+Or with a project reference:
+
+```xml
+<ProjectReference Include="..\MudShell\MudShell.csproj" />
 ```
 
-### 3. Add to `_Imports.razor`
+### 2. Register services
+
+In `Program.cs`:
+
+```csharp
+builder.Services.AddMudShell();
+```
+
+**Important:** do **not** also call `AddMudServices()`. `AddMudShell()` already wires MudBlazor services.
+
+If you want sample-style theme orchestration, also register a scoped theme state service:
+
+```csharp
+builder.Services.AddScoped<ThemeState>();
+```
+
+### 3. Add imports
+
+In `_Imports.razor`:
+
 ```razor
 @using MudShell
 @using MudShell.Components.AppShell
-@using MudShell.Components.Sidebar
-@using MudShell.Components.BottomNav
 @using MudShell.Components.ChatBar
 @using MudShell.Components.DocumentCard
 @using MudShell.Components.FilterTabBar
+@using MudShell.Components.MainContent
+@using MudShell.Components.Navigation
+@using MudShell.Components.Navigation.Models
 @using MudShell.Components.PageHeader
+@using MudShell.Components.Sidebar
 ```
 
-### 4. Add MudBlazor CSS to `App.razor` or `index.html`
-```html
-<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-<link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
-```
-And at the bottom:
-```html
-<script src="_content/MudBlazor/MudBlazor.min.js"></script>
-```
+### 4. Keep MudBlazor providers in the app root
 
----
-
-## Component reference
-
-### `MdsAppShell`
-Full-page layout shell with sidebar, main content, and bottom nav slots.
-
-**Parameters:**
-| Parameter | Type | Default | Notes |
-|-----------|------|---------|-------|
-| `SidebarContent` | `RenderFragment?` | — | Nav content inside the sidebar |
-| `ChildContent` | `RenderFragment?` | — | Main page body |
-| `BottomNavContent` | `RenderFragment?` | — | Mobile bottom bar slot (≤959 px) |
-| `BackgroundMode` | `MbxBackgroundMode` | `Palette` | `Palette` or `Image` |
-| `BackgroundImageUrl` | `string?` | `null` | Image mode only |
-| `SidebarExpanded` | `bool` | `false` | Two-way bindable |
-| `SidebarExpandedChanged` | `EventCallback<bool>` | — | |
-
-**Public methods:** `ToggleSidebar()`, `SetBackgroundMode(mode, imageUrl?)`
+Declare providers **once** in the root component (`Routes.razor`, `App.razor`, or equivalent):
 
 ```razor
-<MdsAppShell @ref="_shell" BackgroundMode="MdsAppShell.MbxBackgroundMode.Palette">
-  <SidebarContent>
-    <MdsSidebar OnToggle="@(() => _shell.ToggleSidebar())" PrimaryItems="@_nav" />
-  </SidebarContent>
-  <ChildContent>@Body</ChildContent>
-  <BottomNavContent>
-    <MdsBottomNav Items="@_nav" />
-  </BottomNavContent>
+<MudThemeProvider Theme="@ThemeState.CurrentTheme" IsDarkMode="@ThemeState.IsDarkMode" />
+<MudPopoverProvider />
+<MudSnackbarProvider />
+<MudDialogProvider />
+
+<Router AppAssembly="typeof(Program).Assembly">
+    ...
+</Router>
+```
+
+Do not duplicate them in layouts or pages.
+
+### 5. Replace the layout with `MdsAppShell`
+
+```razor
+@inherits LayoutComponentBase
+@inject ThemeState ThemeState
+
+<MdsAppShell @ref="_shell"
+             BackgroundMode="@ThemeState.BackgroundMode"
+             BackgroundImageUrl="@ThemeState.BackgroundImageUrl"
+             IsDarkMode="@ThemeState.IsDarkMode"
+             IsDarkModeChanged="@ThemeState.SetDarkMode"
+             SidebarExpanded="@_sidebarExpanded"
+             SidebarExpandedChanged="@(v => _sidebarExpanded = v)"
+             ContextPanelExpanded="@_contextPanelExpanded"
+             ContextPanelExpandedChanged="@(v => _contextPanelExpanded = v)"
+             ContextPanelContent="@ContextPanel">
+    <SidebarContent>
+        <NavMenu ShellRef="@_shell" IsExpanded="@_sidebarExpanded" />
+    </SidebarContent>
+
+    <ChildContent>
+        @Body
+    </ChildContent>
 </MdsAppShell>
 
 @code {
     private MdsAppShell _shell = default!;
-    private readonly MbxNavItem[] _nav =
-    [
-        new(Icons.Material.Outlined.Home, "Home", "/"),
-        new(Icons.Material.Outlined.Settings, "Settings", "/settings"),
-    ];
+    private bool _sidebarExpanded;
+    private bool _contextPanelExpanded = true;
+    private RenderFragment? ContextPanel => null;
 }
 ```
 
+### 6. Migrate navigation deliberately
+
+Recommended rule:
+
+- keep **business areas** in primary navigation,
+- put **variants, demos, families, and sub-pages** in the context panel.
+
+For simple apps:
+
+- sidebar = top-level sections
+
+For larger apps:
+
+- sidebar = top-level sections
+- context panel = second-level navigation tree
+
 ---
 
-### `MdsSidebar`
-Collapsible vertical navigation. Hidden on mobile (≤959 px).
+## Recommended page structure
 
-**Parameters:**
-| Parameter | Type | Default |
-|-----------|------|---------|
-| `IsExpanded` | `bool` | `false` |
-| `OnToggle` | `EventCallback` | — |
-| `PrimaryItems` | `MbxNavItem[]?` | `null` |
-| `SecondaryItems` | `MbxNavItem[]?` | `null` |
-| `LogoContent` | `RenderFragment?` | `null` |
-| `BottomContent` | `RenderFragment?` | `null` |
+Base every new page on the `MeteoPage` pattern.
 
-**`MbxNavItem` record:**
-```csharp
-public record MbxNavItem(string Icon, string Label, string? Href = null);
+### Structure
+
+```text
+MudContainer
+├── MdsPageHeader
+├── MdsMainToolbar         ← actions only
+├── MudStack + MudChip     ← filters only, directly on page background
+├── MdsMainPart            ← content block
+└── MdsMainPart            ← content block
 ```
 
----
+### Rules
 
-### `MdsBottomNav`
-Mobile-only fixed bottom navigation bar (visible ≤959 px).
+1. **Page header**: use `MdsPageHeader` for icon, title, breadcrumb path, and page-level metadata.
+2. **Action bar**: use `MdsMainToolbar` for actions and UI configuration only.
+3. **Filter row**: render filters in a horizontal `MudStack` using `MudChip`.
+4. **No paper around filters**: keep the filter row directly on the page background.
+5. **Content blocks**: use `MdsMainPart` and `MdsMainSection` for body content.
 
-**Parameters:**
-| Parameter | Type | Default |
-|-----------|------|---------|
-| `Items` | `MbxNavItem[]?` | `null` |
-| `ActiveHref` | `string?` | `null` |
+### Copy-ready blueprint
 
 ```razor
-@inject NavigationManager Nav
-<MdsBottomNav Items="@_nav" ActiveHref="@Nav.Uri" />
+@page "/weather"
+@rendermode InteractiveServer
+
+<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
+
+    <MdsPageHeader Title="Weather"
+                   Icon="@Icons.Material.Outlined.Cloud"
+                   BreadcrumbItems="@_breadcrumbs">
+        <HeaderActions>
+            <MudIconButton Icon="@Icons.Material.Outlined.ColorLens"
+                           Size="Size.Small"
+                           Color="Color.Inherit"
+                           title="Theme and background"
+                           OnClick="@OpenThemeDialog" />
+        </HeaderActions>
+    </MdsPageHeader>
+
+    <MdsMainToolbar AccentBorderSides="MbxAccentBorderSides.Left"
+                    AccentBorderWidth="3">
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Outlined.RestartAlt"
+                   OnClick="@ResetFilters">
+            Reset filters
+        </MudButton>
+        <MudSpacer />
+        <MudSwitch T="bool" @bind-Value="_isDense" Label="Dense table" />
+    </MdsMainToolbar>
+
+    <MudStack Row="true"
+              AlignItems="AlignItems.Center"
+              Spacing="1"
+              Wrap="MudBlazor.Wrap.Wrap"
+              Class="mb-3">
+        <MudText Typo="Typo.caption" Color="Color.Secondary">Period</MudText>
+        <MudChip T="string"
+                 Color="@(_selectedPeriod == "today" ? Color.Primary : Color.Default)"
+                 Variant="@(_selectedPeriod == "today" ? Variant.Filled : Variant.Outlined)"
+                 OnClick="@(() => _selectedPeriod = "today")">
+            Today
+        </MudChip>
+        <MudChip T="string"
+                 Color="@(_selectedPeriod == "week" ? Color.Primary : Color.Default)"
+                 Variant="@(_selectedPeriod == "week" ? Variant.Filled : Variant.Outlined)"
+                 OnClick="@(() => _selectedPeriod = "week")">
+            This week
+        </MudChip>
+    </MudStack>
+
+    <MdsMainPart Title="Summary"
+                 Icon="@Icons.Material.Outlined.WbSunny"
+                 AccentBorderSides="@(MbxAccentBorderSides.Top | MbxAccentBorderSides.Left)"
+                 AccentBorderColor="#5a72ff"
+                 AccentBorderWidth="4">
+        ...
+    </MdsMainPart>
+
+    <MdsMainPart Title="Hourly forecast"
+                 Icon="@Icons.Material.Outlined.Schedule"
+                 AccentBorderSides="MbxAccentBorderSides.Left">
+        ...
+    </MdsMainPart>
+
+</MudContainer>
 ```
 
 ---
 
-### `MdsChatBar`
-Glassmorphism AI-style input bar with `backdrop-filter: blur`.
-
-**Parameters:**
-| Parameter | Type | Default |
-|-----------|------|---------|
-| `Placeholder` | `string?` | `"Message…"` |
-| `Value` | `string?` | `null` |
-| `ValueChanged` | `EventCallback<string?>` | — |
-| `Actions` | `RenderFragment?` | `null` |
-| `MaxWidth` | `string` | `"680px"` |
-
-```razor
-<MdsChatBar @bind-Value="_message" Placeholder="Ask anything…" MaxWidth="720px">
-  <Actions>
-    <MudIconButton Icon="@Icons.Material.Filled.Send" Color="Color.Primary" />
-  </Actions>
-</MdsChatBar>
-```
-
----
-
-### `MdsDocumentCard`
-Card for a document/item with icon, type label, title, description.
-
-**Parameters:**
-| Parameter | Type | Default |
-|-----------|------|---------|
-| `Icon` | `string` | `Description` (outlined) |
-| `TypeLabel` | `string?` | `"Document"` |
-| `Title` | `string?` | `null` |
-| `Description` | `string?` | `null` |
-| `OnClick` | `EventCallback` | — |
-
-```razor
-<MdsDocumentCard Title="My Doc" Description="Summary…" OnClick="@Open" />
-```
-
----
-
-### `MdsFilterTabBar<T>`
-Pill-style tab/filter bar. Scrolls horizontally on mobile.
-
-**Parameters:**
-| Parameter | Type | Default |
-|-----------|------|---------|
-| `Value` | `T?` | `null` |
-| `ValueChanged` | `EventCallback<T>` | — |
-| `Items` | `IEnumerable<MbxTabItem<T>>?` | `null` |
-| `TrailingContent` | `RenderFragment?` | `null` |
-
-**`MbxTabItem<T>` record:** `(T Value, string Label)`
-
-```razor
-<MdsFilterTabBar T="string" @bind-Value="_tab" Items="@_tabs" />
-@code {
-    private string _tab = "all";
-    private readonly MbxTabItem<string>[] _tabs =
-    [
-        new("all", "All"), new("docs", "Documents"), new("images", "Images"),
-    ];
-}
-```
-
----
+## When to use each component
 
 ### `MdsPageHeader`
-Three-column page header: start | centred title | end. Stacks on mobile.
 
-**Parameters:**
-| Parameter | Type | Default |
-|-----------|------|---------|
-| `Title` | `string?` | `null` |
-| `StartContent` | `RenderFragment?` | `null` |
-| `EndContent` | `RenderFragment?` | `null` |
+Use for:
 
-```razor
-<MdsPageHeader Title="Library">
-  <EndContent>
-    <MudButton Variant="Variant.Outlined" Color="Color.Primary">New</MudButton>
-  </EndContent>
-</MdsPageHeader>
-```
+- title,
+- breadcrumbs,
+- contextual icon actions on the far right (`HeaderActions`),
+- top-level page actions,
+- page badges.
+
+### `MdsMainToolbar`
+
+Use for:
+
+- create/export/reset buttons,
+- density or view toggles,
+- UI configuration controls.
+
+Avoid using it as a general filter bar when a chip row would be clearer.
+
+Accent border parameters:
+
+- `AccentBorderSides` (flags, combinable with `|`),
+- `AccentBorderColor` (any CSS color/token),
+- `AccentBorderWidth` (clamped to `6px` max).
+
+### `MdsMainPart`
+
+Use for:
+
+- tables,
+- charts,
+- metrics,
+- API-backed blocks with loading and error states.
+
+`MdsMainPart` and `MdsMainSection` also expose the same accent border parameters for visual hierarchy while keeping layout consistent.
+
+Built-in affordances:
+
+- `IsLoading`
+- `LoadingText`
+- `Error`
+- `OnRetry`
+- `HeaderActions`
+
+### `MdsMainSection`
+
+Use for:
+
+- larger grouped areas,
+- descriptive sections,
+- wrapper blocks that need a title + description + divider.
+
+### `MdsMainEmptyState`
+
+Use for:
+
+- empty search results,
+- empty folders,
+- “nothing selected yet” states.
+
+### `MdsMainButton`
+
+Use when you want action styling consistent with the rest of the main content zone.
+
+### `MdsMainStatusBadge`
+
+Use for:
+
+- active/pending/error info,
+- lightweight state flags,
+- compact summary metadata.
 
 ---
 
-## Theming
+## Sample navigation pattern
 
-`MdsAppShell` applies `MbxTheme.CreateDarkTheme()` automatically.
+A practical pattern used in the sample:
 
-To customise:
-```csharp
-using MudShell.Theme;
+- **primary nav**: `Home`, `Weather`, `Europe Cities`, `Library`, `Demo`, `Components`
+- **context panel**:
+  - demo subsection: showcase + render mode pages
+  - components subsection: component-oriented sample pages
 
-var theme = MbxTheme.CreateDarkTheme();
-theme.PaletteDark.Primary = "#ff6b6b";
-```
-
-Key CSS variables (override in `app.css`):
-- `--mud-palette-primary` — accent colour
-- `--mud-palette-surface` — card / sidebar background
-- `--mud-palette-background` — app background
+This keeps the main sidebar short and moves dense page groups into second-level navigation.
 
 ---
 
 ## Common pitfalls
 
-1. **Missing MudBlazor CSS/JS** — components will render without styles. Always include `_content/MudBlazor/MudBlazor.min.css` and the JS script.
-2. **Calling both `AddMudServices()` and `AddMudShell()`** — `AddMudShell()` already calls `AddMudServices()`. Calling both is harmless but redundant.
-3. **`MdsAppShell` ref is null on first render** — use `@ref="_shell"` and call methods only after `OnAfterRenderAsync` with `firstRender: true`.
-4. **Sidebar visible on mobile** — by design, use `MdsBottomNav` inside `BottomNavContent` for mobile navigation.
-5. **Render mode** — when using Blazor Web App (interactive), ensure components have a compatible render mode (`InteractiveServer` or `InteractiveWebAssembly`).
+1. Calling both `AddMudServices()` and `AddMudShell()`.
+2. Adding MudBlazor providers in multiple places.
+3. Mixing actions and filters in one toolbar.
+4. Wrapping the filter row in bordered `MudPaper`.
+5. Replacing MudBlazor content components instead of composing them with MudShell wrappers.
+6. Making every page unique instead of reusing the `MeteoPage` structure.
+
+---
+
+## If Copilot is modifying a MudShell page
+
+Prefer these transformations:
+
+1. add or keep `MdsPageHeader`,
+2. consolidate page actions into `MdsMainToolbar`,
+3. move filters into a chip row on the page background,
+4. wrap large content zones in `MdsMainPart` / `MdsMainSection`,
+5. keep layout consistent with existing MudShell sample pages.

@@ -1,6 +1,6 @@
 @namespace MudShell.Components.MainContent
 
-<MudPaper Elevation="2" Class="@RootClass" Style="@Style">
+<MudPaper Elevation="2" Class="@RootClass" Style="@RootStyle">
     <MudStack Spacing="3">
         @if (!string.IsNullOrWhiteSpace(Title))
         {
@@ -44,11 +44,24 @@
     [Parameter] public string? Icon { get; set; }
     [Parameter] public Color TitleColor { get; set; } = Color.Primary;
     [Parameter] public bool IsLoading { get; set; }
-    [Parameter] public string LoadingText { get; set; } = "Chargement...";
+    [Parameter] public string LoadingText { get; set; } = "Loading...";
     [Parameter] public RenderFragment? HeaderRight { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter] public string? Style { get; set; }
+    [Parameter] public MbxAccentBorderSides AccentBorderSides { get; set; } = MbxAccentBorderSides.Left;
+    [Parameter] public string AccentBorderColor { get; set; } = "var(--mud-palette-primary)";
+    [Parameter] public int AccentBorderWidth { get; set; } = 2;
 
     private string RootClass => $"pa-4 mb-3 {Class}".Trim();
+    private string RootStyle => MergeStyles(
+        MbxAccentBorderStyle.Build(AccentBorderSides, AccentBorderColor, AccentBorderWidth),
+        Style);
+
+    private static string MergeStyles(string? first, string? second)
+    {
+        if (string.IsNullOrWhiteSpace(first)) return second ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(second)) return first;
+        return $"{first.TrimEnd(';')};{second}";
+    }
 }

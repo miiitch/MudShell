@@ -1,24 +1,21 @@
 @page "/europe-cities"
 @rendermode InteractiveServer
 
-<PageTitle>Tables Villes Europe</PageTitle>
+<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
 
-<MudContainer MaxWidth="MaxWidth.False" Class="pa-4">
-
-    <MdsPageHeader Title="Villes Europe">
+    <MdsPageHeader Title="Europe Cities"
+                   PageTitle="Europe Cities Tables"
+                   BreadcrumbItems="@_breadcrumbItems">
         <StartContent>
-            <MudChip T="string" Color="Color.Info" Size="Size.Small" Variant="Variant.Outlined">1000 lignes</MudChip>
+            <MudChip T="string" Color="Color.Info" Size="Size.Small" Variant="Variant.Outlined">1000 rows</MudChip>
         </StartContent>
-        <EndContent>
-            <MudBreadcrumbs Items="@_breadcrumbItems" />
-        </EndContent>
     </MdsPageHeader>
 
     <MdsMainPart Title="Business Widgets">
         <HeaderActions>
             <MudStack Row="true" Spacing="1">
-                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.FilterList">Filtres</MudButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.Download">Exporter</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.FilterList">Filters</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.Download">Export</MudButton>
             </MudStack>
         </HeaderActions>
         <ChildContent>
@@ -39,45 +36,58 @@
     </MdsMainPart>
 
     <MdsMainToolbar>
-        <MudTextField @bind-Value="_searchText"
-                      Placeholder="Rechercher une ville, un pays ou un fuseau"
-                      Variant="Variant.Outlined"
-                      Margin="Margin.Dense"
-                      Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Outlined.Search"
-                      Immediate="true" />
-        <MudSelect T="string" @bind-Value="_selectedCountry" Label="Pays" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true">
-            @foreach (var country in _countries)
-            {
-                <MudSelectItem Value="@country">@country</MudSelectItem>
-            }
-        </MudSelect>
-        <MudSelect T="string" @bind-Value="_selectedRegion" Label="Région" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true">
-            @foreach (var region in _regions)
-            {
-                <MudSelectItem Value="@region">@region</MudSelectItem>
-            }
-        </MudSelect>
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Outlined.RestartAlt"
+                   OnClick="@ResetFilters">Reset filters</MudButton>
+        <MudSpacer />
+        <MudSwitch T="bool" @bind-Value="_isDense" Color="Color.Primary" Label="Dense table" />
     </MdsMainToolbar>
+
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Wrap="MudBlazor.Wrap.Wrap" Class="mb-3">
+        <MudText Typo="Typo.caption" Color="Color.Secondary">Country</MudText>
+        <MudChip T="string"
+                 Color="@(_selectedCountry is null ? Color.Primary : Color.Default)"
+                 Variant="@(_selectedCountry is null ? Variant.Filled : Variant.Outlined)"
+                 OnClick="@(() => _selectedCountry = null)">All</MudChip>
+        @foreach (var country in _countries)
+        {
+            <MudChip T="string"
+                     Color="@(_selectedCountry == country ? Color.Primary : Color.Default)"
+                     Variant="@(_selectedCountry == country ? Variant.Filled : Variant.Outlined)"
+                     OnClick="@(() => _selectedCountry = country)">@country</MudChip>
+        }
+        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="ml-2">Region</MudText>
+        <MudChip T="string"
+                 Color="@(_selectedRegion is null ? Color.Primary : Color.Default)"
+                 Variant="@(_selectedRegion is null ? Variant.Filled : Variant.Outlined)"
+                 OnClick="@(() => _selectedRegion = null)">All</MudChip>
+        @foreach (var region in _regions)
+        {
+            <MudChip T="string"
+                     Color="@(_selectedRegion == region ? Color.Primary : Color.Default)"
+                     Variant="@(_selectedRegion == region ? Variant.Filled : Variant.Outlined)"
+                     OnClick="@(() => _selectedRegion = region)">@region</MudChip>
+        }
+    </MudStack>
 
     <MdsMainPart Title="Basic Tables">
         <ChildContent>
-            <MudTable T="CityRow" Items="@_rows" Filter="FilterRows" Hover="true" Dense="true" RowsPerPage="25" Elevation="0">
+            <MudTable T="CityRow" Items="@_rows" Filter="FilterRows" Hover="true" Dense="@_isDense" RowsPerPage="25" Elevation="0">
                 <HeaderContent>
-                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.City)">Ville</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.Country)">Pays</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.Region)">Région</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.City)">City</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.Country)">Country</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.Region)">Region</MudTableSortLabel></MudTh>
                     <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.Population)">Population</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.LocalGdpMEur)">PIB local (M EUR)</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.TimeZone)">Fuseau</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.LocalGdpMEur)">Local GDP (M EUR)</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel T="CityRow" SortBy="@(x => x.TimeZone)">Time zone</MudTableSortLabel></MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd DataLabel="Ville">@context.City</MudTd>
-                    <MudTd DataLabel="Pays">@context.Country</MudTd>
-                    <MudTd DataLabel="Région">@context.Region</MudTd>
+                    <MudTd DataLabel="City">@context.City</MudTd>
+                    <MudTd DataLabel="Country">@context.Country</MudTd>
+                    <MudTd DataLabel="Region">@context.Region</MudTd>
                     <MudTd DataLabel="Population">@context.Population.ToString("N0")</MudTd>
-                    <MudTd DataLabel="PIB local (M EUR)">@context.LocalGdpMEur.ToString("N0")</MudTd>
-                    <MudTd DataLabel="Fuseau">@context.TimeZone</MudTd>
+                    <MudTd DataLabel="Local GDP (M EUR)">@context.LocalGdpMEur.ToString("N0")</MudTd>
+                    <MudTd DataLabel="Time zone">@context.TimeZone</MudTd>
                 </RowTemplate>
                 <PagerContent>
                     <MudTablePager PageSizeOptions="[10, 25, 50, 100]" />
@@ -91,25 +101,25 @@
 @code {
     private readonly List<BreadcrumbItem> _breadcrumbItems =
     [
-        new("Tables", href: null, disabled: false),
-        new("Tables", href: null, disabled: true)
+        new("Home", href: "/"),
+        new("Europe Cities", href: null, disabled: true)
     ];
 
     private readonly WidgetItem[] _widgets =
     [
-        new("CA YTD", "2,84 Md EUR", "+8,4 % vs N-1"),
-        new("Marge brute", "41,7 %", "+1,2 pts ce trimestre"),
-        new("Clients actifs", "126 450", "+3 980 ce mois"),
-        new("NPS", "58", "+4 points sur 90 jours")
+        new("Revenue YTD", "2.84B EUR", "+8.4% vs last year"),
+        new("Gross margin", "41.7%", "+1.2 pts this quarter"),
+        new("Active customers", "126,450", "+3,980 this month"),
+        new("NPS", "58", "+4 points over 90 days")
     ];
 
     private readonly CityRow[] _rows = BuildRows();
     private string[] _countries = [];
     private string[] _regions = [];
 
-    private string _searchText = string.Empty;
     private string? _selectedCountry;
     private string? _selectedRegion;
+    private bool _isDense = true;
 
     protected override void OnInitialized()
     {
@@ -129,78 +139,69 @@
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(_searchText))
-        {
-            return true;
-        }
-
-        var term = _searchText.Trim();
-        return row.City.Contains(term, StringComparison.OrdinalIgnoreCase)
-               || row.Country.Contains(term, StringComparison.OrdinalIgnoreCase)
-               || row.Region.Contains(term, StringComparison.OrdinalIgnoreCase)
-               || row.TimeZone.Contains(term, StringComparison.OrdinalIgnoreCase);
+        return true;
     }
 
     private static CityRow[] BuildRows()
     {
         var catalog = new[]
         {
-            new CitySeed("Paris", "France", "Ouest", "CET", 2148000, 76500),
-            new CitySeed("Lyon", "France", "Ouest", "CET", 522000, 31800),
-            new CitySeed("Marseille", "France", "Ouest", "CET", 873000, 22900),
-            new CitySeed("Toulouse", "France", "Ouest", "CET", 511000, 23400),
-            new CitySeed("Madrid", "Espagne", "Sud", "CET", 3223000, 133200),
-            new CitySeed("Barcelone", "Espagne", "Sud", "CET", 1620000, 89200),
-            new CitySeed("Valence", "Espagne", "Sud", "CET", 792000, 29100),
-            new CitySeed("Seville", "Espagne", "Sud", "CET", 687000, 21400),
-            new CitySeed("Lisbonne", "Portugal", "Sud", "WET", 545000, 38400),
-            new CitySeed("Porto", "Portugal", "Sud", "WET", 231000, 17900),
-            new CitySeed("Rome", "Italie", "Sud", "CET", 2762000, 154700),
-            new CitySeed("Milan", "Italie", "Sud", "CET", 1397000, 207900),
-            new CitySeed("Naples", "Italie", "Sud", "CET", 914000, 41200),
-            new CitySeed("Turin", "Italie", "Sud", "CET", 848000, 38900),
-            new CitySeed("Berlin", "Allemagne", "Centre", "CET", 3645000, 178600),
-            new CitySeed("Munich", "Allemagne", "Centre", "CET", 1488000, 276300),
-            new CitySeed("Hambourg", "Allemagne", "Centre", "CET", 1841000, 126700),
-            new CitySeed("Francfort", "Allemagne", "Centre", "CET", 764000, 142100),
-            new CitySeed("Cologne", "Allemagne", "Centre", "CET", 1090000, 87300),
-            new CitySeed("Stuttgart", "Allemagne", "Centre", "CET", 635000, 69400),
-            new CitySeed("Bruxelles", "Belgique", "Nord", "CET", 1209000, 87000),
-            new CitySeed("Anvers", "Belgique", "Nord", "CET", 545000, 31200),
-            new CitySeed("Amsterdam", "Pays-Bas", "Nord", "CET", 925000, 109900),
-            new CitySeed("Rotterdam", "Pays-Bas", "Nord", "CET", 655000, 61200),
-            new CitySeed("Eindhoven", "Pays-Bas", "Nord", "CET", 244000, 23400),
-            new CitySeed("Luxembourg", "Luxembourg", "Nord", "CET", 132000, 32500),
-            new CitySeed("Vienne", "Autriche", "Centre", "CET", 2010000, 121600),
-            new CitySeed("Prague", "Tchequie", "Centre", "CET", 1313000, 74200),
-            new CitySeed("Brno", "Tchequie", "Centre", "CET", 395000, 18600),
-            new CitySeed("Varsovie", "Pologne", "Est", "CET", 1862000, 93300),
-            new CitySeed("Cracovie", "Pologne", "Est", "CET", 806000, 38900),
-            new CitySeed("Wroclaw", "Pologne", "Est", "CET", 674000, 27400),
-            new CitySeed("Budapest", "Hongrie", "Est", "CET", 1752000, 55600),
-            new CitySeed("Bucarest", "Roumanie", "Est", "EET", 1716000, 50300),
-            new CitySeed("Cluj-Napoca", "Roumanie", "Est", "EET", 286000, 11400),
-            new CitySeed("Sofia", "Bulgarie", "Est", "EET", 1230000, 27900),
-            new CitySeed("Athenes", "Grece", "Sud", "EET", 664000, 42100),
-            new CitySeed("Thessalonique", "Grece", "Sud", "EET", 315000, 12600),
-            new CitySeed("Dublin", "Irlande", "Nord", "GMT", 592000, 88200),
-            new CitySeed("Cork", "Irlande", "Nord", "GMT", 224000, 14900),
-            new CitySeed("Londres", "Royaume-Uni", "Nord", "GMT", 8982000, 684500),
-            new CitySeed("Manchester", "Royaume-Uni", "Nord", "GMT", 568000, 62800),
-            new CitySeed("Edimbourg", "Royaume-Uni", "Nord", "GMT", 506000, 33800),
-            new CitySeed("Birmingham", "Royaume-Uni", "Nord", "GMT", 1141000, 74200),
-            new CitySeed("Stockholm", "Suede", "Nord", "CET", 985000, 79200),
-            new CitySeed("Goteborg", "Suede", "Nord", "CET", 587000, 36200),
-            new CitySeed("Malmo", "Suede", "Nord", "CET", 362000, 17300),
-            new CitySeed("Copenhague", "Danemark", "Nord", "CET", 659000, 73400),
-            new CitySeed("Aarhus", "Danemark", "Nord", "CET", 288000, 16400),
-            new CitySeed("Helsinki", "Finlande", "Nord", "EET", 664000, 52100),
-            new CitySeed("Espoo", "Finlande", "Nord", "EET", 312000, 18200),
-            new CitySeed("Oslo", "Norvege", "Nord", "CET", 714000, 96300),
-            new CitySeed("Bergen", "Norvege", "Nord", "CET", 286000, 22100),
-            new CitySeed("Zurich", "Suisse", "Centre", "CET", 443000, 128700),
-            new CitySeed("Geneve", "Suisse", "Centre", "CET", 203000, 65700),
-            new CitySeed("Lausanne", "Suisse", "Centre", "CET", 144000, 27900)
+            new CitySeed("Paris", "France", "West", "CET", 2148000, 76500),
+            new CitySeed("Lyon", "France", "West", "CET", 522000, 31800),
+            new CitySeed("Marseille", "France", "West", "CET", 873000, 22900),
+            new CitySeed("Toulouse", "France", "West", "CET", 511000, 23400),
+            new CitySeed("Madrid", "Spain", "South", "CET", 3223000, 133200),
+            new CitySeed("Barcelona", "Spain", "South", "CET", 1620000, 89200),
+            new CitySeed("Valencia", "Spain", "South", "CET", 792000, 29100),
+            new CitySeed("Seville", "Spain", "South", "CET", 687000, 21400),
+            new CitySeed("Lisbon", "Portugal", "South", "WET", 545000, 38400),
+            new CitySeed("Porto", "Portugal", "South", "WET", 231000, 17900),
+            new CitySeed("Rome", "Italy", "South", "CET", 2762000, 154700),
+            new CitySeed("Milan", "Italy", "South", "CET", 1397000, 207900),
+            new CitySeed("Naples", "Italy", "South", "CET", 914000, 41200),
+            new CitySeed("Turin", "Italy", "South", "CET", 848000, 38900),
+            new CitySeed("Berlin", "Germany", "Central", "CET", 3645000, 178600),
+            new CitySeed("Munich", "Germany", "Central", "CET", 1488000, 276300),
+            new CitySeed("Hamburg", "Germany", "Central", "CET", 1841000, 126700),
+            new CitySeed("Frankfurt", "Germany", "Central", "CET", 764000, 142100),
+            new CitySeed("Cologne", "Germany", "Central", "CET", 1090000, 87300),
+            new CitySeed("Stuttgart", "Germany", "Central", "CET", 635000, 69400),
+            new CitySeed("Brussels", "Belgium", "North", "CET", 1209000, 87000),
+            new CitySeed("Antwerp", "Belgium", "North", "CET", 545000, 31200),
+            new CitySeed("Amsterdam", "Netherlands", "North", "CET", 925000, 109900),
+            new CitySeed("Rotterdam", "Netherlands", "North", "CET", 655000, 61200),
+            new CitySeed("Eindhoven", "Netherlands", "North", "CET", 244000, 23400),
+            new CitySeed("Luxembourg", "Luxembourg", "North", "CET", 132000, 32500),
+            new CitySeed("Vienna", "Austria", "Central", "CET", 2010000, 121600),
+            new CitySeed("Prague", "Czech Republic", "Central", "CET", 1313000, 74200),
+            new CitySeed("Brno", "Czech Republic", "Central", "CET", 395000, 18600),
+            new CitySeed("Warsaw", "Poland", "East", "CET", 1862000, 93300),
+            new CitySeed("Krakow", "Poland", "East", "CET", 806000, 38900),
+            new CitySeed("Wroclaw", "Poland", "East", "CET", 674000, 27400),
+            new CitySeed("Budapest", "Hungary", "East", "CET", 1752000, 55600),
+            new CitySeed("Bucharest", "Romania", "East", "EET", 1716000, 50300),
+            new CitySeed("Cluj-Napoca", "Romania", "East", "EET", 286000, 11400),
+            new CitySeed("Sofia", "Bulgaria", "East", "EET", 1230000, 27900),
+            new CitySeed("Athens", "Greece", "South", "EET", 664000, 42100),
+            new CitySeed("Thessaloniki", "Greece", "South", "EET", 315000, 12600),
+            new CitySeed("Dublin", "Ireland", "North", "GMT", 592000, 88200),
+            new CitySeed("Cork", "Ireland", "North", "GMT", 224000, 14900),
+            new CitySeed("London", "United Kingdom", "North", "GMT", 8982000, 684500),
+            new CitySeed("Manchester", "United Kingdom", "North", "GMT", 568000, 62800),
+            new CitySeed("Edinburgh", "United Kingdom", "North", "GMT", 506000, 33800),
+            new CitySeed("Birmingham", "United Kingdom", "North", "GMT", 1141000, 74200),
+            new CitySeed("Stockholm", "Sweden", "North", "CET", 985000, 79200),
+            new CitySeed("Gothenburg", "Sweden", "North", "CET", 587000, 36200),
+            new CitySeed("Malmo", "Sweden", "North", "CET", 362000, 17300),
+            new CitySeed("Copenhagen", "Denmark", "North", "CET", 659000, 73400),
+            new CitySeed("Aarhus", "Denmark", "North", "CET", 288000, 16400),
+            new CitySeed("Helsinki", "Finland", "North", "EET", 664000, 52100),
+            new CitySeed("Espoo", "Finland", "North", "EET", 312000, 18200),
+            new CitySeed("Oslo", "Norway", "North", "CET", 714000, 96300),
+            new CitySeed("Bergen", "Norway", "North", "CET", 286000, 22100),
+            new CitySeed("Zurich", "Switzerland", "Central", "CET", 443000, 128700),
+            new CitySeed("Geneva", "Switzerland", "Central", "CET", 203000, 65700),
+            new CitySeed("Lausanne", "Switzerland", "Central", "CET", 144000, 27900)
         };
 
         var rows = new CityRow[1000];
@@ -210,7 +211,7 @@
             var sector = (i % 20) + 1;
             var cycle = i / catalog.Length;
             rows[i] = new CityRow(
-                $"{seed.City} - Zone {sector:00}",
+                $"{seed.City} - Area {sector:00}",
                 seed.Country,
                 seed.Region,
                 seed.Population + cycle * 250,
@@ -224,8 +225,11 @@
     private sealed record CitySeed(string City, string Country, string Region, string TimeZone, int Population, int LocalGdpMEur);
     private sealed record WidgetItem(string Label, string Value, string Trend);
     private sealed record CityRow(string City, string Country, string Region, int Population, int LocalGdpMEur, string TimeZone);
+
+    private void ResetFilters()
+    {
+        _selectedCountry = null;
+        _selectedRegion = null;
+    }
 }
-
-
-
 

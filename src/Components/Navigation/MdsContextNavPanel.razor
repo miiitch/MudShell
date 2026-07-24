@@ -8,7 +8,7 @@
 <div class="mbx-context-nav-panel @(IsExpanded ? "mbx-context-nav-panel-expanded" : "mbx-context-nav-panel-collapsed") @Class">
     @if (_state.ContextPanelNodes.Count == 0)
     {
-        <div class="mbx-context-nav-empty">Aucune navigation contextuelle</div>
+        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="pa-2">No contextual navigation</MudText>
     }
     else if (!IsExpanded)
     {
@@ -16,80 +16,79 @@
         {
             var icon = !string.IsNullOrWhiteSpace(node.Icon) ? node.Icon : Icons.Material.Outlined.Circle;
             var isActiveL2 = _state.ActivePath.Contains(node.Id);
+            var collapsedLinkClass = $"mbx-context-collapsed-link{(isActiveL2 ? " mbx-context-collapsed-link-active" : "")}";
             <MudTooltip Text="@node.Text" Placement="Placement.Right">
-                <button type="button"
-                        class="mbx-context-collapsed-btn @(isActiveL2 ? "mbx-context-collapsed-btn-active" : "")"
-                        disabled="@node.Disabled"
-                        @onclick="() => HandleLevel2Click(node)">
-                    <MudIcon Icon="@icon" Size="Size.Small" />
-                </button>
+                @if (!string.IsNullOrWhiteSpace(node.Href) && !node.Disabled)
+                {
+                    <NavLink href="@node.Href"
+                             Match="@ToNavLinkMatch(node.Match)"
+                             class="@collapsedLinkClass"
+                             title="@node.Text">
+                        <MudIcon Icon="@icon" Size="Size.Small" />
+                    </NavLink>
+                }
+                else
+                {
+                    <MudIconButton Icon="@icon"
+                                   Size="Size.Small"
+                                   Color="Color.Inherit"
+                                   Disabled="@node.Disabled"
+                                   OnClick="@(() => HandleLevel2Click(node))" />
+                }
             </MudTooltip>
         }
     }
     else
     {
-        @foreach (var node in _state.ContextPanelNodes)
-        {
-            var hasChildren = node.Children.Count > 0;
-            var isExpanded = _state.ExpandedNodeIds.Contains(node.Id);
-            var isActiveL2 = _state.ActivePath.Contains(node.Id);
+        <MudNavMenu Color="Color.Primary" Rounded="true" Dense="true" Class="mbx-context-mud-nav">
+            @foreach (var node in _state.ContextPanelNodes)
+            {
+                var hasChildren = node.Children.Count > 0;
+                var isExpanded = _state.ExpandedNodeIds.Contains(node.Id);
 
-            <div class="mbx-context-row @(isActiveL2 ? "mbx-context-row-active" : "")">
-                <button type="button"
-                        class="mbx-context-node-btn"
-                        disabled="@node.Disabled"
-                        @onclick="() => HandleLevel2Click(node)">
-                    <span class="mbx-context-node-main d-inline-flex align-center gap-2">
-                        @if (!string.IsNullOrWhiteSpace(node.Icon))
-                        {
-                            <MudIcon Icon="@node.Icon" Size="Size.Small" />
-                        }
-                        <span>@node.Text</span>
-                    </span>
-                    @if (hasChildren)
-                    {
-                        <MudIcon Icon="@(isExpanded ? Icons.Material.Outlined.ExpandLess : Icons.Material.Outlined.ChevronRight)" Size="Size.Small" />
-                    }
-                </button>
-
-                @if (hasChildren && isExpanded)
+                @if (hasChildren)
                 {
-                    <div class="mbx-context-subentries">
+                    <MudNavGroup Title="@node.Text"
+                                 Icon="@(node.Icon ?? Icons.Material.Outlined.Circle)"
+                                 IconColor="Color.Inherit"
+                                 Expanded="@isExpanded"
+                                 ExpandedChanged="@(v => HandleGroupExpandedChanged(node, v))"
+                                 Class="mbx-context-nav-group">
                         @foreach (var child in node.Children.Where(c => c.Visible))
                         {
-                            var isActiveL3 = _state.ActivePath.Contains(child.Id);
-                            var childClass = $"mbx-context-subentry {(isActiveL3 ? "mbx-context-subentry-active" : "")}";
-                            @if (!string.IsNullOrWhiteSpace(child.Href) && !child.Disabled)
-                            {
-                                <NavLink href="@child.Href"
-                                         Match="@ToNavLinkMatch(child.Match)"
-                                         class="@childClass">
-                                    @child.Text
-                                </NavLink>
-                            }
-                            else
-                            {
-                                <button type="button"
-                                        class="@childClass"
-                                        disabled="@child.Disabled"
-                                        @onclick="() => HandleLeafClick(child)">
-                                    @child.Text
-                                </button>
-                            }
+                            <MudNavLink Href="@child.Href"
+                                        Disabled="@child.Disabled"
+                                        ActiveClass=""
+                                        Class="@(_state.ActivePath.Contains(child.Id) ? "mbx-context-nav-active" : "")"
+                                        Match="NavLinkMatch.All">
+                                @child.Text
+                            </MudNavLink>
                         }
-                    </div>
+                    </MudNavGroup>
                 }
-            </div>
-        }
+                else
+                {
+                    <MudNavLink Href="@node.Href"
+                                Icon="@(node.Icon ?? Icons.Material.Outlined.Circle)"
+                                IconColor="Color.Inherit"
+                                Disabled="@node.Disabled"
+                                ActiveClass=""
+                                Class="@(_state.ActivePath.Contains(node.Id) ? "mbx-context-nav-active" : "")"
+                                Match="NavLinkMatch.All">
+                        @node.Text
+                    </MudNavLink>
+                }
+            }
+        </MudNavMenu>
     }
 </div>
 
 @code {
-    [Parameter] public MbxNavTree? Tree { get; set; }
-    [Parameter] public string? CurrentUri { get; set; }
-    [Parameter] public bool SingleExpandedLevel2 { get; set; } = true;
-    [Parameter] public bool IsExpanded { get; set; } = true;
-    [Parameter] public string? Class { get; set; }
+    [Parameter] public MbxNavTree? Tree              { get; set; }
+    [Parameter] public string? CurrentUri            { get; set; }
+    [Parameter] public bool SingleExpandedLevel2     { get; set; } = true;
+    [Parameter] public bool IsExpanded               { get; set; } = true;
+    [Parameter] public string? Class                 { get; set; }
 
     private MbxNavState _state = MbxNavState.Empty;
     private HashSet<string> _expanded = new(StringComparer.Ordinal);
@@ -117,23 +116,15 @@
             singleExpandLevel2: SingleExpandedLevel2);
     }
 
-    private void HandleLevel2Click(MbxNavNode node)
+    private void HandleGroupExpandedChanged(MbxNavNode node, bool isExpanded)
     {
-        if (node.Disabled)
-            return;
-
-        if (node.Children.Count > 0)
+        if (SingleExpandedLevel2 && isExpanded)
         {
-            if (SingleExpandedLevel2)
-            {
-                _expanded.RemoveWhere(id => _state.ContextPanelNodes.Any(n => n.Id == id && n.Children.Count > 0));
-                _expanded.Add(node.Id);
-            }
-            else if (!_expanded.Add(node.Id))
-            {
-                _expanded.Remove(node.Id);
-            }
+            _expanded.RemoveWhere(id => _state.ContextPanelNodes.Any(n => n.Id == id && n.Children.Count > 0));
         }
+
+        if (isExpanded) _expanded.Add(node.Id);
+        else _expanded.Remove(node.Id);
 
         if (!string.IsNullOrWhiteSpace(node.Href))
             Nav.NavigateTo(node.Href);
@@ -141,13 +132,12 @@
         RecomputeState();
     }
 
-    private void HandleLeafClick(MbxNavNode node)
+    private void HandleLevel2Click(MbxNavNode node)
     {
-        if (node.Disabled)
-            return;
-
+        if (node.Disabled) return;
         if (!string.IsNullOrWhiteSpace(node.Href))
             Nav.NavigateTo(node.Href);
+        RecomputeState();
     }
 
     private static NavLinkMatch ToNavLinkMatch(MbxNavMatchMode mode) =>

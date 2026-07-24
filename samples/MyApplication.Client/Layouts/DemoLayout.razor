@@ -48,10 +48,6 @@
 
     <ChildContent>@Body</ChildContent>
 
-    <BottomNavContent>
-        <MdsBottomNav Items="@_navItems" />
-    </BottomNavContent>
-
 </MdsAppShell>
 
 @code {
@@ -61,10 +57,11 @@
     private bool _contextPanelExpanded = true;
     private RenderFragment? ContextPanel => _showContextPanel
         ? @<div>
-              <div style="display:flex; justify-content:flex-end; padding:8px 8px 0;">
+              <div style="display:flex; justify-content:flex-end; align-items:center; height:40px; padding:0 8px;">
                   <MudIconButton Icon="@(_contextPanelExpanded ? Icons.Material.Outlined.KeyboardDoubleArrowLeft : Icons.Material.Outlined.KeyboardDoubleArrowRight)"
                                  Size="Size.Small"
                                  Color="Color.Inherit"
+                                 Style="margin:0;"
                                  title="Réduire/agrandir le panneau contextuel"
                                  OnClick="@(() => _shell.ToggleContextPanel())" />
               </div>

@@ -7,9 +7,10 @@
 - 🎨 Pre-configured dark/light `MudTheme` — just call `CreateDarkTheme()`
 - 🗂 `MdsAppShell` — full-page shell with collapsible sidebar, background image/palette modes
 - 🌲 Unified hierarchical navigation with `MbxNavTree` (`MdsSidebarNav`, `MdsContextNavPanel`, `MbxMobileDrilldownNav`)
-- 📱 Fully **responsive** — sidebar on desktop, `MdsBottomNav` on mobile (≤ 959 px)
+- 🖥️ Desktop-first shell with collapsible sidebar navigation
 - 💬 `MdsChatBar` — glassmorphism input bar
 - 🃏 `MdsDocumentCard`, `MdsFilterTabBar`, `MdsPageHeader`
+- 🧩 Main-content primitives (`MdsMainToolbar`, `MdsMainSection`, `MdsMainPart`, `MdsMainEmptyState`)
 - All components use **scoped CSS** — zero global style pollution
 
 ## Quick start
@@ -41,6 +42,7 @@ builder.Services.AddMudShell();
 @using MudShell.Components.ChatBar
 @using MudShell.Components.DocumentCard
 @using MudShell.Components.FilterTabBar
+@using MudShell.Components.MainContent
 @using MudShell.Components.PageHeader
 ```
 
@@ -78,9 +80,6 @@ duplicate section-ID crash at runtime:
   <ChildContent>
     @Body
   </ChildContent>
-  <BottomNavContent>
-    <MdsBottomNav Items="@navItems" />
-  </BottomNavContent>
 </MdsAppShell>
 ```
 
@@ -98,9 +97,6 @@ duplicate section-ID crash at runtime:
   <ContextPanelContent>
     <MdsContextNavPanel Tree="@AppNav.Tree" IsExpanded="@_contextExpanded" />
   </ContextPanelContent>
-  <BottomNavContent>
-    <MbxMobileDrilldownNav Tree="@AppNav.Tree" />
-  </BottomNavContent>
   <ChildContent>@Body</ChildContent>
 </MdsAppShell>
 ```
@@ -111,10 +107,25 @@ You can collapse/expand the level-2 panel at runtime with:
 _shell.ToggleContextPanel();
 ```
 
+## Recommended page layout pattern (sample app)
+
+For pages with actions and filters, use this structure:
+
+1. **Top action bar** with `MdsMainToolbar` (primary actions on the left, UI config on the right with `MudSpacer`).
+2. **Filter row below** with a horizontal `MudStack` of `MudChip` filters.
+3. Keep the filter row directly on the page background (no bordered `MudPaper` wrapper).
+
+This pattern is used in the sample pages (for example `MeteoPage` and `EuropeCitiesDashboard`) for consistent UX.
+
+For a full page blueprint and MudBlazor migration guidance, see the dedicated docs below.
+
 ## Documentation
 
-- [Getting started](docs/getting-started.md)
-- [Theming](docs/theming.md)
-- [Responsive](docs/responsive.md)
-- [Architecture](docs/architecture.md)
-- Components: [AppShell](docs/components/app-shell.md) · [Sidebar](docs/components/sidebar.md) · [BottomNav](docs/components/bottom-nav.md) · [ChatBar](docs/components/chat-bar.md) · [DocumentCard](docs/components/document-card.md) · [FilterTabBar](docs/components/filter-tab-bar.md) · [PageHeader](docs/components/page-header.md)
+- [Getting started](src/docs/getting-started.md)
+- [MudBlazor integration](src/docs/mudblazor-integration.md)
+- [Page blueprint](src/docs/page-blueprint.md)
+- [Model](src/docs/model.md)
+- [Theming](src/docs/theming.md)
+- [Responsive](src/docs/responsive.md)
+- [Architecture](src/docs/architecture.md)
+- Components: [AppShell](src/docs/components/app-shell.md) · [Sidebar](src/docs/components/sidebar.md) · [BottomNav](src/docs/components/bottom-nav.md) · [ChatBar](src/docs/components/chat-bar.md) · [DocumentCard](src/docs/components/document-card.md) · [FilterTabBar](src/docs/components/filter-tab-bar.md) · [PageHeader](src/docs/components/page-header.md)

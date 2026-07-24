@@ -1,16 +1,56 @@
 @namespace MudShell.Components.PageHeader
 
-<div class="@RootClass">
-    <div class="mbx-page-header-start d-flex align-center">@StartContent</div>
-    <MudText Typo="Typo.h5" Class="mbx-page-header-title">@Title</MudText>
-    <div class="mbx-page-header-end d-flex align-center justify-end">@EndContent</div>
-</div>
+@if (SyncPageTitle && !string.IsNullOrWhiteSpace(EffectivePageTitle))
+{
+    <PageTitle>@EffectivePageTitle</PageTitle>
+}
+
+<MudToolBar Class="@RootClass" Style="@Style" Gutters="false">
+    <div class="mbx-page-header-core">
+        @if (StartContent is not null)
+        {
+            <div class="mbx-page-header-start d-flex align-center">@StartContent</div>
+        }
+        else if (!string.IsNullOrWhiteSpace(Icon))
+        {
+            <MudIcon Icon="@Icon" Size="Size.Medium" Class="mbx-page-header-icon" />
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Title))
+        {
+            <MudText Typo="Typo.h5" Class="mbx-page-header-title">@Title</MudText>
+        }
+
+        @if (HasBreadcrumbs)
+        {
+            <MudBreadcrumbs Items="@EffectiveBreadcrumbItems" Class="mbx-page-header-breadcrumbs" />
+        }
+    </div>
+
+    @if (HasRightSide)
+    {
+        <div class="mbx-page-header-end d-flex align-center justify-end">
+            @(HeaderActions ?? ActionsContent ?? EndContent)
+        </div>
+    }
+</MudToolBar>
 
 @code {
-    [Parameter] public string?         Title        { get; set; }
-    [Parameter] public RenderFragment? StartContent { get; set; }
-    [Parameter] public RenderFragment? EndContent   { get; set; }
-    [Parameter] public string? Class { get; set; }
+    [Parameter] public string?                    Title          { get; set; }
+    [Parameter] public string?                    PageTitle      { get; set; }
+    [Parameter] public bool                       SyncPageTitle  { get; set; } = true;
+    [Parameter] public string?                    Icon           { get; set; }
+    [Parameter] public IReadOnlyList<BreadcrumbItem>? BreadcrumbItems { get; set; }
+    [Parameter] public RenderFragment?            StartContent   { get; set; }
+    [Parameter] public RenderFragment?            HeaderActions  { get; set; }
+    [Parameter] public RenderFragment?            EndContent     { get; set; }
+    [Parameter] public RenderFragment?            ActionsContent { get; set; }
+    [Parameter] public string?                    Class          { get; set; }
+    [Parameter] public string?                    Style          { get; set; }
 
-    private string RootClass => $"mbx-page-header d-flex align-center justify-space-between {Class}".Trim();
+    private string RootClass => $"mbx-page-header {Class}".Trim();
+    private bool HasBreadcrumbs => BreadcrumbItems is { Count: > 0 };
+    private IReadOnlyList<BreadcrumbItem> EffectiveBreadcrumbItems => BreadcrumbItems ?? Array.Empty<BreadcrumbItem>();
+    private bool HasRightSide => HeaderActions is not null || ActionsContent is not null || EndContent is not null;
+    private string? EffectivePageTitle => string.IsNullOrWhiteSpace(PageTitle) ? Title : PageTitle;
 }

@@ -1,7 +1,31 @@
-.mbx-sidebar-nav {
-    width: 100%;
+/* MudNavMenu/MudNavLink overrides for sidebar nav */
+::deep .mbx-sidebar-nav .mud-nav-link {
+    color: var(--mud-palette-text-secondary) !important;
+    border-radius: var(--mbx-radius-md) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    transition: color 0.2s ease, background-color 0.2s ease !important;
 }
 
+::deep .mbx-sidebar-nav .mud-nav-link:hover {
+    color: var(--mud-palette-text-primary) !important;
+    background-color: var(--mbx-nav-hover-bg) !important;
+}
+
+::deep .mbx-sidebar-nav .mud-nav-link.mbx-nav-link-active,
+::deep .mbx-sidebar-nav .mud-nav-link.active {
+    color: var(--mud-palette-primary) !important;
+    background-color: var(--mbx-nav-hover-bg) !important;
+}
+
+::deep .mbx-sidebar-nav .mud-nav-group-title {
+    color: var(--mud-palette-text-secondary) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    border-radius: var(--mbx-radius-md) !important;
+}
+
+/* Badge */
 .mbx-sidebar-nav-badge {
     font-size: 11px;
     line-height: 1;
@@ -12,14 +36,13 @@
     border: 1px solid var(--mbx-content-border);
 }
 
-.mbx-nav-link.mbx-nav-link-active {
-    color: var(--mud-palette-primary);
-    background-color: var(--mbx-nav-hover-bg);
-}
-
-.mbx-nav-link.mbx-nav-link-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+/* Collapsed icon-only */
+.mbx-sidebar-nav-collapsed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--mbx-space-1);
+    width: 100%;
 }
 
 .mbx-sidebar-nav-icon-link {
@@ -31,6 +54,7 @@
     border-radius: var(--mbx-radius-md);
     color: var(--mud-palette-text-secondary);
     text-decoration: none;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .mbx-sidebar-nav-icon-link:hover {
@@ -41,4 +65,9 @@
 .mbx-sidebar-nav-icon-link.mbx-sidebar-nav-icon-link-active {
     color: var(--mud-palette-primary);
     background-color: var(--mbx-subtle-bg);
+}
+
+.mbx-nav-link.mbx-nav-link-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

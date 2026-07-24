@@ -9,6 +9,11 @@ namespace MudShell.Theme;
 /// </summary>
 public static class MbxTheme
 {
+    public static class DesignTokens
+    {
+        public const int MaxAccentBorderWidth = 6;
+    }
+
     public enum MbxThemePreset
     {
         Cobalt,
@@ -82,10 +87,10 @@ public static class MbxTheme
         var darkSubSection = Mix(primary, ParseHex("#12142a"), 0.85); // BackgroundGray — page area (darker)
         var darkBackground = Mix(primary, ParseHex("#0a0c1c"), 0.91); // Background — darkest
 
-        // ── Light mode: Surface=white, BackgroundGray=subtle tint, DrawerBackground=most tinted ──
+        // ── Light mode: Surface stays white; page background uses neutral gray for stronger contrast ──
         var lightSidebar    = Mix(primary, ParseHex("#e0e0f4"), 0.65); // DrawerBackground — clearly tinted
         var lightSubSection = Mix(primary, ParseHex("#f5f5ff"), 0.93); // BackgroundGray — subtle
-        var lightBackground = Mix(primary, ParseHex("#ffffff"), 0.99); // Background — near-white page area
+        var lightBackground = ParseHex("#f1f3f6");                      // Background — neutral gray (palette-independent)
         var lightMain       = ParseHex("#ffffff");                      // Surface — pure white
 
         var darkPalette = new PaletteDark

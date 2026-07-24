@@ -8,7 +8,7 @@
         <MudIconButton Icon="@(IsExpanded ? Icons.Material.Outlined.MenuOpen : Icons.Material.Outlined.Menu)"
                        Color="Color.Inherit" Size="Size.Small"
                        Class="mbx-nav-toggle-btn"
-                       title="Basculer la barre latérale"
+                       title="Toggle sidebar"
                        OnClick="HandleToggle" />
     </div>
 
@@ -24,29 +24,89 @@
     @if (PrimaryItems is not null)
     {
         <div class="mbx-nav-items">
-            @foreach (var item in PrimaryItems)
+            @if (IsExpanded)
             {
-                @RenderNavRow(item)
+                <MudNavMenu Color="Color.Primary" Rounded="true" Dense="true" Class="mbx-sidebar-mud-nav">
+                    @foreach (var item in PrimaryItems)
+                    {
+                        <MudNavLink Href="@item.Href"
+                                    Icon="@item.Icon"
+                                    IconColor="Color.Inherit"
+                                    ActiveClass="mbx-nav-link-active">
+                            @item.Label
+                        </MudNavLink>
+                    }
+                </MudNavMenu>
+            }
+            else
+            {
+                @foreach (var item in PrimaryItems)
+                {
+                    <MudTooltip Text="@item.Label" Placement="Placement.Right">
+                        @if (item.Href != null)
+                        {
+                            <NavLink href="@item.Href"
+                                     class="mbx-sidebar-icon-link"
+                                     ActiveClass="mbx-sidebar-icon-link-active">
+                                <MudIcon Icon="@item.Icon" Size="Size.Small" />
+                            </NavLink>
+                        }
+                        else
+                        {
+                            <MudIconButton Icon="@item.Icon" Color="Color.Inherit" Size="Size.Small" />
+                        }
+                    </MudTooltip>
+                }
             }
         </div>
 
-        <div class="mbx-nav-divider @(IsExpanded ? "mbx-nav-divider-wide" : "")"></div>
+        <MudDivider Class="@($"mbx-nav-divider {(IsExpanded ? "mbx-nav-divider-wide" : "")}")" />
     }
 
     @* Secondary nav items *@
     @if (SecondaryItems is not null)
     {
         <div class="mbx-nav-items">
-            @foreach (var item in SecondaryItems)
+            @if (IsExpanded)
             {
-                @RenderNavRow(item)
+                <MudNavMenu Color="Color.Primary" Rounded="true" Dense="true" Class="mbx-sidebar-mud-nav">
+                    @foreach (var item in SecondaryItems)
+                    {
+                        <MudNavLink Href="@item.Href"
+                                    Icon="@item.Icon"
+                                    IconColor="Color.Inherit"
+                                    ActiveClass="mbx-nav-link-active">
+                            @item.Label
+                        </MudNavLink>
+                    }
+                </MudNavMenu>
+            }
+            else
+            {
+                @foreach (var item in SecondaryItems)
+                {
+                    <MudTooltip Text="@item.Label" Placement="Placement.Right">
+                        @if (item.Href != null)
+                        {
+                            <NavLink href="@item.Href"
+                                     class="mbx-sidebar-icon-link"
+                                     ActiveClass="mbx-sidebar-icon-link-active">
+                                <MudIcon Icon="@item.Icon" Size="Size.Small" />
+                            </NavLink>
+                        }
+                        else
+                        {
+                            <MudIconButton Icon="@item.Icon" Color="Color.Inherit" Size="Size.Small" />
+                        }
+                    </MudTooltip>
+                }
             }
         </div>
     }
 
     <div class="mbx-nav-spacer"></div>
 
-    @* Bottom slot (profile, settings, …) *@
+    @* Bottom slot *@
     @if (BottomContent is not null)
     {
         <div class="mbx-nav-bottom @(IsExpanded ? "mbx-nav-bottom-expanded" : "")">
@@ -64,37 +124,4 @@
     [Parameter] public RenderFragment?       BottomContent  { get; set; }
 
     private async Task HandleToggle() => await OnToggle.InvokeAsync();
-
-    private RenderFragment RenderNavRow(MbxNavItem item) => IsExpanded
-        ? @<div class="mbx-nav-item-expanded">
-              @if (item.Href != null)
-              {
-                  <NavLink href="@item.Href" class="mbx-nav-link" ActiveClass="mbx-nav-link-active">
-                      <MudIcon Icon="@item.Icon" Size="Size.Small" Class="mbx-nav-icon" />
-                      <span class="mbx-nav-label">@item.Label</span>
-                  </NavLink>
-              }
-              else
-              {
-                  <div class="mbx-nav-link mbx-nav-link-clickable">
-                      <MudIcon Icon="@item.Icon" Size="Size.Small" Class="mbx-nav-icon" />
-                      <span class="mbx-nav-label">@item.Label</span>
-                  </div>
-              }
-          </div>
-        : @<MudTooltip Text="@item.Label" Placement="Placement.Right">
-              @if (item.Href != null)
-              {
-                  <NavLink href="@item.Href"
-                           class="mbx-sidebar-icon-link"
-                           ActiveClass="mbx-sidebar-icon-link-active"
-                           title="@item.Label">
-                      <MudIcon Icon="@item.Icon" Size="Size.Small" />
-                  </NavLink>
-              }
-              else
-              {
-                  <MudIconButton Icon="@item.Icon" Color="Color.Inherit" Size="Size.Small" />
-              }
-          </MudTooltip>;
 }

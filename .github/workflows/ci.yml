@@ -37,16 +37,33 @@ jobs:
 
       - name: Wait for sample app
         run: |
+          ready=0
           for i in $(seq 1 30); do
-            curl -sf http://localhost:5265 > /dev/null 2>&1 && echo "App is ready after ${i}s" && break
+            if curl -sf http://localhost:5265 > /dev/null 2>&1; then
+              echo "App is ready after ${i}s"
+              ready=1
+              break
+            fi
             echo "Waiting ($i/30)..."
             sleep 2
           done
+          if [ "$ready" -ne 1 ]; then
+            echo "Sample app did not become ready on http://localhost:5265"
+            echo "=== /tmp/sample-app.log ==="
+            tail -n 200 /tmp/sample-app.log || true
+            exit 1
+          fi
 
       - name: Run UI tests
         run: dotnet test tests/MudShell.UITests/MudShell.UITests.csproj --no-build --configuration Release --logger "trx;LogFileName=ui-tests.trx"
         env:
           PLAYWRIGHT_TEST_BASE_URL: http://localhost:5265
+
+      - name: Dump sample app log on UI test failure
+        if: failure()
+        run: |
+          echo "=== /tmp/sample-app.log ==="
+          tail -n 300 /tmp/sample-app.log || true
 
       - name: Upload UI test results
         if: always()

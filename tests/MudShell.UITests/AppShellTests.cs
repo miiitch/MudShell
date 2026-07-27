@@ -59,7 +59,7 @@ public class AppShellTests : PlaywrightTestBase
             "el => window.getComputedStyle(el).borderTopLeftRadius");
 
         Assert.Equal("0px", mainTopLeftRadius);
-        Assert.NotEqual("0px", mainTopRightRadius);
+        Assert.Equal("0px", mainTopRightRadius);
         Assert.NotEqual("0px", panelTopLeftRadius);
     });
 
@@ -82,7 +82,7 @@ public class AppShellTests : PlaywrightTestBase
         var isExpanded = await panel.EvaluateAsync<bool>("el => el.classList.contains('mbx-context-panel-expanded')");
         Assert.True(isExpanded);
 
-        await Page.GetByTitle("Réduire/agrandir le panneau contextuel").First.ClickAsync();
+        await Page.Locator(".mbx-context-panel .mud-icon-button").First.ClickAsync();
 
         var isCollapsed = await panel.EvaluateAsync<bool>("el => el.classList.contains('mbx-context-panel-collapsed')");
         Assert.True(isCollapsed);

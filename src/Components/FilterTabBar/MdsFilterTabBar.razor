@@ -1,7 +1,7 @@
 @namespace MudShell.Components.FilterTabBar
 @typeparam T
 
-<div class="@RootClass">
+<div class="@RootClass" @attributes="AdditionalAttributes">
     <MudToggleGroup T="T" Value="Value" ValueChanged="ValueChanged"
                     Color="Color.Primary" CheckMark="false"
                     Style="gap: 4px;">
@@ -22,6 +22,14 @@
     [Parameter] public IEnumerable<MbxTabItem<T>>? Items          { get; set; }
     [Parameter] public RenderFragment?             TrailingContent { get; set; }
     [Parameter] public string?                     Class          { get; set; }
+
+    /// <summary>
+    /// Undeclared attributes, forwarded to the root element. Without this, passing an attribute the
+    /// component does not declare (a <c>data-testid</c> for end-to-end tests, an ARIA attribute)
+    /// fails at render time rather than being ignored.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
     private string RootClass => $"mbx-filter-tabs {Class}".Trim();
 }

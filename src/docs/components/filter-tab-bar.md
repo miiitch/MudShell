@@ -14,6 +14,8 @@ Pill-style tab bar wrapping `MudToggleGroup`. Supports any type `T` and scrolls 
 | `ValueChanged` | `EventCallback<T>` | — | Two-way bind support |
 | `Items` | `IEnumerable<MbxTabItem<T>>?` | `null` | Tab definitions |
 | `TrailingContent` | `RenderFragment?` | `null` | Optional content after the last tab (e.g. a dropdown button) |
+| `Class` | `string?` | `null` | Appended to the root element's CSS classes |
+| `AdditionalAttributes` | `IReadOnlyDictionary<string, object>?` | `null` | Undeclared attributes, splatted onto the root `div` (e.g. `data-testid`, ARIA attributes) |
 
 ## MbxTabItem record
 

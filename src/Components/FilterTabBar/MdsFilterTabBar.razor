@@ -7,7 +7,7 @@
                     Style="gap: 4px;">
         @foreach (var item in Items ?? [])
         {
-            <MudToggleItem Value="@item.Value" Text="@item.Label" />
+            <MudToggleItem data-testid="@MudShell.MbxTestId.Tab(item.Value)" Value="@item.Value" Text="@item.Label" />
         }
     </MudToggleGroup>
     @if (TrailingContent is not null)

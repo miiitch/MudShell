@@ -48,7 +48,8 @@
 
                 @if (hasChildren)
                 {
-                    <MudNavGroup Title="@node.Text"
+                    <MudNavGroup data-testid="@MudShell.MbxTestId.NavGroup(node.Id)"
+                                 Title="@node.Text"
                                  Icon="@(node.Icon ?? Icons.Material.Outlined.Circle)"
                                  IconColor="Color.Inherit"
                                  Expanded="@isExpanded"
@@ -56,7 +57,8 @@
                                  Class="mbx-context-nav-group">
                         @foreach (var child in node.Children.Where(c => c.Visible))
                         {
-                            <MudNavLink Href="@child.Href"
+                            <MudNavLink data-testid="@MudShell.MbxTestId.Nav(child.Id)"
+                                        Href="@child.Href"
                                         Disabled="@child.Disabled"
                                         ActiveClass=""
                                         Class="@(_state.ActivePath.Contains(child.Id) ? "mbx-context-nav-active" : "")"
@@ -68,7 +70,8 @@
                 }
                 else
                 {
-                    <MudNavLink Href="@node.Href"
+                    <MudNavLink data-testid="@MudShell.MbxTestId.Nav(node.Id)"
+                                Href="@node.Href"
                                 Icon="@(node.Icon ?? Icons.Material.Outlined.Circle)"
                                 IconColor="Color.Inherit"
                                 Disabled="@node.Disabled"

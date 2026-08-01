@@ -12,7 +12,8 @@
             @if (node.Children.Count > 0)
             {
                 var expanded = _expandedIds.Contains(node.Id) || State.ActivePath.Contains(node.Id);
-                <MudNavGroup Title="@node.Text"
+                <MudNavGroup data-testid="@MudShell.MbxTestId.NavGroup(node.Id)"
+                             Title="@node.Text"
                              Icon="@(node.Icon ?? Icons.Material.Outlined.Circle)"
                              IconColor="Color.Inherit"
                              Expanded="@expanded"
@@ -21,7 +22,8 @@
                              Class="mbx-nav-group">
                     @foreach (var child in node.Children.Where(c => c.Visible))
                     {
-                        <MudNavLink Href="@child.Href"
+                        <MudNavLink data-testid="@MudShell.MbxTestId.Nav(child.Id)"
+                                    Href="@child.Href"
                                     Icon="@child.Icon"
                                     IconColor="Color.Inherit"
                                     Disabled="@child.Disabled"
@@ -33,7 +35,8 @@
             }
             else
             {
-                <MudNavLink Href="@node.Href"
+                <MudNavLink data-testid="@MudShell.MbxTestId.Nav(node.Id)"
+                            Href="@node.Href"
                             Icon="@(node.Icon ?? Icons.Material.Outlined.Circle)"
                             IconColor="Color.Inherit"
                             Disabled="@node.Disabled"
@@ -54,7 +57,8 @@ else
             <MudTooltip Text="@node.Text" Placement="Placement.Right">
                 @if (!string.IsNullOrWhiteSpace(node.Href) && !node.Disabled)
                 {
-                    <NavLink href="@node.Href"
+                    <NavLink data-testid="@MudShell.MbxTestId.Nav(node.Id)"
+                             href="@node.Href"
                              Match="@ToNavLinkMatch(node.Match)"
                              class="@iconLinkClass"
                              title="@node.Text">

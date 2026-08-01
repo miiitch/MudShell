@@ -28,19 +28,19 @@
 
         @if (IsLoading)
         {
-            <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="py-6">
+            <MudStack data-testid="part-loading" AlignItems="AlignItems.Center" Spacing="2" Class="py-6">
                 <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
                 <MudText Color="Color.Secondary">@LoadingText</MudText>
             </MudStack>
         }
         else if (!string.IsNullOrWhiteSpace(Error))
         {
-            <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Start">
+            <MudAlert data-testid="part-error" Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Start">
                 @Error
                 @if (OnRetry.HasDelegate)
                 {
                     <div class="mt-2">
-                        <MdsMainButton Variant="Variant.Text" Color="Color.Error" Size="Size.Small" OnClick="@OnRetry">
+                        <MdsMainButton data-testid="btn-retry" Variant="Variant.Text" Color="Color.Error" Size="Size.Small" OnClick="@OnRetry">
                             Retry
                         </MdsMainButton>
                     </div>

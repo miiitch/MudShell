@@ -65,10 +65,11 @@ public class ResponsiveDesktopTests : PlaywrightTestBase
     {
         await Page.GotoAsync("/");
 
-        var marginLeft = await Page.Locator(".mud-main-content.mbx-main-outer")
-            .EvaluateAsync<string>("el => window.getComputedStyle(el).marginLeft");
-
-        Assert.Equal("56px", marginLeft);
+        // ToHaveCSSAsync retries until the value matches. Reading the computed style through
+        // EvaluateAsync instead races the Blazor circuit's first interactive render: the handle
+        // resolves against a node that is not attached yet and the evaluation yields "".
+        await Assertions.Expect(Page.Locator(".mud-main-content.mbx-main-outer"))
+            .ToHaveCSSAsync("margin-left", "56px");
     });
 
     [Fact]

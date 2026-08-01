@@ -51,15 +51,19 @@ public class AppShellTests : PlaywrightTestBase
 
         await Assertions.Expect(Page.Locator(".mbx-context-panel")).ToBeVisibleAsync();
 
-        var mainTopLeftRadius = await Page.Locator(".mbx-main").EvaluateAsync<string>(
-            "el => window.getComputedStyle(el).borderTopLeftRadius");
-        var mainTopRightRadius = await Page.Locator(".mbx-main").EvaluateAsync<string>(
-            "el => window.getComputedStyle(el).borderTopRightRadius");
+        // ToHaveCSSAsync retries until the value matches. Reading the computed style through
+        // EvaluateAsync instead races the Blazor circuit's first interactive render: the handle
+        // resolves against a node that is not attached yet and the evaluation yields "".
+        await Assertions.Expect(Page.Locator(".mbx-main"))
+            .ToHaveCSSAsync("border-top-left-radius", "0px");
+        await Assertions.Expect(Page.Locator(".mbx-main"))
+            .ToHaveCSSAsync("border-top-right-radius", "0px");
+
+        // Asserted as an inequality, so ToHaveCSSAsync does not apply. The visibility assertion
+        // above already guarantees the panel is attached before its style is read.
         var panelTopLeftRadius = await Page.Locator(".mbx-context-panel").EvaluateAsync<string>(
             "el => window.getComputedStyle(el).borderTopLeftRadius");
 
-        Assert.Equal("0px", mainTopLeftRadius);
-        Assert.Equal("0px", mainTopRightRadius);
         Assert.NotEqual("0px", panelTopLeftRadius);
     });
 

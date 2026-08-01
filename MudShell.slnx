@@ -3,4 +3,5 @@
   <Project Path="samples/MyApplication.Client/MyApplication.Client.csproj" />
   <Project Path="samples/MyApplication/MyApplication.csproj" />
   <Project Path="tests/MudShell.UITests/MudShell.UITests.csproj" />
+  <Project Path="tests/MudShell.ComponentTests/MudShell.ComponentTests.csproj" />
 </Solution>

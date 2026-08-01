@@ -5,7 +5,7 @@
     <PageTitle>@EffectivePageTitle</PageTitle>
 }
 
-<MudToolBar Class="@RootClass" Style="@Style" Gutters="false">
+<MudToolBar Class="@RootClass" Style="@Style" Gutters="false" @attributes="AdditionalAttributes">
     <div class="mbx-page-header-core">
         @if (StartContent is not null)
         {
@@ -36,6 +36,10 @@
 </MudToolBar>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     [Parameter] public string?                    Title          { get; set; }
     [Parameter] public string?                    PageTitle      { get; set; }
     [Parameter] public bool                       SyncPageTitle  { get; set; } = true;

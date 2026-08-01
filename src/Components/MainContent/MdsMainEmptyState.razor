@@ -1,6 +1,6 @@
 @namespace MudShell.Components.MainContent
 
-<div class="@RootClass">
+<div class="@RootClass" @attributes="AdditionalAttributes">
     <MudStack AlignItems="AlignItems.Center" Spacing="2">
         @if (!string.IsNullOrWhiteSpace(Icon))
         {
@@ -26,6 +26,10 @@
 </div>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     [Parameter] public string Title { get; set; } = "No items";
     [Parameter] public string? Description { get; set; }
     [Parameter] public string? Icon { get; set; } = Icons.Material.Outlined.Inbox;

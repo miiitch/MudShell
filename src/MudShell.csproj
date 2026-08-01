@@ -18,6 +18,15 @@
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://miiitch.github.io/MudBlazorExt</PackageProjectUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+    <!-- Source debugging: lets consumers step into this code from their own application.
+         SourceLink ships in the SDK since .NET 8, so no package reference is required.
+         ContinuousIntegrationBuild is set by the workflows rather than here, so local builds
+         keep absolute paths and stay debuggable. -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>

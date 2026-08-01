@@ -16,6 +16,7 @@ The title can also be synced automatically to browser `PageTitle`.
 | `StartContent` | `RenderFragment?` | `null` | Left slot (e.g. back button, spacer) |
 | `EndContent` | `RenderFragment?` | `null` | Right slot (e.g. action button) |
 | `ActionsContent` | `RenderFragment?` | `null` | Right slot alias (preferred name) |
+| `AdditionalAttributes` | `IReadOnlyDictionary<string, object>?` | `null` | Undeclared attributes, splatted onto the root element (e.g. `data-testid`, ARIA attributes) |
 
 ## Example — icon + path + contextual actions
 

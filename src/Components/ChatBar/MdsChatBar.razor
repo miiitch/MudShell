@@ -1,6 +1,6 @@
 @namespace MudShell.Components.ChatBar
 
-<div class="@RootClass" style="@_maxWidthStyle">
+<div class="@RootClass" style="@_maxWidthStyle" @attributes="AdditionalAttributes">
     <input type="text"
            class="mbx-chat-input"
            placeholder="@Placeholder"
@@ -17,6 +17,10 @@
 </div>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     [Parameter] public string?           Placeholder   { get; set; } = "Message…";
     [Parameter] public string           Value         { get; set; } = string.Empty;
     [Parameter] public EventCallback<string> ValueChanged { get; set; }

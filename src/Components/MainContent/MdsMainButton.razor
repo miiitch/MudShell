@@ -11,11 +11,16 @@
            OnClick="@OnClick"
            Class="@RootClass"
            Style="@Style"
-           data-testid="@DataTestId">
+           data-testid="@DataTestId"
+           @attributes="AdditionalAttributes">
     @ChildContent
 </MudButton>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; }
     [Parameter] public string? StartIcon { get; set; }
     [Parameter] public string? EndIcon { get; set; }

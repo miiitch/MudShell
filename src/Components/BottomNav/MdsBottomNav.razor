@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Components.Routing
 @using MudShell.Components.Sidebar
 
-<div class="@RootClass" style="@Style">
+<div class="@RootClass" style="@Style" @attributes="AdditionalAttributes">
     @foreach (var item in Items ?? [])
     {
         @if (!string.IsNullOrWhiteSpace(item.Href))
@@ -28,6 +28,10 @@
 </div>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     [Parameter] public MbxNavItem[]? Items     { get; set; }
     [Parameter] public string?       ActiveHref { get; set; }
     [Parameter] public string?       Class      { get; set; }

@@ -5,7 +5,7 @@
 @using MudShell.Components.Navigation.State
 @inject NavigationManager Nav
 
-<div class="mbx-context-nav-panel @(IsExpanded ? "mbx-context-nav-panel-expanded" : "mbx-context-nav-panel-collapsed") @Class">
+<div class="mbx-context-nav-panel @(IsExpanded ? "mbx-context-nav-panel-expanded" : "mbx-context-nav-panel-collapsed") @Class" @attributes="AdditionalAttributes">
     @if (_state.ContextPanelNodes.Count == 0)
     {
         <MudText Typo="Typo.caption" Color="Color.Secondary" Class="pa-2">No contextual navigation</MudText>
@@ -84,6 +84,10 @@
 </div>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     [Parameter] public MbxNavTree? Tree              { get; set; }
     [Parameter] public string? CurrentUri            { get; set; }
     [Parameter] public bool SingleExpandedLevel2     { get; set; } = true;

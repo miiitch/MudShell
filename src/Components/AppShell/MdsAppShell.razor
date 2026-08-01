@@ -1,6 +1,6 @@
 @namespace MudShell.Components.AppShell
 <CascadingValue Value="this">
-    <div class="mbx-shell @ModeClass @ThemeClass @ContextLayoutClass">
+    <div class="mbx-shell @ModeClass @ThemeClass @ContextLayoutClass" @attributes="AdditionalAttributes">
 
         @* Background layer (image mode only) *@
         @if (BackgroundMode == MbxBackgroundMode.Image)
@@ -39,6 +39,10 @@
 </CascadingValue>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     public enum MbxBackgroundMode { Palette, Image }
 
     // ── Parameters ────────────────────────────────────────────────────────────

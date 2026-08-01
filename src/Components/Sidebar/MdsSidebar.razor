@@ -1,7 +1,7 @@
 @namespace MudShell.Components.Sidebar
 @using Microsoft.AspNetCore.Components.Routing
 
-<div class="mbx-nav @(IsExpanded ? "mbx-nav-expanded" : "")">
+<div class="mbx-nav @(IsExpanded ? "mbx-nav-expanded" : "")" @attributes="AdditionalAttributes">
 
     @* Toggle button *@
     <div class="mbx-nav-toggle @(IsExpanded ? "mbx-nav-toggle-expanded" : "")">
@@ -116,6 +116,10 @@
 </div>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     [Parameter] public bool                  IsExpanded     { get; set; }
     [Parameter] public EventCallback         OnToggle       { get; set; }
     [Parameter] public MbxNavItem[]?         PrimaryItems   { get; set; }

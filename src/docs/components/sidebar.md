@@ -12,6 +12,7 @@ Collapsible vertical navigation. Renders as icon-only (56 px) by default and exp
 | `SecondaryItems` | `MbxNavItem[]?` | `null` | Secondary items (shown after divider) |
 | `LogoContent` | `RenderFragment?` | `null` | Logo area at the top |
 | `BottomContent` | `RenderFragment?` | `null` | Profile / settings area at the bottom |
+| `AdditionalAttributes` | `IReadOnlyDictionary<string, object>?` | `null` | Undeclared attributes, splatted onto the root element (e.g. `data-testid`, ARIA attributes) |
 
 ## MbxNavItem record
 

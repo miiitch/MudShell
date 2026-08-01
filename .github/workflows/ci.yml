@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main]
 
+# A newer push to the same ref makes the in-flight run obsolete.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,66 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "10.0.x"
-
-      - name: Restore
-        run: dotnet restore MudShell.slnx
-
-      - name: Build
-        run: dotnet build MudShell.slnx --no-restore --configuration Release
-
-      - name: Install Playwright browsers
-        run: pwsh tests/MudShell.UITests/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
-
-      - name: Start sample app
-        run: |
-          nohup dotnet run --project samples/MyApplication/MyApplication.csproj \
-            --no-build --configuration Release > /tmp/sample-app.log 2>&1 &
-        env:
-          ASPNETCORE_URLS: http://localhost:5265
-          ASPNETCORE_ENVIRONMENT: Development
-
-      - name: Wait for sample app
-        run: |
-          ready=0
-          for i in $(seq 1 30); do
-            if curl -sf http://localhost:5265 > /dev/null 2>&1; then
-              echo "App is ready after ${i}s"
-              ready=1
-              break
-            fi
-            echo "Waiting ($i/30)..."
-            sleep 2
-          done
-          if [ "$ready" -ne 1 ]; then
-            echo "Sample app did not become ready on http://localhost:5265"
-            echo "=== /tmp/sample-app.log ==="
-            tail -n 200 /tmp/sample-app.log || true
-            exit 1
-          fi
-
-      - name: Run UI tests
-        run: dotnet test tests/MudShell.UITests/MudShell.UITests.csproj --no-build --configuration Release --logger "trx;LogFileName=ui-tests.trx"
-        env:
-          PLAYWRIGHT_TEST_BASE_URL: http://localhost:5265
-
-      - name: Dump sample app log on UI test failure
-        if: failure()
-        run: |
-          echo "=== /tmp/sample-app.log ==="
-          tail -n 300 /tmp/sample-app.log || true
-
-      - name: Upload UI test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ui-test-results
-          path: |
-            tests/MudShell.UITests/TestResults/ui-tests.trx
-            screenshots/
+      # Build, component tests and UI tests are shared with publish.yml so the release
+      # pipeline cannot validate less than CI does.
+      - uses: ./.github/actions/build-and-test
 
       - name: Pack
         run: dotnet pack src/MudShell.csproj --no-build --configuration Release --output ./artifacts
@@ -81,4 +29,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nupkg
-          path: ./artifacts/*.nupkg
+          path: |
+            ./artifacts/*.nupkg
+            ./artifacts/*.snupkg

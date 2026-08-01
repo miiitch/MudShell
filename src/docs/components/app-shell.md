@@ -26,6 +26,7 @@ Registering them in both places causes a `System.InvalidOperationException` (dup
 | `ContextPanelExpandedChanged` | `EventCallback<bool>` | — | Two-way bind support for context panel state |
 | `ContextPanelWidth` | `int` | `288` | Expanded width of the context panel (px) |
 | `ContextPanelCollapsedWidth` | `int` | `72` | Collapsed width of the context panel (px) |
+| `AdditionalAttributes` | `IReadOnlyDictionary<string, object>?` | `null` | Undeclared attributes, splatted onto the root element (e.g. `data-testid`, ARIA attributes) |
 
 ## Public methods
 

@@ -12,6 +12,7 @@ Hover state highlights with the primary colour.
 | `Title` | `string?` | `null` | Card title |
 | `Description` | `string?` | `null` | Card body text (clamped to 2 lines) |
 | `OnClick` | `EventCallback` | — | Click handler |
+| `AdditionalAttributes` | `IReadOnlyDictionary<string, object>?` | `null` | Undeclared attributes, splatted onto the root element (e.g. `data-testid`, ARIA attributes) |
 
 ## Example
 

@@ -5,7 +5,7 @@
 @using MudShell.Components.Navigation.State
 @inject NavigationManager Nav
 
-<div class="mbx-mobile-drilldown-nav">
+<div class="mbx-mobile-drilldown-nav" @attributes="AdditionalAttributes">
     @if (_showPanel && _currentLevelNodes.Count > 0)
     {
         <MudPaper Class="mbx-mobile-drilldown-panel" Elevation="4">
@@ -54,6 +54,10 @@
 </div>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     [Parameter] public MbxNavTree? Tree        { get; set; }
     [Parameter] public string? CurrentUri      { get; set; }
 

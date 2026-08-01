@@ -1,0 +1,123 @@
+name: Build and test
+description: >
+  Restores, builds and tests the solution. Shared by the CI and publish workflows so the two
+  cannot drift apart. Runs as a composite action rather than a reusable workflow so every step
+  executes in the caller's job and no artifact plumbing is needed between build and pack.
+
+inputs:
+  version:
+    description: >
+      Package and assembly version. Must be passed to the build, not only to the pack step:
+      packing with --no-build stamps the .nuspec only, leaving the compiled assembly at the
+      default 1.0.0.0.
+    required: false
+    default: ''
+  dotnet-version:
+    description: .NET SDK version
+    required: false
+    default: '10.0.x'
+  sample-app-url:
+    description: URL the sample app listens on for the UI tests
+    required: false
+    default: 'http://localhost:5265'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/*.slnx') }}
+        restore-keys: nuget-${{ runner.os }}-
+
+    - name: Restore
+      shell: bash
+      run: dotnet restore MudShell.slnx
+
+    - name: Build
+      shell: bash
+      run: |
+        dotnet build MudShell.slnx --no-restore --configuration Release \
+          -p:ContinuousIntegrationBuild=true \
+          ${{ inputs.version != '' && format('-p:Version={0}', inputs.version) || '' }}
+
+    - name: Run component tests
+      shell: bash
+      run: dotnet test tests/MudShell.ComponentTests/MudShell.ComponentTests.csproj --no-build --configuration Release
+
+    - name: Resolve Playwright version
+      id: playwright
+      shell: bash
+      run: |
+        version=$(dotnet list tests/MudShell.UITests/MudShell.UITests.csproj package \
+          | grep -i 'Microsoft.Playwright' | awk '{print $NF}' | head -1)
+        echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Playwright browsers
+      id: playwright-cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+    - name: Install Playwright browsers
+      shell: pwsh
+      run: |
+        tests/MudShell.UITests/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
+
+    - name: Start sample app
+      shell: bash
+      run: |
+        nohup dotnet run --project samples/MyApplication/MyApplication.csproj \
+          --no-build --configuration Release > /tmp/sample-app.log 2>&1 &
+      env:
+        ASPNETCORE_URLS: ${{ inputs.sample-app-url }}
+        ASPNETCORE_ENVIRONMENT: Development
+
+    - name: Wait for sample app
+      shell: bash
+      run: |
+        ready=0
+        for i in $(seq 1 30); do
+          if curl -sf ${{ inputs.sample-app-url }} > /dev/null 2>&1; then
+            echo "App is ready after ${i}s"
+            ready=1
+            break
+          fi
+          echo "Waiting ($i/30)..."
+          sleep 2
+        done
+        if [ "$ready" -ne 1 ]; then
+          echo "Sample app did not become ready on ${{ inputs.sample-app-url }}"
+          echo "=== /tmp/sample-app.log ==="
+          tail -n 200 /tmp/sample-app.log || true
+          exit 1
+        fi
+
+    - name: Run UI tests
+      shell: bash
+      run: dotnet test tests/MudShell.UITests/MudShell.UITests.csproj --no-build --configuration Release --logger "trx;LogFileName=ui-tests.trx"
+      env:
+        PLAYWRIGHT_TEST_BASE_URL: ${{ inputs.sample-app-url }}
+
+    - name: Dump sample app log on UI test failure
+      if: failure()
+      shell: bash
+      run: |
+        echo "=== /tmp/sample-app.log ==="
+        tail -n 300 /tmp/sample-app.log || true
+
+    - name: Upload UI test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ui-test-results
+        path: |
+          tests/MudShell.UITests/TestResults/ui-tests.trx
+          screenshots/

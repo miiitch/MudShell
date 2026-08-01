@@ -12,71 +12,47 @@ jobs:
     environment: release
 
     steps:
+      # Full history so the tag's ancestry can be checked below.
       - uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.x"
+          fetch-depth: 0
 
-      - name: Restore
-        run: dotnet restore MudShell.slnx
-
-      - name: Build
-        run: dotnet build MudShell.slnx --no-restore --configuration Release
-
-      - name: Install Playwright browsers
-        run: pwsh tests/MudShell.UITests/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
-
-      - name: Start sample app
+      # A published NuGet version can never be replaced, and the push step uses
+      # --skip-duplicate, so a tag placed on the wrong commit would ship silently.
+      - name: Verify the tag is on main
         run: |
-          nohup dotnet run --project samples/MyApplication/MyApplication.csproj \
-            --no-build --configuration Release > /tmp/sample-app.log 2>&1 &
-        env:
-          ASPNETCORE_URLS: http://localhost:5265
-          ASPNETCORE_ENVIRONMENT: Development
-
-      - name: Wait for sample app
-        run: |
-          ready=0
-          for i in $(seq 1 30); do
-            if curl -sf http://localhost:5265 > /dev/null 2>&1; then
-              echo "App is ready after ${i}s"
-              ready=1
-              break
-            fi
-            echo "Waiting ($i/30)..."
-            sleep 2
-          done
-          if [ "$ready" -ne 1 ]; then
-            echo "Sample app did not become ready on http://localhost:5265"
-            echo "=== /tmp/sample-app.log ==="
-            tail -n 200 /tmp/sample-app.log || true
+          git fetch origin main
+          if ! git merge-base --is-ancestor "${{ github.sha }}" origin/main; then
+            echo "Tag ${{ github.ref_name }} points at ${{ github.sha }}, which is not reachable from origin/main."
+            echo "Refusing to publish: move the tag onto a commit merged into main and re-push it."
             exit 1
           fi
+          echo "Tag ${{ github.ref_name }} is on main."
 
-      - name: Run UI tests
-        run: dotnet test tests/MudShell.UITests/MudShell.UITests.csproj --no-build --configuration Release --logger "trx;LogFileName=ui-tests.trx"
-        env:
-          PLAYWRIGHT_TEST_BASE_URL: http://localhost:5265
-
-      - name: Dump sample app log on UI test failure
-        if: failure()
-        run: |
-          echo "=== /tmp/sample-app.log ==="
-          tail -n 300 /tmp/sample-app.log || true
-
-      - name: Upload UI test results
-        if: always()
-        uses: actions/upload-artifact@v4
+      # The version must reach the build, not only the pack: packing with --no-build stamps the
+      # .nuspec alone and leaves the compiled assembly at the default 1.0.0.0.
+      - uses: ./.github/actions/build-and-test
         with:
-          name: ui-test-results
-          path: |
-            tests/MudShell.UITests/TestResults/ui-tests.trx
-            screenshots/
+          version: ${{ github.ref_name }}
 
       - name: Pack
         run: dotnet pack src/MudShell.csproj --no-build --configuration Release --output ./artifacts -p:Version=${{ github.ref_name }}
 
+      # Regression guard for the defect this pipeline shipped until 0.2.2: the assembly was
+      # stamped 1.0.0.0 regardless of the tag, because only pack received the version.
+      - name: Verify the built assembly carries the tag version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $expected = ($tag -split '-')[0]
+          $dll = Resolve-Path "src/bin/Release/net10.0/MudShell.dll"
+          $actual = [Reflection.AssemblyName]::GetAssemblyName($dll).Version
+          Write-Host "AssemblyVersion=$actual (tag $tag)"
+          if ("$actual" -notlike "$expected*") {
+            Write-Error "Assembly version '$actual' does not match tag '$tag'. The version must reach the build step, not only pack."
+            exit 1
+          }
+          Write-Host "Assembly version matches the tag."
+
       - name: Push to NuGet.org
-        run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push "./artifacts/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

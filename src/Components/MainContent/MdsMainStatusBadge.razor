@@ -5,11 +5,16 @@
          Color="@ResolvedColor"
          Variant="@Variant"
          Size="Size.Small"
-         Class="@RootClass">
+         Class="@RootClass"
+         @attributes="AdditionalAttributes">
     @Label
 </MudChip>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
     [Parameter] public string? Status { get; set; }
     [Parameter] public string? Icon { get; set; }

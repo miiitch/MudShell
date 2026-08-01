@@ -23,11 +23,7 @@
     [Parameter] public RenderFragment?             TrailingContent { get; set; }
     [Parameter] public string?                     Class          { get; set; }
 
-    /// <summary>
-    /// Undeclared attributes, forwarded to the root element. Without this, passing an attribute the
-    /// component does not declare (a <c>data-testid</c> for end-to-end tests, an ARIA attribute)
-    /// fails at render time rather than being ignored.
-    /// </summary>
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 

@@ -1,6 +1,6 @@
 @namespace MudShell.Components.DocumentCard
 
-<button type="button" class="mbx-doc-card" disabled="@Disabled" @onclick="HandleClick">
+<button type="button" class="mbx-doc-card" disabled="@Disabled" @onclick="HandleClick" @attributes="AdditionalAttributes">
     <div class="mbx-doc-card-type d-flex align-center">
         <MudIcon Icon="@Icon" Size="Size.Small" />
         <MudText Typo="Typo.caption">@TypeLabel</MudText>
@@ -10,6 +10,10 @@
 </button>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     [Parameter] public string  Icon        { get; set; } = Icons.Material.Outlined.Description;
     [Parameter] public string? TypeLabel   { get; set; } = "Document";
     [Parameter] public string? Title       { get; set; }

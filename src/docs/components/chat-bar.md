@@ -12,6 +12,7 @@ Uses `backdrop-filter: blur` for the frosted glass effect.
 | `ValueChanged` | `EventCallback<string?>` | — | Two-way bind support |
 | `Actions` | `RenderFragment?` | `null` | Row of action buttons below the input |
 | `MaxWidth` | `string` | `"680px"` | CSS `max-width`. Use `"100%"` for full-width. |
+| `AdditionalAttributes` | `IReadOnlyDictionary<string, object>?` | `null` | Undeclared attributes, splatted onto the root element (e.g. `data-testid`, ARIA attributes) |
 
 ## Example
 

@@ -1,4 +1,4 @@
-# Copilot instructions for MudBlazorExt
+# Copilot instructions for MudShell
 
 This repository contains **MudShell**, a Razor Class Library of Blazor UI components built on MudBlazor 9.
 

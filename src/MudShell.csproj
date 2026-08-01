@@ -14,9 +14,9 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <RepositoryUrl>https://github.com/miiitch/MudBlazorExt</RepositoryUrl>
+    <RepositoryUrl>https://github.com/miiitch/MudShell</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://miiitch.github.io/MudBlazorExt</PackageProjectUrl>
+    <PackageProjectUrl>https://miiitch.github.io/MudShell</PackageProjectUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
     <!-- Source debugging: lets consumers step into this code from their own application.

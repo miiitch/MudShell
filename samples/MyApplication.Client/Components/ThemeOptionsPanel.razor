@@ -15,7 +15,7 @@
                    Value="@_selectedPreset"
                    ValueChanged="@OnPresetChanged"
                    Class="theme-panel-select">
-            @foreach (var preset in ThemeState.Presets)
+            @foreach (var preset in ThemeState.Presets.OrderBy(p => p.Label))
             {
                 <MudSelectItem Value="@preset.Preset">@preset.Label</MudSelectItem>
             }
@@ -97,5 +97,4 @@
 
     public void Dispose() => ThemeState.Changed -= OnThemeChanged;
 }
-
 

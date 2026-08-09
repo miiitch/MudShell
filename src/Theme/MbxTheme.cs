@@ -23,6 +23,23 @@ public static class MbxTheme
         Lime,
         Amber,
         Crimson,
+        Ruby,
+        Saffron,
+        Azure,
+        MagmaMist,
+        AuburnDunes,
+        OlivineMatisse,
+        FernGreen,
+        PeacockDusk,
+        DeepCharcoal,
+        EarthRoot,
+        ObsidianPulse,
+        Onyx,
+        SteelMist,
+        ObsidianInk,
+        MidnightStatic,
+        StormSlate,
+        AbyssalNavy,
     }
 
     public sealed record PresetInfo(MbxThemePreset Preset, string Label, string PrimaryColor);
@@ -36,6 +53,23 @@ public static class MbxTheme
         new(MbxThemePreset.Lime,    "Lime",    "#A9C93A"), // Lime adouci Orrik
         new(MbxThemePreset.Amber,   "Amber",   "#B45309"), // Ambre profond
         new(MbxThemePreset.Crimson, "Crimson", "#BE123C"), // Cramoisi professionnel
+        new(MbxThemePreset.Ruby,    "Ruby",    "#C81E3A"), // Rouge rubis
+        new(MbxThemePreset.Saffron, "Saffron", "#D6A800"), // Jaune safran
+        new(MbxThemePreset.Azure,   "Azure",   "#1D4ED8"), // Bleu azur
+        new(MbxThemePreset.MagmaMist, "Magma Mist", "#F06F0E"), // Orange volcanique / or / vert-de-mer
+        new(MbxThemePreset.AuburnDunes, "Auburn Dunes", "#71351A"), // Auburn / sable / cacao
+        new(MbxThemePreset.OlivineMatisse, "Olivine Matisse", "#A2BD7F"), // Olivine / matisse / mousse
+        new(MbxThemePreset.FernGreen, "Fern Green", "#557743"), // Vert fougère / feuille / sauge
+        new(MbxThemePreset.PeacockDusk, "Peacock Dusk", "#09443D"), // Vert pétrole / lin / prune
+        new(MbxThemePreset.DeepCharcoal, "Deep Charcoal", "#222222"), // Charbon profond / or vert / abricot
+        new(MbxThemePreset.EarthRoot,    "Earth Root",    "#48261D"), // Terre / feu / ciel
+        new(MbxThemePreset.ObsidianPulse, "Obsidian Pulse", "#4C1413"), // Obsidienne / rosé / ciel
+        new(MbxThemePreset.Onyx,         "Onyx",         "#151311"), // Onyx / mauve / sable
+        new(MbxThemePreset.SteelMist,    "Steel Mist",   "#5B6E7D"), // Acier / bordeaux / blush
+        new(MbxThemePreset.ObsidianInk,   "Obsidian Ink",   "#151311"), // Palette sombre, terre et charbon
+        new(MbxThemePreset.MidnightStatic, "Midnight Static", "#1B1C20"), // Palette indigo, rose et nuit
+        new(MbxThemePreset.StormSlate,    "Storm Slate",    "#5B6E7D"), // Palette gris-bleu, bordeaux et blush
+        new(MbxThemePreset.AbyssalNavy,   "Abyssal Navy",   "#0D3651"), // Palette marine, corail et sable
     ];
 
     public static string GetPresetPrimary(MbxThemePreset preset)
@@ -46,9 +80,154 @@ public static class MbxTheme
 
     /// <summary>Creates a theme from a curated preset.</summary>
     public static MudTheme CreateTheme(MbxThemePreset preset)
-        => preset == MbxThemePreset.Lime
-            ? CreateLimeTheme()
-            : CreateThemeFromPrimary(GetPresetPrimary(preset));
+        => preset switch
+        {
+            MbxThemePreset.Lime => CreateLimeTheme(),
+            MbxThemePreset.Ruby => CreateThemeCore(
+                ParseHex("#C81E3A"),
+                ParseHex("#E77A86"),
+                ParseHex("#F8CAD0"),
+                ParseHex("#F4B15C"),
+                ParseHex("#8F1D2C"),
+                darkSidebar: ParseHex("#4B1621"),
+                darkMain: ParseHex("#651C2E"),
+                darkSubSection: ParseHex("#250C12"),
+                darkBackground: ParseHex("#14070A"),
+                lightSidebar: ParseHex("#F5C1C6"),
+                lightSubSection: ParseHex("#FCEBEC"),
+                lightBackground: ParseHex("#FFF7F8"),
+                lightMain: ParseHex("#FFFFFF")),
+            MbxThemePreset.Saffron => CreateThemeCore(
+                ParseHex("#D6A800"),
+                ParseHex("#C7A24B"),
+                ParseHex("#F4E4A6"),
+                ParseHex("#E2B547"),
+                ParseHex("#9F5C1D"),
+                darkSidebar: ParseHex("#4B3F0A"),
+                darkMain: ParseHex("#63510B"),
+                darkSubSection: ParseHex("#221C05"),
+                darkBackground: ParseHex("#120F03"),
+                lightSidebar: ParseHex("#F1E0A6"),
+                lightSubSection: ParseHex("#FBF6D9"),
+                lightBackground: ParseHex("#FFFDF2"),
+                lightMain: ParseHex("#FFFFFF")),
+            MbxThemePreset.Azure => CreateThemeCore(
+                ParseHex("#1D4ED8"),
+                ParseHex("#63A4F4"),
+                ParseHex("#D3E4FA"),
+                ParseHex("#E0B645"),
+                ParseHex("#B24B5E"),
+                darkSidebar: ParseHex("#12305C"),
+                darkMain: ParseHex("#173F74"),
+                darkSubSection: ParseHex("#0A1830"),
+                darkBackground: ParseHex("#060B19"),
+                lightSidebar: ParseHex("#C7D7F4"),
+                lightSubSection: ParseHex("#EDF3FB"),
+                lightBackground: ParseHex("#F8FAFE"),
+                lightMain: ParseHex("#FFFFFF")),
+            MbxThemePreset.MagmaMist => CreateThemeCore(
+                ParseHex("#F06F0E"),
+                ParseHex("#D95A42"),
+                ParseHex("#F0C4B6"),
+                ParseHex("#FFB342"),
+                ParseHex("#C84F13"),
+                darkSidebar: ParseHex("#4A1916"),
+                darkMain: ParseHex("#6B2320"),
+                darkSubSection: ParseHex("#2E1413"),
+                darkBackground: ParseHex("#180A09"),
+                lightSidebar: ParseHex("#FFD8A1"),
+                lightSubSection: ParseHex("#FFF0D0"),
+                lightBackground: ParseHex("#FFF7EB"),
+                lightMain: ParseHex("#FFFFFF")),
+            MbxThemePreset.AuburnDunes => CreateThemeCore(
+                ParseHex("#71351A"),
+                ParseHex("#B3A38A"),
+                ParseHex("#887456"),
+                ParseHex("#4E2A26"),
+                ParseHex("#A85C3F"),
+                darkSidebar: ParseHex("#4E2A26"),
+                darkMain: ParseHex("#5B332D"),
+                darkSubSection: ParseHex("#3B201E"),
+                darkBackground: ParseHex("#241312"),
+                lightSidebar: ParseHex("#B3A38A"),
+                lightSubSection: ParseHex("#E6D7C6"),
+                lightBackground: ParseHex("#F5EFE6"),
+                lightMain: ParseHex("#FFFFFF")),
+            MbxThemePreset.OlivineMatisse => CreateThemeCore(
+                ParseHex("#A2BD7F"),
+                ParseHex("#016278"),
+                ParseHex("#BBD0BE"),
+                ParseHex("#7F9F63"),
+                ParseHex("#0B4E60"),
+                darkSidebar: ParseHex("#016278"),
+                darkMain: ParseHex("#2D6D67"),
+                darkSubSection: ParseHex("#244E41"),
+                darkBackground: ParseHex("#102D2C"),
+                lightSidebar: ParseHex("#DDE8C8"),
+                lightSubSection: ParseHex("#EEF4E8"),
+                lightBackground: ParseHex("#F7FBF5"),
+                lightMain: ParseHex("#FFFFFF")),
+            MbxThemePreset.FernGreen => CreateThemeCore(
+                ParseHex("#557743"),
+                ParseHex("#BBD0BE"),
+                ParseHex("#8DA07A"),
+                ParseHex("#A9C49B"),
+                ParseHex("#4A6638"),
+                darkSidebar: ParseHex("#557743"),
+                darkMain: ParseHex("#405C33"),
+                darkSubSection: ParseHex("#2C4022"),
+                darkBackground: ParseHex("#1B2815"),
+                lightSidebar: ParseHex("#BBD0BE"),
+                lightSubSection: ParseHex("#E5EEE1"),
+                lightBackground: ParseHex("#F6F9F4"),
+                lightMain: ParseHex("#FFFFFF")),
+            MbxThemePreset.PeacockDusk => CreateThemeCore(
+                ParseHex("#09443D"),
+                ParseHex("#C9C1B0"),
+                ParseHex("#F0EDDF"),
+                ParseHex("#960D41"),
+                ParseHex("#7D1436"),
+                darkSidebar: ParseHex("#09443D"),
+                darkMain: ParseHex("#0F5A50"),
+                darkSubSection: ParseHex("#174F42"),
+                darkBackground: ParseHex("#061E1A"),
+                lightSidebar: ParseHex("#C9C1B0"),
+                lightSubSection: ParseHex("#F0EDDF"),
+                lightBackground: ParseHex("#FAF8F3"),
+                lightMain: ParseHex("#FFFFFF")),
+            MbxThemePreset.DeepCharcoal => CreateDeepCharcoalTheme(),
+            MbxThemePreset.EarthRoot => CreateThemeFromTriad("#48261D", "#F94C00", "#CAE7F7"),
+            MbxThemePreset.ObsidianPulse => CreateThemeFromTriad("#4C1413", "#CAE7F7", "#EA6B7E"),
+            MbxThemePreset.Onyx => CreateThemeCore(
+                ParseHex("#151311"),
+                ParseHex("#4B262F"),
+                ParseHex("#EED3BA"),
+                ParseHex("#FFB342"),
+                ParseHex("#C84F13"),
+                darkSidebar: ParseHex("#2A2326"),
+                darkMain: ParseHex("#35292D"),
+                darkSubSection: ParseHex("#1E181B"),
+                darkBackground: ParseHex("#141012"),
+                lightSidebar: ParseHex("#D7C8AE"),
+                lightSubSection: ParseHex("#F1E8DA"),
+                lightBackground: ParseHex("#FBF8F2"),
+                lightMain: ParseHex("#FFFFFF")),
+            MbxThemePreset.SteelMist => CreateThemeFromTriad("#5B6E7D", "#5C0403", "#EDB1B0"),
+            MbxThemePreset.ObsidianInk => CreateThemeFromTriad("#151311", "#4B262F", "#EED3BA"),
+            MbxThemePreset.MidnightStatic => CreateThemeCore(
+                ParseHex("#1B1C20"),
+                ParseHex("#144EA0"),
+                ParseHex("#CF98AF"),
+                ParseHex("#ffb545"),
+                ParseHex("#ff4d6d"),
+                darkSidebar: ParseHex("#2A2C37"),
+                darkMain: ParseHex("#222431"),
+                darkSubSection: ParseHex("#1B1D27"),
+                darkBackground: ParseHex("#11131A")),
+            MbxThemePreset.StormSlate => CreateThemeFromTriad("#5B6E7D", "#5C0403", "#EDB1B0"),
+            MbxThemePreset.AbyssalNavy => CreateThemeFromTriad("#0D3651", "#EB313F", "#FFF7AE"),
+            _ => CreateThemeFromPrimary(GetPresetPrimary(preset)),
+        };
 
     /// <summary>
     /// Creates a theme from one primary color and derives secondary tokens.
@@ -107,6 +286,28 @@ public static class MbxTheme
 
         theme.PaletteDark.PrimaryContrastText = "#11130f";
         theme.PaletteLight.PrimaryContrastText = "#11130f";
+        return theme;
+    }
+
+    private static MudTheme CreateDeepCharcoalTheme()
+    {
+        var theme = CreateThemeCore(
+            ParseHex("#222222"),
+            ParseHex("#CAC426"),
+            ParseHex("#EED3BA"),
+            ParseHex("#D8A84A"),
+            ParseHex("#A85C3F"),
+            darkSidebar: ParseHex("#2F3138"),
+            darkMain: ParseHex("#262830"),
+            darkSubSection: ParseHex("#1B1D23"),
+            darkBackground: ParseHex("#111217"),
+            lightSidebar: ParseHex("#DADDE6"),
+            lightSubSection: ParseHex("#EEF1F6"),
+            lightBackground: ParseHex("#F8F9FB"),
+            lightMain: ParseHex("#FFFFFF"));
+
+        theme.PaletteDark.PrimaryContrastText = "#F7F8FB";
+        theme.PaletteLight.PrimaryContrastText = "#F7F8FB";
         return theme;
     }
 

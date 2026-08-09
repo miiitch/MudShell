@@ -8,7 +8,7 @@ MudShell uses a generated `MudTheme` from `MbxTheme` and exposes palette tokens 
 using MudShell.Theme;
 
 MudTheme theme = MbxTheme.CreateTheme(); // default preset
-MudTheme emeraldTheme = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Emerald);
+MudTheme limeTheme = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Lime);
 MudTheme customTheme = MbxTheme.CreateThemeFromPrimary("#6f63ff");
 ```
 

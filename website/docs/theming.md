@@ -4,32 +4,23 @@ sidebar_position: 2
 
 # Theming
 
-MudShell ships with a pre-configured `MudTheme` accessed via `MbxTheme`.
+MudShell ships with curated `MudTheme` presets accessed via `MbxTheme`.
 
-## Using the built-in dark theme
+## Built-in presets
 
-`MdsAppShell` calls `MbxTheme.CreateDarkTheme()` internally — you don't need to configure anything.
-
-## Accessing the palettes directly
+The default preset is `Cobalt`. The curated list also includes `Teal`, `Violet`, `Forest`, `Lime`, `Amber`, and `Crimson`.
 
 ```csharp
 using MudShell.Theme;
 
-// Read a token
-string primary = MbxTheme.DarkPalette.Primary; // "#7e6fff"
+MudTheme theme = MbxTheme.CreateTheme(); // default preset
+MudTheme limeTheme = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Lime);
+MudTheme customTheme = MbxTheme.CreateThemeFromPrimary("#6f63ff");
 ```
 
-## Creating a custom theme
+## Dark theme usage
 
-Override individual tokens by starting from the built-in palette:
-
-```csharp
-var myTheme = MbxTheme.CreateDarkTheme();
-myTheme.PaletteDark.Primary = "#ff6b6b";
-myTheme.PaletteDark.Surface = "#1a1a2e";
-```
-
-Then pass it to `MdsAppShell` — add a `Theme` parameter if needed, or extend the component in your own project.
+`MdsAppShell` already wires the theme, so explicit configuration is optional unless you need custom branding. The new `Lime` preset is the Orrik-style dark option.
 
 ## CSS custom properties
 
@@ -49,6 +40,6 @@ You can override any of these in your own `app.css`:
 
 ```css
 :root {
-  --mud-palette-primary: #ff6b6b;
+  --mud-palette-primary: #d7f52b;
 }
 ```

@@ -40,6 +40,7 @@ public static class MbxTheme
         MidnightStatic,
         StormSlate,
         AbyssalNavy,
+        CosmicNight,
     }
 
     public sealed record PresetInfo(MbxThemePreset Preset, string Label, string PrimaryColor);
@@ -68,8 +69,9 @@ public static class MbxTheme
         new(MbxThemePreset.SteelMist,    "Steel Mist",   "#5B6E7D"), // Acier / bordeaux / blush
         new(MbxThemePreset.ObsidianInk,   "Obsidian Ink",   "#151311"), // Palette sombre, terre et charbon
         new(MbxThemePreset.MidnightStatic, "Midnight Static", "#1B1C20"), // Palette indigo, rose et nuit
-        new(MbxThemePreset.StormSlate,    "Storm Slate",    "#5B6E7D"), // Palette gris-bleu, bordeaux et blush
-        new(MbxThemePreset.AbyssalNavy,   "Abyssal Navy",   "#0D3651"), // Palette marine, corail et sable
+        new(MbxThemePreset.StormSlate,     "Storm Slate",    "#5B6E7D"), // Palette gris-bleu, bordeaux et blush
+        new(MbxThemePreset.AbyssalNavy,    "Abyssal Navy",   "#0D3651"), // Palette marine, corail et sable
+        new(MbxThemePreset.CosmicNight,    "Cosmic Night",   "#FFA500"), // Noir profond avec accents orange chauds
     ];
 
     public static string GetPresetPrimary(MbxThemePreset preset)
@@ -226,6 +228,7 @@ public static class MbxTheme
                 darkBackground: ParseHex("#11131A")),
             MbxThemePreset.StormSlate => CreateThemeFromTriad("#5B6E7D", "#5C0403", "#EDB1B0"),
             MbxThemePreset.AbyssalNavy => CreateThemeFromTriad("#0D3651", "#EB313F", "#FFF7AE"),
+            MbxThemePreset.CosmicNight => CreateCosmicNightTheme(),
             _ => CreateThemeFromPrimary(GetPresetPrimary(preset)),
         };
 
@@ -259,6 +262,30 @@ public static class MbxTheme
         var error = Mix(primary, ParseHex("#ff4d6d"), 0.60);
 
         return CreateThemeCore(primary, secondary, tertiary, warning, error);
+    }
+
+    private static MudTheme CreateCosmicNightTheme()
+    {
+        var primary = ParseHex("#FFA500");      // Orange chaud
+        var info = ParseHex("#4ECDC4");         // Teal/Cyan
+        var success = ParseHex("#00D98E");      // Vert émeraude
+        var warning = ParseHex("#FFB84D");      // Orange pâle
+        var error = ParseHex("#FF6B6B");        // Rouge corail
+
+        return CreateThemeCore(
+            primary,
+            info,
+            success,
+            warning,
+            error,
+            darkSidebar: ParseHex("#1a1a1a"),
+            darkMain: ParseHex("#0f0f0f"),
+            darkSubSection: ParseHex("#0a0a0a"),
+            darkBackground: ParseHex("#050505"),
+            lightSidebar: ParseHex("#FFE5CC"),
+            lightSubSection: ParseHex("#FFF3E0"),
+            lightBackground: ParseHex("#FFFBF7"),
+            lightMain: ParseHex("#FFFFFF"));
     }
 
     private static MudTheme CreateLimeTheme()

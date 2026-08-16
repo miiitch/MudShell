@@ -59,6 +59,8 @@
                         {
                             <MudNavLink data-testid="@MudShell.MbxTestId.Nav(child.Id)"
                                         Href="@child.Href"
+                                        Icon="@child.Icon"
+                                        IconColor="Color.Inherit"
                                         Disabled="@child.Disabled"
                                         ActiveClass=""
                                         Class="@(_state.ActivePath.Contains(child.Id) ? "mbx-context-nav-active" : "")"

@@ -1,5 +1,8 @@
 @namespace MudShell.Components.Sidebar
 @using Microsoft.AspNetCore.Components.Routing
+@using MudShell.Components.Navigation.State
+@implements IDisposable
+@inject NavigationManager NavigationManager
 
 <div class="mbx-nav @(IsExpanded ? "mbx-nav-expanded" : "")" @attributes="AdditionalAttributes">
 
@@ -32,7 +35,9 @@
                         <MudNavLink Href="@item.Href"
                                     Icon="@item.Icon"
                                     IconColor="Color.Inherit"
-                                    ActiveClass="mbx-nav-link-active">
+                                    Match="NavLinkMatch.All"
+                                    ActiveClass=""
+                                    Class="@(IsActive(item.Href) ? "mbx-nav-link-active" : "")">
                             @item.Label
                         </MudNavLink>
                     }
@@ -46,8 +51,9 @@
                         @if (item.Href != null)
                         {
                             <NavLink href="@item.Href"
-                                     class="mbx-sidebar-icon-link"
-                                     ActiveClass="mbx-sidebar-icon-link-active">
+                                     class="@($"mbx-sidebar-icon-link {(IsActive(item.Href) ? "mbx-sidebar-icon-link-active" : "")}")"
+                                     Match="NavLinkMatch.All"
+                                     ActiveClass="">
                                 <MudIcon Icon="@item.Icon" Size="Size.Small" />
                             </NavLink>
                         }
@@ -75,7 +81,9 @@
                         <MudNavLink Href="@item.Href"
                                     Icon="@item.Icon"
                                     IconColor="Color.Inherit"
-                                    ActiveClass="mbx-nav-link-active">
+                                    Match="NavLinkMatch.All"
+                                    ActiveClass=""
+                                    Class="@(IsActive(item.Href) ? "mbx-nav-link-active" : "")">
                             @item.Label
                         </MudNavLink>
                     }
@@ -89,8 +97,9 @@
                         @if (item.Href != null)
                         {
                             <NavLink href="@item.Href"
-                                     class="mbx-sidebar-icon-link"
-                                     ActiveClass="mbx-sidebar-icon-link-active">
+                                     class="@($"mbx-sidebar-icon-link {(IsActive(item.Href) ? "mbx-sidebar-icon-link-active" : "")}")"
+                                     Match="NavLinkMatch.All"
+                                     ActiveClass="">
                                 <MudIcon Icon="@item.Icon" Size="Size.Small" />
                             </NavLink>
                         }
@@ -128,4 +137,18 @@
     [Parameter] public RenderFragment?       BottomContent  { get; set; }
 
     private async Task HandleToggle() => await OnToggle.InvokeAsync();
+
+    private bool IsActive(string? href) => MbxNavStateResolver.IsPrefixMatch(href, NavigationManager.Uri);
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
+
+    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e) => StateHasChanged();
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= HandleLocationChanged;
+    }
 }

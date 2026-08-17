@@ -76,6 +76,19 @@ public static class MbxNavStateResolver
             VisibleSubEntries: visibleSubEntries);
     }
 
+    /// <summary>
+    /// Whether <paramref name="href"/> is an active prefix match for <paramref name="currentUri"/>,
+    /// using the same segment-boundary-aware comparison as tree-based nav resolution (so a root
+    /// href like "/" only matches the root path itself, not every route in the app).
+    /// </summary>
+    public static bool IsPrefixMatch(string? href, string? currentUri)
+    {
+        if (string.IsNullOrWhiteSpace(href))
+            return false;
+
+        return IsPathPrefix(NormalizePath(href), NormalizePath(currentUri));
+    }
+
     private static List<MbxNavNode> ResolveContextNodes(MbxNavTree tree, string? activeRootId)
     {
         if (activeRootId is null)

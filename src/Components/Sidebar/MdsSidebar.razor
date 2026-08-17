@@ -37,7 +37,7 @@
                                     IconColor="Color.Inherit"
                                     Match="NavLinkMatch.All"
                                     ActiveClass=""
-                                    Class="@(IsActive(item.Href) ? "mbx-nav-link-active" : "")">
+                                    Class="@(IsActive(item.ActiveHref ?? item.Href) ? "mbx-nav-link-active" : "")">
                             @item.Label
                         </MudNavLink>
                     }
@@ -51,7 +51,7 @@
                         @if (item.Href != null)
                         {
                             <NavLink href="@item.Href"
-                                     class="@($"mbx-sidebar-icon-link {(IsActive(item.Href) ? "mbx-sidebar-icon-link-active" : "")}")"
+                                     class="@($"mbx-sidebar-icon-link {(IsActive(item.ActiveHref ?? item.Href) ? "mbx-sidebar-icon-link-active" : "")}")"
                                      Match="NavLinkMatch.All"
                                      ActiveClass="">
                                 <MudIcon Icon="@item.Icon" Size="Size.Small" />
@@ -83,7 +83,7 @@
                                     IconColor="Color.Inherit"
                                     Match="NavLinkMatch.All"
                                     ActiveClass=""
-                                    Class="@(IsActive(item.Href) ? "mbx-nav-link-active" : "")">
+                                    Class="@(IsActive(item.ActiveHref ?? item.Href) ? "mbx-nav-link-active" : "")">
                             @item.Label
                         </MudNavLink>
                     }
@@ -97,7 +97,7 @@
                         @if (item.Href != null)
                         {
                             <NavLink href="@item.Href"
-                                     class="@($"mbx-sidebar-icon-link {(IsActive(item.Href) ? "mbx-sidebar-icon-link-active" : "")}")"
+                                     class="@($"mbx-sidebar-icon-link {(IsActive(item.ActiveHref ?? item.Href) ? "mbx-sidebar-icon-link-active" : "")}")"
                                      Match="NavLinkMatch.All"
                                      ActiveClass="">
                                 <MudIcon Icon="@item.Icon" Size="Size.Small" />

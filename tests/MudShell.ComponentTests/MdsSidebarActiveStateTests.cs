@@ -59,4 +59,34 @@ public class MdsSidebarActiveStateTests
         var homeLink = rendered.Find("a[href='/']");
         Assert.Contains("mbx-nav-link-active", homeLink.ParentElement!.ClassList);
     }
+
+    /// <summary>
+    /// Regression coverage for a section item (e.g. "Settings") whose <c>Href</c> points at one
+    /// specific page of the section (<c>/admin/settings</c>) but that should stay highlighted
+    /// across every page of that section, via <see cref="MbxNavItem.ActiveHref"/>.
+    /// </summary>
+    [Fact]
+    public void Should_MarkSectionItemActive_When_CurrentRouteIsUnderActiveHrefPrefix_ButNotUnderHref()
+    {
+        // Given
+        using var context = new TestContext();
+        context.Services.AddMudServices();
+        context.JSInterop.Mode = JSRuntimeMode.Loose;
+        var navigation = context.Services.GetRequiredService<FakeNavigationManager>();
+        navigation.NavigateTo("admin/users");
+
+        var items = new[]
+        {
+            new MbxNavItem("settings-icon", "Settings", "/admin/settings", ActiveHref: "/admin"),
+        };
+
+        // When
+        var rendered = context.RenderComponent<MdsSidebar>(parameters => parameters
+            .Add(c => c.IsExpanded, true)
+            .Add(c => c.PrimaryItems, items));
+
+        // Then
+        var settingsLink = rendered.Find("a[href='/admin/settings']");
+        Assert.Contains("mbx-nav-link-active", settingsLink.ParentElement!.ClassList);
+    }
 }

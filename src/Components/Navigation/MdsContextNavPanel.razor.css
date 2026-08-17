@@ -53,7 +53,7 @@
     background-color: var(--mbx-nav-hover-bg) !important;
 }
 
-::deep .mbx-context-mud-nav .mud-nav-link.mbx-context-nav-active {
+::deep .mbx-context-mud-nav .mud-nav-item.mbx-context-nav-active .mud-nav-link {
     color: var(--mud-palette-primary) !important;
     background-color: var(--mbx-nav-hover-bg) !important;
 }

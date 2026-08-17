@@ -81,7 +81,7 @@
     background-color: var(--mbx-nav-hover-bg) !important;
 }
 
-::deep .mbx-sidebar-mud-nav .mud-nav-link.mbx-nav-link-active,
+::deep .mbx-sidebar-mud-nav .mud-nav-item.mbx-nav-link-active .mud-nav-link,
 ::deep .mbx-sidebar-mud-nav .mud-nav-link.active {
     color: var(--mud-palette-primary) !important;
     background-color: var(--mbx-subtle-bg) !important;

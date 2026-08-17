@@ -88,7 +88,10 @@
 }
 
 /* ── Icon-only mode (collapsed) ─────────────────────────────────────── */
-.mbx-sidebar-icon-link {
+/* ::deep: these classes are applied via NavLink's `class` parameter, a framework component that
+   doesn't carry this file's scope attribute on its rendered <a> — a bare (non-::deep) selector
+   here would require that attribute on the target itself and never match. */
+::deep .mbx-sidebar-icon-link {
     width: 40px;
     height: 40px;
     border-radius: var(--mbx-radius-md);
@@ -100,12 +103,12 @@
     transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-.mbx-sidebar-icon-link:hover {
+::deep .mbx-sidebar-icon-link:hover {
     color: var(--mud-palette-text-primary);
     background-color: var(--mbx-nav-hover-bg);
 }
 
-.mbx-sidebar-icon-link.mbx-sidebar-icon-link-active {
+::deep .mbx-sidebar-icon-link.mbx-sidebar-icon-link-active {
     color: var(--mud-palette-primary);
     background-color: var(--mbx-subtle-bg);
 }

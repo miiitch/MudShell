@@ -14,7 +14,10 @@
 }
 
 /* Collapsed icon links */
-.mbx-context-collapsed-link {
+/* ::deep: these classes are applied via NavLink's `class` parameter, a framework component that
+   doesn't carry this file's scope attribute on its rendered <a> — a bare (non-::deep) selector
+   here would require that attribute on the target itself and never match. */
+::deep .mbx-context-collapsed-link {
     width: 40px;
     height: 40px;
     border-radius: var(--mbx-radius-md);
@@ -26,12 +29,12 @@
     transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-.mbx-context-collapsed-link:hover {
+::deep .mbx-context-collapsed-link:hover {
     color: var(--mud-palette-text-primary);
     background-color: var(--mbx-nav-hover-bg);
 }
 
-.mbx-context-collapsed-link-active {
+::deep .mbx-context-collapsed-link-active {
     color: var(--mud-palette-primary);
     background-color: var(--mbx-nav-hover-bg);
 }

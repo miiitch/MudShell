@@ -10,7 +10,7 @@ MudShell ships with curated `MudTheme` presets accessed via `MbxTheme`.
 
 The default preset is `Cobalt`. The curated list also includes `Teal`, `Violet`, `Forest`, `Lime`, `Amber`, and `Crimson`.
 The palette-based presets from the reference images also include `Ruby`, `Saffron`, `Azure`, `Magma Mist`, `Auburn Dunes`, `Olivine Matisse`, `Fern Green`, and `Peacock Dusk`.
-Existing image-based presets still available are `Deep Charcoal`, `Earth Root`, `Obsidian Pulse`, `Onyx`, `Steel Mist`, `Obsidian Ink`, `Midnight Static`, `Storm Slate`, and `Abyssal Navy`.
+Existing image-based presets still available are `Deep Charcoal`, `Earth Root`, `Obsidian Pulse`, `Onyx`, `Midnight Static`, `Storm Slate`, and `Abyssal Navy`.
 
 ```csharp
 using MudShell.Theme;

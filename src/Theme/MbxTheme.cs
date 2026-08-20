@@ -35,14 +35,11 @@ public static class MbxTheme
         EarthRoot,
         ObsidianPulse,
         Onyx,
-        SteelMist,
-        ObsidianInk,
         MidnightStatic,
         StormSlate,
         AbyssalNavy,
         CosmicNight,
         MorningButter,
-        BlueGrey,
         RaspberryRed,
         DeepSpaceBlue,
         FairyTale,
@@ -83,14 +80,11 @@ public static class MbxTheme
         new(MbxThemePreset.EarthRoot,    "Earth Root",    "#48261D"), // Terre / feu / ciel
         new(MbxThemePreset.ObsidianPulse, "Obsidian Pulse", "#4C1413"), // Obsidienne / rosé / ciel
         new(MbxThemePreset.Onyx,         "Onyx",         "#151311"), // Onyx / mauve / sable
-        new(MbxThemePreset.SteelMist,    "Steel Mist",   "#5B6E7D"), // Acier / bordeaux / blush
-        new(MbxThemePreset.ObsidianInk,   "Obsidian Ink",   "#151311"), // Palette sombre, terre et charbon
         new(MbxThemePreset.MidnightStatic, "Midnight Static", "#1B1C20"), // Palette indigo, rose et nuit
         new(MbxThemePreset.StormSlate,     "Storm Slate",    "#5B6E7D"), // Palette gris-bleu, bordeaux et blush
         new(MbxThemePreset.AbyssalNavy,    "Abyssal Navy",   "#0D3651"), // Palette marine, corail et sable
         new(MbxThemePreset.CosmicNight,    "Cosmic Night",   "#FFA500"), // Noir profond avec accents orange chauds
         new(MbxThemePreset.MorningButter,  "Morning Butter", "#7298C7"), // Pastel butter / blue grey
-        new(MbxThemePreset.BlueGrey,       "Blue Grey",      "#7298C7"), // Bleu gris doux
         new(MbxThemePreset.RaspberryRed,   "Raspberry Red",  "#EE005A"), // Rose framboise / nuit profonde
         new(MbxThemePreset.DeepSpaceBlue,  "Deep Space Blue","#012641"), // Marine / rose néon
         new(MbxThemePreset.FairyTale,      "Fairy Tale",     "#FFCEEB"), // Rose bonbon / orange
@@ -248,8 +242,6 @@ public static class MbxTheme
                 lightSubSection: ParseHex("#F1E8DA"),
                 lightBackground: ParseHex("#FBF8F2"),
                 lightMain: ParseHex("#FFFFFF")),
-            MbxThemePreset.SteelMist => CreateThemeFromTriad("#5B6E7D", "#5C0403", "#EDB1B0"),
-            MbxThemePreset.ObsidianInk => CreateThemeFromTriad("#151311", "#4B262F", "#EED3BA"),
             MbxThemePreset.MidnightStatic => CreateThemeCore(
                 ParseHex("#1B1C20"),
                 ParseHex("#144EA0"),
@@ -276,20 +268,6 @@ public static class MbxTheme
                 lightSidebar: ParseHex("#DDE8F6"),
                 lightSubSection: ParseHex("#EEF4FB"),
                 lightBackground: ParseHex("#F8FAFD"),
-                lightMain: ParseHex("#FFFFFF")),
-            MbxThemePreset.BlueGrey => CreateThemeCore(
-                ParseHex("#7298C7"),
-                ParseHex("#F3D98F"),
-                ParseHex("#8BBF7A"),
-                ParseHex("#E0B645"),
-                ParseHex("#C65A67"),
-                darkSidebar: ParseHex("#45668E"),
-                darkMain: ParseHex("#577CAA"),
-                darkSubSection: ParseHex("#23364E"),
-                darkBackground: ParseHex("#121B28"),
-                lightSidebar: ParseHex("#DCE5F1"),
-                lightSubSection: ParseHex("#EDF2F8"),
-                lightBackground: ParseHex("#F7F9FC"),
                 lightMain: ParseHex("#FFFFFF")),
             MbxThemePreset.RaspberryRed => CreateThemeCore(
                 ParseHex("#EE005A"),

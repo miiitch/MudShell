@@ -31,7 +31,6 @@ Reuse the same naming scheme as this page so every new palette can be documented
 | Auburn Dunes | ![Auburn Dunes light palette](/img/palettes/auburn-dunes-light.png) | ![Auburn Dunes dark palette](/img/palettes/auburn-dunes-dark.png) |
 | Azure | ![Azure light palette](/img/palettes/azure-light.png) | ![Azure dark palette](/img/palettes/azure-dark.png) |
 | Berry Red | ![Berry Red light palette](/img/palettes/berry-red-light.png) | ![Berry Red dark palette](/img/palettes/berry-red-dark.png) |
-| Blue Grey | ![Blue Grey light palette](/img/palettes/blue-grey-light.png) | ![Blue Grey dark palette](/img/palettes/blue-grey-dark.png) |
 | Chartreuse | ![Chartreuse light palette](/img/palettes/chartreuse-light.png) | ![Chartreuse dark palette](/img/palettes/chartreuse-dark.png) |
 | Cotton Rose | ![Cotton Rose light palette](/img/palettes/cotton-rose-light.png) | ![Cotton Rose dark palette](/img/palettes/cotton-rose-dark.png) |
 | Cosmic Night | ![Cosmic Night light palette](/img/palettes/cosmic-night-light.png) | ![Cosmic Night dark palette](/img/palettes/cosmic-night-dark.png) |
@@ -50,7 +49,6 @@ Reuse the same naming scheme as this page so every new palette can be documented
 | Lime | ![Lime light palette](/img/palettes/lime-light.png) | ![Lime dark palette](/img/palettes/lime-dark.png) |
 | Magma Mist | ![Magma Mist light palette](/img/palettes/magma-mist-light.png) | ![Magma Mist dark palette](/img/palettes/magma-mist-dark.png) |
 | Morning Butter | ![Morning Butter light palette](/img/palettes/morning-butter-light.png) | ![Morning Butter dark palette](/img/palettes/morning-butter-dark.png) |
-| Obsidian Ink | ![Obsidian Ink light palette](/img/palettes/obsidian-ink-light.png) | ![Obsidian Ink dark palette](/img/palettes/obsidian-ink-dark.png) |
 | Obsidian Pulse | ![Obsidian Pulse light palette](/img/palettes/obsidian-pulse-light.png) | ![Obsidian Pulse dark palette](/img/palettes/obsidian-pulse-dark.png) |
 | Olivine Matisse | ![Olivine Matisse light palette](/img/palettes/olivine-matisse-light.png) | ![Olivine Matisse dark palette](/img/palettes/olivine-matisse-dark.png) |
 | Onyx | ![Onyx light palette](/img/palettes/onyx-light.png) | ![Onyx dark palette](/img/palettes/onyx-dark.png) |
@@ -61,5 +59,4 @@ Reuse the same naming scheme as this page so every new palette can be documented
 | Saffron | ![Saffron light palette](/img/palettes/saffron-light.png) | ![Saffron dark palette](/img/palettes/saffron-dark.png) |
 | Sandy Clay | ![Sandy Clay light palette](/img/palettes/sandy-clay-light.png) | ![Sandy Clay dark palette](/img/palettes/sandy-clay-dark.png) |
 | Shadow Grey | ![Shadow Grey light palette](/img/palettes/shadow-grey-light.png) | ![Shadow Grey dark palette](/img/palettes/shadow-grey-dark.png) |
-| Steel Mist | ![Steel Mist light palette](/img/palettes/steel-mist-light.png) | ![Steel Mist dark palette](/img/palettes/steel-mist-dark.png) |
 | Storm Slate | ![Storm Slate light palette](/img/palettes/storm-slate-light.png) | ![Storm Slate dark palette](/img/palettes/storm-slate-dark.png) |

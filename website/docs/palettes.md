@@ -55,6 +55,7 @@ Reuse the same naming scheme as this page so every new palette can be documented
 | Olivine Matisse | ![Olivine Matisse light palette](/img/palettes/olivine-matisse-light.png) | ![Olivine Matisse dark palette](/img/palettes/olivine-matisse-dark.png) |
 | Onyx | ![Onyx light palette](/img/palettes/onyx-light.png) | ![Onyx dark palette](/img/palettes/onyx-dark.png) |
 | Peacock Dusk | ![Peacock Dusk light palette](/img/palettes/peacock-dusk-light.png) | ![Peacock Dusk dark palette](/img/palettes/peacock-dusk-dark.png) |
+| Purple Mood | ![Purple Mood light palette](/img/palettes/purple-mood-light.png) | ![Purple Mood dark palette](/img/palettes/purple-mood-dark.png) |
 | Raspberry Red | ![Raspberry Red light palette](/img/palettes/raspberry-red-light.png) | ![Raspberry Red dark palette](/img/palettes/raspberry-red-dark.png) |
 | Ruby | ![Ruby light palette](/img/palettes/ruby-light.png) | ![Ruby dark palette](/img/palettes/ruby-dark.png) |
 | Saffron | ![Saffron light palette](/img/palettes/saffron-light.png) | ![Saffron dark palette](/img/palettes/saffron-dark.png) |

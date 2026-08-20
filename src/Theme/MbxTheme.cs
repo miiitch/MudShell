@@ -57,6 +57,7 @@ public static class MbxTheme
         BerryRed,
         SandyClay,
         ShadowGrey,
+        PurpleMood,
     }
 
     public sealed record PresetInfo(MbxThemePreset Preset, string Label, string PrimaryColor);
@@ -104,6 +105,7 @@ public static class MbxTheme
         new(MbxThemePreset.BerryRed,       "Berry Red",      "#C21121"), // Rouge baie / ciel
         new(MbxThemePreset.SandyClay,      "Sandy Clay",     "#D4AA7D"), // Sable / charbon
         new(MbxThemePreset.ShadowGrey,     "Shadow Grey",    "#272727"), // Gris ombre / beige
+        new(MbxThemePreset.PurpleMood,     "Purple Mood",    "#512BD4"), // Violet profond / nuit encrée
     ];
 
     public static string GetPresetPrimary(MbxThemePreset preset)
@@ -484,6 +486,20 @@ public static class MbxTheme
                 lightSidebar: ParseHex("#D9D9D9"),
                 lightSubSection: ParseHex("#F0F0F0"),
                 lightBackground: ParseHex("#FAFAFA"),
+                lightMain: ParseHex("#FFFFFF")),
+            MbxThemePreset.PurpleMood => CreateThemeCore(
+                ParseHex("#512BD4"),
+                ParseHex("#A98BFF"),
+                ParseHex("#4CB782"),
+                ParseHex("#F2B84B"),
+                ParseHex("#F2555A"),
+                darkSidebar: ParseHex("#2E2B52"),
+                darkMain: ParseHex("#242142"),
+                darkSubSection: ParseHex("#1C1A38"),
+                darkBackground: ParseHex("#14132A"),
+                lightSidebar: ParseHex("#DDD5F5"),
+                lightSubSection: ParseHex("#F1EDFB"),
+                lightBackground: ParseHex("#F7F5FC"),
                 lightMain: ParseHex("#FFFFFF")),
             _ => CreateThemeFromPrimary(GetPresetPrimary(preset)),
         };

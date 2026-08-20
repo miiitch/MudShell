@@ -4,6 +4,7 @@ const sidebars: SidebarsConfig = {
   docsSidebar: [
     'getting-started',
     'theming',
+    'palettes',
     'responsive',
     'architecture',
     {

@@ -105,7 +105,7 @@ public static class MbxTheme
         new(MbxThemePreset.BerryRed,       "Berry Red",      "#C21121"), // Rouge baie / ciel
         new(MbxThemePreset.SandyClay,      "Sandy Clay",     "#D4AA7D"), // Sable / charbon
         new(MbxThemePreset.ShadowGrey,     "Shadow Grey",    "#272727"), // Gris ombre / beige
-        new(MbxThemePreset.PurpleMood,     "Purple Mood",    "#512BD4"), // Violet .NET Aspire / nuit encrée
+        new(MbxThemePreset.PurpleMood,     "Purple Mood",    "#512BD4"), // Violet profond / nuit encrée
     ];
 
     public static string GetPresetPrimary(MbxThemePreset preset)

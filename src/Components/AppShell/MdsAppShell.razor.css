@@ -30,6 +30,7 @@
     --mbx-sidebar-glass-border:   rgba(255, 255, 255, 0.08);
     --mbx-subtle-bg:              color-mix(in srgb, var(--mud-palette-primary, #594AE2) 10%, transparent);
     --mbx-subtle-bg-hover:        color-mix(in srgb, var(--mud-palette-primary, #594AE2) 16%, transparent);
+    --mbx-sidebar-separator:      color-mix(in srgb, var(--mud-palette-primary, #594AE2) 22%, transparent);
 
     height: 100vh;
     width: 100vw;
@@ -51,6 +52,7 @@
     --mbx-subtle-bg-hover:        color-mix(in srgb, var(--mud-palette-primary, #594AE2) 12%, transparent);
     --mbx-content-surface:        color-mix(in srgb, var(--mud-palette-surface, #ffffff) 98%, var(--mud-palette-background, #f8f9fc));
     --mbx-content-surface-hover:  color-mix(in srgb, var(--mud-palette-primary, #594AE2) 8%, var(--mbx-content-surface));
+    --mbx-sidebar-separator:      color-mix(in srgb, var(--mud-palette-primary, #594AE2) 30%, transparent);
 }
 
 /* ── Background layer ────────────────────────────────────────────────── */
@@ -78,7 +80,7 @@
 
 /* ── MudDrawer sidebar overrides ─────────────────────────────────────── */
 ::deep .mud-drawer.mbx-sidebar {
-    border-right: none;
+    border-right: 1px solid var(--mbx-sidebar-separator);
     box-shadow: none;
     flex-shrink: 0;
     transition: width 0.3s cubic-bezier(.4,0,.2,1);
@@ -149,6 +151,13 @@
 .mbx-shell.mbx-mode-palette.mbx-has-context-panel .mbx-context-panel {
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
+    border-left: 1px solid var(--mbx-sidebar-separator);
+}
+
+/* When a secondary nav (context panel) sits between the rail and the main content,
+   the separator follows its rounded left edge instead of the rail's straight edge. */
+.mbx-shell.mbx-has-context-panel ::deep .mud-drawer.mbx-sidebar {
+    border-right: none;
 }
 
 .mbx-shell.mbx-mode-palette .mbx-main {
@@ -156,10 +165,6 @@
     margin: 0;
     border: 0;
     box-shadow: none;
-}
-
-.mbx-shell.mbx-mode-palette.mbx-light ::deep .mud-drawer.mbx-sidebar.mud-drawer-open {
-    border-right: 1px solid var(--mud-palette-drawer-background);
 }
 
 /* ── Image mode ──────────────────────────────────────────────────────── */

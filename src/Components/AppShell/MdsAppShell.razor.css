@@ -104,6 +104,7 @@
     z-index: 2;
     position: relative;
     overflow: hidden;
+    border-right: 1px solid var(--mbx-sidebar-separator);
     transition: width 0.3s cubic-bezier(.4,0,.2,1), min-width 0.3s cubic-bezier(.4,0,.2,1);
 }
 
@@ -152,6 +153,7 @@
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
     border-left: 1px solid var(--mbx-sidebar-separator);
+    border-right-color: var(--mbx-sidebar-separator);
 }
 
 /* When a secondary nav (context panel) sits between the rail and the main content,
@@ -163,8 +165,6 @@
 .mbx-shell.mbx-mode-palette .mbx-main {
     background: var(--mud-palette-background);
     margin: 0;
-    border: 0;
-    box-shadow: none;
 }
 
 /* ── Image mode ──────────────────────────────────────────────────────── */

@@ -1,0 +1,53 @@
+@page "/density"
+@layout DemoLayout
+
+<PageTitle>Density Showcase</PageTitle>
+
+<MdsPageHeader Title="Density Showcase">
+    <StartContent><div></div></StartContent>
+</MdsPageHeader>
+
+<MudStack Spacing="4" Class="pa-4">
+    <MudText Typo="Typo.body2" Color="Color.Secondary">
+        Contrôles MudBlazor natifs (non enveloppés par MudShell) — bascule le mode densité
+        dans le panneau thème pour vérifier que la réduction d'espace s'applique aussi bien
+        ici qu'aux composants MudShell.
+    </MudText>
+
+    <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary">Filled</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary">Outlined</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Primary">Text</MudButton>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" />
+    </MudStack>
+
+    <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap">
+        <MudTextField T="string" Label="Text field" Variant="Variant.Outlined" />
+        <MudSelect T="string" Label="Select" Variant="Variant.Outlined">
+            <MudSelectItem Value="@("A")">Option A</MudSelectItem>
+            <MudSelectItem Value="@("B")">Option B</MudSelectItem>
+        </MudSelect>
+    </MudStack>
+
+    <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap">
+        <MudChip T="string" Color="Color.Primary">Chip one</MudChip>
+        <MudChip T="string" Color="Color.Secondary">Chip two</MudChip>
+    </MudStack>
+
+    <MudToggleGroup T="string" Color="Color.Primary">
+        <MudToggleItem Value="@("all")" Text="All" />
+        <MudToggleItem Value="@("active")" Text="Active" />
+    </MudToggleGroup>
+
+    <MudList T="string">
+        <MudListItem T="string" Text="List item one" Icon="@Icons.Material.Filled.Star" />
+        <MudListItem T="string" Text="List item two" Icon="@Icons.Material.Filled.Star" />
+        <MudListItem T="string" Text="List item three" Icon="@Icons.Material.Filled.Star" />
+    </MudList>
+
+    <MudToolBar>
+        <MudText>Toolbar</MudText>
+        <MudSpacer />
+        <MudButton Variant="Variant.Text">Action</MudButton>
+    </MudToolBar>
+</MudStack>

@@ -13,6 +13,7 @@ public sealed class ThemeState
     public MudTheme CurrentTheme { get; private set; } = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Cobalt);
     public MdsAppShell.MbxBackgroundMode BackgroundMode { get; private set; } = MdsAppShell.MbxBackgroundMode.Palette;
     public string? BackgroundImageUrl { get; private set; }
+    public MdsDensity Density { get; private set; } = MdsDensity.Comfortable;
 
     public IReadOnlyList<MbxTheme.PresetInfo> Presets => MbxTheme.Presets;
 
@@ -26,6 +27,15 @@ public sealed class ThemeState
     }
 
     public void ToggleDarkMode() => SetDarkMode(!IsDarkMode);
+
+    public void SetDensity(MdsDensity density)
+    {
+        if (Density == density)
+            return;
+
+        Density = density;
+        Changed?.Invoke();
+    }
 
     public void ApplyPreset(MbxTheme.MbxThemePreset preset)
     {

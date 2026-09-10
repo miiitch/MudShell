@@ -55,6 +55,64 @@
     --mbx-sidebar-separator:      color-mix(in srgb, var(--mud-palette-primary, #594AE2) 30%, transparent);
 }
 
+/* ── Density: compact ─────────────────────────────────────────────────
+   Shrinks the shared spacing tokens (consumed via var(--mbx-space-N)) plus
+   a handful of hardcoded pixel values that were never tokenized. Purely
+   additive — the default (no class) render path is untouched. */
+.mbx-shell.mbx-density-compact {
+    --mbx-space-1:              3px;
+    --mbx-space-2:              6px;
+    --mbx-space-3:              8px;
+    --mbx-space-4:              12px;
+    --mbx-space-5:              14px;
+    --mbx-space-6:              16px;
+    --mbx-main-content-padding: var(--mbx-space-3);
+}
+
+.mbx-shell.mbx-density-compact ::deep .mbx-page-header.mud-toolbar {
+    min-height: 36px;
+}
+
+.mbx-shell.mbx-density-compact ::deep .mbx-main-button {
+    min-height: 32px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+/* Native (unwrapped) MudBlazor controls — verified against MudBlazor's own
+   generated classes/padding, not guessed, so density applies whether or not
+   a control goes through a MudShell wrapper component. */
+.mbx-shell.mbx-density-compact ::deep .mud-button:not(.mud-icon-button) {
+    padding: 4px 12px;
+    min-width: 48px;
+}
+
+.mbx-shell.mbx-density-compact ::deep .mud-icon-button {
+    padding: 6px;
+}
+
+.mbx-shell.mbx-density-compact ::deep .mud-list-item {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.mbx-shell.mbx-density-compact ::deep .mud-input-slot.mud-input-root {
+    padding: 3px 0 4px;
+}
+
+.mbx-shell.mbx-density-compact ::deep .mud-chip {
+    padding: 0 8px;
+    margin: 2px;
+}
+
+.mbx-shell.mbx-density-compact ::deep .mud-chip-size-medium {
+    height: 24px;
+}
+
+.mbx-shell.mbx-density-compact ::deep .mud-toolbar {
+    --mud-internal-toolbar-height: 40px;
+}
+
 /* ── Background layer ────────────────────────────────────────────────── */
 .mbx-bg {
     position: absolute;

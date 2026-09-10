@@ -11,6 +11,7 @@
              BackgroundImageUrl="@ThemeState.BackgroundImageUrl"
              IsDarkMode="@ThemeState.IsDarkMode"
              IsDarkModeChanged="@ThemeState.SetDarkMode"
+             Density="@ThemeState.Density"
              ContextPanelExpanded="@_contextPanelExpanded"
              ContextPanelExpandedChanged="@(v => _contextPanelExpanded = v)"
              ContextPanelWidth="288"
@@ -158,5 +159,6 @@
         new(Icons.Material.Outlined.Widgets,       "Composants",      "/main-components"),
         new(Icons.Material.Outlined.Palette,       "Demo",            "/demo"),
         new(Icons.Material.Outlined.DeveloperMode, "Render Modes",    "/modes"),
+        new(Icons.Material.Outlined.ViewCompact,   "Density",         "/density"),
     ];
 }

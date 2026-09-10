@@ -1,6 +1,7 @@
 @namespace MudShell.Components.AppShell
+@using MudShell.Theme
 <CascadingValue Value="this">
-    <div class="mbx-shell @ModeClass @ThemeClass @ContextLayoutClass" @attributes="AdditionalAttributes">
+    <div class="mbx-shell @ModeClass @ThemeClass @ContextLayoutClass @DensityClass" @attributes="AdditionalAttributes">
 
         @* Background layer (image mode only) *@
         @if (BackgroundMode == MbxBackgroundMode.Image)
@@ -61,6 +62,7 @@
 
     [Parameter] public bool                  IsDarkMode       { get; set; } = true;
     [Parameter] public EventCallback<bool>   IsDarkModeChanged { get; set; }
+    [Parameter] public MdsDensity            Density          { get; set; } = MdsDensity.Comfortable;
     [Parameter] public bool                  ContextPanelExpanded { get; set; } = true;
     [Parameter] public EventCallback<bool>   ContextPanelExpandedChanged { get; set; }
     [Parameter] public int                   ContextPanelWidth { get; set; } = 288;
@@ -69,6 +71,7 @@
     private string ModeClass  => BackgroundMode == MbxBackgroundMode.Image ? "mbx-mode-image" : "mbx-mode-palette";
     private string ThemeClass => IsDarkMode ? "" : "mbx-light";
     private string ContextLayoutClass => ContextPanelContent is null ? "mbx-no-context-panel" : "mbx-has-context-panel";
+    private string DensityClass => Density == MdsDensity.Compact ? "mbx-density-compact" : "";
     private int SidebarWidthPx => Math.Max(SidebarWidth, 120);
     private int SidebarCollapsedWidthPx => Math.Max(Math.Min(SidebarCollapsedWidth, SidebarWidthPx), 40);
     private string SidebarDrawerStyle => SidebarExpanded

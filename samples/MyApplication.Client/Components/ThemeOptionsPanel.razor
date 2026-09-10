@@ -36,6 +36,14 @@
                    Label="@(IsImageMode ? "Fond image" : "Fond palette")" />
     </div>
 
+    <div class="theme-panel-row">
+        <MudSwitch T="bool"
+                   Color="Color.Primary"
+                   Value="@IsCompactDensity"
+                   ValueChanged="@OnDensityChanged"
+                   Label="@(IsCompactDensity ? "Compact" : "Confortable")" />
+    </div>
+
     <div class="theme-panel-row theme-panel-row-colors">
         <label class="theme-color-field">
             <span>Primary</span>
@@ -90,6 +98,11 @@
         var mode = useImageBackground ? MdsAppShell.MbxBackgroundMode.Image : MdsAppShell.MbxBackgroundMode.Palette;
         ThemeState.SetBackgroundMode(mode, "/imgs/bg1.jpg");
     }
+
+    private bool IsCompactDensity => ThemeState.Density == MdsDensity.Compact;
+
+    private void OnDensityChanged(bool compact) =>
+        ThemeState.SetDensity(compact ? MdsDensity.Compact : MdsDensity.Comfortable);
 
     private void ApplyPrimary() => ThemeState.ApplyPrimary(_primary);
 

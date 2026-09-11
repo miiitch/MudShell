@@ -616,9 +616,15 @@ public static class MbxTheme
         var resolvedLightBackground = lightBackground ?? ParseHex("#f1f3f6");                      // Background — neutral gray (palette-independent)
         var resolvedLightMain       = lightMain       ?? ParseHex("#ffffff");                      // Surface — pure white
 
+        // MudBlazor falls back to its own default (a bright pink, "#FF4081") for any color role left
+        // unset, and Color.Secondary is commonly reached for by consumers. Derive a deliberate accent
+        // from Primary instead of leaving this gap — see https://github.com/miiitch/MudShell/issues/14.
+        var secondary = HueShiftAccent(primary, degrees: 150);
+
         var darkPalette = new PaletteDark
         {
             Primary = ToHex(primary),
+            Secondary = ToHex(secondary),
             Surface = ToHex(resolvedDarkMain),
             Background = ToHex(resolvedDarkBackground),
             BackgroundGray = ToHex(resolvedDarkSubSection),
@@ -648,6 +654,7 @@ public static class MbxTheme
         var lightPalette = new PaletteLight
         {
             Primary = ToHex(primary),
+            Secondary = ToHex(secondary),
             Black = "#0f1325",
             Surface = ToHex(resolvedLightMain),
             Background = ToHex(resolvedLightBackground),
@@ -709,6 +716,74 @@ public static class MbxTheme
 
     private static string ToHex(HexColor color)
         => $"#{color.R:X2}{color.G:X2}{color.B:X2}".ToLowerInvariant();
+
+    /// <summary>
+    /// Rotates a color's hue to derive a distinct-but-related accent (e.g. Secondary from Primary),
+    /// clamping saturation/lightness so the result stays legible as an accent in both palettes.
+    /// </summary>
+    private static HexColor HueShiftAccent(HexColor color, double degrees)
+    {
+        var (h, s, l) = ToHsl(color);
+        var shiftedHue = (h + degrees) % 360;
+        var accentSaturation = Math.Clamp(s, 0.45, 0.85);
+        var accentLightness = Math.Clamp(l, 0.42, 0.62);
+        return FromHsl(shiftedHue, accentSaturation, accentLightness);
+    }
+
+    private static (double H, double S, double L) ToHsl(HexColor color)
+    {
+        var r = color.R / 255d;
+        var g = color.G / 255d;
+        var b = color.B / 255d;
+
+        var max = Math.Max(r, Math.Max(g, b));
+        var min = Math.Min(r, Math.Min(g, b));
+        var l = (max + min) / 2d;
+
+        if (max == min)
+            return (0d, 0d, l);
+
+        var delta = max - min;
+        var s = l > 0.5 ? delta / (2d - max - min) : delta / (max + min);
+
+        double h;
+        if (max == r)
+            h = (g - b) / delta + (g < b ? 6d : 0d);
+        else if (max == g)
+            h = (b - r) / delta + 2d;
+        else
+            h = (r - g) / delta + 4d;
+
+        return (h * 60d, s, l);
+    }
+
+    private static HexColor FromHsl(double h, double s, double l)
+    {
+        if (s == 0d)
+        {
+            var gray = (int)Math.Round(l * 255d);
+            return new HexColor(gray, gray, gray);
+        }
+
+        var q = l < 0.5 ? l * (1d + s) : l + s - l * s;
+        var p = 2d * l - q;
+        var hue = h / 360d;
+
+        return new HexColor(
+            (int)Math.Round(HueToRgb(p, q, hue + 1d / 3d) * 255d),
+            (int)Math.Round(HueToRgb(p, q, hue) * 255d),
+            (int)Math.Round(HueToRgb(p, q, hue - 1d / 3d) * 255d));
+    }
+
+    private static double HueToRgb(double p, double q, double t)
+    {
+        if (t < 0d) t += 1d;
+        if (t > 1d) t -= 1d;
+        if (t < 1d / 6d) return p + (q - p) * 6d * t;
+        if (t < 1d / 2d) return q;
+        if (t < 2d / 3d) return p + (q - p) * (2d / 3d - t) * 6d;
+        return p;
+    }
 
     private static string ToRgba(HexColor color, double alpha)
         => $"rgba({color.R},{color.G},{color.B},{Math.Clamp(alpha, 0d, 1d).ToString("0.##", CultureInfo.InvariantCulture)})";

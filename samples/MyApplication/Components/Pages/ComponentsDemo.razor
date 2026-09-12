@@ -78,9 +78,13 @@
         </MudText>
         <MudGrid Spacing="3">
             <MudItem xs="12" md="4">
-                <MudPaper Outlined="true" Class="mds-u-surface-wrap pa-2" Style="max-width:280px;">
+                @* Same shell classes MdsSidebar itself renders (.mbx-nav.mbx-nav-expanded) + the
+                   drawer background variable, so this reads as an actual sidebar rail rather than
+                   an arbitrary card. *@
+                <div class="mbx-nav mbx-nav-expanded"
+                     style="width:260px; height:360px; background:var(--mud-palette-drawer-background, var(--mud-palette-surface)); border-radius:var(--mbx-radius-md); border:1px solid var(--mbx-content-border); padding-top:var(--mbx-space-2);">
                     <MdsSidebarNav Tree="@_sortDemoTree" IsExpanded="true" OnSortChanged="@HandleSortDemoSortChanged" />
-                </MudPaper>
+                </div>
             </MudItem>
             <MudItem xs="12" md="8">
                 <MudSimpleTable Dense="true" Hover="true" data-testid="sidebar-nav-sort-demo-log">

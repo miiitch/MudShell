@@ -146,12 +146,20 @@ else
         if (dropInfo.Item is null)
             return Task.CompletedTask;
 
-        var reordered = new List<MbxNavNode>(sortableChildren);
-        reordered.Remove(dropInfo.Item);
-        var index = Math.Clamp(dropInfo.IndexInZone, 0, reordered.Count);
-        reordered.Insert(index, dropInfo.Item);
+        // Match by id rather than by record equality: MbxNavNode is rebuilt fresh on every render
+        // (fresh EventCallback delegates in TrailingActions in particular), so dropInfo.Item — the
+        // instance MudDropContainer captured when the drag started — very often no longer equals,
+        // by value, any node in the current sortableChildren list even though it is "the same" item.
+        // List.Remove(dropInfo.Item) would then silently fail to find it and leave a duplicate id
+        // behind once it gets re-inserted.
+        var draggedId = dropInfo.Item.Id;
+        var orderedIds = sortableChildren
+            .Select(c => c.Id)
+            .Where(id => id != draggedId)
+            .ToList();
+        var index = Math.Clamp(dropInfo.IndexInZone, 0, orderedIds.Count);
+        orderedIds.Insert(index, draggedId);
 
-        var orderedIds = reordered.Select(c => c.Id).ToList();
         _sortOverrides[groupId] = orderedIds;
 
         return OnSortChanged.InvokeAsync(new MbxNavSortChangedArgs(groupId, orderedIds));

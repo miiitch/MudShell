@@ -1,5 +1,7 @@
 @page "/demo"
 @rendermode InteractiveServer
+@using MudShell.Components.Navigation
+@using MudShell.Components.Navigation.Models
 
 <PageTitle>Components Demo</PageTitle>
 
@@ -67,6 +69,35 @@
         </MudGrid>
     </MudStack>
 
+    @* ── Section : MdsSidebarNav — sub-menu pinning & sorting ───────── *@
+    <MudStack Spacing="2">
+        <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsSidebarNav — épingler / retirer / trier un sous-menu</MudText>
+        <MudText Typo="Typo.caption" Color="Color.Secondary">
+            "Épinglé en tête" et "Épinglé en fin" restent immobiles. Les items du milieu se
+            glissent-déposent pour changer d'ordre, et l'icône épingle retire l'item de la liste.
+        </MudText>
+        <MudGrid Spacing="3">
+            <MudItem xs="12" md="4">
+                <MudPaper Outlined="true" Class="mds-u-surface-wrap pa-2" Style="max-width:280px;">
+                    <MdsSidebarNav Tree="@_sortDemoTree" IsExpanded="true" OnSortChanged="@HandleSortDemoSortChanged" />
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" md="8">
+                <MudSimpleTable Dense="true" Hover="true" data-testid="sidebar-nav-sort-demo-log">
+                    <thead>
+                        <tr><th>Événement</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var entry in _sortDemoLog)
+                        {
+                            <tr><td>@entry</td></tr>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+            </MudItem>
+        </MudGrid>
+    </MudStack>
+
     @* ── Section : PageHeader variants ─────────────────────────────── *@
     <MudStack Spacing="2">
         <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsPageHeader</MudText>
@@ -115,4 +146,61 @@
         new("videos",  "Videos"),
     ];
 
+    // ── MdsSidebarNav sub-menu pinning & sorting demo ──────────────────
+    private readonly List<string> _sortDemoLog = [];
+    private List<string> _sortDemoOrder = ["report-alpha", "report-beta", "report-gamma"];
+    private readonly HashSet<string> _sortDemoRemoved = [];
+
+    private MbxNavTree _sortDemoTree => new(
+    [
+        new(
+            id: "sort-demo-section",
+            text: "Rapports",
+            icon: Icons.Material.Outlined.Folder,
+            defaultExpanded: true,
+            children: BuildSortDemoChildren())
+    ]);
+
+    private List<MbxNavNode> BuildSortDemoChildren()
+    {
+        var children = new List<MbxNavNode>
+        {
+            new(id: "report-pinned-top", text: "Épinglé en tête", pin: MbxNavPin.Top),
+        };
+
+        foreach (var id in _sortDemoOrder)
+        {
+            if (_sortDemoRemoved.Contains(id))
+                continue;
+
+            children.Add(new(
+                id: id,
+                text: id,
+                pin: MbxNavPin.None,
+                trailingActions:
+                [
+                    new MbxNavAction(
+                        Icons.Material.Outlined.PushPin,
+                        "Retirer de la liste",
+                        EventCallback.Factory.Create<string>(this, HandleSortDemoRemove))
+                ]));
+        }
+
+        children.Add(new(id: "report-pinned-bottom", text: "Épinglé en fin", pin: MbxNavPin.Bottom));
+        return children;
+    }
+
+    private void HandleSortDemoSortChanged(MbxNavSortChangedArgs args)
+    {
+        _sortDemoOrder = args.OrderedIds.ToList();
+        _sortDemoLog.Insert(0, $"OnSortChanged → [{string.Join(", ", args.OrderedIds)}]");
+        StateHasChanged();
+    }
+
+    private void HandleSortDemoRemove(string id)
+    {
+        _sortDemoRemoved.Add(id);
+        _sortDemoLog.Insert(0, $"Retiré : {id}");
+        StateHasChanged();
+    }
 }

@@ -47,6 +47,12 @@ MudShell supports two navigation depths:
 
 Use top-level entries for business areas. Use the context panel for sub-pages, variants, demos, or component families.
 
+Within a sub-menu (the children of an `MbxNavNode` group rendered by `MdsSidebarNav`), each child can be:
+
+- pinned to the top or bottom of the list via `MbxNavNode.Pin` (`Top`/`Bottom`), keeping it out of reordering — everything else sorts freely between those two fixed segments;
+- given trailing icon actions (e.g. pin/unpin, remove) via `MbxNavNode.TrailingActions`, each an `MbxNavAction(Icon, Tooltip, OnClick)` invoked with the node id;
+- reordered by the user via drag-and-drop — `MdsSidebarNav.OnSortChanged` fires with the new id order of the sortable segment only, so the consumer can persist it and re-supply an updated `MbxNavTree`.
+
 ## Main-content model
 
 For page bodies, MudShell works best when you separate:

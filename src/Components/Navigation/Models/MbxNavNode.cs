@@ -16,7 +16,9 @@ public sealed record MbxNavNode
         bool visible = true,
         bool disabled = false,
         MbxNavBadge? badge = null,
-        IReadOnlyDictionary<string, object?>? metadata = null)
+        IReadOnlyDictionary<string, object?>? metadata = null,
+        MbxNavPin pin = MbxNavPin.None,
+        IReadOnlyList<MbxNavAction>? trailingActions = null)
     {
         if (string.IsNullOrWhiteSpace(id))
             throw new ArgumentException("Navigation node id cannot be null or whitespace.", nameof(id));
@@ -35,6 +37,8 @@ public sealed record MbxNavNode
         Disabled = disabled;
         Badge = badge;
         Metadata = metadata;
+        Pin = pin;
+        TrailingActions = trailingActions;
     }
 
     public string Id { get; }
@@ -49,6 +53,12 @@ public sealed record MbxNavNode
     public bool Disabled { get; }
     public MbxNavBadge? Badge { get; }
     public IReadOnlyDictionary<string, object?>? Metadata { get; }
+
+    /// <summary>Position figée de ce nœud au sein des enfants de son parent : non triable, toujours en tête ou toujours en fin.</summary>
+    public MbxNavPin Pin { get; init; }
+
+    /// <summary>Actions rendues comme icônes cliquables en fin de ligne (ex. épingler/retirer), dans l'ordre d'affichage.</summary>
+    public IReadOnlyList<MbxNavAction>? TrailingActions { get; init; }
 }
 
 public static class MbxNavNodeLegacyAdapter

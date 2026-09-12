@@ -71,3 +71,36 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* Sub-menu item row: label + trailing action icons */
+.mbx-nav-subitem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.mbx-nav-subitem ::deep .mud-nav-link {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.mbx-nav-subitem-actions {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.mbx-nav-subitem:hover .mbx-nav-subitem-actions,
+.mbx-nav-subitem-actions:focus-within {
+    opacity: 1;
+}
+
+.mbx-nav-subitem-dropzone,
+.mbx-nav-subitem-dropzone-inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}

@@ -17,6 +17,9 @@ public static class MbxTestId
     /// <summary>Test id of the expandable group rendered for the node <paramref name="nodeId"/>.</summary>
     public static string NavGroup(string nodeId) => $"nav-group-{nodeId}";
 
+    /// <summary>Test id of a trailing action icon button rendered for the node <paramref name="nodeId"/> at <paramref name="actionIndex"/>.</summary>
+    public static string NavAction(string nodeId, int actionIndex) => $"nav-action-{nodeId}-{actionIndex}";
+
     /// <summary>Test id of a filter tab carrying <paramref name="value"/>.</summary>
     public static string Tab(object? value) => $"tab-{value}";
 }

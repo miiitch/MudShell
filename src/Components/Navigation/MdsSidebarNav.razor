@@ -12,6 +12,10 @@
             @if (node.Children.Count > 0)
             {
                 var expanded = _expandedIds.Contains(node.Id) || State.ActivePath.Contains(node.Id);
+                var visibleChildren = node.Children.Where(c => c.Visible).ToList();
+                var topChildren = visibleChildren.Where(c => c.Pin == MbxNavPin.Top).ToList();
+                var bottomChildren = visibleChildren.Where(c => c.Pin == MbxNavPin.Bottom).ToList();
+                var sortableChildren = visibleChildren.Where(c => c.Pin == MbxNavPin.None).ToList();
                 <MudNavGroup data-testid="@MudShell.MbxTestId.NavGroup(node.Id)"
                              Title="@node.Text"
                              Icon="@(node.Icon ?? Icons.Material.Outlined.Circle)"
@@ -20,17 +24,12 @@
                              ExpandedChanged="@(v => ToggleGroup(node.Id, v))"
                              HideExpandIcon="@node.Disabled"
                              Class="mbx-nav-group">
-                    @foreach (var child in node.Children.Where(c => c.Visible))
-                    {
-                        <MudNavLink data-testid="@MudShell.MbxTestId.Nav(child.Id)"
-                                    Href="@child.Href"
-                                    Icon="@child.Icon"
-                                    IconColor="Color.Inherit"
-                                    Disabled="@child.Disabled"
-                                    ActiveClass="mbx-nav-link-active">
-                            @child.Text
-                        </MudNavLink>
-                    }
+                    <MdsSidebarSubMenu GroupId="@node.Id"
+                                       TopChildren="topChildren"
+                                       SortableChildren="sortableChildren"
+                                       BottomChildren="bottomChildren"
+                                       ItemTemplate="RenderSubMenuItem"
+                                       OnSortChanged="OnSortChanged" />
                 </MudNavGroup>
             }
             else
@@ -87,6 +86,9 @@ else
     [Parameter] public string? CurrentUri     { get; set; }
     [Parameter] public string? Class          { get; set; }
 
+    /// <summary>Invoked after a drag-and-drop reorder inside the sortable segment of a sub-menu.</summary>
+    [Parameter] public EventCallback<MbxNavSortChangedArgs> OnSortChanged { get; set; }
+
     private IReadOnlyList<MbxNavNode> Items =>
         Tree?.Roots.Where(n => n.Visible).ToList() ?? [];
 
@@ -100,6 +102,35 @@ else
         if (isExpanded) _expandedIds.Add(id);
         else _expandedIds.Remove(id);
     }
+
+    private RenderFragment RenderSubMenuItem(MbxNavNode child) => __builder =>
+    {
+        <div class="mbx-nav-subitem">
+            <MudNavLink data-testid="@MudShell.MbxTestId.Nav(child.Id)"
+                        Href="@child.Href"
+                        Icon="@child.Icon"
+                        IconColor="Color.Inherit"
+                        Disabled="@child.Disabled"
+                        ActiveClass="mbx-nav-link-active">
+                @child.Text
+            </MudNavLink>
+            @if (child.TrailingActions is { Count: > 0 })
+            {
+                <div class="mbx-nav-subitem-actions">
+                    @for (var actionIndex = 0; actionIndex < child.TrailingActions.Count; actionIndex++)
+                    {
+                        var action = child.TrailingActions[actionIndex];
+                        <MudIconButton data-testid="@MudShell.MbxTestId.NavAction(child.Id, actionIndex)"
+                                       Icon="@action.Icon"
+                                       title="@action.Tooltip"
+                                       Size="Size.Small"
+                                       Color="Color.Inherit"
+                                       OnClick="@(() => action.OnClick.InvokeAsync(child.Id))" />
+                    }
+                </div>
+            }
+        </div>
+    };
 
     private static NavLinkMatch ToNavLinkMatch(MbxNavMatchMode matchMode) =>
         matchMode == MbxNavMatchMode.All ? NavLinkMatch.All : NavLinkMatch.Prefix;

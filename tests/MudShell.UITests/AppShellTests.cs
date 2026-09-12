@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 using Xunit;
 
@@ -88,7 +89,8 @@ public class AppShellTests : PlaywrightTestBase
 
         await Page.Locator(".mbx-context-panel .mud-icon-button").First.ClickAsync();
 
-        var isCollapsed = await panel.EvaluateAsync<bool>("el => el.classList.contains('mbx-context-panel-collapsed')");
-        Assert.True(isCollapsed);
+        // ToHaveClassAsync retries until the class appears. A one-shot EvaluateAsync right after
+        // the click can race the Blazor Server round trip that applies the collapsed class.
+        await Assertions.Expect(panel).ToHaveClassAsync(new Regex("mbx-context-panel-collapsed"));
     });
 }

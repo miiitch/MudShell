@@ -1,0 +1,26 @@
+/* .mbx-nav-subitem-dropzone(-inner) end up on MudDropContainer/MudDropZone's own root elements
+   (via their Class parameter), not on elements written directly in this file, so reaching them
+   needs ::deep. */
+::deep .mbx-nav-subitem-dropzone,
+::deep .mbx-nav-subitem-dropzone-inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Extra hit area above the first item / below the last item so the user can reliably drop an
+   item at the very start or end of the sortable segment, not just exactly on another item. */
+::deep .mbx-nav-subitem-dropzone-inner {
+    padding-block: var(--mbx-space-2);
+}
+
+/* Line shown between two items (or at the very top/bottom of the list) to mark exactly where a
+   dragged item will land. Written directly in this component's ItemRenderer template, so — unlike
+   the dropzone classes above — it does not need ::deep. */
+.mbx-nav-drop-indicator {
+    height: 2px;
+    margin: 2px var(--mbx-space-2);
+    border-radius: 1px;
+    background-color: var(--mud-palette-primary);
+    flex-shrink: 0;
+}

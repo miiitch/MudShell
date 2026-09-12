@@ -15,7 +15,7 @@
                 var visibleChildren = node.Children.Where(c => c.Visible).ToList();
                 var topChildren = visibleChildren.Where(c => c.Pin == MbxNavPin.Top).ToList();
                 var bottomChildren = visibleChildren.Where(c => c.Pin == MbxNavPin.Bottom).ToList();
-                var sortableChildren = OrderSortableChildren(node.Id, visibleChildren.Where(c => c.Pin == MbxNavPin.None).ToList());
+                var sortableChildren = visibleChildren.Where(c => c.Pin == MbxNavPin.None).ToList();
                 <MudNavGroup data-testid="@MudShell.MbxTestId.NavGroup(node.Id)"
                              Title="@node.Text"
                              Icon="@(node.Icon ?? Icons.Material.Outlined.Circle)"
@@ -24,30 +24,12 @@
                              ExpandedChanged="@(v => ToggleGroup(node.Id, v))"
                              HideExpandIcon="@node.Disabled"
                              Class="mbx-nav-group">
-                    @foreach (var child in topChildren)
-                    {
-                        @RenderSubMenuItem(child)
-                    }
-                    @if (sortableChildren.Count > 0)
-                    {
-                        <MudDropContainer @key="@string.Join('|', sortableChildren.Select(c => c.Id))"
-                                          T="MbxNavNode"
-                                          Items="sortableChildren"
-                                          ItemsSelector="@((_, zone) => zone == node.Id)"
-                                          ItemDropped="@(info => HandleItemDropped(node.Id, sortableChildren, info))"
-                                          Class="mbx-nav-subitem-dropzone">
-                            <ChildContent>
-                                <MudDropZone T="MbxNavNode" Identifier="@node.Id" Class="mbx-nav-subitem-dropzone-inner" />
-                            </ChildContent>
-                            <ItemRenderer>
-                                @RenderSubMenuItem(context)
-                            </ItemRenderer>
-                        </MudDropContainer>
-                    }
-                    @foreach (var child in bottomChildren)
-                    {
-                        @RenderSubMenuItem(child)
-                    }
+                    <MdsSidebarSubMenu GroupId="@node.Id"
+                                       TopChildren="topChildren"
+                                       SortableChildren="sortableChildren"
+                                       BottomChildren="bottomChildren"
+                                       ItemTemplate="RenderSubMenuItem"
+                                       OnSortChanged="OnSortChanged" />
                 </MudNavGroup>
             }
             else
@@ -115,54 +97,10 @@ else
 
     private readonly HashSet<string> _expandedIds = new(StringComparer.Ordinal);
 
-    /// <summary>Last known drag-and-drop order of sortable child ids, per group id — kept so the reorder is
-    /// reflected immediately even before the parent re-supplies an updated <see cref="Tree"/>.</summary>
-    private readonly Dictionary<string, List<string>> _sortOverrides = new(StringComparer.Ordinal);
-
     private void ToggleGroup(string id, bool isExpanded)
     {
         if (isExpanded) _expandedIds.Add(id);
         else _expandedIds.Remove(id);
-    }
-
-    private List<MbxNavNode> OrderSortableChildren(string groupId, List<MbxNavNode> sortableChildren)
-    {
-        if (!_sortOverrides.TryGetValue(groupId, out var order))
-            return sortableChildren;
-
-        var byId = sortableChildren.ToDictionary(c => c.Id, StringComparer.Ordinal);
-        var ordered = new List<MbxNavNode>(sortableChildren.Count);
-        foreach (var id in order)
-        {
-            if (byId.Remove(id, out var node))
-                ordered.Add(node);
-        }
-        ordered.AddRange(byId.Values);
-        return ordered;
-    }
-
-    private Task HandleItemDropped(string groupId, List<MbxNavNode> sortableChildren, MudItemDropInfo<MbxNavNode> dropInfo)
-    {
-        if (dropInfo.Item is null)
-            return Task.CompletedTask;
-
-        // Match by id rather than by record equality: MbxNavNode is rebuilt fresh on every render
-        // (fresh EventCallback delegates in TrailingActions in particular), so dropInfo.Item — the
-        // instance MudDropContainer captured when the drag started — very often no longer equals,
-        // by value, any node in the current sortableChildren list even though it is "the same" item.
-        // List.Remove(dropInfo.Item) would then silently fail to find it and leave a duplicate id
-        // behind once it gets re-inserted.
-        var draggedId = dropInfo.Item.Id;
-        var orderedIds = sortableChildren
-            .Select(c => c.Id)
-            .Where(id => id != draggedId)
-            .ToList();
-        var index = Math.Clamp(dropInfo.IndexInZone, 0, orderedIds.Count);
-        orderedIds.Insert(index, draggedId);
-
-        _sortOverrides[groupId] = orderedIds;
-
-        return OnSortChanged.InvokeAsync(new MbxNavSortChangedArgs(groupId, orderedIds));
     }
 
     private RenderFragment RenderSubMenuItem(MbxNavNode child) => __builder =>

@@ -98,9 +98,3 @@
     opacity: 1;
 }
 
-.mbx-nav-subitem-dropzone,
-.mbx-nav-subitem-dropzone-inner {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}

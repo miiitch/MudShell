@@ -1,0 +1,184 @@
+@namespace MudShell.Components.Navigation
+@using MudShell.Components.Navigation.Models
+@implements IDisposable
+
+@foreach (var child in TopChildren)
+{
+    @ItemTemplate(child)
+}
+@if (EffectiveSortable.Count > 0)
+{
+    <div class="mbx-nav-subitem-dropzone-wrap">
+        <MudDropContainer @ref="_container"
+                          T="MbxNavNode"
+                          Items="EffectiveSortable"
+                          ItemsSelector="@((_, zone) => zone == GroupId)"
+                          ItemDropped="HandleItemDropped"
+                          Class="mbx-nav-subitem-dropzone">
+            <ChildContent>
+                <MudDropZone T="MbxNavNode" Identifier="@GroupId" Class="mbx-nav-subitem-dropzone-inner" />
+            </ChildContent>
+            <ItemRenderer>
+                @{
+                    var itemIndex = EffectiveSortable.IndexOf(context);
+                }
+                @if (ShowIndicatorAt(itemIndex))
+                {
+                    <div class="mbx-nav-drop-indicator"></div>
+                }
+                @ItemTemplate(context)
+                @if (itemIndex == EffectiveSortable.Count - 1 && ShowIndicatorAt(itemIndex + 1))
+                {
+                    <div class="mbx-nav-drop-indicator"></div>
+                }
+            </ItemRenderer>
+        </MudDropContainer>
+    </div>
+}
+@foreach (var child in BottomChildren)
+{
+    @ItemTemplate(child)
+}
+
+@code {
+    /// <summary>Id of the parent "sub-section" node these children belong to.</summary>
+    [Parameter, EditorRequired] public string GroupId { get; set; } = null!;
+
+    /// <summary>Children pinned to the top (rendered as-is, outside the drop zone).</summary>
+    [Parameter] public List<MbxNavNode> TopChildren { get; set; } = [];
+
+    /// <summary>Children with no fixed position — reorderable by drag-and-drop.</summary>
+    [Parameter] public List<MbxNavNode> SortableChildren { get; set; } = [];
+
+    /// <summary>Children pinned to the bottom (rendered as-is, outside the drop zone).</summary>
+    [Parameter] public List<MbxNavNode> BottomChildren { get; set; } = [];
+
+    /// <summary>Renders a single sub-menu item (link + trailing actions).</summary>
+    [Parameter, EditorRequired] public RenderFragment<MbxNavNode> ItemTemplate { get; set; } = null!;
+
+    /// <summary>Invoked after a drag-and-drop reorder inside <see cref="SortableChildren"/>.</summary>
+    [Parameter] public EventCallback<MbxNavSortChangedArgs> OnSortChanged { get; set; }
+
+    private MudDropContainer<MbxNavNode>? _container;
+    private int? _dragOverIndex;
+
+    /// <summary>Last known drag-and-drop order of the sortable children's ids — kept locally so the
+    /// reorder is reflected immediately even before the parent re-supplies an updated tree.</summary>
+    private List<string>? _localOrder;
+
+    private List<MbxNavNode> EffectiveSortable
+    {
+        get
+        {
+            if (_localOrder is null)
+                return SortableChildren;
+
+            var byId = SortableChildren.ToDictionary(c => c.Id, StringComparer.Ordinal);
+            var ordered = new List<MbxNavNode>(SortableChildren.Count);
+            foreach (var id in _localOrder)
+            {
+                if (byId.Remove(id, out var node))
+                    ordered.Add(node);
+            }
+            ordered.AddRange(byId.Values);
+            return ordered;
+        }
+    }
+
+    private string? _lastSortableKey;
+    private bool _pendingContainerRefresh;
+
+    protected override void OnParametersSet()
+    {
+        // MudDropContainer snapshots Items internally and does not observe changes to the bound
+        // collection on its own (see HandleItemDropped's comment on stale record identity) — when
+        // SortableChildren shrinks or grows (e.g. a trailing action removed one), it must be told
+        // explicitly to re-index, or the removed item keeps showing until something else forces a
+        // full remount. The actual Refresh() call is deferred to OnAfterRender: calling it here,
+        // before this render has even reached MudDropContainer/MudDropZone with the new Items
+        // value, fires the RefreshRequested event too early to have any effect.
+        var key = string.Join('|', SortableChildren.Select(c => c.Id));
+        if (key != _lastSortableKey)
+        {
+            _lastSortableKey = key;
+            _pendingContainerRefresh = true;
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && _container is not null)
+        {
+            _container.TransactionIndexChanged += HandleTransactionIndexChanged;
+            _container.TransactionEnded += HandleTransactionEnded;
+        }
+
+        if (_pendingContainerRefresh)
+        {
+            _pendingContainerRefresh = false;
+            _container?.Refresh();
+        }
+    }
+
+    private void HandleTransactionIndexChanged(object? sender, MudDragAndDropIndexChangedEventArgs e)
+    {
+        if (e.ZoneIdentifier != GroupId)
+            return;
+
+        _dragOverIndex = e.Index;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleTransactionEnded(object? sender, MudDragAndDropTransactionFinishedEventArgs<MbxNavNode> e)
+    {
+        _dragOverIndex = null;
+        InvokeAsync(StateHasChanged);
+    }
+
+    // Defensive fallback: if a drag ends without cleanly raising TransactionEnded (e.g. the mouse
+    // is released just outside any recognized drop target), _dragOverIndex could otherwise be left
+    // stuck showing a stale indicator line forever. Cross-check against the container's own live
+    // transaction state before actually drawing it.
+    private bool ShowIndicatorAt(int index) =>
+        _dragOverIndex == index && _container?.TransactionInProgress() == true;
+
+    private Task HandleItemDropped(MudItemDropInfo<MbxNavNode> dropInfo)
+    {
+        if (dropInfo.Item is null)
+            return Task.CompletedTask;
+
+        // Match by id rather than by record equality: MbxNavNode is rebuilt fresh on every render
+        // (fresh EventCallback delegates in TrailingActions in particular), so dropInfo.Item — the
+        // instance MudDropContainer captured when the drag started — very often no longer equals,
+        // by value, any node in the current EffectiveSortable list even though it is "the same" item.
+        // List.Remove(dropInfo.Item) would then silently fail to find it and leave a duplicate id
+        // behind once it gets re-inserted.
+        var current = EffectiveSortable;
+        var draggedId = dropInfo.Item.Id;
+        var orderedIds = current
+            .Select(c => c.Id)
+            .Where(id => id != draggedId)
+            .ToList();
+
+        // MudItemDropInfo.IndexInZone is unreliable (observed to always be -1 in this MudBlazor
+        // version), which meant every drop clamped to index 0 regardless of where the user actually
+        // dropped — the item always ended up at the front, never mid-list or at the end. The index
+        // tracked live via TransactionIndexChanged as the user drags over each position is accurate,
+        // so use that instead; IndexInZone is only a last-resort fallback if it is somehow absent.
+        var index = Math.Clamp(_dragOverIndex ?? dropInfo.IndexInZone, 0, orderedIds.Count);
+        orderedIds.Insert(index, draggedId);
+
+        _localOrder = orderedIds;
+
+        return OnSortChanged.InvokeAsync(new MbxNavSortChangedArgs(GroupId, orderedIds));
+    }
+
+    public void Dispose()
+    {
+        if (_container is not null)
+        {
+            _container.TransactionIndexChanged -= HandleTransactionIndexChanged;
+            _container.TransactionEnded -= HandleTransactionEnded;
+        }
+    }
+}

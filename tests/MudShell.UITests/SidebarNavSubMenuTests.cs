@@ -33,13 +33,10 @@ public class SidebarNavSubMenuTests : PlaywrightTestBase
     {
         await GotoAndExpandGroupAsync();
 
-        var subMenu = Page.Locator("nav[aria-label='Reports']");
-        var itemTestIds = await subMenu.Locator("[data-testid^='nav-report']")
-            .EvaluateAllAsync<string[]>("els => els.map(e => e.getAttribute('data-testid'))");
-
-        Assert.NotEmpty(itemTestIds);
-        Assert.Equal("nav-report-pinned-top", itemTestIds[0]);
-        Assert.Equal("nav-report-pinned-bottom", itemTestIds[^1]);
+        var order = await GetItemOrderAsync();
+        Assert.NotEmpty(order);
+        Assert.Equal("nav-report-pinned-top", order[0]);
+        Assert.Equal("nav-report-pinned-bottom", order[^1]);
     });
 
     [Fact]
@@ -79,21 +76,35 @@ public class SidebarNavSubMenuTests : PlaywrightTestBase
         SubMenu.Locator("[data-testid^='nav-report']")
             .EvaluateAllAsync<string[]>("els => els.map(e => e.getAttribute('data-testid'))");
 
-    // MudBlazor's drag-and-drop items are native HTML5 draggable elements (draggable="true"), so
-    // the drag must go through the native dragstart/dragover/drop sequence — raw mouse
-    // move/down/up (what a custom pointer-based DnD would need) does not trigger it.
-    //
-    // Playwright's synthetic native drag simulation is occasionally swallowed by MudBlazor's JS
-    // interop (the drop never registers, so no ItemDropped/OnSortChanged fires at all) — not a
-    // product bug, just simulation flakiness. Retry the gesture a few times rather than the whole
-    // test, checking the actual DOM order (not the log, which a stray earlier drag could also
-    // have touched) to decide whether this attempt took effect.
-    private async Task DragAsync(string sourceId, string targetId)
+    /// <summary>
+    /// Drags <paramref name="sourceId"/> onto <paramref name="targetId"/>. Dropping on the target's
+    /// top half inserts the dragged item just before it; dropping on its bottom half inserts it
+    /// just after — MdsSidebarNav tracks the live index via MudDropContainer.TransactionIndexChanged
+    /// (MudItemDropInfo.IndexInZone itself is unreliable, see MdsSidebarSubMenu.HandleItemDropped).
+    /// </summary>
+    /// <remarks>
+    /// MudBlazor's drop items are native HTML5 draggable elements, so the drag must go through the
+    /// native dragstart/dragover/drop sequence — raw mouse move/down/up (what a custom pointer-based
+    /// DnD would need) does not trigger it; Locator.DragToAsync does.
+    ///
+    /// Playwright's synthetic native drag simulation is occasionally swallowed by MudBlazor's JS
+    /// interop (the drop never registers, so no ItemDropped/OnSortChanged fires at all) — not a
+    /// product bug, just simulation flakiness. Retry the gesture a few times rather than the whole
+    /// test, waiting for the round trip to Blazor Server to actually land before deciding whether
+    /// this attempt took effect (checking too early would otherwise look like a no-op and cause an
+    /// extra, unwanted real retry).
+    /// </remarks>
+    private async Task DragAsync(string sourceId, string targetId, bool dropOnBottomHalf = false)
     {
+        var targetPosition = dropOnBottomHalf ? new TargetPosition { X = 5, Y = 30 } : new TargetPosition { X = 5, Y = 3 };
+
         for (var attempt = 1; attempt <= 3; attempt++)
         {
             var orderBefore = await GetItemOrderAsync();
-            await Page.GetByTestId(sourceId).DragToAsync(Page.GetByTestId(targetId));
+            await Page.GetByTestId(sourceId).DragToAsync(
+                Page.GetByTestId(targetId),
+                new LocatorDragToOptions { TargetPosition = targetPosition });
+            await Page.WaitForTimeoutAsync(200);
 
             var orderAfter = await GetItemOrderAsync();
             if (!orderBefore.SequenceEqual(orderAfter))
@@ -106,17 +117,14 @@ public class SidebarNavSubMenuTests : PlaywrightTestBase
     }
 
     [Fact]
-    public Task SubMenu_DragAndDrop_ReordersSortableSegment_AndRaisesOnSortChanged() => RunAsync(
-        nameof(SubMenu_DragAndDrop_ReordersSortableSegment_AndRaisesOnSortChanged), async () =>
+    public Task SubMenu_DragAndDrop_DropOnTopHalf_InsertsBeforeTarget() => RunAsync(
+        nameof(SubMenu_DragAndDrop_DropOnTopHalf_InsertsBeforeTarget), async () =>
     {
         await GotoAndExpandGroupAsync();
 
-        var gamma = Page.GetByTestId("nav-report-gamma");
-        var alpha = Page.GetByTestId("nav-report-alpha");
-        await Assertions.Expect(gamma).ToBeVisibleAsync();
-        await Assertions.Expect(alpha).ToBeVisibleAsync();
-
-        await DragAsync("nav-report-gamma", "nav-report-alpha");
+        // Starting order: alpha, beta, gamma. Dropping gamma on alpha's top half inserts it right
+        // before alpha, at the very front of the sortable segment.
+        await DragAsync("nav-report-gamma", "nav-report-alpha", dropOnBottomHalf: false);
 
         await Assertions.Expect(Page.GetByTestId("sidebar-nav-sort-demo-log"))
             .ToContainTextAsync("OnSortChanged → [report-gamma, report-alpha, report-beta]");
@@ -128,23 +136,23 @@ public class SidebarNavSubMenuTests : PlaywrightTestBase
     });
 
     [Fact]
-    public Task SubMenu_DragAndDrop_LastItemOntoAnyEarlierItem_MovesItToTheFront() => RunAsync(
-        nameof(SubMenu_DragAndDrop_LastItemOntoAnyEarlierItem_MovesItToTheFront), async () =>
+    public Task SubMenu_DragAndDrop_DropOnBottomHalfOfLastItem_MovesFirstItemToTheEnd() => RunAsync(
+        nameof(SubMenu_DragAndDrop_DropOnBottomHalfOfLastItem_MovesFirstItemToTheEnd), async () =>
     {
         await GotoAndExpandGroupAsync();
 
-        // report-gamma (last sortable item) dropped onto report-beta (the middle one) — same
-        // resulting position as dropping it onto report-alpha (first item): dragging the last
-        // item upward moves it to the front of the sortable segment regardless of exactly which
-        // earlier item it is dropped on.
-        await DragAsync("nav-report-gamma", "nav-report-beta");
+        // Starting order: alpha, beta, gamma. Dropping alpha (currently first) on gamma's (last)
+        // bottom half moves it all the way to the end of the sortable segment — this is the
+        // "insert after the very last item" case that used to be unreachable (MudItemDropInfo's
+        // own IndexInZone was always -1, so every drop clamped back to the front).
+        await DragAsync("nav-report-alpha", "nav-report-gamma", dropOnBottomHalf: true);
 
         await Assertions.Expect(Page.GetByTestId("sidebar-nav-sort-demo-log"))
-            .ToContainTextAsync("OnSortChanged → [report-gamma, report-alpha, report-beta]");
+            .ToContainTextAsync("OnSortChanged → [report-beta, report-gamma, report-alpha]");
 
         var order = await GetItemOrderAsync();
         Assert.Equal(
-            ["nav-report-pinned-top", "nav-report-gamma", "nav-report-alpha", "nav-report-beta", "nav-report-pinned-bottom"],
+            ["nav-report-pinned-top", "nav-report-beta", "nav-report-gamma", "nav-report-alpha", "nav-report-pinned-bottom"],
             order);
     });
 
@@ -158,13 +166,15 @@ public class SidebarNavSubMenuTests : PlaywrightTestBase
         // the same session. Two consecutive drags must both succeed cleanly.
         await GotoAndExpandGroupAsync();
 
+        // Drag 1: alpha, beta, gamma -> gamma dropped before alpha -> gamma, alpha, beta.
         await DragAsync("nav-report-gamma", "nav-report-alpha");
         await Assertions.Expect(Page.GetByTestId("sidebar-nav-sort-demo-log"))
             .ToContainTextAsync("OnSortChanged → [report-gamma, report-alpha, report-beta]");
 
-        await DragAsync("nav-report-beta", "nav-report-gamma");
+        // Drag 2: gamma, alpha, beta -> alpha dropped after beta (now last) -> gamma, beta, alpha.
+        await DragAsync("nav-report-alpha", "nav-report-beta", dropOnBottomHalf: true);
         await Assertions.Expect(Page.GetByTestId("sidebar-nav-sort-demo-log"))
-            .ToContainTextAsync("OnSortChanged → [report-beta, report-gamma, report-alpha]");
+            .ToContainTextAsync("OnSortChanged → [report-gamma, report-beta, report-alpha]");
 
         // No Blazor circuit error surfaced (the bug this guards against threw
         // InvalidOperationException: "Duplicate navigation node id" from MbxNavTree.Validate,
@@ -173,7 +183,7 @@ public class SidebarNavSubMenuTests : PlaywrightTestBase
 
         var order = await GetItemOrderAsync();
         Assert.Equal(
-            ["nav-report-pinned-top", "nav-report-beta", "nav-report-gamma", "nav-report-alpha", "nav-report-pinned-bottom"],
+            ["nav-report-pinned-top", "nav-report-gamma", "nav-report-beta", "nav-report-alpha", "nav-report-pinned-bottom"],
             order);
         // Each id appears exactly once — the exact shape of the original bug.
         Assert.Equal(order.Length, order.Distinct().Count());

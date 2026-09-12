@@ -7,12 +7,14 @@ const sidebars: SidebarsConfig = {
     'palettes',
     'responsive',
     'architecture',
+    'migration-0.3',
     {
       type: 'category',
       label: 'Components',
       items: [
         'components/app-shell',
         'components/sidebar',
+        'components/sidebar-nav',
         'components/bottom-nav',
         'components/chat-bar',
         'components/document-card',

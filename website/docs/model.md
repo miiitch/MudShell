@@ -57,6 +57,8 @@ Within a sub-menu (the children of an `MbxNavNode` group rendered by `MdsSidebar
 - given trailing icon actions (e.g. pin/unpin, remove) via `MbxNavNode.TrailingActions`, each an `MbxNavAction(Icon, Tooltip, OnClick)` invoked with the node id;
 - reordered by the user via drag-and-drop — `MdsSidebarNav.OnSortChanged` fires with the new id order of the sortable segment only, so the consumer can persist it and re-supply an updated `MbxNavTree`.
 
+Each expandable group's sortable segment is rendered by an internal `MdsSidebarSubMenu` — one drop container instance per group — which also shows a line between two items (or at the very top/bottom of the segment) while dragging, marking exactly where the item will land: dropping on the top half of a target inserts before it, the bottom half inserts after it, so every position (including the very first and very last slot) is reachable.
+
 ## Main-content model
 
 For page bodies, MudShell works best when you separate:

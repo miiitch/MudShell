@@ -2,45 +2,59 @@
 @using MudShell.Components.Navigation.Models
 @implements IDisposable
 
-@foreach (var child in TopChildren)
-{
-    @ItemTemplate(child)
-}
-@if (EffectiveSortable.Count > 0)
-{
-    <div class="mbx-nav-subitem-dropzone-wrap">
-        <MudDropContainer @ref="_container"
-                          T="MbxNavNode"
-                          Items="EffectiveSortable"
-                          ItemsSelector="@((_, zone) => zone == GroupId)"
-                          ItemDropped="HandleItemDropped"
-                          Class="mbx-nav-subitem-dropzone">
-            <ChildContent>
-                <MudDropZone T="MbxNavNode" Identifier="@GroupId" Class="mbx-nav-subitem-dropzone-inner" />
-            </ChildContent>
-            <ItemRenderer>
-                @{
-                    var itemIndex = EffectiveSortable.IndexOf(context);
-                }
-                @if (ShowIndicatorAt(itemIndex))
-                {
-                    <div class="mbx-nav-drop-indicator"></div>
-                }
-                @ItemTemplate(context)
-                @if (itemIndex == EffectiveSortable.Count - 1 && ShowIndicatorAt(itemIndex + 1))
-                {
-                    <div class="mbx-nav-drop-indicator"></div>
-                }
-            </ItemRenderer>
-        </MudDropContainer>
-    </div>
-}
-@foreach (var child in BottomChildren)
-{
-    @ItemTemplate(child)
-}
+<div class="mbx-nav-submenu" @attributes="AdditionalAttributes">
+    @foreach (var child in TopChildren)
+    {
+        @ItemTemplate(child)
+    }
+    @if (EffectiveSortable.Count > 0)
+    {
+        <div class="mbx-nav-subitem-dropzone-wrap">
+            <MudDropContainer @ref="_container"
+                              T="MbxNavNode"
+                              Items="EffectiveSortable"
+                              ItemsSelector="@((_, zone) => zone == GroupId)"
+                              ItemDropped="HandleItemDropped"
+                              Class="mbx-nav-subitem-dropzone">
+                <ChildContent>
+                    <MudDropZone T="MbxNavNode" Identifier="@GroupId" Class="mbx-nav-subitem-dropzone-inner" />
+                </ChildContent>
+                <ItemRenderer>
+                    @{
+                        // _dragOverIndex is the item's final resting index *after* it is removed
+                        // from its current slot (that's what HandleItemDropped's own math assumes,
+                        // and it produces the correct result there) — so, to place the indicator
+                        // line at the same spot, index into the list with the dragged item excluded
+                        // rather than into EffectiveSortable itself. Using EffectiveSortable's own
+                        // indices directly (dragged item still included) shows the line one item too
+                        // early whenever the drop target sits after the dragged item's original slot.
+                        var visibleOrder = GetVisibleOrder();
+                        var itemIndex = context.Id == DraggedId ? -1 : visibleOrder.IndexOf(context);
+                    }
+                    @if (itemIndex >= 0 && ShowIndicatorAt(itemIndex))
+                    {
+                        <div class="mbx-nav-drop-indicator"></div>
+                    }
+                    @ItemTemplate(context)
+                    @if (itemIndex == visibleOrder.Count - 1 && ShowIndicatorAt(itemIndex + 1))
+                    {
+                        <div class="mbx-nav-drop-indicator"></div>
+                    }
+                </ItemRenderer>
+            </MudDropContainer>
+        </div>
+    }
+    @foreach (var child in BottomChildren)
+    {
+        @ItemTemplate(child)
+    }
+</div>
 
 @code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
     /// <summary>Id of the parent "sub-section" node these children belong to.</summary>
     [Parameter, EditorRequired] public string GroupId { get; set; } = null!;
 
@@ -141,6 +155,18 @@
     // transaction state before actually drawing it.
     private bool ShowIndicatorAt(int index) =>
         _dragOverIndex == index && _container?.TransactionInProgress() == true;
+
+    private string? DraggedId => _container?.TransactionInProgress() == true
+        ? _container.GetTransactionItem()?.Id
+        : null;
+
+    private List<MbxNavNode> GetVisibleOrder()
+    {
+        var draggedId = DraggedId;
+        return draggedId is null
+            ? EffectiveSortable
+            : EffectiveSortable.Where(c => c.Id != draggedId).ToList();
+    }
 
     private Task HandleItemDropped(MudItemDropInfo<MbxNavNode> dropInfo)
     {

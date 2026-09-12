@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace MudShell.Components.Navigation.Models;
 
-/// <summary>Une action représentée par une icône cliquable en fin d'un <see cref="MbxNavNode"/>.</summary>
-/// <param name="Icon">Icône MudBlazor (ex. <c>Icons.Material.Outlined.PushPin</c>).</param>
-/// <param name="Tooltip">Texte affiché au survol / lu par les lecteurs d'écran.</param>
-/// <param name="OnClick">Invoqué avec l'id du nœud lorsque l'action est cliquée.</param>
+/// <summary>An action rendered as a clickable trailing icon on an <see cref="MbxNavNode"/>.</summary>
+/// <param name="Icon">MudBlazor icon (e.g. <c>Icons.Material.Outlined.PushPin</c>).</param>
+/// <param name="Tooltip">Text shown on hover / read by screen readers.</param>
+/// <param name="OnClick">Invoked with the node id when the action is clicked.</param>
 public sealed record MbxNavAction(string Icon, string Tooltip, EventCallback<string> OnClick);

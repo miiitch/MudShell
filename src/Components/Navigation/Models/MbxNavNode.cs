@@ -54,10 +54,10 @@ public sealed record MbxNavNode
     public MbxNavBadge? Badge { get; }
     public IReadOnlyDictionary<string, object?>? Metadata { get; }
 
-    /// <summary>Position figée de ce nœud au sein des enfants de son parent : non triable, toujours en tête ou toujours en fin.</summary>
+    /// <summary>Fixed position of this node among its parent's children: not sortable, always first or always last.</summary>
     public MbxNavPin Pin { get; init; }
 
-    /// <summary>Actions rendues comme icônes cliquables en fin de ligne (ex. épingler/retirer), dans l'ordre d'affichage.</summary>
+    /// <summary>Actions rendered as clickable trailing icons (e.g. pin/remove), in display order.</summary>
     public IReadOnlyList<MbxNavAction>? TrailingActions { get; init; }
 }
 

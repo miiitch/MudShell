@@ -1,6 +1,6 @@
 namespace MudShell.Components.Navigation.Models;
 
-/// <summary>Émis après un glisser-déposer réussi dans le segment triable d'un sous-menu.</summary>
-/// <param name="GroupId">Id du nœud "sous-section" (le parent des items réordonnés).</param>
-/// <param name="OrderedIds">Ids du segment triable uniquement, dans leur nouvel ordre.</param>
+/// <summary>Raised after a successful drag-and-drop reorder within the sortable segment of a sub-menu.</summary>
+/// <param name="GroupId">Id of the "sub-section" node (the parent of the reordered items).</param>
+/// <param name="OrderedIds">Ids of the sortable segment only, in their new order.</param>
 public sealed record MbxNavSortChangedArgs(string GroupId, IReadOnlyList<string> OrderedIds);

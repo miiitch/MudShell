@@ -71,10 +71,10 @@
 
     @* ── Section : MdsSidebarNav — sub-menu pinning & sorting ───────── *@
     <MudStack Spacing="2">
-        <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsSidebarNav — épingler / retirer / trier un sous-menu</MudText>
+        <MudText Typo="Typo.h6" Class="mds-u-section-title">MdsSidebarNav — pin / remove / sort a sub-menu</MudText>
         <MudText Typo="Typo.caption" Color="Color.Secondary">
-            "Épinglé en tête" et "Épinglé en fin" restent immobiles. Les items du milieu se
-            glissent-déposent pour changer d'ordre, et l'icône épingle retire l'item de la liste.
+            "Pinned to top" and "Pinned to bottom" stay put. The items in between can be
+            dragged to reorder them, and the pin icon removes an item from the list.
         </MudText>
         <MudGrid Spacing="3">
             <MudItem xs="12" md="4">
@@ -89,7 +89,7 @@
             <MudItem xs="12" md="8">
                 <MudSimpleTable Dense="true" Hover="true" data-testid="sidebar-nav-sort-demo-log">
                     <thead>
-                        <tr><th>Événement</th></tr>
+                        <tr><th>Event</th></tr>
                     </thead>
                     <tbody>
                         @foreach (var entry in _sortDemoLog)
@@ -159,7 +159,7 @@
     [
         new(
             id: "sort-demo-section",
-            text: "Rapports",
+            text: "Reports",
             icon: Icons.Material.Outlined.Folder,
             defaultExpanded: true,
             children: BuildSortDemoChildren())
@@ -169,7 +169,7 @@
     {
         var children = new List<MbxNavNode>
         {
-            new(id: "report-pinned-top", text: "Épinglé en tête", pin: MbxNavPin.Top),
+            new(id: "report-pinned-top", text: "Pinned to top", pin: MbxNavPin.Top),
         };
 
         foreach (var id in _sortDemoOrder)
@@ -185,12 +185,12 @@
                 [
                     new MbxNavAction(
                         Icons.Material.Outlined.PushPin,
-                        "Retirer de la liste",
+                        "Remove from list",
                         EventCallback.Factory.Create<string>(this, HandleSortDemoRemove))
                 ]));
         }
 
-        children.Add(new(id: "report-pinned-bottom", text: "Épinglé en fin", pin: MbxNavPin.Bottom));
+        children.Add(new(id: "report-pinned-bottom", text: "Pinned to bottom", pin: MbxNavPin.Bottom));
         return children;
     }
 
@@ -204,7 +204,7 @@
     private void HandleSortDemoRemove(string id)
     {
         _sortDemoRemoved.Add(id);
-        _sortDemoLog.Insert(0, $"Retiré : {id}");
+        _sortDemoLog.Insert(0, $"Removed: {id}");
         StateHasChanged();
     }
 }

@@ -1,6 +1,6 @@
 # MdsPageHeader
 
-Unified page header for **icon + title + breadcrumb path**, with optional right-side contextual actions.
+Unified page header for **icon + breadcrumb path + title**, with optional right-side contextual actions.
 The title can also be synced automatically to browser `PageTitle`.
 
 ## Parameters
@@ -36,12 +36,13 @@ The title can also be synced automatically to browser `PageTitle`.
 @code {
   private readonly List<BreadcrumbItem> _breadcrumbs =
   [
-    new("Home", href: "/"),
-    new("Weather", href: null, disabled: true)
+    new("Home", href: "/")
   ];
 
 }
 ```
+
+> `BreadcrumbItems` should list ancestor pages only — `Title` already displays the current page name, so repeating it as the last breadcrumb entry is redundant.
 
 ## Example — title only
 
@@ -53,7 +54,7 @@ The title can also be synced automatically to browser `PageTitle`.
 
 On xs (≤ 599 px):
 - Header wraps cleanly
-- Core row (icon/title/path) stays vertically centered
+- Core row (icon/path/title) stays vertically centered
 - Right action area moves below while staying left-aligned
 
 ## Customisation

@@ -16,14 +16,14 @@
             <MudIcon Icon="@Icon" Size="Size.Medium" Class="mbx-page-header-icon" />
         }
 
-        @if (!string.IsNullOrWhiteSpace(Title))
-        {
-            <MudText Typo="Typo.h5" Class="mbx-page-header-title">@Title</MudText>
-        }
-
         @if (HasBreadcrumbs)
         {
             <MudBreadcrumbs Items="@EffectiveBreadcrumbItems" Class="mbx-page-header-breadcrumbs" />
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Title))
+        {
+            <MudText Typo="Typo.h5" Class="mbx-page-header-title">@Title</MudText>
         }
     </div>
 

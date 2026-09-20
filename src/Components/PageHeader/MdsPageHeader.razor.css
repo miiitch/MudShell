@@ -34,6 +34,24 @@
     align-items: center;
 }
 
+::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-item,
+::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-separator {
+    font-size: 0.875rem;
+    line-height: 1.2;
+}
+
+::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-item > a {
+    font-size: inherit;
+    font-weight: 400;
+    color: var(--mud-palette-text-secondary);
+}
+
+::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-item.mud-disabled > a {
+    color: var(--mud-palette-text-primary);
+    font-weight: 600;
+    opacity: 1;
+}
+
 .mbx-page-header-start,
 .mbx-page-header-end {
     min-height: 36px;

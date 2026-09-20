@@ -1,6 +1,6 @@
 # MdsPageHeader
 
-Unified page header for **icon + title + breadcrumb path**, with optional right-side contextual actions.
+Unified page header for **icon + breadcrumb path + title**, with optional right-side contextual actions.
 The title can also be synced automatically to browser `PageTitle`.
 
 ## Parameters
@@ -53,7 +53,7 @@ The title can also be synced automatically to browser `PageTitle`.
 
 On xs (≤ 599 px):
 - Header wraps cleanly
-- Core row (icon/title/path) stays vertically centered
+- Core row (icon/path/title) stays vertically centered
 - Right action area moves below while staying left-aligned
 
 ## Customisation

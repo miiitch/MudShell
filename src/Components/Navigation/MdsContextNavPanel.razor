@@ -48,6 +48,10 @@
 
                 @if (hasChildren)
                 {
+                    var visibleChildren = node.Children.Where(c => c.Visible).ToList();
+                    var topChildren = visibleChildren.Where(c => c.Pin == MbxNavPin.Top).ToList();
+                    var bottomChildren = visibleChildren.Where(c => c.Pin == MbxNavPin.Bottom).ToList();
+                    var sortableChildren = visibleChildren.Where(c => c.Pin == MbxNavPin.None).ToList();
                     <MudNavGroup data-testid="@MudShell.MbxTestId.NavGroup(node.Id)"
                                  Title="@node.Text"
                                  Icon="@(node.Icon ?? Icons.Material.Outlined.Circle)"
@@ -55,19 +59,12 @@
                                  Expanded="@isExpanded"
                                  ExpandedChanged="@(v => HandleGroupExpandedChanged(node, v))"
                                  Class="mbx-context-nav-group">
-                        @foreach (var child in node.Children.Where(c => c.Visible))
-                        {
-                            <MudNavLink data-testid="@MudShell.MbxTestId.Nav(child.Id)"
-                                        Href="@child.Href"
-                                        Icon="@child.Icon"
-                                        IconColor="Color.Inherit"
-                                        Disabled="@child.Disabled"
-                                        ActiveClass=""
-                                        Class="@(_state.ActivePath.Contains(child.Id) ? "mbx-context-nav-active" : "")"
-                                        Match="NavLinkMatch.All">
-                                @child.Text
-                            </MudNavLink>
-                        }
+                        <MdsSidebarSubMenu GroupId="@node.Id"
+                                           TopChildren="topChildren"
+                                           SortableChildren="sortableChildren"
+                                           BottomChildren="bottomChildren"
+                                           ItemTemplate="RenderContextChild"
+                                           OnSortChanged="OnSortChanged" />
                     </MudNavGroup>
                 }
                 else
@@ -98,6 +95,9 @@
     [Parameter] public bool SingleExpandedLevel2     { get; set; } = true;
     [Parameter] public bool IsExpanded               { get; set; } = true;
     [Parameter] public string? Class                 { get; set; }
+
+    /// <summary>Invoked after a drag-and-drop reorder inside the sortable segment of a group.</summary>
+    [Parameter] public EventCallback<MbxNavSortChangedArgs> OnSortChanged { get; set; }
 
     private MbxNavState _state = MbxNavState.Empty;
     private HashSet<string> _expanded = new(StringComparer.Ordinal);
@@ -151,6 +151,41 @@
 
     private static NavLinkMatch ToNavLinkMatch(MbxNavMatchMode mode) =>
         mode == MbxNavMatchMode.All ? NavLinkMatch.All : NavLinkMatch.Prefix;
+
+    /// <summary>Renders one group child's link plus its trailing actions (if any) — the same
+    /// link markup the group foreach used to render directly, now handed to
+    /// <see cref="MdsSidebarSubMenu"/> as its per-item template so the sortable segment can be
+    /// interleaved with a drop zone.</summary>
+    private RenderFragment RenderContextChild(MbxNavNode child) => __builder =>
+    {
+        <div class="mbx-context-nav-child">
+            <MudNavLink data-testid="@MudShell.MbxTestId.Nav(child.Id)"
+                        Href="@child.Href"
+                        Icon="@child.Icon"
+                        IconColor="Color.Inherit"
+                        Disabled="@child.Disabled"
+                        ActiveClass=""
+                        Class="@(_state.ActivePath.Contains(child.Id) ? "mbx-context-nav-active" : "")"
+                        Match="NavLinkMatch.All">
+                @child.Text
+            </MudNavLink>
+            @if (child.TrailingActions is { Count: > 0 })
+            {
+                <div class="mbx-context-nav-child-actions">
+                    @for (var actionIndex = 0; actionIndex < child.TrailingActions.Count; actionIndex++)
+                    {
+                        var action = child.TrailingActions[actionIndex];
+                        <MudIconButton data-testid="@MudShell.MbxTestId.NavAction(child.Id, actionIndex)"
+                                       Icon="@action.Icon"
+                                       title="@action.Tooltip"
+                                       Size="Size.Small"
+                                       Color="Color.Inherit"
+                                       OnClick="@(() => action.OnClick.InvokeAsync(child.Id))" />
+                    }
+                </div>
+            }
+        </div>
+    };
 
     public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
 }

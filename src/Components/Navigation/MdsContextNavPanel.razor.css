@@ -72,3 +72,31 @@
     color: var(--mud-palette-text-primary) !important;
     background-color: var(--mbx-nav-hover-bg) !important;
 }
+
+/* Group child row: label + trailing action icons — same shape MdsSidebarNav.razor.css defines
+   for its own sub-menu items, reproduced here since CSS isolation doesn't share rules across
+   component files. */
+.mbx-context-nav-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.mbx-context-nav-child ::deep .mud-nav-link {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.mbx-context-nav-child-actions {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.mbx-context-nav-child:hover .mbx-context-nav-child-actions,
+.mbx-context-nav-child-actions:focus-within {
+    opacity: 1;
+}

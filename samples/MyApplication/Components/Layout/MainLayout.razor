@@ -69,20 +69,38 @@
         : null;
 
     // ── MdsContextNavPanel sub-menu pinning & sorting demo ─────────────
+    // Two independent groups at the same nesting depth ("root of the sub-section" and its sibling
+    // "sub-menu"), each with their own pinned/sortable segment — so a drag in one can never leak
+    // into the other's order or log, which is exactly what args.GroupId scoping below guards
+    // against (see HandleContextSortDemoSortChanged).
     private readonly List<string> _contextSortDemoLog = [];
     private List<string> _contextSortDemoOrder = ["context-item-alpha", "context-item-beta", "context-item-gamma"];
     private readonly HashSet<string> _contextSortDemoRemoved = [];
 
-    private List<MbxNavNode> BuildContextSortDemoChildren()
+    private List<string> _contextSortDemoSecondaryOrder =
+        ["context-secondary-item-alpha", "context-secondary-item-beta", "context-secondary-item-gamma"];
+    private readonly HashSet<string> _contextSortDemoSecondaryRemoved = [];
+
+    private List<MbxNavNode> BuildContextSortDemoChildren() => BuildSortDemoChildren(
+        "context-item-pinned-top", "context-item-pinned-bottom",
+        _contextSortDemoOrder, _contextSortDemoRemoved, HandleContextSortDemoRemove);
+
+    private List<MbxNavNode> BuildContextSortDemoSecondaryChildren() => BuildSortDemoChildren(
+        "context-secondary-item-pinned-top", "context-secondary-item-pinned-bottom",
+        _contextSortDemoSecondaryOrder, _contextSortDemoSecondaryRemoved, HandleContextSortDemoSecondaryRemove);
+
+    private List<MbxNavNode> BuildSortDemoChildren(
+        string pinnedTopId, string pinnedBottomId,
+        List<string> order, HashSet<string> removed, Action<string> onRemove)
     {
         var children = new List<MbxNavNode>
         {
-            new(id: "context-item-pinned-top", text: "Pinned to top", pin: MbxNavPin.Top),
+            new(id: pinnedTopId, text: "Pinned to top", pin: MbxNavPin.Top),
         };
 
-        foreach (var id in _contextSortDemoOrder)
+        foreach (var id in order)
         {
-            if (_contextSortDemoRemoved.Contains(id))
+            if (removed.Contains(id))
                 continue;
 
             children.Add(new(
@@ -94,11 +112,11 @@
                     new MbxNavAction(
                         Icons.Material.Outlined.PushPin,
                         "Remove from list",
-                        EventCallback.Factory.Create<string>(this, HandleContextSortDemoRemove))
+                        EventCallback.Factory.Create<string>(this, onRemove))
                 ]));
         }
 
-        children.Add(new(id: "context-item-pinned-bottom", text: "Pinned to bottom", pin: MbxNavPin.Bottom));
+        children.Add(new(id: pinnedBottomId, text: "Pinned to bottom", pin: MbxNavPin.Bottom));
         return children;
     }
 
@@ -106,18 +124,33 @@
     {
         // OnSortChanged fires for every sortable group in the context panel, not just this demo's
         // (e.g. dragging one of the unrelated "Library" children, which default to MbxNavPin.None
-        // same as these do) — ignore anything that isn't this group's own reorder.
-        if (args.GroupId != "context-sort-demo")
-            return;
+        // same as these do) — route by GroupId rather than assuming there is only one group.
+        switch (args.GroupId)
+        {
+            case "context-sort-demo":
+                _contextSortDemoOrder = args.OrderedIds.ToList();
+                break;
+            case "context-sort-demo-secondary":
+                _contextSortDemoSecondaryOrder = args.OrderedIds.ToList();
+                break;
+            default:
+                return;
+        }
 
-        _contextSortDemoOrder = args.OrderedIds.ToList();
-        _contextSortDemoLog.Insert(0, $"OnSortChanged → [{string.Join(", ", args.OrderedIds)}]");
+        _contextSortDemoLog.Insert(0, $"OnSortChanged[{args.GroupId}] → [{string.Join(", ", args.OrderedIds)}]");
         StateHasChanged();
     }
 
     private void HandleContextSortDemoRemove(string id)
     {
         _contextSortDemoRemoved.Add(id);
+        _contextSortDemoLog.Insert(0, $"Removed: {id}");
+        StateHasChanged();
+    }
+
+    private void HandleContextSortDemoSecondaryRemove(string id)
+    {
+        _contextSortDemoSecondaryRemoved.Add(id);
         _contextSortDemoLog.Insert(0, $"Removed: {id}");
         StateHasChanged();
     }
@@ -195,7 +228,12 @@
                     text: "Context Sort Demo",
                     icon: Icons.Material.Outlined.Folder,
                     defaultExpanded: true,
-                    children: BuildContextSortDemoChildren())
+                    children: BuildContextSortDemoChildren()),
+                new(
+                    id: "context-sort-demo-secondary",
+                    text: "Context Sort Demo Secondary",
+                    icon: Icons.Material.Outlined.Folder,
+                    children: BuildContextSortDemoSecondaryChildren())
             ],
             defaultExpanded: true),
         new(

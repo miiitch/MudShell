@@ -50,11 +50,79 @@
                                  title="Collapse/expand context panel"
                                  OnClick="@(() => _shell.ToggleContextPanel())" />
               </div>
-              <MdsContextNavPanel Tree="@_navTree" IsExpanded="@_contextPanelExpanded" />
+              <MdsContextNavPanel Tree="@_navTree" IsExpanded="@_contextPanelExpanded" OnSortChanged="@HandleContextSortDemoSortChanged" />
+              @if (_contextPanelExpanded)
+              {
+                  <MudSimpleTable Dense="true" Hover="true" Class="pa-2" data-testid="context-nav-sort-demo-log">
+                      <thead>
+                          <tr><th>Event</th></tr>
+                      </thead>
+                      <tbody>
+                          @foreach (var entry in _contextSortDemoLog)
+                          {
+                              <tr><td>@entry</td></tr>
+                          }
+                      </tbody>
+                  </MudSimpleTable>
+              }
           </div>
         : null;
 
-    private static readonly MbxNavTree _navTree = new(
+    // ── MdsContextNavPanel sub-menu pinning & sorting demo ─────────────
+    private readonly List<string> _contextSortDemoLog = [];
+    private List<string> _contextSortDemoOrder = ["context-item-alpha", "context-item-beta", "context-item-gamma"];
+    private readonly HashSet<string> _contextSortDemoRemoved = [];
+
+    private List<MbxNavNode> BuildContextSortDemoChildren()
+    {
+        var children = new List<MbxNavNode>
+        {
+            new(id: "context-item-pinned-top", text: "Pinned to top", pin: MbxNavPin.Top),
+        };
+
+        foreach (var id in _contextSortDemoOrder)
+        {
+            if (_contextSortDemoRemoved.Contains(id))
+                continue;
+
+            children.Add(new(
+                id: id,
+                text: id,
+                pin: MbxNavPin.None,
+                trailingActions:
+                [
+                    new MbxNavAction(
+                        Icons.Material.Outlined.PushPin,
+                        "Remove from list",
+                        EventCallback.Factory.Create<string>(this, HandleContextSortDemoRemove))
+                ]));
+        }
+
+        children.Add(new(id: "context-item-pinned-bottom", text: "Pinned to bottom", pin: MbxNavPin.Bottom));
+        return children;
+    }
+
+    private void HandleContextSortDemoSortChanged(MbxNavSortChangedArgs args)
+    {
+        // OnSortChanged fires for every sortable group in the context panel, not just this demo's
+        // (e.g. dragging one of the unrelated "Library" children, which default to MbxNavPin.None
+        // same as these do) — ignore anything that isn't this group's own reorder.
+        if (args.GroupId != "context-sort-demo")
+            return;
+
+        _contextSortDemoOrder = args.OrderedIds.ToList();
+        _contextSortDemoLog.Insert(0, $"OnSortChanged → [{string.Join(", ", args.OrderedIds)}]");
+        StateHasChanged();
+    }
+
+    private void HandleContextSortDemoRemove(string id)
+    {
+        _contextSortDemoRemoved.Add(id);
+        _contextSortDemoLog.Insert(0, $"Removed: {id}");
+        StateHasChanged();
+    }
+
+    private MbxNavTree _navTree => new(
     [
         new(
             id: "home",
@@ -121,7 +189,13 @@
                     id: "demo.server",
                     text: "Interactive Server",
                     icon: Icons.Material.Outlined.Hub,
-                    href: "/modes/server")
+                    href: "/modes/server"),
+                new(
+                    id: "context-sort-demo",
+                    text: "Context Sort Demo",
+                    icon: Icons.Material.Outlined.Folder,
+                    defaultExpanded: true,
+                    children: BuildContextSortDemoChildren())
             ],
             defaultExpanded: true),
         new(

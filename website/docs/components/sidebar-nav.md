@@ -143,6 +143,16 @@ after a removal), so the visible items stay in sync. It is an implementation det
 `MdsSidebarNav` — you do not use it directly, but its presence explains the extra
 `<div class="mbx-nav-submenu">` wrapper you will see around a group's children in the rendered DOM.
 
+### Shared with `MdsContextNavPanel`
+
+`MdsContextNavPanel`'s expanded groups render their children through the same `MdsSidebarSubMenu`,
+so everything on this page — `Pin`, `TrailingActions`, drag-and-drop reordering, and
+`OnSortChanged` — applies identically to a context-panel group's children, not just
+`MdsSidebarNav`'s. Pass `OnSortChanged` to `MdsContextNavPanel` the same way you would to
+`MdsSidebarNav`. A child left unpinned (`MbxNavPin.None`, the default) becomes part of that
+group's sortable segment, which is why an existing tree's static children need `Pin.Top` if they
+should stay fixed rather than suddenly become draggable.
+
 ## See also
 
 - [Model](../model.md) for how `MdsSidebarNav` fits alongside `MdsSidebar` and `MdsContextNavPanel`.

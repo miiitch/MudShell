@@ -1,0 +1,22 @@
+.mds-chat-stream-text {
+    white-space: pre-wrap;
+}
+
+.mds-chat-stream-caret {
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    margin-inline-start: 2px;
+    vertical-align: text-bottom;
+    background: currentColor;
+    opacity: 0.7;
+    animation: mds-chat-caret-blink 1s steps(2, start) infinite;
+}
+
+@keyframes mds-chat-caret-blink {
+    to { visibility: hidden; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mds-chat-stream-caret { animation: none; }
+}

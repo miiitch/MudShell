@@ -1,0 +1,49 @@
+.mds-chat-transcript {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+}
+
+.mds-chat-transcript-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    outline: none;
+}
+
+.mds-chat-transcript-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mbx-space-4, 16px);
+    padding: var(--mbx-space-4, 16px);
+}
+
+.mds-chat-transcript-jump {
+    position: absolute;
+    inset-block-end: 12px;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--mud-palette-text-primary);
+    background: var(--mud-palette-surface);
+    border: 1px solid var(--mud-palette-lines-default);
+    box-shadow: var(--mud-elevation-4);
+}
+
+[dir="rtl"] .mds-chat-transcript-jump {
+    transform: translateX(50%);
+}
+
+.mds-chat-transcript--detached .mds-chat-transcript-jump {
+    display: inline-flex;
+}

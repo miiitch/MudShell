@@ -1,0 +1,74 @@
+.mds-chat-composer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--mbx-space-2, 8px);
+    background: var(--mbx-chat-bg, var(--mud-palette-surface));
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border-radius: var(--mbx-radius-xl, 24px);
+    padding: var(--mbx-space-4, 16px) var(--mbx-space-5, 20px) var(--mbx-space-3, 12px);
+    border: 1px solid var(--mbx-chat-border, var(--mud-palette-lines-default));
+    box-shadow: var(--mbx-chat-shadow, none);
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mds-chat-composer:focus-within {
+    border-color: var(--mbx-focus-ring, var(--mud-palette-primary));
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--mbx-focus-ring, var(--mud-palette-primary)) 35%, transparent), var(--mbx-chat-shadow, none);
+}
+
+.mds-chat-composer-input {
+    width: 100%;
+    resize: none;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--mud-palette-text-primary);
+    font-size: 15px;
+    line-height: 1.5;
+    font-family: inherit;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    max-height: calc(var(--mds-chat-composer-max-rows, 8) * 1.5em);
+    overflow-y: auto;
+}
+
+.mds-chat-composer-input::placeholder {
+    color: var(--mud-palette-text-secondary);
+    opacity: 0.7;
+}
+
+.mds-chat-composer-input:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.mds-chat-composer-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--mbx-space-1, 4px);
+}
+
+.mds-chat-composer-spacer {
+    flex: 1;
+}
+
+.mds-chat-composer-counter {
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--mud-palette-text-secondary);
+}
+
+.mds-chat-composer-counter--warn {
+    color: var(--mud-palette-warning);
+}
+
+@media (max-width: 599px) {
+    .mds-chat-composer {
+        border-radius: var(--mbx-radius-lg, 16px);
+        padding: var(--mbx-space-3, 12px) var(--mbx-space-4, 16px) var(--mbx-space-2, 8px);
+    }
+}

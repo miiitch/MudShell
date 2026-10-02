@@ -1,0 +1,85 @@
+@namespace MudShell.Components.Chat
+
+<div class="@RootClass" @attributes="AdditionalAttributes">
+    @if (HasAvatar)
+    {
+        <div class="mds-chat-avatar">
+            @if (Avatar is not null)
+            {
+                @Avatar
+            }
+            else
+            {
+                <MudAvatar Size="Size.Small" Color="@AvatarColor">
+                    @if (!string.IsNullOrEmpty(AvatarIcon))
+                    {
+                        <MudIcon Icon="@AvatarIcon" Size="Size.Small" />
+                    }
+                    else
+                    {
+                        @AvatarText
+                    }
+                </MudAvatar>
+            }
+        </div>
+    }
+    <div class="mds-chat-body">
+        @if (Header is not null)
+        {
+            <div class="mds-chat-header">@Header</div>
+        }
+        else if (!string.IsNullOrWhiteSpace(AuthorName) || Timestamp is not null)
+        {
+            <div class="mds-chat-header">
+                @if (!string.IsNullOrWhiteSpace(AuthorName))
+                {
+                    <span class="mds-chat-author">@AuthorName</span>
+                }
+                @if (Timestamp is { } ts)
+                {
+                    <time class="mds-chat-time" datetime="@ts.ToString("o")">@ts.LocalDateTime.ToString(TimestampFormat)</time>
+                }
+            </div>
+        }
+        <div class="mds-chat-bubble">@ChildContent</div>
+        @if (Footer is not null)
+        {
+            <div class="mds-chat-footer">@Footer</div>
+        }
+    </div>
+</div>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>The message content. Render anything: Markdown, tables, tool-call steps, charts…</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public MdsChatPosition Position { get; set; } = MdsChatPosition.Start;
+    [Parameter] public MdsChatBubbleVariant Variant { get; set; } = MdsChatBubbleVariant.Filled;
+
+    [Parameter] public string? AuthorName { get; set; }
+    [Parameter] public DateTimeOffset? Timestamp { get; set; }
+    [Parameter] public string TimestampFormat { get; set; } = "t";
+
+    /// <summary>Replaces the default name + timestamp header.</summary>
+    [Parameter] public RenderFragment? Header { get; set; }
+
+    /// <summary>Content under the bubble (copy / feedback buttons, sources…).</summary>
+    [Parameter] public RenderFragment? Footer { get; set; }
+
+    /// <summary>Custom avatar; takes precedence over <see cref="AvatarIcon"/> and <see cref="AvatarText"/>.</summary>
+    [Parameter] public RenderFragment? Avatar { get; set; }
+    [Parameter] public string? AvatarIcon { get; set; }
+    [Parameter] public string? AvatarText { get; set; }
+    [Parameter] public Color AvatarColor { get; set; } = Color.Default;
+
+    [Parameter] public string? Class { get; set; }
+
+    private bool HasAvatar => Avatar is not null || !string.IsNullOrEmpty(AvatarIcon) || !string.IsNullOrEmpty(AvatarText);
+
+    private string RootClass =>
+        $"mds-chat-message mds-chat-message--{Position.ToString().ToLowerInvariant()} mds-chat-message--{Variant.ToString().ToLowerInvariant()} {Class}".Trim();
+}

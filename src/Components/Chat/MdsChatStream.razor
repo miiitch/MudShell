@@ -1,0 +1,122 @@
+@namespace MudShell.Components.Chat
+@implements IDisposable
+
+<div class="@RootClass" aria-busy="@(IsStreaming ? "true" : "false")" @attributes="AdditionalAttributes">
+    @if (_text.Length == 0 && IsStreaming)
+    {
+        <MdsChatThinking Label="@ThinkingLabel" />
+    }
+    else if (ChildContent is not null)
+    {
+        @ChildContent(_text)
+    }
+    else
+    {
+        <span class="mds-chat-stream-text">@_text</span>
+    }
+    @if (IsStreaming && _text.Length > 0)
+    {
+        <span class="mds-chat-stream-caret" aria-hidden="true"></span>
+    }
+</div>
+
+@code {
+    private readonly object _gate = new();
+    private readonly System.Text.StringBuilder _pending = new();
+    private System.Threading.Timer? _timer;
+    private string _text = string.Empty;
+    private bool _disposed;
+    private bool _seeded;
+
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>Renders the accumulated text (e.g. through a Markdown pipeline). Defaults to plain pre-wrapped text.</summary>
+    [Parameter] public RenderFragment<string>? ChildContent { get; set; }
+
+    /// <summary>Text shown from the start; read once.</summary>
+    [Parameter] public string? InitialText { get; set; }
+
+    /// <summary>True while tokens are still arriving: shows the thinking indicator (no text yet) or a caret.</summary>
+    [Parameter] public bool IsStreaming { get; set; }
+
+    /// <summary>Tokens appended within this window are rendered together. Default 75 ms.</summary>
+    [Parameter] public TimeSpan FlushInterval { get; set; } = TimeSpan.FromMilliseconds(75);
+    [Parameter] public string? ThinkingLabel { get; set; } = "Thinking…";
+    [Parameter] public string? Class { get; set; }
+
+    /// <summary>The text rendered so far (excludes tokens still waiting for the next flush).</summary>
+    public string Text => _text;
+
+    private string RootClass => $"mds-chat-stream {Class}".Trim();
+
+    protected override void OnInitialized()
+    {
+        if (!_seeded && !string.IsNullOrEmpty(InitialText))
+        {
+            _text = InitialText;
+        }
+        _seeded = true;
+    }
+
+    /// <summary>
+    /// Queues a token. Thread-safe; call it from the thread that receives the stream. Only this component
+    /// re-renders, at most once per <see cref="FlushInterval"/>.
+    /// </summary>
+    public void Append(string token)
+    {
+        if (string.IsNullOrEmpty(token) || _disposed) { return; }
+        lock (_gate)
+        {
+            _pending.Append(token);
+            _timer ??= new System.Threading.Timer(_ => _ = FlushAsync(), null, FlushInterval, Timeout.InfiniteTimeSpan);
+        }
+    }
+
+    /// <summary>Renders anything still queued right away.</summary>
+    public Task FlushAsync()
+    {
+        if (_disposed) { return Task.CompletedTask; }
+        return InvokeAsync(() =>
+        {
+            lock (_gate)
+            {
+                _timer?.Dispose();
+                _timer = null;
+                if (_pending.Length == 0) { return; }
+                _text += _pending.ToString();
+                _pending.Clear();
+            }
+            StateHasChanged();
+        });
+    }
+
+    /// <summary>Flushes the queue and stops the streaming indicators.</summary>
+    public async Task CompleteAsync()
+    {
+        IsStreaming = false;
+        await FlushAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    /// <summary>Clears all text, queued or rendered, and shows the thinking indicator again.</summary>
+    public async Task ResetAsync()
+    {
+        lock (_gate)
+        {
+            _timer?.Dispose();
+            _timer = null;
+            _pending.Clear();
+        }
+        _text = string.Empty;
+        IsStreaming = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        _disposed = true;
+        lock (_gate) { _timer?.Dispose(); _timer = null; }
+    }
+}

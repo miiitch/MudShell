@@ -1,0 +1,85 @@
+.mds-chat-message {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--mbx-space-3, 12px);
+    width: 100%;
+}
+
+/* row-reverse follows the document direction, so End stays "inline end" in RTL. */
+.mds-chat-message--end {
+    flex-direction: row-reverse;
+}
+
+.mds-chat-avatar {
+    flex: none;
+}
+
+.mds-chat-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    max-width: min(80%, 720px);
+}
+
+.mds-chat-message--plain .mds-chat-body {
+    max-width: 100%;
+    flex: 1;
+}
+
+.mds-chat-message--end .mds-chat-body {
+    align-items: flex-end;
+}
+
+.mds-chat-header {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--mud-palette-text-secondary);
+}
+
+.mds-chat-author {
+    font-weight: 600;
+    color: var(--mud-palette-text-primary);
+}
+
+.mds-chat-bubble {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    line-height: 1.55;
+    color: var(--mud-palette-text-primary);
+    border-radius: var(--mbx-radius-lg, 16px);
+}
+
+.mds-chat-message--filled .mds-chat-bubble,
+.mds-chat-message--outlined .mds-chat-bubble {
+    padding: 10px 14px;
+}
+
+.mds-chat-message--filled.mds-chat-message--start .mds-chat-bubble {
+    background: color-mix(in srgb, var(--mud-palette-text-primary) 7%, var(--mud-palette-surface));
+    border-start-start-radius: 4px;
+}
+
+.mds-chat-message--filled.mds-chat-message--end .mds-chat-bubble {
+    background: color-mix(in srgb, var(--mud-palette-primary) 22%, var(--mud-palette-surface));
+    border-start-end-radius: 4px;
+}
+
+.mds-chat-message--outlined .mds-chat-bubble {
+    border: 1px solid var(--mud-palette-lines-default);
+}
+
+.mds-chat-message--plain .mds-chat-bubble {
+    padding: 0;
+    border-radius: 0;
+}
+
+.mds-chat-footer {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--mud-palette-text-secondary);
+}

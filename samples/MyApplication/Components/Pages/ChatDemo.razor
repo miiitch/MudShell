@@ -1,0 +1,129 @@
+@page "/chat"
+@rendermode InteractiveServer
+
+<PageTitle>Chat</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="px-4 pb-4 pt-0 d-flex flex-column" Style="height: calc(100vh - 140px); min-height: 420px;">
+
+    @if (_messages.Count == 0)
+    {
+        <MdsChatLanding Greeting="Great to see you again. What's the latest?"
+                        Prompts="@_suggestions"
+                        OnPromptSelected="SendAsync"
+                        data-testid="chat-landing">
+            <MdsChatComposer @bind-Value="_draft" OnSend="SendAsync" OnStop="StopAsync" IsBusy="_busy"
+                             MaxLength="500" Placeholder="Ask anything…">
+                <Actions>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" />
+                </Actions>
+                <EndActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Size="Size.Small" Color="Color.Inherit" />
+                </EndActions>
+            </MdsChatComposer>
+        </MdsChatLanding>
+    }
+    else
+    {
+        <MdsChatTranscript data-testid="chat-transcript">
+            @foreach (var m in _messages)
+            {
+                <MdsChatMessage @key="m"
+                                Position="m.IsUser ? MdsChatPosition.End : MdsChatPosition.Start"
+                                Variant="m.IsUser ? MdsChatBubbleVariant.Filled : MdsChatBubbleVariant.Plain"
+                                AuthorName="@(m.IsUser ? "You" : "Assistant")"
+                                AvatarIcon="@(m.IsUser ? null : Icons.Material.Filled.AutoAwesome)"
+                                Timestamp="m.At"
+                                Parts="m.Parts"
+                                Registry="_registry"
+                                data-testid="@(m.IsUser ? "chat-message-user" : "chat-message-assistant")">
+                    @if (m.IsUser)
+                    {
+                        @m.Text
+                    }
+                    else
+                    {
+                        <MdsChatStream @ref="m.Stream" IsStreaming="true" />
+                    }
+                </MdsChatMessage>
+            }
+        </MdsChatTranscript>
+        <div class="pt-2">
+            <MdsChatComposer @bind-Value="_draft" OnSend="SendAsync" OnStop="StopAsync" IsBusy="_busy"
+                             MaxLength="500" MaxWidth="100%" Placeholder="Ask anything…" />
+        </div>
+    }
+</MudContainer>
+
+@code {
+    private sealed class Msg
+    {
+        public bool IsUser { get; init; }
+        public string Text { get; init; } = "";
+        public DateTimeOffset At { get; } = DateTimeOffset.Now;
+        public MdsChatStream? Stream;
+        public List<MdsChatPart> Parts { get; } = [];
+    }
+
+    private static readonly string[] _suggestions =
+        ["Summarise my week", "Draft a status update", "Explain streaming in Blazor"];
+
+    // Kind → component. An agent "chart" metadata part renders ChatChartPart; unknown kinds fall back to text.
+    private readonly MdsChatPartRegistry _registry =
+        new MdsChatPartRegistry().Register<ChatChartPart, ChatChartPart.ChartData>("chart");
+
+    private readonly List<Msg> _messages = [];
+    private string? _draft = "";
+    private bool _busy;
+    private CancellationTokenSource? _cts;
+
+    private async Task SendAsync(string text)
+    {
+        if (_busy) { return; }
+        _messages.Add(new Msg { IsUser = true, Text = text });
+        var reply = new Msg();
+        _messages.Add(reply);
+        _busy = true;
+        _cts = new CancellationTokenSource();
+        StateHasChanged();
+        await Task.Yield();
+        await StreamReplyAsync(reply, text, _cts.Token);
+    }
+
+    // Stand-in for a model: tokens arrive every 15 ms, MdsChatStream batches them into ~75 ms renders.
+    private async Task StreamReplyAsync(Msg reply, string prompt, CancellationToken ct)
+    {
+        try
+        {
+            await Task.Delay(600, ct);
+            var words = $"You asked: \"{prompt}\". This reply is streamed token by token. Only the message being streamed re-renders, so the rest of the transcript stays untouched, and the view keeps following the newest text until you scroll up. "
+                .Split(' ');
+            for (var i = 0; i < 6; i++)
+            {
+                foreach (var w in words)
+                {
+                    reply.Stream?.Append(w + " ");
+                    await Task.Delay(15, ct);
+                }
+            }
+        }
+        catch (OperationCanceledException) { }
+        finally
+        {
+            if (!ct.IsCancellationRequested)
+            {
+                reply.Parts.Add(new MdsChatPart("chart", new ChatChartPart.ChartData(
+                    "Tokens per second", [("Mon", 40), ("Tue", 65), ("Wed", 85)])));
+                reply.Parts.Add(new MdsChatPart("unknown-kind", "Unregistered kinds use the fallback."));
+            }
+            if (reply.Stream is not null) { await reply.Stream.CompleteAsync(); }
+            _busy = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private Task StopAsync()
+    {
+        _cts?.Cancel();
+        return Task.CompletedTask;
+    }
+}

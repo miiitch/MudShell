@@ -1,0 +1,29 @@
+@page "/chat-floating"
+@rendermode InteractiveServer
+
+<PageTitle>Floating chat</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="px-4 pb-4 pt-0">
+    <MudText Typo="Typo.h5">Floating chat</MudText>
+    <MudText Typo="Typo.body2" Color="Color.Secondary">Use the button at the bottom of the screen to open the assistant over any page.</MudText>
+</MudContainer>
+
+<MdsChatFloating @bind-IsOpen="_open" Title="Assistant" Height="520px">
+    <MdsChatTranscript>
+        @foreach (var line in _lines)
+        {
+            <MdsChatMessage Position="MdsChatPosition.End" data-testid="floating-message">@line</MdsChatMessage>
+        }
+    </MdsChatTranscript>
+    <div class="px-3">
+        <MdsChatComposer @bind-Value="_draft" OnSend="Send" MaxWidth="100%" Placeholder="Ask anything…" />
+    </div>
+</MdsChatFloating>
+
+@code {
+    private bool _open;
+    private string? _draft = "";
+    private readonly List<string> _lines = [];
+
+    private void Send(string text) => _lines.Add(text);
+}

@@ -1,0 +1,21 @@
+@namespace MudShell.Components.Chat
+
+<span class="@RootClass" role="status" aria-live="polite" @attributes="AdditionalAttributes">
+    <span class="mds-chat-thinking-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <span class="mds-chat-thinking-label">@Label</span>
+    }
+</span>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>Text next to the dots (also announced to screen readers). Set to null for dots only.</summary>
+    [Parameter] public string? Label { get; set; } = "Thinking…";
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mds-chat-thinking {Class}".Trim();
+}

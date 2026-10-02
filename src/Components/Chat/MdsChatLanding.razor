@@ -1,0 +1,57 @@
+@namespace MudShell.Components.Chat
+
+<div class="@RootClass" @attributes="AdditionalAttributes">
+    @if (Icon is not null)
+    {
+        <div class="mds-chat-landing-icon">@Icon</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Greeting))
+    {
+        <MudText Typo="Typo.h4" Class="mds-chat-landing-greeting">@Greeting</MudText>
+    }
+    @if (!string.IsNullOrWhiteSpace(Subtitle))
+    {
+        <MudText Typo="Typo.body1" Color="Color.Secondary">@Subtitle</MudText>
+    }
+    @ChildContent
+    @if (Prompts is not null && Prompts.Any())
+    {
+        <div class="mds-chat-landing-prompts" role="group" aria-label="@PromptsLabel">
+            @{ var index = 0; }
+            @foreach (var prompt in Prompts)
+            {
+                var text = prompt;
+                <button type="button"
+                        class="mds-chat-landing-prompt"
+                        data-testid="@MbxTestId.ChatPrompt(index++)"
+                        @onclick="() => OnPromptSelected.InvokeAsync(text)">@text</button>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter] public string? Greeting { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+
+    /// <summary>Logo / illustration above the greeting.</summary>
+    [Parameter] public RenderFragment? Icon { get; set; }
+
+    /// <summary>Suggested prompts rendered as chips below <see cref="ChildContent"/>.</summary>
+    [Parameter] public IEnumerable<string>? Prompts { get; set; }
+
+    /// <summary>Raised with the chip's text when a suggested prompt is clicked.</summary>
+    [Parameter] public EventCallback<string> OnPromptSelected { get; set; }
+    [Parameter] public string PromptsLabel { get; set; } = "Suggested prompts";
+
+    /// <summary>Typically the <see cref="MdsChatComposer"/>, placed between the greeting and the chips.</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mds-chat-landing {Class}".Trim();
+}

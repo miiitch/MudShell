@@ -9,6 +9,7 @@
 - 🌲 Unified hierarchical navigation with `MbxNavTree` (`MdsSidebarNav`, `MdsContextNavPanel`, `MbxMobileDrilldownNav`)
 - 🖥️ Desktop-first shell with collapsible sidebar navigation
 - 💬 `MdsChatBar` — glassmorphism input bar
+- 🤖 Chat set — `MdsChatComposer`, `MdsChatTranscript`, `MdsChatMessage`, `MdsChatStream`, `MdsChatLanding`
 - 🃏 `MdsDocumentCard`, `MdsFilterTabBar`, `MdsPageHeader`
 - 🧩 Main-content primitives (`MdsMainToolbar`, `MdsMainSection`, `MdsMainPart`, `MdsMainEmptyState`)
 - All components use **scoped CSS** — zero global style pollution
@@ -128,4 +129,4 @@ For a full page blueprint and MudBlazor migration guidance, see the dedicated do
 - [Theming](src/docs/theming.md)
 - [Responsive](src/docs/responsive.md)
 - [Architecture](src/docs/architecture.md)
-- Components: [AppShell](src/docs/components/app-shell.md) · [Sidebar](src/docs/components/sidebar.md) · [BottomNav](src/docs/components/bottom-nav.md) · [ChatBar](src/docs/components/chat-bar.md) · [DocumentCard](src/docs/components/document-card.md) · [FilterTabBar](src/docs/components/filter-tab-bar.md) · [PageHeader](src/docs/components/page-header.md)
+- Components: [AppShell](src/docs/components/app-shell.md) · [Sidebar](src/docs/components/sidebar.md) · [BottomNav](src/docs/components/bottom-nav.md) · [ChatBar](src/docs/components/chat-bar.md) · [Chat](src/docs/components/chat.md) · [DocumentCard](src/docs/components/document-card.md) · [FilterTabBar](src/docs/components/filter-tab-bar.md) · [PageHeader](src/docs/components/page-header.md)

@@ -1,0 +1,44 @@
+@namespace MudShell.Components.Chat
+
+<div class="@RootClass" @attributes="AdditionalAttributes">
+    @if (Parts is not null)
+    {
+        @foreach (var part in Parts)
+        {
+            <div class="mds-chat-part" data-part-kind="@part.Kind" @key="part">
+                @if (Registry is not null && Registry.TryResolve(part, out var registration))
+                {
+                    <DynamicComponent Type="registration.Component"
+                                      Parameters="@(new Dictionary<string, object?> { [registration.ParameterName] = part.Payload })" />
+                }
+                else if (Fallback is not null)
+                {
+                    @Fallback(part)
+                }
+                else
+                {
+                    <span class="mds-chat-part-fallback">@part.Payload</span>
+                }
+            </div>
+        }
+    }
+</div>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>The parts to render, in order.</summary>
+    [Parameter] public IEnumerable<MdsChatPart>? Parts { get; set; }
+
+    /// <summary>Kind → component mapping. Without one, every part uses <see cref="Fallback"/>.</summary>
+    [Parameter] public MdsChatPartRegistry? Registry { get; set; }
+
+    /// <summary>Rendered for a part whose kind (or payload type) is not registered. Defaults to the payload as text.</summary>
+    [Parameter] public RenderFragment<MdsChatPart>? Fallback { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mds-chat-parts {Class}".Trim();
+}

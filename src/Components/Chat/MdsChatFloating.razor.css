@@ -1,0 +1,79 @@
+.mds-chat-floating {
+    position: fixed;
+    inset-block-end: 24px;
+    z-index: var(--mud-zindex-popover, 1200);
+}
+
+.mds-chat-floating--end { inset-inline-end: 24px; }
+.mds-chat-floating--start { inset-inline-start: 24px; }
+
+.mds-chat-floating-fab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--mud-palette-primary-text);
+    background: var(--mud-palette-primary);
+    box-shadow: var(--mud-elevation-8);
+    transition: transform 0.15s ease;
+}
+
+.mds-chat-floating-fab:hover { transform: scale(1.06); }
+
+.mds-chat-floating-fab:focus-visible {
+    outline: 2px solid var(--mbx-focus-ring, var(--mud-palette-primary));
+    outline-offset: 3px;
+}
+
+.mds-chat-floating-panel {
+    display: flex;
+    flex-direction: column;
+    width: min(var(--mds-chat-floating-width, 400px), calc(100vw - 48px));
+    height: min(var(--mds-chat-floating-height, 600px), calc(100vh - 48px));
+    overflow: hidden;
+    outline: none;
+    color: var(--mud-palette-text-primary);
+    background: var(--mud-palette-surface);
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: var(--mbx-radius-xl, 24px);
+    box-shadow: var(--mud-elevation-16);
+}
+
+.mds-chat-floating-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 8px 8px 16px;
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+}
+
+.mds-chat-floating-title { font-weight: 600; }
+.mds-chat-floating-spacer { flex: 1; }
+
+.mds-chat-floating-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: var(--mbx-space-3, 12px);
+    gap: var(--mbx-space-2, 8px);
+}
+
+/* Phones: the panel takes the whole viewport. */
+@media (max-width: 599px) {
+    .mds-chat-floating--open {
+        inset: 0;
+    }
+
+    .mds-chat-floating-panel {
+        width: 100vw;
+        height: 100dvh;
+        border: none;
+        border-radius: 0;
+    }
+}

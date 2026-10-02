@@ -59,6 +59,36 @@ await m.Stream!.CompleteAsync();
 
 `MdsChatTranscript` observes its content's size, so it keeps following the growing message without being re-rendered itself.
 
+## Rendering agent metadata with custom components
+
+`MdsChatMessage` and `MdsChatStream` accept any Blazor component as content, so metadata sent by the agent (a chart, tool-call steps, a citation list…) can be rendered by a component of your own. Today the routing is done in your page:
+
+```razor
+<MdsChatMessage>
+  @foreach (var part in message.Parts)
+  {
+      switch (part.Kind)
+      {
+          case "chart":     <MyChart Data="part.Payload" />        break;
+          case "tool-call": <MyToolSteps Steps="part.Payload" />   break;
+          default:          <MyMarkdown Text="part.Text" />        break;
+      }
+  }
+</MdsChatMessage>
+```
+
+### Not yet available: part registry (planned)
+
+MudShell has no built-in mapping from agent metadata to components. The planned design, not implemented yet:
+
+- `MdsChatMessage` accepts a list of parts (`Kind` + `Payload`) instead of a single content block.
+- `MdsChatPartRegistry` maps a kind to a component type, e.g. `Register<ChartPart>("chart")`, registered once at startup or passed per instance.
+- `MdsChatPartRenderer` resolves the component for each part with `DynamicComponent` and passes the payload as a parameter.
+- An unregistered kind renders a `Fallback` (plain text by default), so a new kind sent by the agent never breaks the UI.
+- Parts can be appended while streaming: the running text part stays in `MdsChatStream`, other parts appear as soon as their metadata arrives.
+
+Open questions: typed object vs raw JSON payload, and global vs per-instance registry.
+
 ## Landing
 
 ```razor

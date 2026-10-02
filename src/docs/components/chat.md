@@ -87,7 +87,7 @@ MudShell has no built-in mapping from agent metadata to components. The planned 
 - An unregistered kind renders a `Fallback` (plain text by default), so a new kind sent by the agent never breaks the UI.
 - Parts can be appended while streaming: the running text part stays in `MdsChatStream`, other parts appear as soon as their metadata arrives.
 
-Open questions: typed object vs raw JSON payload, and global vs per-instance registry.
+Decisions: the payload is a typed object (the registry maps a kind to a component type and a payload type; deserialisation happens upstream), and the registry is per instance, passed as a parameter, so each page or agent can have its own set of components.
 
 ## Landing
 

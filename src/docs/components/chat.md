@@ -10,6 +10,8 @@ A provider-agnostic set for building an assistant UI. MudShell renders; you hand
 | `MdsChatStream` | Streaming message body: batched token appends, thinking indicator, caret |
 | `MdsChatThinking` | Standalone "thinking" indicator |
 | `MdsChatComposer` | Multiline auto-growing input with Send / Stop |
+| `MdsChatPartRenderer` | Renders typed message parts with components from an `MdsChatPartRegistry` |
+| `MdsChatFloating` | Corner button that opens the chat in a floating panel |
 
 Add `@using MudShell.Components.Chat`. All components splat `data-testid` and other attributes onto their root.
 
@@ -77,17 +79,52 @@ await m.Stream!.CompleteAsync();
 </MdsChatMessage>
 ```
 
-### Not yet available: part registry (planned)
+### Part registry
 
-MudShell has no built-in mapping from agent metadata to components. The planned design, not implemented yet:
+Let the agent send typed parts and have each one rendered by a component you register.
 
-- `MdsChatMessage` accepts a list of parts (`Kind` + `Payload`) instead of a single content block.
-- `MdsChatPartRegistry` maps a kind to a component type, e.g. `Register<ChartPart>("chart")`, registered once at startup or passed per instance.
-- `MdsChatPartRenderer` resolves the component for each part with `DynamicComponent` and passes the payload as a parameter.
-- An unregistered kind renders a `Fallback` (plain text by default), so a new kind sent by the agent never breaks the UI.
-- Parts can be appended while streaming: the running text part stays in `MdsChatStream`, other parts appear as soon as their metadata arrives.
+```razor
+@code {
+    // One registry per page or agent.
+    private readonly MdsChatPartRegistry _registry = new MdsChatPartRegistry()
+        .Register<ChartPart, ChartData>("chart")          // payload goes to ChartPart.Payload
+        .Register<ToolSteps, ToolCall[]>("tool-call", parameterName: "Calls");
+}
 
-Decisions: the payload is a typed object (the registry maps a kind to a component type and a payload type; deserialisation happens upstream), and the registry is per instance, passed as a parameter, so each page or agent can have its own set of components.
+<MdsChatMessage Registry="_registry"
+                Parts="@(new[] { new MdsChatPart("chart", chartData) })">
+    Here is the summary:
+</MdsChatMessage>
+```
+
+- `MdsChatPart(Kind, Payload)`: the payload is an already-deserialised, typed object.
+- `Register<TComponent, TPayload>(kind, parameterName = "Payload")`: the component must expose a parameter of type `TPayload` with that name. Registering a kind twice replaces the first entry.
+- Parts render after `ChildContent`, in order, through `DynamicComponent`.
+- An unregistered kind, or a payload that is not a `TPayload`, renders `PartFallback` (the payload as plain text by default). It never throws, so a new kind sent by the agent cannot break the UI.
+- `MdsChatPartRenderer` is the same logic as a standalone component (`Parts`, `Registry`, `Fallback`) for use outside a message.
+- While streaming, keep the running text in an `MdsChatStream` inside `ChildContent` and add parts to the list as their metadata arrives.
+
+## Floating mode
+
+`MdsChatFloating` shows a round button in the bottom corner (inline-end by default, so bottom-right in LTR) that opens the chat in a panel above the page. On phones the panel takes the full screen. Escape or the close button closes it.
+
+```razor
+<MdsChatFloating @bind-IsOpen="_open" Title="Assistant" Height="520px">
+    <MdsChatTranscript>...</MdsChatTranscript>
+    <MdsChatComposer OnSend="SendAsync" MaxWidth="100%" />
+</MdsChatFloating>
+```
+
+| Parameter | Default | Description |
+|---|---|---|
+| `IsOpen` / `IsOpenChanged` | `false` | Two-way bind |
+| `Title` | `"Assistant"` | Header text and accessible name |
+| `Position` | `End` | `Start` anchors to the opposite corner |
+| `Width` / `Height` | `400px` / `600px` | Capped to the viewport |
+| `HeaderActions` / `FabContent` | | Extra header buttons / custom button icon |
+| `OpenLabel` / `CloseLabel` | | Accessible names |
+
+Test ids: `chat-fab`, `chat-floating-panel`, `chat-floating-close`. Demo: `/chat-floating`.
 
 ## Landing
 

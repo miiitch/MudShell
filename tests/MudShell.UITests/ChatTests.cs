@@ -66,4 +66,39 @@ public class ChatTests : PlaywrightTestBase
 
         await Assertions.Expect(Page.GetByTestId("chat-counter")).ToHaveTextAsync("3 / 500");
     }
+
+    [Fact]
+    public async Task Should_RenderRegisteredPartComponent_And_FallbackForUnknownKind()
+    {
+        await OpenAsync();
+        var input = Page.GetByTestId("chat-input");
+        await input.FillAsync("hi");
+        await input.PressAsync("Enter");
+
+        await Assertions.Expect(Page.GetByTestId("chat-part-chart")).ToBeVisibleAsync(new() { Timeout = 30000 });
+        await Assertions.Expect(Page.Locator("[data-part-kind='unknown-kind']"))
+            .ToContainTextAsync("Unregistered kinds use the fallback.");
+    }
+
+    [Fact]
+    public async Task Should_OpenFloatingPanel_FromFab_And_CloseOnEscape()
+    {
+        await Page.GotoAsync("/chat-floating");
+        var fab = Page.GetByTestId("chat-fab");
+        await Assertions.Expect(fab).ToBeVisibleAsync();
+        await Page.WaitForTimeoutAsync(1000);
+
+        await fab.ClickAsync();
+        var panel = Page.GetByTestId("chat-floating-panel");
+        await Assertions.Expect(panel).ToBeVisibleAsync();
+
+        var input = panel.GetByTestId("chat-input");
+        await input.FillAsync("from the corner");
+        await input.PressAsync("Enter");
+        await Assertions.Expect(panel.GetByTestId("floating-message")).ToContainTextAsync("from the corner");
+
+        await panel.PressAsync("Escape");
+        await Assertions.Expect(panel).ToBeHiddenAsync();
+        await Assertions.Expect(fab).ToBeVisibleAsync();
+    }
 }

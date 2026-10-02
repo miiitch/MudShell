@@ -40,4 +40,13 @@ public static class MbxTestId
 
     /// <summary>Test id of the suggested-prompt chip at <paramref name="index"/> in the landing component.</summary>
     public static string ChatPrompt(int index) => $"chat-prompt-{index}";
+
+    /// <summary>Test id of the floating chat button.</summary>
+    public const string ChatFloatingFab = "chat-fab";
+
+    /// <summary>Test id of the floating chat panel.</summary>
+    public const string ChatFloatingPanel = "chat-floating-panel";
+
+    /// <summary>Test id of the floating chat panel's close button.</summary>
+    public const string ChatFloatingClose = "chat-floating-close";
 }

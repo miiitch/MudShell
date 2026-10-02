@@ -1,0 +1,13 @@
+.mds-chat-parts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mbx-space-2, 8px);
+}
+
+.mds-chat-parts:empty {
+    display: none;
+}
+
+.mds-chat-part-fallback {
+    white-space: pre-wrap;
+}

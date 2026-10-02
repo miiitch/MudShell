@@ -20,7 +20,10 @@
                         <MudStack Spacing="1">
                             <MudText Typo="Typo.subtitle1">Chat</MudText>
                             <MudText Typo="Typo.body2" Color="Color.Secondary">Landing, composer, transcript and streaming.</MudText>
-                            <MudButton Variant="Variant.Outlined" Href="/chat" StartIcon="@Icons.Material.Outlined.ArrowForward" data-testid="open-chat-demo">Open</MudButton>
+                            <MudStack Row="true" Spacing="1">
+                                <MudButton Variant="Variant.Outlined" Href="/chat" StartIcon="@Icons.Material.Outlined.ArrowForward" data-testid="open-chat-demo">Open</MudButton>
+                                <MudButton Variant="Variant.Text" Href="/chat-floating">Floating</MudButton>
+                            </MudStack>
                         </MudStack>
                     </MudPaper>
                 </MudItem>

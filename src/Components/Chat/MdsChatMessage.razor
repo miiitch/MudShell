@@ -41,7 +41,13 @@
                 }
             </div>
         }
-        <div class="mds-chat-bubble">@ChildContent</div>
+        <div class="mds-chat-bubble">
+            @ChildContent
+            @if (Parts is not null)
+            {
+                <MdsChatPartRenderer Parts="Parts" Registry="Registry" Fallback="PartFallback" />
+            }
+        </div>
         @if (Footer is not null)
         {
             <div class="mds-chat-footer">@Footer</div>
@@ -56,6 +62,15 @@
 
     /// <summary>The message content. Render anything: Markdown, tables, tool-call steps, charts…</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>Structured parts rendered after <see cref="ChildContent"/>, each by the component registered for its kind.</summary>
+    [Parameter] public IEnumerable<MdsChatPart>? Parts { get; set; }
+
+    /// <summary>Kind → component mapping used to render <see cref="Parts"/>.</summary>
+    [Parameter] public MdsChatPartRegistry? Registry { get; set; }
+
+    /// <summary>Rendered for a part whose kind is not registered.</summary>
+    [Parameter] public RenderFragment<MdsChatPart>? PartFallback { get; set; }
 
     [Parameter] public MdsChatPosition Position { get; set; } = MdsChatPosition.Start;
     [Parameter] public MdsChatBubbleVariant Variant { get; set; } = MdsChatBubbleVariant.Filled;

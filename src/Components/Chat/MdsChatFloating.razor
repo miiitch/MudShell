@@ -1,0 +1,96 @@
+@namespace MudShell.Components.Chat
+
+<div class="@RootClass" @attributes="AdditionalAttributes">
+    @if (IsOpen)
+    {
+        <section class="mds-chat-floating-panel"
+                 style="@PanelStyle"
+                 role="dialog"
+                 aria-label="@Title"
+                 tabindex="-1"
+                 data-testid="@MbxTestId.ChatFloatingPanel"
+                 @onkeydown="HandleKeyDown">
+            <header class="mds-chat-floating-header">
+                <span class="mds-chat-floating-title">@Title</span>
+                <span class="mds-chat-floating-spacer"></span>
+                @HeaderActions
+                <MudIconButton Icon="@Icons.Material.Filled.Close"
+                               Size="Size.Small"
+                               Color="Color.Inherit"
+                               aria-label="@CloseLabel"
+                               title="@CloseLabel"
+                               data-testid="@MbxTestId.ChatFloatingClose"
+                               OnClick="CloseAsync" />
+            </header>
+            <div class="mds-chat-floating-body">@ChildContent</div>
+        </section>
+    }
+    else
+    {
+        <button type="button"
+                class="mds-chat-floating-fab"
+                aria-label="@OpenLabel"
+                title="@OpenLabel"
+                aria-expanded="false"
+                data-testid="@MbxTestId.ChatFloatingFab"
+                @onclick="OpenAsync">
+            @if (FabContent is not null)
+            {
+                @FabContent
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Chat" />
+            }
+        </button>
+    }
+</div>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>The chat to show in the panel, typically an <see cref="MdsChatTranscript"/> above an <see cref="MdsChatComposer"/>.</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+
+    /// <summary>Panel header text, also its accessible name.</summary>
+    [Parameter] public string Title { get; set; } = "Assistant";
+
+    /// <summary>Buttons shown in the header before the close button.</summary>
+    [Parameter] public RenderFragment? HeaderActions { get; set; }
+
+    /// <summary>Replaces the default chat icon inside the floating button.</summary>
+    [Parameter] public RenderFragment? FabContent { get; set; }
+
+    /// <summary>Corner the button and panel anchor to. <c>End</c> is bottom-right in LTR and bottom-left in RTL.</summary>
+    [Parameter] public MdsChatPosition Position { get; set; } = MdsChatPosition.End;
+
+    [Parameter] public string Width { get; set; } = "400px";
+    [Parameter] public string Height { get; set; } = "600px";
+    [Parameter] public string OpenLabel { get; set; } = "Open chat";
+    [Parameter] public string CloseLabel { get; set; } = "Close chat";
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass =>
+        $"mds-chat-floating mds-chat-floating--{Position.ToString().ToLowerInvariant()} {(IsOpen ? "mds-chat-floating--open" : "")} {Class}".Trim();
+
+    private string PanelStyle => $"--mds-chat-floating-width: {Width}; --mds-chat-floating-height: {Height};";
+
+    private Task OpenAsync() => SetOpenAsync(true);
+    private Task CloseAsync() => SetOpenAsync(false);
+
+    private async Task SetOpenAsync(bool value)
+    {
+        IsOpen = value;
+        await IsOpenChanged.InvokeAsync(value);
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape") { await CloseAsync(); }
+    }
+}

@@ -33,6 +33,8 @@
                                 AuthorName="@(m.IsUser ? "You" : "Assistant")"
                                 AvatarIcon="@(m.IsUser ? null : Icons.Material.Filled.AutoAwesome)"
                                 Timestamp="m.At"
+                                Parts="m.Parts"
+                                Registry="_registry"
                                 data-testid="@(m.IsUser ? "chat-message-user" : "chat-message-assistant")">
                     @if (m.IsUser)
                     {
@@ -59,10 +61,15 @@
         public string Text { get; init; } = "";
         public DateTimeOffset At { get; } = DateTimeOffset.Now;
         public MdsChatStream? Stream;
+        public List<MdsChatPart> Parts { get; } = [];
     }
 
     private static readonly string[] _suggestions =
         ["Summarise my week", "Draft a status update", "Explain streaming in Blazor"];
+
+    // Kind → component. An agent "chart" metadata part renders ChatChartPart; unknown kinds fall back to text.
+    private readonly MdsChatPartRegistry _registry =
+        new MdsChatPartRegistry().Register<ChatChartPart, ChatChartPart.ChartData>("chart");
 
     private readonly List<Msg> _messages = [];
     private string? _draft = "";
@@ -102,6 +109,12 @@
         catch (OperationCanceledException) { }
         finally
         {
+            if (!ct.IsCancellationRequested)
+            {
+                reply.Parts.Add(new MdsChatPart("chart", new ChatChartPart.ChartData(
+                    "Tokens per second", [("Mon", 40), ("Tue", 65), ("Wed", 85)])));
+                reply.Parts.Add(new MdsChatPart("unknown-kind", "Unregistered kinds use the fallback."));
+            }
             if (reply.Stream is not null) { await reply.Stream.CompleteAsync(); }
             _busy = false;
             await InvokeAsync(StateHasChanged);

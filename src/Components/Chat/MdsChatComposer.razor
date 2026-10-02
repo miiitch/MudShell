@@ -7,7 +7,6 @@
               class="mds-chat-composer-input"
               rows="1"
               placeholder="@Placeholder"
-              value="@Value"
               maxlength="@MaxLength"
               disabled="@Disabled"
               readonly="@ReadOnly"
@@ -55,6 +54,11 @@
     private IJSObjectReference? _module;
     private IJSObjectReference? _handle;
     private DotNetObjectReference<MdsChatComposer>? _self;
+
+    // What the browser's textarea currently holds, as far as the server knows. The DOM value is only
+    // overwritten when Value differs from it (programmatic change such as clearing after send), never
+    // while echoing the user's own keystrokes: stale echoes would erase characters typed in the meantime.
+    private string _domValue = string.Empty;
 
     /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
     [Parameter(CaptureUnmatchedValues = true)]
@@ -126,9 +130,19 @@
                 _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/MudShell/js/mudshell-chat.js");
                 _handle = await _module.InvokeAsync<IJSObjectReference>("initComposer", _textarea, _self);
             }
-            else if (_handle is not null)
+
+            if (_handle is not null)
             {
-                await _handle.InvokeVoidAsync("resize");
+                var value = Value ?? string.Empty;
+                if (value != _domValue)
+                {
+                    _domValue = value;
+                    await _handle.InvokeVoidAsync("setValue", value);
+                }
+                else if (!firstRender)
+                {
+                    await _handle.InvokeVoidAsync("resize");
+                }
             }
         }
         catch (Exception ex) when (ex is JSDisconnectedException or TaskCanceledException or InvalidOperationException)
@@ -141,6 +155,7 @@
     {
         if (Disabled || ReadOnly) { return; }
         Value = e.Value?.ToString() ?? string.Empty;
+        _domValue = Value;
         await ValueChanged.InvokeAsync(Value);
     }
 
@@ -149,6 +164,7 @@
     public async Task HandleEnter(string text)
     {
         Value = text;
+        _domValue = text;
         await SubmitAsync();
         StateHasChanged();
     }

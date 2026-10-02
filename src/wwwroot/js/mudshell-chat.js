@@ -24,6 +24,7 @@ export function initComposer(textarea, dotnet) {
 
     return {
         resize,
+        setValue: (v) => { textarea.value = v; resize(); },
         focus: () => textarea.focus(),
         dispose: () => {
             textarea.removeEventListener('input', onInput);

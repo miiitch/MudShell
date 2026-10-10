@@ -1,0 +1,13 @@
+@namespace MudShell.Components.MainContent
+
+<MudDivider Vertical="true" FlexItem="true" Class="@RootClass" @attributes="AdditionalAttributes" />
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mbx-main-toolbar-divider {Class}".Trim();
+}

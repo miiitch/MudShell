@@ -1,0 +1,5 @@
+/* Vertical rule between groups of actions inside MdsMainToolbar */
+.mbx-main-toolbar-divider {
+    align-self: stretch;
+    margin: 4px 4px;
+}

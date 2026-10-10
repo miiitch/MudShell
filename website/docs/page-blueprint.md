@@ -105,6 +105,18 @@ Use for:
 
 Do not put business filters here unless there is a strong reason not to separate them.
 
+The toolbar is an outlined panel with no accent border by default (`AccentBorderSides` defaults to `None`).
+To separate groups of actions, place an `MdsMainToolbarDivider` between them: a vertical rule that spans
+the height of the toolbar.
+
+```razor
+<MdsMainToolbar>
+    <MudIconButton Icon="@Icons.Material.Filled.Refresh" />
+    <MdsMainToolbarDivider />
+    <MudIconButton Icon="@Icons.Material.Filled.Download" />
+</MdsMainToolbar>
+```
+
 ### Filter `MudStack`
 
 Use for:

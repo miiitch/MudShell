@@ -1,0 +1,88 @@
+@page "/fill-demo/detail"
+@rendermode InteractiveServer
+
+<PageTitle>Fill layout - detail</PageTitle>
+
+<MdsFillLayout>
+    <Header>
+        <MdsPageHeader Title="Asset 042"
+                       BreadcrumbItems="@_breadcrumbs"
+                       Icon="@Icons.Material.Outlined.Dns">
+            <EndContent>
+                <MudChip T="string" Color="Color.Error" Size="Size.Small">Failing</MudChip>
+            </EndContent>
+        </MdsPageHeader>
+    </Header>
+    <Bands>
+        <MdsStatStrip Class="px-2">
+            <MdsStatTile Variant="MbxStatTileVariant.Cell" Label="Kind" Value="Server" />
+            <MdsStatTile Variant="MbxStatTileVariant.Cell" Label="Owner" Value="platform-team" />
+            <MdsStatTile Variant="MbxStatTileVariant.Cell" Label="Open findings" Value="7" Tone="MbxTone.Danger" />
+            <MdsStatTile Variant="MbxStatTileVariant.Cell" Label="Last seen" Value="9 days ago" Tone="MbxTone.Warning" />
+            <MdsStatTile Variant="MbxStatTileVariant.Cell" Label="Score" Value="84" Delta="+2" DeltaTone="MbxDeltaTone.Positive" />
+        </MdsStatStrip>
+    </Bands>
+    <Body>
+        <MdsTabbedFill>
+            <MudTabPanel>
+                <TabContent><MdsTabHeader Text="Overview" /></TabContent>
+                <ChildContent>
+                    <MdsSplitPane StorageKey="mudshell.demo.fill-detail">
+                        <Main>
+                            <div class="pa-3">
+                                <MudText Typo="Typo.subtitle2">Properties</MudText>
+                                @for (var i = 0; i < 60; i++)
+                                {
+                                    <MudText Typo="Typo.body2" Class="mt-1">Property @(i + 1): value @(i * 7 % 13)</MudText>
+                                }
+                            </div>
+                        </Main>
+                        <Side>
+                            <div class="pa-3">
+                                <MudText Typo="Typo.subtitle2" Class="mb-2">Compliance</MudText>
+                                <MdsDistributionBar Segments="@_compliance" />
+                                <MudText Typo="Typo.subtitle2" Class="mt-4 mb-2">Recent runs</MudText>
+                                <MdsRunStrip Runs="@_runs" />
+                                <div class="mt-2"><MdsSparkline Values="@_trend" Width="220" Height="36" Tone="MbxTone.Danger" /></div>
+                            </div>
+                        </Side>
+                    </MdsSplitPane>
+                </ChildContent>
+            </MudTabPanel>
+            <MudTabPanel>
+                <TabContent><MdsTabHeader Text="Findings" Count="7" Tone="MbxTone.Danger" /></TabContent>
+                <ChildContent>
+                    <MdsFillRegion Class="pa-3">
+                        @for (var i = 0; i < 80; i++)
+                        {
+                            <MudText Typo="Typo.body2">Finding @(i + 1)</MudText>
+                        }
+                    </MdsFillRegion>
+                </ChildContent>
+            </MudTabPanel>
+            <MudTabPanel>
+                <TabContent><MdsTabHeader Text="History" Count="124" /></TabContent>
+                <ChildContent>
+                    <MdsFillRegion Class="pa-3"><MudText>History goes here.</MudText></MdsFillRegion>
+                </ChildContent>
+            </MudTabPanel>
+        </MdsTabbedFill>
+    </Body>
+</MdsFillLayout>
+
+@code {
+    private readonly List<BreadcrumbItem> _breadcrumbs = [new("Home", href: "/"), new("Fill layout", href: "/fill-demo")];
+    private readonly List<MbxDistributionSegment> _compliance =
+    [
+        new("Pass", 41, Tone: MbxTone.Success),
+        new("Fail", 7, Tone: MbxTone.Danger),
+        new("N/A", 5),
+    ];
+    private readonly List<MbxRun> _runs =
+    [
+        new(MbxRunOutcome.Success), new(MbxRunOutcome.Success), new(MbxRunOutcome.Failed, "Failed: timeout"),
+        new(MbxRunOutcome.Success), new(MbxRunOutcome.Failed, "Failed: auth"), new(MbxRunOutcome.Failed, "Failed: auth"),
+        new(MbxRunOutcome.Running),
+    ];
+    private readonly List<double> _trend = [90, 88, 91, 80, 70, 72, 60, 58];
+}

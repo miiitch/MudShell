@@ -12,6 +12,8 @@
 - 🤖 Chat set — `MdsChatComposer`, `MdsChatTranscript`, `MdsChatMessage`, `MdsChatStream`, `MdsChatLanding`
 - 🃏 `MdsDocumentCard`, `MdsFilterTabBar`, `MdsPageHeader`
 - 🧩 Main-content primitives (`MdsMainToolbar`, `MdsMainSection`, `MdsMainPart`, `MdsMainEmptyState`)
+- 📐 Fill-layout blocks — `MdsFillLayout`, `MdsFillRegion`, `MdsSplitPane`, `MdsTabbedFill` (full-screen pages, only leaf regions scroll)
+- 📊 Data blocks — `MdsStatTile`/`MdsStatStrip`, `MdsDistributionBar`, `MdsSparkline`, `MdsRunStrip`; nav badges on `MbxNavNode.Badge`
 - All components use **scoped CSS** — zero global style pollution
 
 ## Quick start

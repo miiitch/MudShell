@@ -169,6 +169,7 @@
             icon: Icons.Material.Outlined.ContentCopy,
             href: "/library",
             match: MbxNavMatchMode.Prefix,
+            badge: new MbxNavBadge(Dot: true, Color: Color.Warning, Tooltip: "Needs attention"),
             children:
             [
                 new(
@@ -193,7 +194,8 @@
                     id: "library.history",
                     text: "History",
                     icon: Icons.Material.Outlined.History,
-                    href: "/library"),
+                    href: "/library",
+                    badge: new MbxNavBadge("12", Color.Error, Tooltip: "12 failures")),
             ]),
         new(
             id: "demo",

@@ -1,0 +1,222 @@
+@namespace MudShell.Components.Layout
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<div class="@RootClass" @attributes="AdditionalAttributes">
+    <div class="mds-split-main">
+        <MdsFillRegion>@Main</MdsFillRegion>
+    </div>
+    @if (Side is not null)
+    {
+        @if (SideOpen)
+        {
+            <div class="mds-split-handle"
+                 @ref="_handle"
+                 role="separator"
+                 aria-orientation="vertical"
+                 aria-valuemin="@MinSideWidth"
+                 aria-valuemax="@MaxSideWidth"
+                 aria-valuenow="@_width"
+                 aria-label="Resize side pane"
+                 tabindex="0"
+                 @onkeydown="OnHandleKeyDown">
+                <button type="button"
+                        class="mds-split-toggle"
+                        title="@CollapseTooltip"
+                        aria-label="@CollapseTooltip"
+                        @onclick="@(() => SetSideOpenAsync(false))">
+                    <MudIcon Icon="@Icons.Material.Filled.ChevronRight" Size="Size.Small" />
+                </button>
+            </div>
+            <aside class="mds-split-side" @ref="_pane" style="@($"width:{_width}px")">
+                <MdsFillRegion>@Side</MdsFillRegion>
+            </aside>
+        }
+        else
+        {
+            <div class="mds-split-rail">
+                <button type="button"
+                        class="mds-split-toggle"
+                        title="@ExpandTooltip"
+                        aria-label="@ExpandTooltip"
+                        @onclick="@(() => SetSideOpenAsync(true))">
+                    <MudIcon Icon="@Icons.Material.Filled.ChevronLeft" Size="Size.Small" />
+                </button>
+                @RailContent
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private const int KeyboardStep = 16;
+
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>Main area (left). Wrapped in an <c>MdsFillRegion</c>.</summary>
+    [Parameter] public RenderFragment? Main { get; set; }
+
+    /// <summary>Side pane (right). Wrapped in an <c>MdsFillRegion</c>. When null, only the main area is shown.</summary>
+    [Parameter] public RenderFragment? Side { get; set; }
+
+    /// <summary>Optional content shown in the collapsed rail under the expand button (e.g. a vertical label).</summary>
+    [Parameter] public RenderFragment? RailContent { get; set; }
+
+    /// <summary>Whether the side pane is expanded (two-way bindable); false collapses it to a narrow rail.</summary>
+    [Parameter] public bool SideOpen { get; set; } = true;
+    [Parameter] public EventCallback<bool> SideOpenChanged { get; set; }
+
+    /// <summary>Side pane width in pixels (two-way bindable). Clamped to Min/Max.</summary>
+    [Parameter] public int SideWidth { get; set; } = 360;
+    [Parameter] public EventCallback<int> SideWidthChanged { get; set; }
+
+    [Parameter] public int MinSideWidth { get; set; } = 240;
+    [Parameter] public int MaxSideWidth { get; set; } = 640;
+
+    /// <summary>When set, width and collapsed state are persisted to localStorage under this key.</summary>
+    [Parameter] public string? StorageKey { get; set; }
+
+    [Parameter] public string CollapseTooltip { get; set; } = "Collapse side pane";
+    [Parameter] public string ExpandTooltip { get; set; } = "Expand side pane";
+
+    [Parameter] public string? Class { get; set; }
+
+    private ElementReference _handle;
+    private ElementReference _pane;
+    private IJSObjectReference? _module;
+    private IJSObjectReference? _resizeHandle;
+    private DotNetObjectReference<MdsSplitPane>? _self;
+    private int _width;
+
+    private string RootClass => $"mds-split {Class}".Trim();
+
+    protected override void OnParametersSet() => _width = Clamp(SideWidth);
+
+    private int Clamp(int width) => Math.Max(MinSideWidth, Math.Min(Math.Max(MinSideWidth, MaxSideWidth), width));
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            if (firstRender)
+            {
+                _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/MudShell/js/mudshell-layout.js");
+                if (!string.IsNullOrWhiteSpace(StorageKey) && _module is not null)
+                {
+                    await RestoreAsync();
+                }
+            }
+
+            if (_module is null) return;
+
+            if (Side is not null && SideOpen && _resizeHandle is null)
+            {
+                _self ??= DotNetObjectReference.Create(this);
+                _resizeHandle = await _module.InvokeAsync<IJSObjectReference>(
+                    "initResize", _handle, _pane, MinSideWidth, MaxSideWidth, _self);
+            }
+            else if ((!SideOpen || Side is null) && _resizeHandle is not null)
+            {
+                await DisposeHandleAsync();
+            }
+        }
+        catch (Exception ex) when (ex is JSDisconnectedException or TaskCanceledException) { }
+    }
+
+    private async Task RestoreAsync()
+    {
+        var stored = await _module!.InvokeAsync<string?>("load", StorageKey);
+        if (string.IsNullOrWhiteSpace(stored)) return;
+
+        // Format: "<width>|<open 1/0>"
+        var parts = stored.Split('|');
+        var changed = false;
+        if (int.TryParse(parts[0], out var width) && Clamp(width) != _width)
+        {
+            SideWidth = width;
+            _width = Clamp(width);
+            changed = true;
+            await SideWidthChanged.InvokeAsync(_width);
+        }
+        if (parts.Length > 1 && (parts[1] == "1") != SideOpen)
+        {
+            SideOpen = parts[1] == "1";
+            changed = true;
+            await SideOpenChanged.InvokeAsync(SideOpen);
+        }
+        if (changed) StateHasChanged();
+    }
+
+    private async Task PersistAsync()
+    {
+        if (string.IsNullOrWhiteSpace(StorageKey) || _module is null) return;
+        try
+        {
+            await _module.InvokeVoidAsync("save", StorageKey, $"{_width}|{(SideOpen ? 1 : 0)}");
+        }
+        catch (Exception ex) when (ex is JSDisconnectedException or TaskCanceledException) { }
+    }
+
+    private async Task SetSideOpenAsync(bool open)
+    {
+        if (SideOpen == open) return;
+        SideOpen = open;
+        await SideOpenChanged.InvokeAsync(open);
+        await PersistAsync();
+    }
+
+    private async Task SetWidthAsync(int width)
+    {
+        var clamped = Clamp(width);
+        if (clamped == _width) return;
+        _width = clamped;
+        SideWidth = clamped;
+        await SideWidthChanged.InvokeAsync(clamped);
+        await PersistAsync();
+    }
+
+    private async Task OnHandleKeyDown(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "ArrowLeft": await SetWidthAsync(_width + KeyboardStep); break;
+            case "ArrowRight": await SetWidthAsync(_width - KeyboardStep); break;
+            case "Home": await SetWidthAsync(MinSideWidth); break;
+            case "End": await SetWidthAsync(MaxSideWidth); break;
+        }
+    }
+
+    /// <summary>Called from JS when a pointer drag ends.</summary>
+    [JSInvokable]
+    public async Task OnResizeEnd(int width)
+    {
+        await SetWidthAsync(width);
+        StateHasChanged();
+    }
+
+    private async Task DisposeHandleAsync()
+    {
+        var handle = _resizeHandle;
+        _resizeHandle = null;
+        if (handle is null) return;
+        try
+        {
+            await handle.InvokeVoidAsync("dispose");
+            await handle.DisposeAsync();
+        }
+        catch (Exception ex) when (ex is JSDisconnectedException or TaskCanceledException) { }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeHandleAsync();
+        try
+        {
+            if (_module is not null) await _module.DisposeAsync();
+        }
+        catch (Exception ex) when (ex is JSDisconnectedException or TaskCanceledException) { }
+        _self?.Dispose();
+    }
+}

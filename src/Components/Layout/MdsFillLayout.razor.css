@@ -1,0 +1,41 @@
+/* Full-height flex column: header + bands keep their size, the body takes the rest and never
+   scrolls itself (only MdsFillRegion leaves scroll). */
+.mds-fill-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.mds-fill-layout-header {
+    flex: 0 0 auto;
+}
+
+/* Bands never wrap to extra rows: children overflow horizontally instead. */
+.mds-fill-layout-bands {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* Each band keeps its height, stays on one row and scrolls horizontally when it overflows. */
+.mds-fill-layout-bands > ::deep * {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.mds-fill-layout-body {
+    flex: 1 1 0;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}

@@ -1,0 +1,33 @@
+.mds-tab-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-variant-numeric: tabular-nums;
+}
+
+.mds-tab-header-count {
+    min-width: 18px;
+    padding: 0 6px;
+    border-radius: 9px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    background: var(--mbx-subtle-bg, var(--mud-palette-action-disabled-background));
+    color: var(--mud-palette-text-secondary);
+}
+
+.mds-tab-header.mds-tone-warning .mds-tab-header-count {
+    background: color-mix(in srgb, var(--mud-palette-warning) 20%, transparent);
+    color: var(--mud-palette-warning);
+}
+
+.mds-tab-header.mds-tone-danger .mds-tab-header-count {
+    background: color-mix(in srgb, var(--mud-palette-error) 20%, transparent);
+    color: var(--mud-palette-error);
+}
+
+.mds-tab-header.mds-tone-success .mds-tab-header-count {
+    background: color-mix(in srgb, var(--mud-palette-success) 20%, transparent);
+    color: var(--mud-palette-success);
+}

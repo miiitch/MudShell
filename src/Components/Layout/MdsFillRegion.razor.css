@@ -1,0 +1,41 @@
+/* Leaf that fills its parent and scrolls internally. */
+.mds-fill-region {
+    flex: 1 1 0;
+    min-height: 0;
+    min-width: 0;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+/* A grid/table placed directly in the region fills it: the table container scrolls, the header
+   stays sticky (MudBlazor) and the pager stays fixed below. An intermediate flex-column wrapper
+   (e.g. <div class="d-flex flex-column">) is tolerated too. */
+.mds-fill-region > ::deep .d-flex.flex-column,
+.mds-fill-region > ::deep .mud-table {
+    flex: 1 1 0;
+    min-height: 0;
+}
+
+.mds-fill-region > ::deep .mud-table,
+.mds-fill-region > ::deep .d-flex.flex-column > .mud-table {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-height: 0;
+}
+
+.mds-fill-region > ::deep .mud-table > .mud-table-container,
+.mds-fill-region > ::deep .d-flex.flex-column > .mud-table > .mud-table-container {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: auto;
+}
+
+.mds-fill-region > ::deep .mud-table > .mud-table-pagination,
+.mds-fill-region > ::deep .d-flex.flex-column > .mud-table > .mud-table-pagination,
+.mds-fill-region > ::deep .mud-table > .mud-toolbar {
+    flex-shrink: 0;
+}

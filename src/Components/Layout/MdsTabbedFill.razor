@@ -1,0 +1,41 @@
+@namespace MudShell.Components.Layout
+
+<div class="mds-tabbed-fill-host">
+<MudTabs Class="@RootClass"
+         TabPanelsClass="mds-tabbed-fill-panels"
+         ActivePanelIndex="@ActivePanelIndex"
+         ActivePanelIndexChanged="@OnActivePanelIndexChanged"
+         KeepPanelsAlive="@KeepPanels"
+         Elevation="0"
+         Rounded="false"
+         ApplyEffectsToContainer="true"
+         @attributes="AdditionalAttributes">
+    @ChildContent
+</MudTabs>
+</div>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the underlying <c>MudTabs</c>.</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary><c>MudTabPanel</c> children. Give a panel an <c>MdsTabHeader</c> in its <c>TabContent</c> to show a count,
+    /// and put an <c>MdsFillRegion</c> (or <c>MdsSplitPane</c>) inside it so the content fills and scrolls.</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public int ActivePanelIndex { get; set; }
+    [Parameter] public EventCallback<int> ActivePanelIndexChanged { get; set; }
+
+    /// <summary>Keep inactive panels rendered (hidden). Preserves scroll position and state at the cost of DOM.</summary>
+    [Parameter] public bool KeepPanels { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mds-tabbed-fill {Class}".Trim();
+
+    private async Task OnActivePanelIndexChanged(int index)
+    {
+        ActivePanelIndex = index;
+        await ActivePanelIndexChanged.InvokeAsync(index);
+    }
+}

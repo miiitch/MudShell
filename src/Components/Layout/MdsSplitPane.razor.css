@@ -1,0 +1,101 @@
+.mds-split {
+    flex: 1 1 0;
+    min-height: 0;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+.mds-split-main {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mds-split-side {
+    flex: 0 0 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--mbx-content-border, var(--mud-palette-lines-default));
+    background: var(--mbx-content-surface, var(--mud-palette-surface));
+}
+
+/* Drag handle: a 6px hit area straddling the pane border; the toggle button sits on it. */
+.mds-split-handle {
+    position: relative;
+    flex: 0 0 6px;
+    margin: 0 -3px 0 -3px;
+    z-index: 2;
+    cursor: col-resize;
+    touch-action: none;
+}
+
+.mds-split-handle::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 2px;
+    width: 2px;
+    background: transparent;
+    transition: background-color 0.15s ease;
+}
+
+.mds-split-handle:hover::after,
+.mds-split-handle:focus-visible::after,
+.mds-split-handle.mds-split-dragging::after {
+    background: var(--mud-palette-primary);
+}
+
+.mds-split-handle:focus-visible {
+    outline: none;
+}
+
+.mds-split-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 1px solid var(--mbx-content-border, var(--mud-palette-lines-default));
+    border-radius: 50%;
+    background: var(--mud-palette-surface);
+    color: var(--mud-palette-text-secondary);
+    cursor: pointer;
+}
+
+.mds-split-toggle:hover,
+.mds-split-toggle:focus-visible {
+    color: var(--mud-palette-text-primary);
+    border-color: var(--mud-palette-primary);
+}
+
+.mds-split-handle .mds-split-toggle {
+    position: absolute;
+    top: 8px;
+    left: -7px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.mds-split-handle:hover .mds-split-toggle,
+.mds-split-handle:focus-within .mds-split-toggle {
+    opacity: 1;
+}
+
+.mds-split-rail {
+    flex: 0 0 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+    border-left: 1px solid var(--mbx-content-border, var(--mud-palette-lines-default));
+    background: var(--mbx-content-surface, var(--mud-palette-surface));
+}

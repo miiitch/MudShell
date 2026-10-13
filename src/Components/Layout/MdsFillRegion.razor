@@ -1,0 +1,15 @@
+@namespace MudShell.Components.Layout
+
+<div class="@RootClass" @attributes="AdditionalAttributes">@ChildContent</div>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mds-fill-region {Class}".Trim();
+}

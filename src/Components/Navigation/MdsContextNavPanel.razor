@@ -25,6 +25,7 @@
                              class="@collapsedLinkClass"
                              title="@node.Text">
                         <MudIcon Icon="@icon" Size="Size.Small" />
+                        <NavBadgeView Badge="@node.Badge" DotOnly="true" DotClassName="mds-nav-badge-overlay" />
                     </NavLink>
                 }
                 else
@@ -59,13 +60,19 @@
                                  Expanded="@isExpanded"
                                  ExpandedChanged="@(v => HandleGroupExpandedChanged(node, v))"
                                  Class="mbx-context-nav-group">
-                        <MdsSidebarSubMenu GroupId="@node.Id"
+                        <TitleContent>
+                            @node.Text
+                            <NavBadgeView Badge="@node.Badge" />
+                        </TitleContent>
+                        <ChildContent>
+<MdsSidebarSubMenu GroupId="@node.Id"
                                            TopChildren="topChildren"
                                            SortableChildren="sortableChildren"
                                            BottomChildren="bottomChildren"
                                            ItemTemplate="RenderContextChild"
                                            OnSortChanged="OnSortChanged" />
-                    </MudNavGroup>
+</ChildContent>
+</MudNavGroup>
                 }
                 else
                 {
@@ -78,6 +85,7 @@
                                 Class="@(_state.ActivePath.Contains(node.Id) ? "mbx-context-nav-active" : "")"
                                 Match="NavLinkMatch.All">
                         @node.Text
+                        <NavBadgeView Badge="@node.Badge" />
                     </MudNavLink>
                 }
             }
@@ -168,6 +176,7 @@
                         Class="@(_state.ActivePath.Contains(child.Id) ? "mbx-context-nav-active" : "")"
                         Match="NavLinkMatch.All">
                 @child.Text
+                <NavBadgeView Badge="@child.Badge" />
             </MudNavLink>
             @if (child.TrailingActions is { Count: > 0 })
             {

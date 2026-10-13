@@ -26,6 +26,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    position: relative;
     transition: color 0.2s ease, background-color 0.2s ease;
 }
 
@@ -99,4 +100,13 @@
 .mbx-context-nav-child:hover .mbx-context-nav-child-actions,
 .mbx-context-nav-child-actions:focus-within {
     opacity: 1;
+}
+
+/* Label + badge on one row; the badge right-aligns itself (margin-left:auto) before the trailing actions. */
+::deep .mbx-context-mud-nav .mud-nav-link-text {
+    display: flex;
+    align-items: center;
+    gap: var(--mbx-space-2);
+    flex: 1 1 auto;
+    min-width: 0;
 }

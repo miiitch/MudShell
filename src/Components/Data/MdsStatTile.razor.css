@@ -1,0 +1,126 @@
+.mds-stat-tile {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    font: inherit;
+    text-align: left;
+    color: var(--mud-palette-text-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Tile: bordered card */
+.mds-stat-tile-tile {
+    min-width: 120px;
+    padding: var(--mbx-space-2, 8px) var(--mbx-space-3, 12px);
+    border: 1px solid var(--mbx-content-border, var(--mud-palette-lines-default));
+    border-radius: var(--mbx-radius-md, 12px);
+    background: var(--mbx-content-surface, var(--mud-palette-surface));
+}
+
+.mds-stat-tile-tile .mds-stat-value {
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* Cell: borderless compact label-over-value */
+.mds-stat-tile-cell {
+    padding: 0 var(--mbx-space-3, 12px) 0 0;
+    border: 0;
+    background: transparent;
+}
+
+.mds-stat-tile-cell .mds-stat-value {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.mds-stat-label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--mud-palette-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mds-stat-value-row {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+}
+
+.mds-stat-value {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mds-stat-delta {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--mud-palette-text-secondary);
+}
+
+.mds-delta-positive { color: var(--mud-palette-success); }
+.mds-delta-negative { color: var(--mud-palette-error); }
+
+/* Tone: state only. Value and a left accent take the colour, never the whole tile. */
+.mds-tone-success .mds-stat-value { color: var(--mud-palette-success); }
+.mds-tone-warning .mds-stat-value { color: var(--mud-palette-warning); }
+.mds-tone-danger  .mds-stat-value { color: var(--mud-palette-error); }
+
+.mds-stat-tile-tile.mds-tone-success { border-left: 3px solid var(--mud-palette-success); }
+.mds-stat-tile-tile.mds-tone-warning { border-left: 3px solid var(--mud-palette-warning); }
+.mds-stat-tile-tile.mds-tone-danger  { border-left: 3px solid var(--mud-palette-error); }
+
+/* Clickable */
+.mds-stat-tile-clickable {
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.mds-stat-tile-clickable:hover {
+    background: var(--mbx-content-surface-hover, var(--mud-palette-action-default-hover));
+}
+
+.mds-stat-tile-tile.mds-stat-tile-clickable:hover {
+    border-color: var(--mud-palette-primary);
+}
+
+.mds-stat-tile-clickable:focus-visible {
+    outline: 2px solid var(--mbx-focus-ring, var(--mud-palette-primary));
+    outline-offset: 2px;
+}
+
+/* Loading skeleton */
+.mds-stat-skeleton {
+    display: block;
+    height: 1.2em;
+    width: 3.5em;
+    margin: 0.15em 0;
+    border-radius: 4px;
+    background: linear-gradient(90deg,
+        var(--mud-palette-action-disabled-background) 25%,
+        var(--mud-palette-action-default-hover) 50%,
+        var(--mud-palette-action-disabled-background) 75%);
+    background-size: 200% 100%;
+    animation: mds-stat-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes mds-stat-shimmer {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mds-stat-skeleton { animation: none; }
+}

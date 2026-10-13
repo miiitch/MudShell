@@ -1,0 +1,11 @@
+.mds-sparkline {
+    display: inline-block;
+    vertical-align: middle;
+    flex: 0 0 auto;
+    color: var(--mud-palette-text-secondary);
+    overflow: visible;
+}
+
+.mds-sparkline.mds-tone-success { color: var(--mud-palette-success); }
+.mds-sparkline.mds-tone-warning { color: var(--mud-palette-warning); }
+.mds-sparkline.mds-tone-danger  { color: var(--mud-palette-error); }

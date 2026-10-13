@@ -1,0 +1,16 @@
+@namespace MudShell.Components.Data
+
+<div class="@RootClass" role="group" @attributes="AdditionalAttributes">@ChildContent</div>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>Tiles (typically <c>MdsStatTile</c>).</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mds-stat-strip {Class}".Trim();
+}

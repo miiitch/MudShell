@@ -1,0 +1,37 @@
+@namespace MudShell.Components.Data
+
+<span class="@RootClass" role="list" @attributes="AdditionalAttributes">
+    @foreach (var run in Visible)
+    {
+        var text = run.Tooltip ?? run.Outcome.ToString();
+        <span class="mds-run-dot mds-run-@run.Outcome.ToString().ToLowerInvariant()"
+              role="listitem"
+              title="@text"
+              aria-label="@text"></span>
+    }
+</span>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>Runs ordered oldest to newest. Only the last <see cref="Max"/> are shown.</summary>
+    [Parameter] public IEnumerable<MbxRun>? Runs { get; set; }
+
+    [Parameter] public int Max { get; set; } = 10;
+
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mds-run-strip {Class}".Trim();
+
+    private IReadOnlyList<MbxRun> Visible
+    {
+        get
+        {
+            var all = (Runs ?? []).ToList();
+            var max = Math.Max(1, Max);
+            return all.Count > max ? all.GetRange(all.Count - max, max) : all;
+        }
+    }
+}

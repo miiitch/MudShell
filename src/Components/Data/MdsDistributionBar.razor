@@ -1,0 +1,100 @@
+@namespace MudShell.Components.Data
+
+<div class="@RootClass" @attributes="AdditionalAttributes">
+    @if (_items.Count > 0)
+    {
+        <div class="mds-dist-bar" role="img" aria-label="@AriaSummary">
+            @foreach (var item in _items)
+            {
+                <span class="@SegmentClass(item)" style="@SegmentStyle(item)" title="@($"{item.Label}: {Format(item.Value)}")"></span>
+            }
+        </div>
+        <ul class="mds-dist-legend">
+            @foreach (var item in _items)
+            {
+                <li class="mds-dist-legend-item">
+                    <span class="@SwatchClass(item)" style="@SwatchStyle(item)"></span>
+                    @if (!string.IsNullOrWhiteSpace(item.Icon))
+                    {
+                        <MudIcon Icon="@item.Icon" Size="Size.Small" Class="mds-dist-icon" />
+                    }
+                    <span class="mds-dist-label">@item.Label</span>
+                    <span class="mds-dist-value">@Format(item.Value)</span>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    private sealed record Item(string Label, double Value, string? Icon, MbxTone Tone, int Rank, bool IsOther);
+
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter] public IEnumerable<MbxDistributionSegment>? Segments { get; set; }
+
+    /// <summary>Number of segments shown individually; the rest are folded into "Other".</summary>
+    [Parameter] public int MaxSegments { get; set; } = 5;
+
+    [Parameter] public string OtherLabel { get; set; } = "Other";
+
+    [Parameter] public string? Class { get; set; }
+
+    private List<Item> _items = [];
+
+    private string RootClass => $"mds-dist {Class}".Trim();
+
+    private string AriaSummary => string.Join(", ", _items.Select(i => $"{i.Label} {Format(i.Value)}"));
+
+    protected override void OnParametersSet()
+    {
+        var ordered = (Segments ?? [])
+            .Where(s => s.Value > 0)
+            .OrderByDescending(s => s.Value)
+            .ToList();
+        var max = Math.Max(1, MaxSegments);
+
+        var items = ordered
+            .Take(max)
+            .Select((s, rank) => new Item(s.Label, s.Value, s.Icon, s.Tone, rank, false))
+            .ToList();
+
+        if (ordered.Count > max)
+        {
+            items.Add(new Item(OtherLabel, ordered.Skip(max).Sum(s => s.Value), null, MbxTone.Default, max, true));
+        }
+
+        _items = items;
+    }
+
+    private static string Format(double value) => value.ToString("#,0.##", System.Globalization.CultureInfo.CurrentCulture);
+
+    private string SegmentClass(Item item) => item.Tone != MbxTone.Default
+        ? $"mds-dist-seg mds-tone-bg-{item.Tone.ToString().ToLowerInvariant()}"
+        : "mds-dist-seg";
+
+    private string SegmentStyle(Item item)
+    {
+        var basis = $"flex-grow:{item.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}";
+        var shade = Shade(item);
+        return shade is null ? basis : $"{basis};background:{shade}";
+    }
+
+    private string SwatchClass(Item item) => item.Tone != MbxTone.Default
+        ? $"mds-dist-swatch mds-tone-bg-{item.Tone.ToString().ToLowerInvariant()}"
+        : "mds-dist-swatch";
+
+    private string? SwatchStyle(Item item) => Shade(item) is { } shade ? $"background:{shade}" : null;
+
+    /// <summary>Single-ramp shade by rank (darkest first); "Other" is neutral; null when a tone is set.</summary>
+    private string? Shade(Item item)
+    {
+        if (item.Tone != MbxTone.Default) return null;
+        if (item.IsOther) return "var(--mud-palette-text-disabled)";
+        var steps = Math.Max(1, Math.Min(MaxSegments, _items.Count) - 1);
+        var percent = 100 - (int)Math.Round(55.0 * item.Rank / Math.Max(steps, 1));
+        return $"color-mix(in srgb, var(--mud-palette-primary) {Math.Max(percent, 30)}%, var(--mud-palette-surface))";
+    }
+}

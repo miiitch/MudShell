@@ -25,15 +25,17 @@
     border-radius: var(--mbx-radius-md) !important;
 }
 
-/* Badge */
-.mbx-sidebar-nav-badge {
-    font-size: 11px;
-    line-height: 1;
-    padding: 3px 7px;
-    border-radius: var(--mbx-radius-sm);
-    background: var(--mbx-subtle-bg);
-    color: var(--mud-palette-text-secondary);
-    border: 1px solid var(--mbx-content-border);
+/* Badge: rendered by NavBadgeView as a dot (overlaid on the icon when collapsed). */
+::deep .mbx-sidebar-nav .mud-nav-link-text {
+    display: flex;
+    align-items: center;
+    gap: var(--mbx-space-2);
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+::deep .mbx-sidebar-nav-icon-link {
+    position: relative;
 }
 
 /* Collapsed icon-only */

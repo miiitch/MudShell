@@ -1,0 +1,73 @@
+@namespace MudShell.Components.Data
+
+<svg class="@RootClass"
+     width="@Width"
+     height="@Height"
+     viewBox="0 0 @Width @Height"
+     role="img"
+     aria-label="@(AriaLabel ?? "Trend")"
+     @attributes="AdditionalAttributes">
+    @if (_points is not null)
+    {
+        <polyline points="@_points" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+        @if (ShowLastPoint)
+        {
+            <circle cx="@_lastX" cy="@_lastY" r="2" fill="currentColor" />
+        }
+    }
+</svg>
+
+@code {
+    private const double Pad = 2;
+
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter] public IReadOnlyList<double>? Values { get; set; }
+    [Parameter] public int Width { get; set; } = 80;
+    [Parameter] public int Height { get; set; } = 20;
+
+    /// <summary>State tone of the line. Default is a neutral secondary colour.</summary>
+    [Parameter] public MbxTone Tone { get; set; } = MbxTone.Default;
+
+    /// <summary>Draws a dot on the most recent value.</summary>
+    [Parameter] public bool ShowLastPoint { get; set; } = true;
+
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public string? Class { get; set; }
+
+    private string? _points;
+    private string _lastX = "0";
+    private string _lastY = "0";
+
+    private string RootClass => Tone == MbxTone.Default
+        ? $"mds-sparkline {Class}".Trim()
+        : $"mds-sparkline mds-tone-{Tone.ToString().ToLowerInvariant()} {Class}".Trim();
+
+    protected override void OnParametersSet()
+    {
+        _points = null;
+        if (Values is not { Count: >= 2 } values) return;
+
+        var min = values.Min();
+        var max = values.Max();
+        var range = max - min;
+        var inv = System.Globalization.CultureInfo.InvariantCulture;
+        var usableW = Math.Max(Width - 2 * Pad, 1);
+        var usableH = Math.Max(Height - 2 * Pad, 1);
+
+        var coords = new List<(double X, double Y)>(values.Count);
+        for (var i = 0; i < values.Count; i++)
+        {
+            var x = Pad + usableW * i / (values.Count - 1);
+            var y = range <= 0 ? Height / 2.0 : Pad + usableH * (1 - (values[i] - min) / range);
+            coords.Add((x, y));
+        }
+
+        _points = string.Join(' ', coords.Select(c => $"{c.X.ToString("0.##", inv)},{c.Y.ToString("0.##", inv)}"));
+        _lastX = coords[^1].X.ToString("0.##", inv);
+        _lastY = coords[^1].Y.ToString("0.##", inv);
+    }
+}

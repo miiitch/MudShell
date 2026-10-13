@@ -1,0 +1,140 @@
+@page "/fill-demo"
+@rendermode InteractiveServer
+
+<PageTitle>Fill layout - list</PageTitle>
+
+@* Assembly of generic blocks: the page never scrolls, only the grid body and the side pane do. *@
+<MdsFillLayout>
+    <Header>
+        <MdsPageHeader Title="Fill layout"
+                       BreadcrumbItems="@_breadcrumbs"
+                       Icon="@Icons.Material.Outlined.ViewQuilt">
+            <EndContent>
+                <MudButton Variant="Variant.Text" Size="Size.Small" Href="/fill-demo/detail">Detail page</MudButton>
+            </EndContent>
+        </MdsPageHeader>
+    </Header>
+    <Bands>
+        <MdsMainToolbar>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">500 rows - grid header and pager stay visible</MudText>
+        </MdsMainToolbar>
+        <MdsStatStrip>
+            <MdsStatTile Label="Total" Value="@_rows.Count.ToString("N0")" />
+            <MdsStatTile Label="Failing" Value="@_rows.Count(r => r.Failing).ToString("N0")"
+                         Tone="MbxTone.Danger" Delta="+3" DeltaTone="MbxDeltaTone.Negative"
+                         OnClick="@(() => _onlyFailing = !_onlyFailing)" />
+            <MdsStatTile Label="Stale > 7d" Value="@_rows.Count(r => r.AgeDays > 7).ToString("N0")"
+                         Tone="MbxTone.Warning" OnClick="@(() => _onlyFailing = false)" />
+            <MdsStatTile Label="Avg score" Value="@_rows.Average(r => r.Score).ToString("0.0")" />
+            <MdsStatTile Label="Loading" Loading="true" />
+            <MdsStatTile Label="By kind">
+                <ValueContent>
+                    <MdsDistributionBar Segments="@_distribution" MaxSegments="3" Class="mds-demo-dist" />
+                </ValueContent>
+            </MdsStatTile>
+        </MdsStatStrip>
+    </Bands>
+    <Body>
+        <MdsSplitPane StorageKey="mudshell.demo.fill-list" @bind-SideOpen="_sideOpen">
+            <Main>
+                <MudDataGrid T="DemoRow"
+                             Items="@Visible"
+                             Dense="true"
+                             Hover="true"
+                             FixedHeader="true"
+                             RowsPerPage="50"
+                             RowClick="@OnRowClick"
+                             RowClass="mds-demo-row">
+                    <Columns>
+                        <PropertyColumn Property="r => r.Id" Title="#" />
+                        <PropertyColumn Property="r => r.Name" Title="Name" />
+                        <PropertyColumn Property="r => r.Kind" Title="Kind" />
+                        <PropertyColumn Property="r => r.Score" Title="Score" />
+                        <TemplateColumn Title="Trend" Sortable="false">
+                            <CellTemplate>
+                                <MdsSparkline Values="@context.Item.Trend" Tone="@(context.Item.Failing ? MbxTone.Danger : MbxTone.Default)" />
+                            </CellTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn Title="Last runs" Sortable="false">
+                            <CellTemplate>
+                                <MdsRunStrip Runs="@context.Item.Runs" />
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                    <PagerContent>
+                        <MudDataGridPager T="DemoRow" PageSizeOptions="@(new[] { 25, 50, 100 })" />
+                    </PagerContent>
+                </MudDataGrid>
+            </Main>
+            <Side>
+                <div class="pa-3">
+                    @if (_selected is null)
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">Select a row to preview it here.</MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.subtitle1">@_selected.Name</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">#@_selected.Id - @_selected.Kind</MudText>
+                        <div class="d-flex gap-3 my-3">
+                            <MdsStatTile Variant="MbxStatTileVariant.Cell" Label="Score" Value="@_selected.Score.ToString()" />
+                            <MdsStatTile Variant="MbxStatTileVariant.Cell" Label="Age" Value="@($"{_selected.AgeDays} d")"
+                                         Tone="@(_selected.AgeDays > 7 ? MbxTone.Warning : MbxTone.Default)" />
+                        </div>
+                        <MdsRunStrip Runs="@_selected.Runs" Max="10" />
+                        <div class="mt-3"><MdsSparkline Values="@_selected.Trend" Width="240" Height="40" /></div>
+                        @for (var i = 0; i < 40; i++)
+                        {
+                            <MudText Typo="Typo.body2" Class="mt-2">Detail line @(i + 1) - the side pane scrolls on its own.</MudText>
+                        }
+                    }
+                </div>
+            </Side>
+        </MdsSplitPane>
+    </Body>
+</MdsFillLayout>
+
+@code {
+    private sealed record DemoRow(int Id, string Name, string Kind, int Score, int AgeDays, bool Failing,
+        IReadOnlyList<double> Trend, IReadOnlyList<MbxRun> Runs);
+
+    private readonly List<BreadcrumbItem> _breadcrumbs = [new("Home", href: "/")];
+    private static readonly string[] Kinds = ["Server", "Database", "Service", "Queue", "Bucket", "Function"];
+
+    private List<DemoRow> _rows = [];
+    private List<MbxDistributionSegment> _distribution = [];
+    private DemoRow? _selected;
+    private bool _sideOpen = true;
+    private bool _onlyFailing;
+
+    private IEnumerable<DemoRow> Visible => _onlyFailing ? _rows.Where(r => r.Failing) : _rows;
+
+    protected override void OnInitialized()
+    {
+        var rnd = new Random(42);
+        _rows = Enumerable.Range(1, 500).Select(i =>
+        {
+            var failing = rnd.Next(100) < 8;
+            var trend = Enumerable.Range(0, 12).Select(_ => (double)rnd.Next(10, 100)).ToList();
+            var runs = Enumerable.Range(0, 10).Select(_ => rnd.Next(100) switch
+            {
+                < 70 => new MbxRun(MbxRunOutcome.Success),
+                < 85 => new MbxRun(MbxRunOutcome.Failed, "Failed: timeout"),
+                < 90 => new MbxRun(MbxRunOutcome.Cancelled),
+                < 95 => new MbxRun(MbxRunOutcome.Queued),
+                _ => new MbxRun(MbxRunOutcome.Running),
+            }).ToList();
+            return new DemoRow(i, $"Asset {i:000}", Kinds[rnd.Next(Kinds.Length)], rnd.Next(40, 100), rnd.Next(0, 20), failing, trend, runs);
+        }).ToList();
+
+        _distribution = _rows.GroupBy(r => r.Kind)
+            .Select(g => new MbxDistributionSegment(g.Key, g.Count()))
+            .ToList();
+    }
+
+    private void OnRowClick(DataGridRowClickEventArgs<DemoRow> args)
+    {
+        _selected = args.Item;
+        _sideOpen = true;
+    }
+}

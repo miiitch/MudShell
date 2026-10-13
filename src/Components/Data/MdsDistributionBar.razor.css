@@ -1,0 +1,68 @@
+.mds-dist {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.mds-dist-bar {
+    display: flex;
+    flex-direction: row;
+    height: 6px;
+    gap: 1px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--mud-palette-action-disabled-background);
+}
+
+.mds-dist-seg {
+    flex-basis: 0;
+    flex-shrink: 1;
+    min-width: 2px;
+}
+
+.mds-dist-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.75rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.mds-dist-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+
+.mds-dist-swatch {
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+}
+
+.mds-dist-legend-item ::deep .mds-dist-icon {
+    font-size: 0.875rem;
+}
+
+.mds-dist-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 14ch;
+}
+
+.mds-dist-value {
+    color: var(--mud-palette-text-primary);
+    font-weight: 500;
+}
+
+.mds-tone-bg-success { background: var(--mud-palette-success); }
+.mds-tone-bg-warning { background: var(--mud-palette-warning); }
+.mds-tone-bg-danger  { background: var(--mud-palette-error); }

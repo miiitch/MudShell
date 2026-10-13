@@ -1,0 +1,35 @@
+@namespace MudShell.Components.Layout
+
+<div class="@RootClass" @attributes="AdditionalAttributes">
+    @if (Header is not null)
+    {
+        <div class="mds-fill-layout-header">@Header</div>
+    }
+    @if (Bands is not null)
+    {
+        <div class="mds-fill-layout-bands">@Bands</div>
+    }
+    <div class="mds-fill-layout-body">@(Body ?? ChildContent)</div>
+</div>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>Fixed band at the top (page header). Never shrinks.</summary>
+    [Parameter] public RenderFragment? Header { get; set; }
+
+    /// <summary>Fixed bands below the header (toolbar, filter bar, stat strip). Never shrink, never wrap.</summary>
+    [Parameter] public RenderFragment? Bands { get; set; }
+
+    /// <summary>The remaining space. Hidden overflow: put an <c>MdsFillRegion</c> or <c>MdsSplitPane</c> inside.</summary>
+    [Parameter] public RenderFragment? Body { get; set; }
+
+    /// <summary>Alias of <see cref="Body"/> when no <c>&lt;Body&gt;</c> slot is given.</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => $"mds-fill-layout {Class}".Trim();
+}

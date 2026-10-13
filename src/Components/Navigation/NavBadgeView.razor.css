@@ -1,0 +1,43 @@
+/* Badge colour tokens. Default is neutral; the others tint by state/brand colour. */
+.mds-nav-badge-default   { --mds-badge-color: var(--mud-palette-text-secondary); }
+.mds-nav-badge-primary   { --mds-badge-color: var(--mud-palette-primary); }
+.mds-nav-badge-secondary { --mds-badge-color: var(--mud-palette-secondary); }
+.mds-nav-badge-tertiary  { --mds-badge-color: var(--mud-palette-tertiary); }
+.mds-nav-badge-info      { --mds-badge-color: var(--mud-palette-info); }
+.mds-nav-badge-success   { --mds-badge-color: var(--mud-palette-success); }
+.mds-nav-badge-warning   { --mds-badge-color: var(--mud-palette-warning); }
+.mds-nav-badge-error     { --mds-badge-color: var(--mud-palette-error); }
+.mds-nav-badge-dark      { --mds-badge-color: var(--mud-palette-dark); }
+.mds-nav-badge-inherit   { --mds-badge-color: currentColor; }
+
+.mds-nav-badge-text {
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding: 1px 6px;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 16px;
+    font-variant-numeric: tabular-nums;
+    color: var(--mds-badge-color);
+    background: color-mix(in srgb, var(--mds-badge-color) 16%, transparent);
+}
+
+.mds-nav-badge-dot {
+    flex: 0 0 6px;
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-left: auto;
+    border-radius: 50%;
+    background: var(--mds-badge-color);
+}
+
+/* Overlay on an icon link (collapsed rail / collapsed panel). */
+.mds-nav-badge-dot.mds-nav-badge-overlay {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    margin: 0;
+    box-shadow: 0 0 0 2px var(--mud-palette-background-gray, var(--mud-palette-surface));
+}

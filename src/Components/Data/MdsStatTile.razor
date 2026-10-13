@@ -1,0 +1,78 @@
+@namespace MudShell.Components.Data
+
+@if (OnClick.HasDelegate)
+{
+    <button type="button" class="@RootClass" @onclick="OnClick" @attributes="AdditionalAttributes">
+        @TileBody
+    </button>
+}
+else
+{
+    <div class="@RootClass" @attributes="AdditionalAttributes">
+        @TileBody
+    </div>
+}
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter] public string? Label { get; set; }
+
+    /// <summary>Plain-text value. Ignored when <see cref="ValueContent"/> is set.</summary>
+    [Parameter] public string? Value { get; set; }
+
+    /// <summary>Rich value (overrides <see cref="Value"/>).</summary>
+    [Parameter] public RenderFragment? ValueContent { get; set; }
+
+    /// <summary>Optional delta text (e.g. "+12", "-3.4%") shown next to the value.</summary>
+    [Parameter] public string? Delta { get; set; }
+    [Parameter] public MbxDeltaTone DeltaTone { get; set; } = MbxDeltaTone.Neutral;
+
+    /// <summary>State tone. Use a non-default tone only for abnormal values.</summary>
+    [Parameter] public MbxTone Tone { get; set; } = MbxTone.Default;
+
+    /// <summary>When bound, the tile renders as a button with hover and focus states.</summary>
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    /// <summary>Shows a skeleton instead of the value.</summary>
+    [Parameter] public bool Loading { get; set; }
+
+    [Parameter] public MbxStatTileVariant Variant { get; set; } = MbxStatTileVariant.Tile;
+
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass
+    {
+        get
+        {
+            var parts = new List<string> { "mds-stat-tile" };
+            parts.Add(Variant == MbxStatTileVariant.Cell ? "mds-stat-tile-cell" : "mds-stat-tile-tile");
+            if (Tone != MbxTone.Default) parts.Add($"mds-tone-{Tone.ToString().ToLowerInvariant()}");
+            if (OnClick.HasDelegate) parts.Add("mds-stat-tile-clickable");
+            if (!string.IsNullOrWhiteSpace(Class)) parts.Add(Class);
+            return string.Join(' ', parts);
+        }
+    }
+
+    private string DeltaClass => $"mds-stat-delta mds-delta-{DeltaTone.ToString().ToLowerInvariant()}";
+
+    private RenderFragment TileBody => @<text>
+        <span class="mds-stat-label">@Label</span>
+        @if (Loading)
+        {
+            <span class="mds-stat-skeleton" aria-busy="true"></span>
+        }
+        else
+        {
+            <span class="mds-stat-value-row">
+                <span class="mds-stat-value">@if (ValueContent is not null) { @ValueContent } else { @Value }</span>
+                @if (!string.IsNullOrWhiteSpace(Delta))
+                {
+                    <span class="@DeltaClass">@Delta</span>
+                }
+            </span>
+        }
+    </text>;
+}

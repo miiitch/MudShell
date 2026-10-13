@@ -1,0 +1,17 @@
+/* One row, never wraps: overflow scrolls horizontally. */
+.mds-stat-strip {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: var(--mbx-space-2, 8px);
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: var(--mbx-space-1, 4px) 0;
+    scrollbar-width: thin;
+}
+
+.mds-stat-strip > ::deep * {
+    flex-shrink: 0;
+}

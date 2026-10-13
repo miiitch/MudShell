@@ -1,0 +1,29 @@
+@namespace MudShell.Components.Navigation
+@* Internal building block of MdsContextNavPanel / MdsSidebarNav; not part of the public component surface. *@
+@using MudShell.Components.Navigation.Models
+
+@if (Badge is not null && (Badge.Dot || DotOnly || !string.IsNullOrWhiteSpace(Badge.Text)))
+{
+    @if (Badge.Dot || DotOnly)
+    {
+        <span class="@DotClass" title="@Badge.Tooltip" data-testid="nav-badge-dot"></span>
+    }
+    else
+    {
+        <span class="@TextClass" title="@Badge.Tooltip" data-testid="nav-badge-text">@Badge.Text</span>
+    }
+}
+
+@code {
+    [Parameter] public MbxNavBadge? Badge { get; set; }
+
+    /// <summary>Forces the compact dot even for a text badge (collapsed panel, icon overlay).</summary>
+    [Parameter] public bool DotOnly { get; set; }
+
+    /// <summary>Extra class on the dot (e.g. to overlay it on an icon).</summary>
+    [Parameter] public string? DotClassName { get; set; }
+
+    private string ColorName => Badge?.Color.ToString().ToLowerInvariant() ?? "default";
+    private string DotClass => $"mds-nav-badge-dot mds-nav-badge-{ColorName} {DotClassName}".Trim();
+    private string TextClass => $"mds-nav-badge-text mds-nav-badge-{ColorName}";
+}

@@ -24,13 +24,19 @@
                              ExpandedChanged="@(v => ToggleGroup(node.Id, v))"
                              HideExpandIcon="@node.Disabled"
                              Class="mbx-nav-group">
-                    <MdsSidebarSubMenu GroupId="@node.Id"
+                    <TitleContent>
+                        @node.Text
+                        <NavBadgeView Badge="@node.Badge" DotOnly="true" />
+                    </TitleContent>
+                    <ChildContent>
+<MdsSidebarSubMenu GroupId="@node.Id"
                                        TopChildren="topChildren"
                                        SortableChildren="sortableChildren"
                                        BottomChildren="bottomChildren"
                                        ItemTemplate="RenderSubMenuItem"
                                        OnSortChanged="OnSortChanged" />
-                </MudNavGroup>
+</ChildContent>
+</MudNavGroup>
             }
             else
             {
@@ -41,6 +47,7 @@
                             Disabled="@node.Disabled"
                             ActiveClass="mbx-nav-link-active">
                     @node.Text
+                    <NavBadgeView Badge="@node.Badge" DotOnly="true" />
                 </MudNavLink>
             }
         }
@@ -62,6 +69,7 @@ else
                              class="@iconLinkClass"
                              title="@node.Text">
                         <MudIcon Icon="@(node.Icon ?? Icons.Material.Outlined.Circle)" Size="Size.Small" />
+                        <NavBadgeView Badge="@node.Badge" DotOnly="true" DotClassName="mds-nav-badge-overlay" />
                     </NavLink>
                 }
                 else
@@ -113,6 +121,7 @@ else
                         Disabled="@child.Disabled"
                         ActiveClass="mbx-nav-link-active">
                 @child.Text
+                <NavBadgeView Badge="@child.Badge" DotOnly="true" />
             </MudNavLink>
             @if (child.TrailingActions is { Count: > 0 })
             {

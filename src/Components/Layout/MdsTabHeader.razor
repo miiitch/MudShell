@@ -1,0 +1,29 @@
+@namespace MudShell.Components.Layout
+
+<span class="@RootClass" @attributes="AdditionalAttributes">
+    <span class="mds-tab-header-text">@Text</span>
+    @if (Count is not null)
+    {
+        <span class="mds-tab-header-count">@Count</span>
+    }
+</span>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter] public string? Text { get; set; }
+
+    /// <summary>Optional count shown after the text. Null hides it.</summary>
+    [Parameter] public int? Count { get; set; }
+
+    /// <summary>State tone of the count. Use a non-default tone only for abnormal counts.</summary>
+    [Parameter] public MbxTone Tone { get; set; } = MbxTone.Default;
+
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => Tone == MbxTone.Default
+        ? $"mds-tab-header {Class}".Trim()
+        : $"mds-tab-header mds-tone-{Tone.ToString().ToLowerInvariant()} {Class}".Trim();
+}

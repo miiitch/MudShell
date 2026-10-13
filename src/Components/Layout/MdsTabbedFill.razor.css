@@ -1,0 +1,40 @@
+/* Tabs whose active panel is a fill region: the tab bar keeps its height, the panel area takes the
+   rest and clips, and the content inside (MdsFillRegion / MdsSplitPane) scrolls. The host div carries
+   the scope attribute, MudTabs' own elements are reached with ::deep. */
+.mds-tabbed-fill-host {
+    flex: 1 1 0;
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mds-tabbed-fill-host ::deep .mds-tabbed-fill.mud-tabs {
+    flex: 1 1 0;
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mds-tabbed-fill-host ::deep .mds-tabbed-fill > .mud-tabs-tabbar {
+    flex: 0 0 auto;
+}
+
+.mds-tabbed-fill-host ::deep .mds-tabbed-fill > .mds-tabbed-fill-panels,
+.mds-tabbed-fill-host ::deep .mds-tabbed-fill > .mud-tabs-panels {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.mds-tabbed-fill-host ::deep .mds-tabbed-fill .mud-tabs-panels > .mud-tabpanel,
+.mds-tabbed-fill-host ::deep .mds-tabbed-fill .mds-tabbed-fill-panels > .mud-tabpanel {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}

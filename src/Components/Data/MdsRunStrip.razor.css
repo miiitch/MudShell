@@ -1,0 +1,22 @@
+.mds-run-strip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    flex-wrap: nowrap;
+    vertical-align: middle;
+}
+
+.mds-run-dot {
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+    box-sizing: border-box;
+    border-radius: 50%;
+}
+
+/* Success is the quiet nominal state; failures stand out. */
+.mds-run-success   { background: color-mix(in srgb, var(--mud-palette-success) 55%, transparent); }
+.mds-run-failed    { background: var(--mud-palette-error); }
+.mds-run-running   { background: transparent; border: 2px solid var(--mud-palette-info); }
+.mds-run-cancelled { background: transparent; border: 1.5px solid var(--mud-palette-text-disabled); }
+.mds-run-queued    { background: var(--mud-palette-text-disabled); opacity: 0.45; }

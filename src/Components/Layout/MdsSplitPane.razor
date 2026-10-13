@@ -89,6 +89,7 @@
     private IJSObjectReference? _resizeHandle;
     private DotNetObjectReference<MdsSplitPane>? _self;
     private int _width;
+    private bool _disposed;
 
     private string RootClass => $"mds-split {Class}".Trim();
 
@@ -100,35 +101,55 @@
     {
         try
         {
+            // The component can be disposed (e.g. navigating away, or the parent re-keying it) while
+            // any of the awaits below is in flight: re-check after each one, and never touch the
+            // module once DisposeAsync has run, or the call throws ObjectDisposedException.
             if (firstRender)
             {
-                _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/MudShell/js/mudshell-layout.js");
-                if (!string.IsNullOrWhiteSpace(StorageKey) && _module is not null)
+                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/MudShell/js/mudshell-layout.js");
+                if (_disposed)
+                {
+                    await module.DisposeAsync();
+                    return;
+                }
+                _module = module;
+                if (!string.IsNullOrWhiteSpace(StorageKey))
                 {
                     await RestoreAsync();
                 }
             }
 
-            if (_module is null) return;
+            if (_disposed || _module is null) return;
 
             if (Side is not null && SideOpen && _resizeHandle is null)
             {
                 _self ??= DotNetObjectReference.Create(this);
-                _resizeHandle = await _module.InvokeAsync<IJSObjectReference>(
+                var handle = await _module.InvokeAsync<IJSObjectReference>(
                     "initResize", _handle, _pane, MinSideWidth, MaxSideWidth, _self);
+                if (_disposed)
+                {
+                    await handle.InvokeVoidAsync("dispose");
+                    await handle.DisposeAsync();
+                    return;
+                }
+                _resizeHandle = handle;
             }
             else if ((!SideOpen || Side is null) && _resizeHandle is not null)
             {
                 await DisposeHandleAsync();
             }
         }
-        catch (Exception ex) when (ex is JSDisconnectedException or TaskCanceledException) { }
+        catch (Exception ex) when (IsTeardown(ex)) { }
     }
+
+    /// <summary>JS interop failures that only mean the circuit or this component is going away.</summary>
+    private bool IsTeardown(Exception ex) =>
+        ex is JSDisconnectedException or TaskCanceledException || (ex is ObjectDisposedException && _disposed);
 
     private async Task RestoreAsync()
     {
         var stored = await _module!.InvokeAsync<string?>("load", StorageKey);
-        if (string.IsNullOrWhiteSpace(stored)) return;
+        if (_disposed || string.IsNullOrWhiteSpace(stored)) return;
 
         // Format: "<width>|<open 1/0>"
         var parts = stored.Split('|');
@@ -151,12 +172,12 @@
 
     private async Task PersistAsync()
     {
-        if (string.IsNullOrWhiteSpace(StorageKey) || _module is null) return;
+        if (_disposed || string.IsNullOrWhiteSpace(StorageKey) || _module is null) return;
         try
         {
             await _module.InvokeVoidAsync("save", StorageKey, $"{_width}|{(SideOpen ? 1 : 0)}");
         }
-        catch (Exception ex) when (ex is JSDisconnectedException or TaskCanceledException) { }
+        catch (Exception ex) when (IsTeardown(ex)) { }
     }
 
     private async Task SetSideOpenAsync(bool open)
@@ -206,17 +227,18 @@
             await handle.InvokeVoidAsync("dispose");
             await handle.DisposeAsync();
         }
-        catch (Exception ex) when (ex is JSDisconnectedException or TaskCanceledException) { }
+        catch (Exception ex) when (IsTeardown(ex)) { }
     }
 
     public async ValueTask DisposeAsync()
     {
+        _disposed = true;
         await DisposeHandleAsync();
         try
         {
             if (_module is not null) await _module.DisposeAsync();
         }
-        catch (Exception ex) when (ex is JSDisconnectedException or TaskCanceledException) { }
+        catch (Exception ex) when (IsTeardown(ex)) { }
         _self?.Dispose();
     }
 }

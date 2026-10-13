@@ -133,4 +133,23 @@ public class MdsSplitPaneTests
         Assert.False(open);
         Assert.NotNull(rendered.Find(".mds-split-rail"));
     }
+    [Fact]
+    public async Task Should_NotUseModuleAfterDispose_When_DisposedWhileRestoring()
+    {
+        // Given: restoring the stored width is still in flight when the component is disposed
+        using var context = NewContext();
+        var module = context.JSInterop.SetupModule("./_content/MudShell/js/mudshell-layout.js");
+        var load = module.Setup<string?>("load", "k");
+        var rendered = context.RenderComponent<MdsSplitPane>(p => p
+            .Add(c => c.Main, Text("main"))
+            .Add(c => c.Side, Text("side"))
+            .Add(c => c.StorageKey, "k"));
+
+        // When
+        await rendered.InvokeAsync(() => context.DisposeComponents());
+        load.SetResult("420|1");
+
+        // Then: the pending render pass stops instead of wiring the resize handle on a disposed module
+        Assert.DoesNotContain(module.Invocations, i => i.Identifier == "initResize");
+    }
 }

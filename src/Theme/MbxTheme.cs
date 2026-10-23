@@ -84,7 +84,7 @@ public static class MbxTheme
         new(MbxThemePreset.StormSlate,     "Storm Slate",    "#5B6E7D"), // Palette gris-bleu, bordeaux et blush
         new(MbxThemePreset.AbyssalNavy,    "Abyssal Navy",   "#0D3651"), // Palette marine, corail et sable
         new(MbxThemePreset.CosmicNight,    "Cosmic Night",   "#FFA500"), // Noir profond avec accents orange chauds
-        new(MbxThemePreset.MorningButter,  "Morning Butter", "#7298C7"), // Pastel butter / blue grey
+        new(MbxThemePreset.MorningButter,  "Morning Butter", "#8662F6"), // Crème, lavande et accents pastel
         new(MbxThemePreset.RaspberryRed,   "Raspberry Red",  "#EE005A"), // Rose framboise / nuit profonde
         new(MbxThemePreset.DeepSpaceBlue,  "Deep Space Blue","#012641"), // Marine / rose néon
         new(MbxThemePreset.FairyTale,      "Fairy Tale",     "#FFCEEB"), // Rose bonbon / orange
@@ -256,19 +256,24 @@ public static class MbxTheme
             MbxThemePreset.AbyssalNavy => CreateThemeFromTriad("#0D3651", "#EB313F", "#FFF7AE"),
             MbxThemePreset.CosmicNight => CreateCosmicNightTheme(),
             MbxThemePreset.MorningButter => CreateThemeCore(
-                ParseHex("#7298C7"),
-                ParseHex("#F3D98F"),
-                ParseHex("#8BBF7A"),
-                ParseHex("#E0B645"),
-                ParseHex("#C65A67"),
-                darkSidebar: ParseHex("#34527B"),
-                darkMain: ParseHex("#4A6D9C"),
-                darkSubSection: ParseHex("#20324B"),
-                darkBackground: ParseHex("#121C2B"),
-                lightSidebar: ParseHex("#DDE8F6"),
-                lightSubSection: ParseHex("#EEF4FB"),
-                lightBackground: ParseHex("#F8FAFD"),
-                lightMain: ParseHex("#FFFFFF")),
+                ParseHex("#8662F6"),
+                ParseHex("#5A9CE6"),
+                ParseHex("#2DA96F"),
+                ParseHex("#E6A51B"),
+                ParseHex("#E7777D"),
+                darkPrimary: ParseHex("#D6A800"),
+                darkSidebar: ParseHex("#352A4F"),
+                darkMain: ParseHex("#30283B"),
+                darkSubSection: ParseHex("#241E2D"),
+                darkBackground: ParseHex("#18141E"),
+                lightSidebar: ParseHex("#F7EFD9"),
+                lightSubSection: ParseHex("#FCF7EB"),
+                lightBackground: ParseHex("#FAF3E3"),
+                lightMain: ParseHex("#FFFCF5"),
+                lightTextPrimary: ParseHex("#29251F"),
+                lightTextSecondary: ParseHex("#716857"),
+                lightNeutral: ParseHex("#F4EAD4"),
+                lightBorder: ParseHex("#EADAB6")),
             MbxThemePreset.RaspberryRed => CreateThemeCore(
                 ParseHex("#EE005A"),
                 ParseHex("#012641"),
@@ -594,6 +599,7 @@ public static class MbxTheme
         HexColor success,
         HexColor warning,
         HexColor error,
+        HexColor? darkPrimary = null,
         HexColor? darkSidebar = null,
         HexColor? darkMain = null,
         HexColor? darkSubSection = null,
@@ -601,7 +607,11 @@ public static class MbxTheme
         HexColor? lightSidebar = null,
         HexColor? lightSubSection = null,
         HexColor? lightBackground = null,
-        HexColor? lightMain = null)
+        HexColor? lightMain = null,
+        HexColor? lightTextPrimary = null,
+        HexColor? lightTextSecondary = null,
+        HexColor? lightNeutral = null,
+        HexColor? lightBorder = null)
     {
         // ── Dark mode: DrawerBackground > Surface > BackgroundGray > Background ──
         // Surface (cards) MUST be lighter than BackgroundGray (page area) so cards pop
@@ -609,22 +619,28 @@ public static class MbxTheme
         var resolvedDarkMain       = darkMain       ?? Mix(primary, ParseHex("#1a1d33"), 0.72); // Surface — cards (medium)
         var resolvedDarkSubSection = darkSubSection ?? Mix(primary, ParseHex("#12142a"), 0.85); // BackgroundGray — page area (darker)
         var resolvedDarkBackground = darkBackground ?? Mix(primary, ParseHex("#0a0c1c"), 0.91); // Background — darkest
+        var resolvedDarkPrimary = darkPrimary ?? primary;
 
         // ── Light mode: Surface stays white; page background uses neutral gray for stronger contrast ──
         var resolvedLightSidebar    = lightSidebar    ?? Mix(primary, ParseHex("#e0e0f4"), 0.65); // DrawerBackground — clearly tinted
         var resolvedLightSubSection = lightSubSection ?? Mix(primary, ParseHex("#f5f5ff"), 0.93); // BackgroundGray — subtle
         var resolvedLightBackground = lightBackground ?? ParseHex("#f1f3f6");                      // Background — neutral gray (palette-independent)
         var resolvedLightMain       = lightMain       ?? ParseHex("#ffffff");                      // Surface — pure white
+        var resolvedLightTextPrimary = lightTextPrimary ?? ParseHex("#1b2742");
+        var resolvedLightTextSecondary = lightTextSecondary ?? ParseHex("#435070");
+        var resolvedLightNeutral = lightNeutral ?? ParseHex("#d9e2f2");
+        var resolvedLightBorder = lightBorder ?? Mix(resolvedLightSubSection, ParseHex("#b9c7df"), 0.46);
 
         // MudBlazor falls back to its own default (a bright pink, "#FF4081") for any color role left
         // unset, and Color.Secondary is commonly reached for by consumers. Derive a deliberate accent
         // from Primary instead of leaving this gap — see https://github.com/miiitch/MudShell/issues/14.
+        var darkSecondary = HueShiftAccent(resolvedDarkPrimary, degrees: 150);
         var secondary = HueShiftAccent(primary, degrees: 150);
 
         var darkPalette = new PaletteDark
         {
-            Primary = ToHex(primary),
-            Secondary = ToHex(secondary),
+            Primary = ToHex(resolvedDarkPrimary),
+            Secondary = ToHex(darkSecondary),
             Surface = ToHex(resolvedDarkMain),
             Background = ToHex(resolvedDarkBackground),
             BackgroundGray = ToHex(resolvedDarkSubSection),
@@ -655,21 +671,21 @@ public static class MbxTheme
         {
             Primary = ToHex(primary),
             Secondary = ToHex(secondary),
-            Black = "#0f1325",
+            Black = ToHex(lightTextPrimary ?? ParseHex("#0f1325")),
             Surface = ToHex(resolvedLightMain),
             Background = ToHex(resolvedLightBackground),
             BackgroundGray = ToHex(resolvedLightSubSection),
             DrawerBackground = ToHex(resolvedLightSidebar),
             AppbarBackground = ToRgba(resolvedLightBackground, 0.90),
-            AppbarText = "#1a2540",
-            TextPrimary = "#1b2742",
-            TextSecondary = "#435070",
-            ActionDefault = "#435070",
-            GrayLight = ToHex(Mix(resolvedLightSubSection, ParseHex("#d9e2f2"), 0.34)),
-            GrayLighter = ToHex(Mix(resolvedLightMain, ParseHex("#f2f6fd"), 0.38)),
-            LinesDefault = ToHex(Mix(resolvedLightSubSection, ParseHex("#b9c7df"), 0.46)),
-            TableLines = ToHex(Mix(resolvedLightSubSection, ParseHex("#b9c7df"), 0.46)),
-            Divider = ToHex(Mix(resolvedLightSubSection, ParseHex("#9fb2d3"), 0.40)),
+            AppbarText = ToHex(lightTextPrimary ?? ParseHex("#1a2540")),
+            TextPrimary = ToHex(resolvedLightTextPrimary),
+            TextSecondary = ToHex(resolvedLightTextSecondary),
+            ActionDefault = ToHex(resolvedLightTextSecondary),
+            GrayLight = ToHex(Mix(resolvedLightSubSection, resolvedLightNeutral, 0.34)),
+            GrayLighter = ToHex(Mix(resolvedLightMain, lightNeutral ?? ParseHex("#f2f6fd"), 0.38)),
+            LinesDefault = ToHex(resolvedLightBorder),
+            TableLines = ToHex(resolvedLightBorder),
+            Divider = ToHex(lightBorder ?? Mix(resolvedLightSubSection, ParseHex("#9fb2d3"), 0.40)),
             OverlayLight = ToRgba(ParseHex("#ffffff"), 0.60),
             Info = ToHex(info),
             Success = ToHex(success),

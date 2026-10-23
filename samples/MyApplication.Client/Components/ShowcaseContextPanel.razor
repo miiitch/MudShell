@@ -3,7 +3,7 @@
 @using MudShell.Components.Navigation.Models
 @inject NavigationManager Nav
 
-<div style="height:100%;overflow:auto">
+<MdsFillRegion>
     <div class="d-flex justify-end pa-2">
         <MudTooltip Text="Collapse or expand subsections">
             <MudIconButton Icon="@Icons.Material.Outlined.UnfoldLess"
@@ -16,7 +16,7 @@
     {
         <details class="pa-2" data-testid="context-events">
             <summary>Panel events</summary>
-            <div data-testid="context-nav-sort-demo-log" aria-live="polite" style="overflow-wrap:anywhere">
+            <div data-testid="context-nav-sort-demo-log" aria-live="polite">
                 @foreach (var entry in _log)
                 {
                     <div>@entry</div>
@@ -24,7 +24,7 @@
             </div>
         </details>
     }
-</div>
+</MdsFillRegion>
 
 @code {
     [Parameter] public bool IsExpanded { get; set; }

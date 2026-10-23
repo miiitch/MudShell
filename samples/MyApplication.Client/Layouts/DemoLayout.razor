@@ -5,7 +5,6 @@
 @inject ThemeState ThemeState
 
 <MudBreakpointProvider OnBreakpointChanged="@BreakpointChanged">
-<div class="showcase-shell">
 <MdsAppShell @ref="_shell"
              BackgroundMode="@ThemeState.BackgroundMode"
              BackgroundImageUrl="@ThemeState.BackgroundImageUrl"
@@ -23,13 +22,7 @@
     </SidebarContent>
     <ChildContent>@Body</ChildContent>
 </MdsAppShell>
-</div>
 </MudBreakpointProvider>
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unexpected error occurred.
-    <a href="." class="reload">Reload</a>
-</div>
 
 @code {
     private MdsAppShell _shell = default!;

@@ -3,7 +3,7 @@
 @using MudShell.Components.Navigation
 
 <PageTitle>Mobile navigation — MudShell</PageTitle>
-<div class="showcase-page" style="padding-bottom:100px">
+<MudStack Spacing="3" Class="pa-4 pb-16">
     <ShowcaseHeader FamilyId="navigation" />
     <h2>Mobile navigation</h2>
     <p>The demo is at the bottom of the window. Open Components, then a family to explore the levels.</p>
@@ -12,7 +12,7 @@
         <p>MdsBottomNav takes simple shortcuts. The hierarchical version uses the showcase tree
             without links on groups: only leaf items navigate to another page.</p>
     </ShowcaseDetails>
-</div>
+</MudStack>
 @if (_drilldown)
 {
     <MdsMobileDrilldownNav Tree="@_demoTree" data-testid="mobile-drilldown-demo" />

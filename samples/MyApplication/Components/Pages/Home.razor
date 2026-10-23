@@ -2,17 +2,15 @@
 @rendermode InteractiveServer
 
 <PageTitle>MudShell — Showcase</PageTitle>
-<div class="showcase-page" data-testid="showcase-home">
-    <div class="showcase-hero">
-        <div>
+<MudStack Spacing="4" Class="pa-4" data-testid="showcase-home">
+    <MdsMainSection Title="Building blocks. Consistent interfaces."
+                    Description="Navigation, workspaces, data and conversation: explore the building blocks, then discover how to combine them.">
             <MudText Typo="Typo.overline" Color="Color.Primary">The MudShell showcase</MudText>
-            <h1>Building blocks.<br />Consistent interfaces.</h1>
-            <p>Navigation, workspaces, data and conversation: explore the building blocks, then discover how to combine them.</p>
             <MudStack Row Wrap="Wrap.Wrap" Spacing="2">
-                <MudButton Href="/components" Variant="Variant.Filled" Color="Color.Primary" data-testid="explore-components">Explore components</MudButton>
-                <MudButton Href="/examples" Variant="Variant.Outlined" data-testid="explore-examples">View examples</MudButton>
+                <MdsMainButton Href="/components" DataTestId="explore-components">Explore components</MdsMainButton>
+                <MdsMainButton Href="/examples" Variant="Variant.Outlined" DataTestId="explore-examples">View examples</MdsMainButton>
             </MudStack>
-        </div>
+    </MdsMainSection>
         <MdsMainPart Title="A workspace built with MudShell">
             <MdsStatStrip>
                 <MdsStatTile Label="Resources" Value="128" />
@@ -21,20 +19,19 @@
             </MdsStatStrip>
             <MudButton Href="/examples/workspace/detail" Class="mt-3" EndIcon="@Icons.Material.Outlined.ArrowForward">Open the detail example</MudButton>
         </MdsMainPart>
-    </div>
-    <h2 class="mb-4">Explore component families</h2>
-    <div class="showcase-cards">
+    <MdsMainSection Title="Explore component families">
+    <MudGrid>
         @foreach (var family in ShowcaseCatalog.Families)
         {
-            <a class="showcase-card" href="@family.Href" data-testid="@($"home-family-{family.Id}")">
-                <MudIcon Icon="@family.Icon" Color="Color.Primary" />
-                <h3>@family.Title</h3>
-                <p>@family.Description</p>
-            </a>
+            <MudItem xs="12" md="6" lg="4">
+                <MdsMainPart Title="@family.Title" Icon="@family.Icon" Subtitle="@family.Description">
+                    <MdsMainButton Href="@family.Href" Variant="Variant.Text" DataTestId="@($"home-family-{family.Id}")">Explore components</MdsMainButton>
+                </MdsMainPart>
+            </MudItem>
         }
-    </div>
-    <div class="showcase-callout">
-        <div><h2>Better together.</h2><p>Complete examples, separate from individual component demos.</p></div>
-        <MudButton Href="/examples" Variant="Variant.Outlined">Discover examples</MudButton>
-    </div>
-</div>
+    </MudGrid>
+    </MdsMainSection>
+    <MdsMainSection Title="Better together." Description="Complete examples, separate from individual component demos.">
+        <MdsMainButton Href="/examples" Variant="Variant.Outlined">Discover examples</MdsMainButton>
+    </MdsMainSection>
+</MudStack>

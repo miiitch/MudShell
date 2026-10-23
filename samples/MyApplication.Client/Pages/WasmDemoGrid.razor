@@ -5,20 +5,21 @@
 
 <PageTitle>Interactive WebAssembly — Grid</PageTitle>
 
-<div class="fullpage-demo">
+<MdsFillLayout>
+    <Header>
     <MdsPageHeader Title="Interactive WebAssembly — Grid">
         <StartContent><div></div></StartContent>
         <EndContent>
             <MudChip T="string" Color="Color.Success" Size="Size.Small">WASM</MudChip>
-            <MudChip T="string" Color="Color.Primary" Size="Size.Small" Style="margin-left:8px;">Grid</MudChip>
+            <MudChip T="string" Color="Color.Primary" Size="Size.Small">Grid</MudChip>
         </EndContent>
     </MdsPageHeader>
 
-    <div class="fullpage-body">
+    </Header>
+    <Body>
         <GridShowcase RenderModeName="Interactive WebAssembly"
                       BadgeColor="wasm"
                       BadgeIcon="@Icons.Material.Outlined.Memory" />
-    </div>
-</div>
-
+    </Body>
+</MdsFillLayout>
 

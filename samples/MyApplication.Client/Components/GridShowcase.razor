@@ -1,55 +1,45 @@
-﻿@namespace MyApplication.Client.Components
+@namespace MyApplication.Client.Components
 
-<div class="grid-showcase">
-
-    @* Render mode badge *@
-    <div class="showcase-badge showcase-badge-@BadgeColor">
-        <MudIcon Icon="@BadgeIcon" Size="Size.Small" />
-        <span>@RenderModeName</span>
-    </div>
-
-    @* Grid content — scrolls internally *@
-    <div class="grid-scroll-area">
-        <MudGrid Spacing="3">
-            @foreach (var card in _cards)
-            {
-                <MudItem xs="12" sm="6" md="4">
-                    <MudPaper Class="grid-card" Elevation="0">
-                        <div class="grid-card-icon" style="background:@card.IconBg; color:@card.IconColor;">
-                            <MudIcon Icon="@card.Icon" />
-                        </div>
-                        <MudText Typo="Typo.subtitle1" Style="font-weight:600;">@card.Title</MudText>
-                        <MudText Typo="Typo.body2" Style="color:var(--mud-palette-text-secondary); line-height:1.5;">
-                            @card.Description
-                        </MudText>
-                        <div style="margin-top:auto; padding-top:12px; display:flex; gap:8px;">
-                            <MudChip T="string" Size="Size.Small" Color="Color.Default">@card.Tag1</MudChip>
-                            <MudChip T="string" Size="Size.Small" Color="Color.Default">@card.Tag2</MudChip>
-                        </div>
-                    </MudPaper>
-                </MudItem>
-            }
-        </MudGrid>
-    </div>
-
-</div>
+<MdsFillLayout>
+    <Bands>
+        <MudChip T="string" Icon="@BadgeIcon" Color="@ModeColor">@RenderModeName</MudChip>
+    </Bands>
+    <Body>
+        <MdsFillRegion Class="pa-4">
+            <MudGrid Spacing="3">
+                @foreach (var card in _cards)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <MdsMainPart Title="@card.Title" Icon="@card.Icon" Subtitle="@card.Description">
+                            <MudStack Row Wrap="Wrap.Wrap">
+                                <MudChip T="string" Size="Size.Small" Color="Color.Default">@card.Tag1</MudChip>
+                                <MudChip T="string" Size="Size.Small" Color="Color.Default">@card.Tag2</MudChip>
+                            </MudStack>
+                        </MdsMainPart>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MdsFillRegion>
+    </Body>
+</MdsFillLayout>
 
 @code {
     [Parameter] public string RenderModeName { get; set; } = "Unknown";
     [Parameter] public string BadgeColor     { get; set; } = "default";
     [Parameter] public string BadgeIcon      { get; set; } = Icons.Material.Outlined.Info;
+    private Color ModeColor => BadgeColor switch { "server" => Color.Info, "wasm" => Color.Success, "auto" => Color.Warning, _ => Color.Default };
 
-    private record CardInfo(string Icon, string IconBg, string IconColor, string Title, string Description, string Tag1, string Tag2);
+    private record CardInfo(string Icon, string Title, string Description, string Tag1, string Tag2);
 
     private readonly CardInfo[] _cards =
     [
-        new(Icons.Material.Outlined.Analytics,    "rgba(74,134,255,0.15)",  "#4a86ff",  "Dashboard",           "Overview of the application's main KPIs and metrics.",                       "Analytics",   "KPI"),
-        new(Icons.Material.Outlined.Group,         "rgba(61,203,108,0.15)",  "#3dcb6c",  "Users",               "Manage user accounts, roles and access permissions.",                        "IAM",         "RBAC"),
-        new(Icons.Material.Outlined.Inventory2,    "rgba(255,181,69,0.15)",  "#ffb545",  "Inventory",           "Track stock levels, threshold alerts and replenishment in real time.",        "Stock",       "Alerts"),
-        new(Icons.Material.Outlined.Paid,          "rgba(233,69,96,0.15)",   "#e94560",  "Billing",             "Billing history, active subscriptions and payment methods.",                 "Billing",     "SaaS"),
-        new(Icons.Material.Outlined.Cloud,         "rgba(126,111,255,0.15)", "#7e6fff",  "Infrastructure",      "Monitor cloud services, latency and endpoint availability.",                 "Cloud",       "Monitoring"),
-        new(Icons.Material.Outlined.Security,      "rgba(0,188,212,0.15)",   "#00bcd4",  "Security",            "Access auditing, anomaly detection and regulatory compliance.",             "Audit",       "Compliance"),
-        new(Icons.Material.Outlined.IntegrationInstructions, "rgba(255,112,67,0.15)", "#ff7043", "Integrations", "Third-party API connectors, webhooks and automation pipelines.",           "API",         "Webhooks"),
-        new(Icons.Material.Outlined.SupportAgent,  "rgba(156,39,176,0.15)", "#9c27b0",  "Support",             "Open tickets, SLAs and customer satisfaction over the last 30 days.",         "Tickets",     "SLA"),
+        new(Icons.Material.Outlined.Analytics, "Dashboard", "Overview of the application's main KPIs and metrics.", "Analytics", "KPI"),
+        new(Icons.Material.Outlined.Group, "Users", "Manage user accounts, roles and access permissions.", "IAM", "RBAC"),
+        new(Icons.Material.Outlined.Inventory2, "Inventory", "Track stock levels, threshold alerts and replenishment in real time.", "Stock", "Alerts"),
+        new(Icons.Material.Outlined.Paid, "Billing", "Billing history, active subscriptions and payment methods.", "Billing", "SaaS"),
+        new(Icons.Material.Outlined.Cloud, "Infrastructure", "Monitor cloud services, latency and endpoint availability.", "Cloud", "Monitoring"),
+        new(Icons.Material.Outlined.Security, "Security", "Access auditing, anomaly detection and regulatory compliance.", "Audit", "Compliance"),
+        new(Icons.Material.Outlined.IntegrationInstructions, "Integrations", "Third-party API connectors, webhooks and automation pipelines.", "API", "Webhooks"),
+        new(Icons.Material.Outlined.SupportAgent, "Support", "Open tickets, SLAs and customer satisfaction over the last 30 days.", "Tickets", "SLA"),
     ];
 }

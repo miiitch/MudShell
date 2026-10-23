@@ -1,5 +1,5 @@
 <MdsPageHeader Title="@Family.Title" Icon="@Family.Icon" BreadcrumbItems="@Breadcrumbs" />
-<p class="showcase-description">@Family.Description</p>
+<MudText Color="Color.Secondary">@Family.Description</MudText>
 
 @code {
     [Parameter, EditorRequired] public string FamilyId { get; set; } = "";

@@ -4,16 +4,14 @@
 @using MudShell.Components.Navigation
 
 <PageTitle>Navigation — MudShell</PageTitle>
-<div class="showcase-page" data-testid="navigation-demo">
+<MudStack Spacing="3" Class="pa-4" data-testid="navigation-demo">
     <ShowcaseHeader FamilyId="navigation" />
     <p>Context panel subsections have two levels: a group and its items.
         Expand Reports or Favorites and drag items between the two pinned positions.</p>
     <MdsMainSection Title="The same behavior in the sidebar">
         <p>Pinned items stay in place. Actions remove an item; the remaining items can be reordered.</p>
-        <div class="mbx-nav mbx-nav-expanded showcase-nav-sample">
-            <MdsSidebarNav Tree="@Tree" IsExpanded="true" OnSortChanged="@SortChanged" />
-        </div>
-        <details class="showcase-details" data-testid="sidebar-events">
+        <MdsSidebarNav Tree="@Tree" IsExpanded="true" OnSortChanged="@SortChanged" />
+        <details data-testid="sidebar-events">
             <summary>Sidebar events</summary>
             <div class="pa-3" data-testid="sidebar-nav-sort-demo-log" aria-live="polite">
                 @foreach (var entry in _log) { <div>@entry</div> }
@@ -24,9 +22,9 @@
     <ShowcaseDetails FamilyId="navigation">
         <p>Each group maintains its own order. The context panel routes events by GroupId;
             removing or sorting items does not affect other groups. Pinned areas cannot be sorted.</p>
-        <pre>&lt;MdsSidebarNav Tree="tree" IsExpanded="true" OnSortChanged="HandleSort" /&gt;</pre>
+        <MudText Typo="Typo.caption">&lt;MdsSidebarNav Tree="tree" IsExpanded="true" OnSortChanged="HandleSort" /&gt;</MudText>
     </ShowcaseDetails>
-</div>
+</MudStack>
 
 @code {
     private List<string> _order = ["report-alpha", "report-beta", "report-gamma"];

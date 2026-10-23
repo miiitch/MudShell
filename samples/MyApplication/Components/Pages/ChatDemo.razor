@@ -4,65 +4,73 @@
 
 <PageTitle>Chat</PageTitle>
 
-<div class="px-4">
-    <ShowcaseHeader FamilyId="conversation" />
-    <ShowcaseDetails FamilyId="conversation">
-        <p>Simulated response, no AI service. Try Enter, Shift+Enter, suggestions and stopping the response.</p>
-        <MdsChatBar @bind-Value="_barDemo" Placeholder="Simple input bar example" />
-        <MudLink Href="/components/conversation/floating">Try the floating assistant</MudLink>
-    </ShowcaseDetails>
-</div>
+<MdsFillLayout>
+    <Header>
+        <MudStack Spacing="2" Class="px-4">
+            <ShowcaseHeader FamilyId="conversation" />
+            <ShowcaseDetails FamilyId="conversation">
+                <p>Simulated response, no AI service. Try Enter, Shift+Enter, suggestions and stopping the response.</p>
+                <MdsChatBar @bind-Value="_barDemo" Placeholder="Simple input bar example" />
+                <MudLink Href="/components/conversation/floating">Try the floating assistant</MudLink>
+            </ShowcaseDetails>
+        </MudStack>
+    </Header>
+    <Body>
 
-<MudContainer MaxWidth="MaxWidth.Medium" Class="px-4 pb-4 pt-0 d-flex flex-column" Style="height: calc(100vh - 140px); min-height: 420px;">
-
-    @if (_messages.Count == 0)
-    {
-        <MdsChatLanding Greeting="Great to see you again. What's the latest?"
-                        Prompts="@_suggestions"
-                        OnPromptSelected="SendAsync"
-                        data-testid="chat-landing">
-            <MdsChatComposer @bind-Value="_draft" OnSend="SendAsync" OnStop="StopAsync" IsBusy="_busy"
-                             MaxLength="500" Placeholder="Ask anything…">
-                <Actions>
-                    <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" />
-                </Actions>
-                <EndActions>
-                    <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Size="Size.Small" Color="Color.Inherit" />
-                </EndActions>
-            </MdsChatComposer>
-        </MdsChatLanding>
-    }
-    else
-    {
-        <MdsChatTranscript data-testid="chat-transcript">
-            @foreach (var m in _messages)
-            {
-                <MdsChatMessage @key="m"
-                                Position="m.IsUser ? MdsChatPosition.End : MdsChatPosition.Start"
-                                Variant="m.IsUser ? MdsChatBubbleVariant.Filled : MdsChatBubbleVariant.Plain"
-                                AuthorName="@(m.IsUser ? "You" : "Assistant")"
-                                AvatarIcon="@(m.IsUser ? null : Icons.Material.Filled.AutoAwesome)"
-                                Timestamp="m.At"
-                                Parts="m.Parts"
-                                Registry="_registry"
-                                data-testid="@(m.IsUser ? "chat-message-user" : "chat-message-assistant")">
-                    @if (m.IsUser)
-                    {
-                        @m.Text
-                    }
-                    else
-                    {
-                        <MdsChatStream @ref="m.Stream" IsStreaming="true" />
-                    }
-                </MdsChatMessage>
-            }
-        </MdsChatTranscript>
-        <div class="pt-2">
-            <MdsChatComposer @bind-Value="_draft" OnSend="SendAsync" OnStop="StopAsync" IsBusy="_busy"
-                             MaxLength="500" MaxWidth="100%" Placeholder="Ask anything…" />
-        </div>
-    }
-</MudContainer>
+        @if (_messages.Count == 0)
+        {
+            <MdsChatLanding Greeting="Great to see you again. What's the latest?"
+                            Prompts="@_suggestions"
+                            OnPromptSelected="SendAsync"
+                            data-testid="chat-landing">
+                <MdsChatComposer @bind-Value="_draft" OnSend="SendAsync" OnStop="StopAsync" IsBusy="_busy"
+                                 MaxLength="500" Placeholder="Ask anything…">
+                    <Actions>
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" />
+                    </Actions>
+                    <EndActions>
+                        <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Size="Size.Small" Color="Color.Inherit" />
+                    </EndActions>
+                </MdsChatComposer>
+            </MdsChatLanding>
+        }
+        else
+        {
+            <MdsChatTranscript data-testid="chat-transcript">
+                @foreach (var m in _messages)
+                {
+                    <MdsChatMessage @key="m"
+                                    Position="m.IsUser ? MdsChatPosition.End : MdsChatPosition.Start"
+                                    Variant="m.IsUser ? MdsChatBubbleVariant.Filled : MdsChatBubbleVariant.Plain"
+                                    AuthorName="@(m.IsUser ? "You" : "Assistant")"
+                                    AvatarIcon="@(m.IsUser ? null : Icons.Material.Filled.AutoAwesome)"
+                                    Timestamp="m.At"
+                                    Parts="m.Parts"
+                                    Registry="_registry"
+                                    data-testid="@(m.IsUser ? "chat-message-user" : "chat-message-assistant")">
+                        @if (m.IsUser)
+                        {
+                            @m.Text
+                        }
+                        else
+                        {
+                            <MdsChatStream @ref="m.Stream" IsStreaming="true" />
+                        }
+                    </MdsChatMessage>
+                }
+            </MdsChatTranscript>
+        }
+    </Body>
+    <Footer>
+        @if (_messages.Count > 0)
+        {
+            <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-3">
+                <MdsChatComposer @bind-Value="_draft" OnSend="SendAsync" OnStop="StopAsync" IsBusy="_busy"
+                                 MaxLength="500" MaxWidth="100%" Placeholder="Ask anything…" />
+            </MudContainer>
+        }
+    </Footer>
+</MdsFillLayout>
 
 @code {
     private string _barDemo = "";

@@ -30,6 +30,12 @@ Registering them in both places causes a `System.InvalidOperationException` (dup
 
 ## Public methods
 
+Below 960 px, an expanded context panel overlays the main content instead of
+reducing its width. The overlay follows the current sidebar width, including
+custom widths, and is constrained to the available main content area. A collapsed
+context panel remains in the layout. The application still controls
+`ContextPanelExpanded`; the shell does not change that state on resize.
+
 | Method | Description |
 |---|---|
 | `ToggleSidebar()` | Flips `SidebarExpanded` and triggers re-render |

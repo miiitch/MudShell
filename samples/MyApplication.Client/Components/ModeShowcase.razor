@@ -1,19 +1,14 @@
 @namespace MyApplication.Client.Components
 
-<div class="showcase-wrap">
+<MudStack Spacing="4" Class="pa-4">
     @* Render mode badge *@
-    <div class="showcase-badge showcase-badge-@BadgeColor">
-        <MudIcon Icon="@BadgeIcon" Size="Size.Small" />
-        <span>@RenderModeName</span>
-    </div>
+    <MudChip T="string" Icon="@BadgeIcon" Color="@ModeColor">@RenderModeName</MudChip>
 
     @* Interactivity proof — counter *@
-    <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">✅ Interactivity check</MudText>
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+    <MdsMainSection Title="Interactivity check">
+        <MudStack Row AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Spacing="3">
             <MudButton Variant="Variant.Filled" Color="Color.Primary"
-                       OnClick="@(() => _count++)"
-                       Style="border-radius:12px; text-transform:none;">
+                       OnClick="@(() => _count++)">
                 Click
             </MudButton>
             <MudText>Clicks: <strong>@_count</strong></MudText>
@@ -21,34 +16,31 @@
             {
                 <MudChip T="string" Color="Color.Success" Size="Size.Small">Interactive ✓</MudChip>
             }
-        </div>
-    </section>
+        </MudStack>
+    </MdsMainSection>
 
     @* ChatBar *@
-    <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsChatBar</MudText>
+    <MdsMainSection Title="MdsChatBar">
         <MdsChatBar Placeholder="@("Type a message to test binding…")"
                     @bind-Value="_chatValue" />
         @if (!string.IsNullOrEmpty(_chatValue))
         {
-            <MudText Typo="Typo.caption" Style="margin-top:6px; color: var(--mud-palette-text-secondary);">
+            <MudText Typo="Typo.caption" Color="Color.Secondary">
                 Bound value: @_chatValue
             </MudText>
         }
-    </section>
+    </MdsMainSection>
 
     @* FilterTabBar *@
-    <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsFilterTabBar</MudText>
+    <MdsMainSection Title="MdsFilterTabBar">
         <MdsFilterTabBar T="string" @bind-Value="_tab" Items="@_tabs" />
-        <MudText Typo="Typo.caption" Style="margin-top:6px; color: var(--mud-palette-text-secondary);">
+        <MudText Typo="Typo.caption" Color="Color.Secondary">
             Selected tab: @_tab
         </MudText>
-    </section>
+    </MdsMainSection>
 
     @* DocumentCards *@
-    <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsDocumentCard</MudText>
+    <MdsMainSection Title="MdsDocumentCard">
         <MudGrid Spacing="3">
             @foreach (var card in _cards)
             {
@@ -63,18 +55,19 @@
         </MudGrid>
         @if (_lastCard is not null)
         {
-            <MudText Typo="Typo.caption" Style="margin-top:8px; color: var(--mud-palette-text-secondary);">
+            <MudText Typo="Typo.caption" Color="Color.Secondary">
                 Last card clicked: @_lastCard
             </MudText>
         }
-    </section>
+    </MdsMainSection>
 
-</div>
+</MudStack>
 
 @code {
     [Parameter] public string RenderModeName { get; set; } = "Unknown";
     [Parameter] public string BadgeColor     { get; set; } = "default";
     [Parameter] public string BadgeIcon      { get; set; } = Icons.Material.Outlined.Info;
+    private Color ModeColor => BadgeColor switch { "server" => Color.Info, "wasm" => Color.Success, "auto" => Color.Warning, _ => Color.Default };
 
     private int     _count     = 0;
     private string  _chatValue = string.Empty;

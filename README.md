@@ -132,6 +132,10 @@ across in-app navigation; the showcase does not expose custom color editing.
 Historical demo URLs remain available as aliases. Background and render-mode
 variants are compatibility scenarios, not additional catalogue entries.
 
+The sample has no stylesheets or inline CSS. Pages compose MudShell components
+and MudBlazor controls using their public parameters and built-in utilities.
+Layout fixes belong in MudShell, not in sample-specific overrides.
+
 Run the sample with `dotnet run --project samples\MyApplication` and run UI tests
 against the running instance using `PLAYWRIGHT_TEST_BASE_URL` (default
 `http://localhost:5265`):

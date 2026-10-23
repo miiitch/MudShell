@@ -4,17 +4,16 @@
 @inject ThemeState ThemeState
 @implements IDisposable
 
-<div class="theme-panel">
+<MudStack Spacing="2" Class="pa-3">
     <MudText Typo="Typo.subtitle2">Theme preset</MudText>
 
-    <div class="theme-panel-row">
+    <MudStack Spacing="2">
         <MudSelect T="MbxTheme.MbxThemePreset"
                    Label="Theme"
                    Dense="true"
                    data-testid="theme-preset"
                    Value="@ThemeState.SelectedPreset"
-                   ValueChanged="@OnPresetChanged"
-                   Class="theme-panel-select">
+                   ValueChanged="@OnPresetChanged">
             @foreach (var preset in ThemeState.Presets.OrderBy(p => p.Label))
             {
                 <MudSelectItem Value="@preset.Preset">@preset.Label</MudSelectItem>
@@ -27,27 +26,27 @@
                    ValueChanged="@ThemeState.SetDarkMode"
                    data-testid="theme-dark-mode"
                    Label="Dark mode" />
-    </div>
+    </MudStack>
 
-    <div class="theme-panel-row">
+    <MudStack>
         <MudSwitch T="bool"
                    Color="Color.Primary"
                    Value="@IsImageMode"
                    ValueChanged="@OnBackgroundModeChanged"
                    data-testid="theme-background"
                    Label="@(IsImageMode ? "Image background" : "Palette background")" />
-    </div>
+    </MudStack>
 
-    <div class="theme-panel-row">
+    <MudStack>
         <MudSwitch T="bool"
                    Color="Color.Primary"
                    Value="@IsCompactDensity"
                    ValueChanged="@OnDensityChanged"
                    data-testid="theme-density"
                    Label="@(IsCompactDensity ? "Compact" : "Comfortable")" />
-    </div>
+    </MudStack>
 
-</div>
+</MudStack>
 
 @code {
     protected override void OnInitialized()

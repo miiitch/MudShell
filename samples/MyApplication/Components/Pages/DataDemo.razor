@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 
 <PageTitle>Metrics and data — MudShell</PageTitle>
-<div class="showcase-page">
+<MudStack Spacing="3" Class="pa-4">
     <ShowcaseHeader FamilyId="data" />
     <MdsMainSection Title="Values and trends">
         <MdsStatStrip>
@@ -29,7 +29,7 @@
         <p>The application supplies the data: these components do not make network requests.</p>
         <MudLink Href="/examples/workspace/detail">See these metrics on a detail page</MudLink>
     </ShowcaseDetails>
-</div>
+</MudStack>
 
 @code {
     private bool _empty;

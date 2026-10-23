@@ -10,8 +10,10 @@
     box-sizing: border-box;
 }
 
-.mds-fill-layout-header {
+.mds-fill-layout-header,
+.mds-fill-layout-footer {
     flex: 0 0 auto;
+    min-width: 0;
 }
 
 /* Bands never wrap to extra rows: children overflow horizontally instead. */

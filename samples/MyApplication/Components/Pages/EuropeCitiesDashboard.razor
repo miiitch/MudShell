@@ -18,12 +18,7 @@
                 @foreach (var widget in _widgets)
                 {
                     <MudItem xs="12" sm="6" lg="3">
-                        <MudStack AlignItems="AlignItems.Start" Spacing="0" Class="pa-3"
-                                  Style="background:var(--mud-palette-background-grey); border-radius:8px;">
-                            <MudText Typo="Typo.caption" Color="Color.Secondary">@widget.Label</MudText>
-                            <MudText Typo="Typo.h4">@widget.Value</MudText>
-                            <MudText Typo="Typo.caption" Color="Color.Success">@widget.Trend</MudText>
-                        </MudStack>
+                        <MdsStatTile Label="@widget.Label" Value="@widget.Value" Delta="@widget.Trend" DeltaTone="MbxDeltaTone.Positive" />
                     </MudItem>
                 }
             </MudGrid>

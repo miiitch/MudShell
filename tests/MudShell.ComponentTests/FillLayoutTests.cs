@@ -18,6 +18,20 @@ public class FillLayoutTests
     }
 
     [Fact]
+    public void Should_RenderOptionalFooterAfterBody()
+    {
+        using var context = NewContext();
+        var rendered = context.RenderComponent<MdsFillLayout>(p => p
+            .Add(c => c.Body, (RenderFragment)(b => b.AddContent(0, "transcript")))
+            .Add(c => c.Footer, (RenderFragment)(b => b.AddContent(0, "composer"))));
+
+        Assert.Equal(
+            ["mds-fill-layout-body", "mds-fill-layout-footer"],
+            rendered.Find(".mds-fill-layout").Children.Select(c => c.ClassList.First()).ToArray());
+        Assert.Equal("composer", rendered.Find(".mds-fill-layout-footer").TextContent);
+    }
+
+    [Fact]
     public void Should_RenderHeaderBandsAndBodyInOrder_When_AllSlotsProvided()
     {
         // Given
@@ -52,6 +66,7 @@ public class FillLayoutTests
         // Then
         Assert.Empty(rendered.FindAll(".mds-fill-layout-header"));
         Assert.Empty(rendered.FindAll(".mds-fill-layout-bands"));
+        Assert.Empty(rendered.FindAll(".mds-fill-layout-footer"));
         Assert.Equal("body", rendered.Find(".mds-fill-layout-body").TextContent);
     }
 

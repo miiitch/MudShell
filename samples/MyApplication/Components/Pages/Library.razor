@@ -2,7 +2,7 @@
 @page "/examples/library"
 @rendermode InteractiveServer
 
-<div class="showcase-page">
+<MudStack Spacing="3" Class="pa-4">
     <MdsPageHeader Title="Library" BreadcrumbItems="@_breadcrumbs" />
     <MdsMainToolbar>
         <MudTooltip Text="Add a sample document">
@@ -14,13 +14,15 @@
     </MdsMainToolbar>
     <MudTextField T="string" @bind-Value="_query" Immediate Label="Search documents" Class="mb-3" />
     <MdsFilterTabBar T="string" Items="@_tabs" @bind-Value="_selectedTab" />
-    <div class="showcase-cards my-4">
+    <MudGrid>
         @foreach (var doc in Visible)
         {
+            <MudItem xs="12" md="6" lg="4">
             <MdsDocumentCard Icon="@Icons.Material.Outlined.Description" TypeLabel="@doc.Kind"
                              Title="@doc.Title" Description="@doc.Description" />
+            </MudItem>
         }
-    </div>
+    </MudGrid>
     @if (!Visible.Any())
     {
         <MdsMainEmptyState Title="No documents" Description="Change the search or add a sample document.">
@@ -28,7 +30,7 @@
         </MdsMainEmptyState>
     }
     <ShowcaseDetails FamilyId="documents" />
-</div>
+</MudStack>
 
 @code {
     private string _selectedTab = "all";

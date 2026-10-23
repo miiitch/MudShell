@@ -2,12 +2,16 @@
 @rendermode InteractiveServer
 
 <PageTitle>Technical — MudShell</PageTitle>
-<div class="showcase-page">
+<MudStack Spacing="3" Class="pa-4">
     <MdsPageHeader Title="Integration and compatibility" />
     <p>Technical details stay accessible without getting mixed into the visual catalogue.</p>
-    <div class="showcase-cards">
-        <a class="showcase-card" href="https://github.com/miiitch/MudShell/blob/main/src/docs/getting-started.md"><h2>Install and integrate</h2><p>Register services, imports and MudBlazor providers once at the root.</p></a>
-        <a class="showcase-card" href="/modes"><h2>Blazor compatibility</h2><p>Static SSR, Server and Auto (with WebAssembly loading): dedicated scenarios and interactivity constraints.</p></a>
-        <a class="showcase-card" href="/density"><h2>Appearance and density</h2><p>Compare densities and select a theme preset through Appearance in the sidebar.</p></a>
-    </div>
-</div>
+    <MdsMainSection Title="Install and integrate" Description="Register services, imports and MudBlazor providers once at the root.">
+        <MdsMainButton Href="https://github.com/miiitch/MudShell/blob/main/src/docs/getting-started.md">Integration guide</MdsMainButton>
+    </MdsMainSection>
+    <MdsMainSection Title="Blazor compatibility" Description="Static SSR, Server and Auto (with WebAssembly loading): dedicated scenarios and interactivity constraints.">
+        <MdsMainButton Href="/modes">Explore render modes</MdsMainButton>
+    </MdsMainSection>
+    <MdsMainSection Title="Appearance and density" Description="Compare densities and select a theme preset through Appearance in the sidebar.">
+        <MdsMainButton Href="/density">Compare densities</MdsMainButton>
+    </MdsMainSection>
+</MudStack>

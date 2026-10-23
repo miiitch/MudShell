@@ -1,12 +1,12 @@
-<details id="details" class="showcase-details">
+<details id="details">
     <summary>Usage and technical details</summary>
     <div class="pa-4">
-        <div class="showcase-component-list mb-3">
+        <MudStack Spacing="1" Class="mb-3">
             @foreach (var component in Family.Components)
             {
-                <code>@component</code>
+                <MudText Typo="Typo.caption">@component</MudText>
             }
-        </div>
+        </MudStack>
         @ChildContent
         <MudLink Href="@DocumentationUrl" Target="_blank">Component documentation</MudLink>
         <span class="mx-2">·</span><MudLink Href="/technical">Integration and compatibility</MudLink>

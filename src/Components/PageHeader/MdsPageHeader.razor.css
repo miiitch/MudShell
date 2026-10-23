@@ -1,6 +1,10 @@
 /* =====================================================================
    MdsPageHeader — header de page
    ===================================================================== */
+.mbx-page-header-host {
+    min-width: 0;
+}
+
 ::deep .mbx-page-header.mud-toolbar {
     padding: var(--mbx-space-5) var(--mbx-space-6) var(--mbx-space-3) var(--mbx-space-6);
     gap: var(--mbx-space-4);
@@ -60,6 +64,13 @@
 .mbx-page-header-end {
     margin-left: auto;
     gap: var(--mbx-space-2);
+}
+
+@media (max-width: 959px) {
+    ::deep .mbx-page-header.mud-toolbar {
+        flex-wrap: wrap;
+        gap: var(--mbx-space-2);
+    }
 }
 
 @media (max-width: 599px) {

@@ -2,16 +2,18 @@
 @rendermode InteractiveServer
 
 <PageTitle>Documents and filters — MudShell</PageTitle>
-<div class="showcase-page">
+<MudStack Spacing="3" Class="pa-4">
     <ShowcaseHeader FamilyId="documents" />
     <MdsFilterTabBar T="string" Items="@_tabs" @bind-Value="_filter" />
-    <div class="showcase-cards my-4">
+    <MudGrid>
         @foreach (var doc in _documents.Where(d => _filter == "all" || d.Kind == _filter))
         {
+            <MudItem xs="12" md="6" lg="4">
             <MdsDocumentCard Title="@doc.Title" TypeLabel="@doc.Kind" Description="@doc.Description"
                              Icon="@Icons.Material.Outlined.Description" OnClick="@(() => _selected = doc.Title)" />
+            </MudItem>
         }
-    </div>
+    </MudGrid>
     @if (_selected is not null)
     {
         <MudText role="status" data-testid="document-selection">Selected card: @_selected</MudText>
@@ -22,10 +24,10 @@
     }
     <ShowcaseDetails FamilyId="documents">
         <p>The page controls the filter through Value/ValueChanged. Cards are independent of the grid used to arrange them.</p>
-        <pre>&lt;MdsFilterTabBar T="string" Items="tabs" @("@bind-Value=\"filter\"") /&gt;</pre>
+        <MudText Typo="Typo.caption">&lt;MdsFilterTabBar T="string" Items="tabs" @("@bind-Value=\"filter\"") /&gt;</MudText>
         <MudLink Href="/examples/library">View the complete library</MudLink>
     </ShowcaseDetails>
-</div>
+</MudStack>
 
 @code {
     private string _filter = "all";

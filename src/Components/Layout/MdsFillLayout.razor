@@ -10,6 +10,10 @@
         <div class="mds-fill-layout-bands">@Bands</div>
     }
     <div class="mds-fill-layout-body">@(Body ?? ChildContent)</div>
+    @if (Footer is not null)
+    {
+        <div class="mds-fill-layout-footer">@Footer</div>
+    }
 </div>
 
 @code {
@@ -25,6 +29,9 @@
 
     /// <summary>The remaining space. Hidden overflow: put an <c>MdsFillRegion</c> or <c>MdsSplitPane</c> inside.</summary>
     [Parameter] public RenderFragment? Body { get; set; }
+
+    /// <summary>Fixed content below the body, such as a composer or action bar.</summary>
+    [Parameter] public RenderFragment? Footer { get; set; }
 
     /// <summary>Alias of <see cref="Body"/> when no <c>&lt;Body&gt;</c> slot is given.</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }

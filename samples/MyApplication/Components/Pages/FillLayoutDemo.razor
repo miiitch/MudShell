@@ -29,7 +29,7 @@
             <MdsStatTile Label="Avg score" Value="@_rows.Average(r => r.Score).ToString("0.0")" />
             <MdsStatTile Label="By kind">
                 <ValueContent>
-                    <MdsDistributionBar Segments="@_distribution" MaxSegments="3" Class="mds-demo-dist" />
+                    <MdsDistributionBar Segments="@_distribution" MaxSegments="3" />
                 </ValueContent>
             </MdsStatTile>
         </MdsStatStrip>
@@ -43,8 +43,7 @@
                              Hover="true"
                              FixedHeader="true"
                              RowsPerPage="50"
-                             RowClick="@OnRowClick"
-                             RowClass="mds-demo-row">
+                             RowClick="@OnRowClick">
                     <Columns>
                         <PropertyColumn Property="r => r.Id" Title="#" />
                         <PropertyColumn Property="r => r.Name" Title="Name" />

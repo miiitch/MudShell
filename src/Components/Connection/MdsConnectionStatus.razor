@@ -1,6 +1,13 @@
-<script type="module" src="@Assets["Components/Layout/ReconnectModal.razor.js"]"></script>
+@namespace MudShell.Components.Connection
 
-<dialog id="components-reconnect-modal" data-nosnippet>
+<script type="module" src="_content/MudShell/Components/Connection/MdsConnectionStatus.razor.js"></script>
+
+<div id="blazor-error-ui" role="alert" data-nosnippet>
+    An unexpected error occurred.
+    <a href=".">Reload</a>
+</div>
+
+<dialog id="components-reconnect-modal" aria-label="Connection interrupted" data-nosnippet @attributes="AdditionalAttributes">
     <div class="components-reconnect-backdrop">
         <section class="components-reconnect-surface" aria-live="assertive" aria-atomic="true">
             <header class="components-reconnect-header">
@@ -46,3 +53,9 @@
         </section>
     </div>
 </dialog>
+
+@code {
+    /// <summary>Additional attributes forwarded to the reconnect dialog.</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

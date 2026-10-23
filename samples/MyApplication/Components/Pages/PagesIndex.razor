@@ -2,31 +2,32 @@
 @rendermode InteractiveServer
 
 <PageTitle>Components — MudShell</PageTitle>
-<div class="showcase-page" data-testid="showcase-catalog">
+<MudStack Spacing="3" Class="pa-4" data-testid="showcase-catalog">
     <MdsPageHeader Title="Find the right building block." BreadcrumbItems="@_breadcrumbs" />
     <p>Browse by use case. Every component is listed by name.</p>
     <MudTextField T="string" Value="@_query" ValueChanged="@(value => _query = value)" Immediate
                   Label="Search for a family or component" data-testid="catalog-search" Class="mb-5" />
-    <div class="showcase-cards">
+    <MudGrid>
         @foreach (var family in Matches)
         {
-            <a class="showcase-card" href="@family.Href" data-testid="@($"catalog-family-{family.Id}")">
-                <MudIcon Icon="@family.Icon" Color="Color.Primary" />
-                <h2>@family.Title</h2><p>@family.Description</p>
-                <div class="showcase-component-list">
+            <MudItem xs="12" md="6" lg="4">
+            <MdsMainPart Title="@family.Title" Icon="@family.Icon" Subtitle="@family.Description" data-testid="@($"catalog-family-{family.Id}")">
+                <MudStack Spacing="1">
                     @foreach (var component in family.Components)
                     {
-                        <code>@component</code>
+                        <MudText Typo="Typo.caption">@component</MudText>
                     }
-                </div>
-            </a>
+                </MudStack>
+                <MdsMainButton Href="@family.Href" Variant="Variant.Text">Explore components</MdsMainButton>
+            </MdsMainPart>
+            </MudItem>
         }
-    </div>
+    </MudGrid>
     @if (!Matches.Any())
     {
         <MdsMainEmptyState Title="No matching components" Description="Try a component name or another use case." />
     }
-</div>
+</MudStack>
 
 @code {
     private string _query = "";

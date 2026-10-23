@@ -8,9 +8,7 @@
     <ResourcePreloader />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" />
-    <link rel="stylesheet" href="@Assets["MyApplication.styles.css"]" />
-    <link rel="stylesheet" href="MyApplication.Client.styles.css" />
-    <link rel="stylesheet" href="@Assets["css/app.css"]" />
+    <link rel="stylesheet" href="@Assets["_content/MudShell/MudShell.bundle.scp.css"]" />
     <ImportMap />
     <link rel="icon" type="image/ico" href="favicon.ico" />
     <HeadOutlet @rendermode="InteractiveServer" />
@@ -18,7 +16,7 @@
 
 <body>
     <Routes @rendermode="InteractiveServer" />
-    <ReconnectModal />
+    <MudShell.Components.Connection.MdsConnectionStatus />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
     <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
 </body>

@@ -1,4 +1,4 @@
-// Set up event handlers
+// These handlers must remain available while the Blazor circuit is disconnected.
 const reconnectModal = document.getElementById("components-reconnect-modal");
 reconnectModal.addEventListener("components-reconnect-state-changed", handleReconnectStateChanged);
 

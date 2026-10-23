@@ -52,6 +52,7 @@ The title can also be synced automatically to browser `PageTitle`.
 
 ## Responsive
 
+Below 960 px, the header can wrap its core row and actions with compact spacing.
 On xs (≤ 599 px):
 - Header wraps cleanly
 - Core row (icon/path/title) stays vertically centered

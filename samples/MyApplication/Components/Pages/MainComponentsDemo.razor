@@ -3,7 +3,7 @@
 @rendermode InteractiveServer
 
 <PageTitle>Page composition — MudShell</PageTitle>
-<div class="showcase-page" data-testid="composition-demo">
+<MudStack Spacing="3" Class="pa-4" data-testid="composition-demo">
     <ShowcaseHeader FamilyId="composition" />
     <MdsMainToolbar>
         <MudTooltip Text="Add a sample item">
@@ -18,8 +18,8 @@
         <MudSpacer />
         <span data-testid="composition-count">Items added: @_counter</span>
     </MdsMainToolbar>
-    <div class="showcase-demo-grid">
-        <div>
+    <MudGrid>
+        <MudItem xs="12" lg="8">
             <MdsMainSection Title="Recent documents" Description="A title, a description and structured content.">
                 <MdsMainPart Title="Results" IsLoading="@(_state == "loading")"
                              Error="@(_state == "error" ? "Simulated error: unable to load documents." : null)"
@@ -43,9 +43,9 @@
                     <MdsMainStatusBadge Label="Error" Status="error" />
                 </MudStack>
             </MdsMainSection>
-        </div>
-        <aside class="showcase-controls">
-            <h2>Try the states</h2>
+        </MudItem>
+        <MudItem xs="12" lg="4">
+        <MdsMainSection Title="Try the states">
             <MudSelect T="string" Label="Section state" @bind-Value="_state" data-testid="composition-state">
                 <MudSelectItem Value="@("content")">Content</MudSelectItem>
                 <MudSelectItem Value="@("loading")">Simulated loading</MudSelectItem>
@@ -53,13 +53,14 @@
                 <MudSelectItem Value="@("error")">Simulated error</MudSelectItem>
             </MudSelect>
             <p>These controls affect the demo, not the showcase appearance.</p>
-        </aside>
-    </div>
+        </MdsMainSection>
+        </MudItem>
+    </MudGrid>
     <ShowcaseDetails FamilyId="composition">
-        <pre>&lt;MdsMainPart Title="Results" IsLoading="loading" Error="error" OnRetry="Reload"&gt;...&lt;/MdsMainPart&gt;</pre>
+        <MudText Typo="Typo.caption">&lt;MdsMainPart Title="Results" IsLoading="loading" Error="error" OnRetry="Reload"&gt;...&lt;/MdsMainPart&gt;</MudText>
         <p>The toolbar contains actions. List page filters belong on a separate row.</p>
     </ShowcaseDetails>
-</div>
+</MudStack>
 
 @code {
     private int _counter;

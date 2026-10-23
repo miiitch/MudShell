@@ -5,7 +5,7 @@
 <PageTitle>Fill layout - list</PageTitle>
 
 @* Assembly of generic blocks: the page never scrolls, only the grid body and the side pane do. *@
-<MdsFillLayout>
+<MdsFillLayout Class="pa-4 gap-3" data-testid="workspace-layout">
     <Header>
         <MdsPageHeader Title="Resources"
                        BreadcrumbItems="@_breadcrumbs"
@@ -37,36 +37,42 @@
     <Body>
         <MdsSplitPane StorageKey="mudshell.demo.fill-list" @bind-SideOpen="_sideOpen">
             <Main>
-                <MudDataGrid T="DemoRow"
-                             Items="@Visible"
-                             Dense="true"
-                             Hover="true"
-                             FixedHeader="true"
-                             RowsPerPage="50"
-                             RowClick="@OnRowClick">
-                    <Columns>
-                        <PropertyColumn Property="r => r.Id" Title="#" />
-                        <PropertyColumn Property="r => r.Name" Title="Name" />
-                        <PropertyColumn Property="r => r.Kind" Title="Kind" />
-                        <PropertyColumn Property="r => r.Score" Title="Score" />
-                        <TemplateColumn Title="Trend" Sortable="false">
-                            <CellTemplate>
-                                <MdsSparkline Values="@context.Item.Trend" Tone="@(context.Item.Failing ? MbxTone.Danger : MbxTone.Default)" />
-                            </CellTemplate>
-                        </TemplateColumn>
-                        <TemplateColumn Title="Last runs" Sortable="false">
-                            <CellTemplate>
-                                <MdsRunStrip Runs="@context.Item.Runs" />
-                            </CellTemplate>
-                        </TemplateColumn>
-                    </Columns>
-                    <PagerContent>
-                        <MudDataGridPager T="DemoRow" PageSizeOptions="@(new[] { 25, 50, 100 })" />
-                    </PagerContent>
-                </MudDataGrid>
+                <MdsMainPart Title="Resource list" Class="d-flex flex-column flex-grow-1"
+                             data-testid="workspace-grid-part">
+                    <MdsFillRegion Class="flex-grow-1" data-testid="workspace-grid-frame">
+                        <MudDataGrid T="DemoRow"
+                                     Items="@Visible"
+                                     Dense="true"
+                                     Hover="true"
+                                     FixedHeader="true"
+                                     RowsPerPage="50"
+                                     RowClick="@OnRowClick">
+                            <Columns>
+                                <PropertyColumn Property="r => r.Id" Title="#" />
+                                <PropertyColumn Property="r => r.Name" Title="Name" />
+                                <PropertyColumn Property="r => r.Kind" Title="Kind" />
+                                <PropertyColumn Property="r => r.Score" Title="Score" />
+                                <TemplateColumn Title="Trend" Sortable="false">
+                                    <CellTemplate>
+                                        <MdsSparkline Values="@context.Item.Trend" Tone="@(context.Item.Failing ? MbxTone.Danger : MbxTone.Default)" />
+                                    </CellTemplate>
+                                </TemplateColumn>
+                                <TemplateColumn Title="Last runs" Sortable="false">
+                                    <CellTemplate>
+                                        <MdsRunStrip Runs="@context.Item.Runs" />
+                                    </CellTemplate>
+                                </TemplateColumn>
+                            </Columns>
+                            <PagerContent>
+                                <MudDataGridPager T="DemoRow" PageSizeOptions="@(new[] { 25, 50, 100 })" />
+                            </PagerContent>
+                        </MudDataGrid>
+                    </MdsFillRegion>
+                </MdsMainPart>
             </Main>
             <Side>
-                <div class="pa-3">
+                <MdsMainPart Title="Resource preview" Class="d-flex flex-column flex-grow-1"
+                             data-testid="workspace-preview">
                     @if (_selected is null)
                     {
                         <MudText Typo="Typo.body2" Color="Color.Secondary">Select a row to preview it here.</MudText>
@@ -87,7 +93,7 @@
                             <MudText Typo="Typo.body2" Class="mt-2">Detail line @(i + 1) - the side pane scrolls on its own.</MudText>
                         }
                     }
-                </div>
+                </MdsMainPart>
             </Side>
         </MdsSplitPane>
     </Body>

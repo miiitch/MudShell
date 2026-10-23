@@ -2,14 +2,14 @@
 @rendermode InteractiveServer
 
 <PageTitle>Layouts — MudShell</PageTitle>
-<MdsFillLayout>
+<MdsFillLayout Class="pa-4 gap-3" data-testid="layouts-demo">
     <Header><ShowcaseHeader FamilyId="layouts" /></Header>
     <Bands>
-        <MudStack Row Wrap="Wrap.Wrap" Class="px-4 pb-2">
-            <MudButton Href="/examples/workspace">List and preview example</MudButton>
-            <MudButton Href="/examples/workspace/detail">Detail page example</MudButton>
-        </MudStack>
-        <div class="px-4">
+        <MudStack Spacing="3">
+            <MudStack Row Wrap="Wrap.Wrap">
+                <MudButton Href="/examples/workspace">List and preview example</MudButton>
+                <MudButton Href="/examples/workspace/detail">Detail page example</MudButton>
+            </MudStack>
             <ShowcaseDetails FamilyId="layouts">
                 <p>Header and Bands stay fixed; Body fills the remaining space. Leaf regions handle their own scrolling.</p>
                 <MudText Typo="Typo.caption">&lt;MdsFillLayout&gt;
@@ -18,7 +18,7 @@
   &lt;Body&gt;&lt;MdsSplitPane&gt;...&lt;/MdsSplitPane&gt;&lt;/Body&gt;
 &lt;/MdsFillLayout&gt;</MudText>
             </ShowcaseDetails>
-        </div>
+        </MudStack>
     </Bands>
     <Body>
         <MdsTabbedFill data-testid="layout-tabs">

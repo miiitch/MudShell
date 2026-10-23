@@ -1,7 +1,7 @@
 @namespace MudShell.Components.MainContent
 
 <MudPaper Elevation="2" Class="@RootClass" Style="@RootStyle" @attributes="AdditionalAttributes">
-    <MudStack Spacing="2">
+    <MudStack Spacing="2" Class="flex-grow-1">
         @if (!string.IsNullOrWhiteSpace(Title) || HeaderActions is not null)
         {
             <div class="d-flex align-center justify-space-between gap-3">

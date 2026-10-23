@@ -20,6 +20,7 @@ MudContainer
 3. **Filters below** — render filters as `MudChip` items in a horizontal `MudStack`.
 4. **No paper wrapper around filters** — the filter row sits directly on the page background.
 5. **Content blocks next** — use `MdsMainPart` or `MdsMainSection` for the body.
+6. **No nested content wrappers** — never put an `MdsMainPart` inside another `MdsMainPart` or an `MdsMainSection`. Choose one wrapper per surface and place wrapper blocks as siblings.
 
 ## Example
 
@@ -126,6 +127,8 @@ Use for:
 - broader grouped content,
 - a section with description and divider,
 - component galleries or grouped page areas.
+
+Do not put `MdsMainPart` inside a section; use a section for unwrapped grouped content, or use sibling parts when each block needs its own surface.
 
 ## Practical guidance
 

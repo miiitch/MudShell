@@ -114,6 +114,20 @@ public class ShowcaseTests : PlaywrightTestBase
     });
 
     [Fact]
+    public Task Composition_DoesNotNestPartsInsideSections() => RunAsync(
+        nameof(Composition_DoesNotNestPartsInsideSections), async () =>
+    {
+        await Page.GotoAsync("/components/composition", new() { WaitUntil = WaitUntilState.NetworkIdle });
+        var documentsSection = Page.GetByTestId("composition-documents");
+        await Assertions.Expect(documentsSection.Locator(".mud-paper")).ToHaveCountAsync(0);
+        await Assertions.Expect(documentsSection.GetByText("Project overview", new() { Exact = true })).ToBeVisibleAsync();
+
+        await Page.GetByRole(AriaRole.Combobox, new() { Name = "Section state" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Option, new() { Name = "Simulated error", Exact = true }).ClickAsync();
+        await Assertions.Expect(documentsSection.GetByRole(AriaRole.Button, new() { Name = "Retry" })).ToBeVisibleAsync();
+    });
+
+    [Fact]
     public Task Appearance_UsesPresetsAndPersistsAcrossNavigation() => RunAsync(nameof(Appearance_UsesPresetsAndPersistsAcrossNavigation), async () =>
     {
         await Page.GotoAsync("/", new() { WaitUntil = WaitUntilState.NetworkIdle });
@@ -185,10 +199,51 @@ public class ShowcaseTests : PlaywrightTestBase
     });
 
     [Fact]
+    public Task Workspace_UsesPartSpacingAndKeepsGridScrolling() => RunAsync(
+        nameof(Workspace_UsesPartSpacingAndKeepsGridScrolling), async () =>
+    {
+        await Page.SetViewportSizeAsync(1440, 900);
+        await Page.GotoAsync("/examples/workspace", new() { WaitUntil = WaitUntilState.NetworkIdle });
+
+        var layout = Page.GetByTestId("workspace-layout");
+        var gridFrame = Page.GetByTestId("workspace-grid-frame");
+        var preview = Page.GetByTestId("workspace-preview");
+        var gridPart = Page.GetByTestId("workspace-grid-part");
+        Assert.Equal("16px", await layout.EvaluateAsync<string>("el => getComputedStyle(el).padding"));
+        Assert.Equal("12px", await layout.EvaluateAsync<string>("el => getComputedStyle(el).gap"));
+        Assert.Equal("16px", await gridPart.EvaluateAsync<string>("el => getComputedStyle(el).padding"));
+        Assert.Equal("16px", await preview.EvaluateAsync<string>("el => getComputedStyle(el).padding"));
+        await Assertions.Expect(gridPart.Locator("> .mud-paper")).ToHaveCountAsync(0);
+        await Assertions.Expect(gridPart).ToHaveClassAsync(new Regex("mud-paper"));
+        await Assertions.Expect(preview).ToHaveClassAsync(new Regex("mud-paper"));
+
+        var header = Page.Locator(".mbx-page-header");
+        var headerBefore = await header.BoundingBoxAsync();
+        var tableBody = gridFrame.Locator(".mud-table-container");
+        await tableBody.EvaluateAsync("el => el.scrollTop = 300");
+        Assert.True(await tableBody.EvaluateAsync<double>("el => el.scrollTop") > 100);
+        await gridFrame.GetByText("Asset 001", new() { Exact = true }).ClickAsync();
+        await Assertions.Expect(preview.GetByText("Asset 001", new() { Exact = true })).ToBeVisibleAsync();
+        var previewRegion = layout.Locator(".mds-split-side .mds-fill-region");
+        await previewRegion.EvaluateAsync("el => el.scrollTop = 300");
+        var previewMetrics = await previewRegion.EvaluateAsync<string>("el => `${el.scrollTop}/${el.scrollHeight}/${el.clientHeight}`");
+        Assert.True(await previewRegion.EvaluateAsync<double>("el => el.scrollTop") > 100, previewMetrics);
+        var headerAfter = await header.BoundingBoxAsync();
+        Assert.Equal(headerBefore!.Y, headerAfter!.Y);
+        await Assertions.Expect(Page.GetByRole(AriaRole.Separator, new() { Name = "Resize side pane" })).ToBeVisibleAsync();
+        await Assertions.Expect(Page.Locator("#blazor-error-ui")).ToBeHiddenAsync();
+
+        await Page.SetViewportSizeAsync(390, 900);
+        Assert.True(await Page.EvaluateAsync<bool>("document.documentElement.scrollWidth <= window.innerWidth"));
+    });
+
+    [Fact]
     public Task Layouts_ScrollsLeavesAndResizesWithoutMovingHeader() => RunAsync(nameof(Layouts_ScrollsLeavesAndResizesWithoutMovingHeader), async () =>
     {
         await Page.SetViewportSizeAsync(1440, 900);
         await Page.GotoAsync("/components/layouts", new() { WaitUntil = WaitUntilState.NetworkIdle });
+        var layout = Page.GetByTestId("layouts-demo");
+        Assert.Equal("16px", await layout.EvaluateAsync<string>("el => getComputedStyle(el).padding"));
         var header = Page.Locator(".mbx-page-header");
         var headerBefore = await header.BoundingBoxAsync();
         var mainLeaf = Page.GetByTestId("layout-split").Locator(".mds-split-main .mds-fill-region");

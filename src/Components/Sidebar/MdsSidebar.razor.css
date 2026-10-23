@@ -114,14 +114,15 @@
 }
 
 /* ── Divider ─────────────────────────────────────────────────────────── */
-.mbx-nav-divider {
+::deep .mbx-nav-divider {
     width: 28px !important;
     height: 1px;
+    flex-grow: 0 !important;
     margin: var(--mbx-space-2) auto !important;
     transition: width 0.3s cubic-bezier(.4,0,.2,1);
 }
 
-.mbx-nav-divider.mbx-nav-divider-wide {
+::deep .mbx-nav-divider.mbx-nav-divider-wide {
     width: calc(100% - 12px) !important;
 }
 

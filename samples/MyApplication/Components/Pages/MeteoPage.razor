@@ -46,23 +46,23 @@
                      OnClick="@(() => _selectedCity = "Marseille")">Marseille</MudChip>
     </MudStack>
 
-    <MdsMainPart Title="Summary" Icon="@Icons.Material.Outlined.WbSunny">
+    <MdsMainSection Title="Summary" Icon="@Icons.Material.Outlined.WbSunny">
         <MudGrid Spacing="3">
             @foreach (var tile in _tiles)
             {
                 <MudItem xs="12" sm="6" md="3">
-                    <MdsMainPart Title="@tile.Label" Icon="@tile.Icon">
+                    <MudStack Spacing="1">
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
                             <MudIcon Icon="@tile.Icon" Size="Size.Small" Color="Color.Secondary" />
                             <MudText Typo="Typo.caption" Color="Color.Secondary">@tile.Label</MudText>
                         </MudStack>
                         <MudText Typo="Typo.h4" Color="@tile.ValueColor">@tile.Value</MudText>
                         <MudText Typo="Typo.caption" Color="Color.Secondary">@tile.Sub</MudText>
-                    </MdsMainPart>
+                    </MudStack>
                 </MudItem>
             }
         </MudGrid>
-    </MdsMainPart>
+    </MdsMainSection>
 
     <MdsMainPart Title="Hourly forecast" Icon="@Icons.Material.Outlined.Schedule">
         <MudTable T="HourlyRow" Items="@_hourly" Hover="true" Dense="@_isDense" Elevation="0">

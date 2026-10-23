@@ -106,6 +106,32 @@ public class AppShellTests : PlaywrightTestBase
         await Assertions.Expect(Page.Locator(".mbx-sidebar")).ToBeVisibleAsync();
     });
 
+    [Theory]
+    [InlineData(150, 1033)]
+    [InlineData(390, 900)]
+    [InlineData(1280, 900)]
+    public Task Sidebar_SecondaryItemsStayBelowTheDivider(int width, int height) => RunAsync(
+        $"{nameof(Sidebar_SecondaryItemsStayBelowTheDivider)}_{width}x{height}", async () =>
+    {
+        await Page.SetViewportSizeAsync(width, height);
+        await Page.GotoAsync("/technical", new() { WaitUntil = WaitUntilState.NetworkIdle });
+
+        var divider = Page.Locator(".mbx-nav-divider");
+        var technicalLink = Page.Locator(".mbx-sidebar-icon-link[href='/technical']");
+        await Assertions.Expect(technicalLink).ToBeVisibleAsync();
+
+        var dividerBounds = await divider.BoundingBoxAsync();
+        var linkBounds = await technicalLink.BoundingBoxAsync();
+        Assert.NotNull(dividerBounds);
+        Assert.NotNull(linkBounds);
+        Assert.True(dividerBounds.Height <= 2,
+            $"Navigation divider should stay 1px tall, actual height={dividerBounds.Height}px.");
+        Assert.InRange(
+            linkBounds.Y - (dividerBounds.Y + dividerBounds.Height),
+            0,
+            24);
+    });
+
     [Fact]
     public Task Shell_MainContentAreaIsPresent() => RunAsync(nameof(Shell_MainContentAreaIsPresent), async () =>
     {

@@ -339,5 +339,6 @@ Prefer these transformations:
 1. add or keep `MdsPageHeader`,
 2. consolidate page actions into `MdsMainToolbar`,
 3. move filters into a chip row on the page background,
-4. wrap large content zones in `MdsMainPart` / `MdsMainSection`,
-5. keep layout consistent with existing MudShell sample pages.
+4. wrap large content zones in `MdsMainPart` / `MdsMainSection`, using one wrapper per surface,
+5. never nest `MdsMainPart` inside another part or section; place wrapper blocks as siblings,
+6. keep layout consistent with existing MudShell sample pages.

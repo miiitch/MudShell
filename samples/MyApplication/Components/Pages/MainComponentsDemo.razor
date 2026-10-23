@@ -20,21 +20,29 @@
     </MdsMainToolbar>
     <MudGrid>
         <MudItem xs="12" lg="8">
-            <MdsMainSection Title="Recent documents" Description="A title, a description and structured content.">
-                <MdsMainPart Title="Results" IsLoading="@(_state == "loading")"
-                             Error="@(_state == "error" ? "Simulated error: unable to load documents." : null)"
-                             OnRetry="@ResetState">
-                    @if (_state == "empty")
-                    {
-                        <MdsMainEmptyState Title="No documents" Description="Add an item to get started.">
-                            <Action><MdsMainButton OnClick="@AddFirst">Add a sample document</MdsMainButton></Action>
-                        </MdsMainEmptyState>
-                    }
-                    else
-                    {
-                        <p>Project overview</p><p>Summary report</p><p>Meeting notes</p>
-                    }
-                </MdsMainPart>
+            <MdsMainSection Title="Recent documents" Description="A title, a description and structured content."
+                            IsLoading="@(_state == "loading")" data-testid="composition-documents">
+                @if (_state == "error")
+                {
+                    <MudAlert Severity="Severity.Error">
+                        Simulated error: unable to load documents.
+                        <div class="mt-2">
+                            <MdsMainButton Variant="Variant.Text" Color="Color.Error" Size="Size.Small" OnClick="@ResetState">
+                                Retry
+                            </MdsMainButton>
+                        </div>
+                    </MudAlert>
+                }
+                else if (_state == "empty")
+                {
+                    <MdsMainEmptyState Title="No documents" Description="Add an item to get started.">
+                        <Action><MdsMainButton OnClick="@AddFirst">Add a sample document</MdsMainButton></Action>
+                    </MdsMainEmptyState>
+                }
+                else
+                {
+                    <p>Project overview</p><p>Summary report</p><p>Meeting notes</p>
+                }
             </MdsMainSection>
             <MdsMainSection Title="Statuses">
                 <MudStack Row Wrap="Wrap.Wrap">
@@ -57,7 +65,7 @@
         </MudItem>
     </MudGrid>
     <ShowcaseDetails FamilyId="composition">
-        <MudText Typo="Typo.caption">&lt;MdsMainPart Title="Results" IsLoading="loading" Error="error" OnRetry="Reload"&gt;...&lt;/MdsMainPart&gt;</MudText>
+        <MudText Typo="Typo.caption">&lt;MdsMainSection Title="Results" IsLoading="loading"&gt;...&lt;/MdsMainSection&gt;</MudText>
         <p>The toolbar contains actions. List page filters belong on a separate row.</p>
     </ShowcaseDetails>
 </MudStack>

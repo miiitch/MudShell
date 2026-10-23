@@ -28,6 +28,38 @@ public sealed class ThemeState
 
     public void ToggleDarkMode() => SetDarkMode(!IsDarkMode);
 
+    /// <summary>
+    /// Applies <c>?preset=&lt;MbxThemePreset&gt;&amp;mode=light|dark</c> from a URI so screenshots
+    /// of every preset/mode can be automated.
+    /// </summary>
+    public void ApplyFromUri(string uri)
+    {
+        var queryStart = uri.IndexOf('?');
+        if (queryStart < 0)
+            return;
+
+        foreach (var part in uri[(queryStart + 1)..].Split('&', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var kv = part.Split('=', 2);
+            if (kv.Length != 2)
+                continue;
+
+            var value = Uri.UnescapeDataString(kv[1]);
+            if (kv[0].Equals("preset", StringComparison.OrdinalIgnoreCase)
+                && Enum.TryParse<MbxTheme.MbxThemePreset>(value, ignoreCase: true, out var preset))
+            {
+                ApplyPreset(preset);
+            }
+            else if (kv[0].Equals("mode", StringComparison.OrdinalIgnoreCase))
+            {
+                if (value.Equals("light", StringComparison.OrdinalIgnoreCase))
+                    SetDarkMode(false);
+                else if (value.Equals("dark", StringComparison.OrdinalIgnoreCase))
+                    SetDarkMode(true);
+            }
+        }
+    }
+
     public void SetDensity(MdsDensity density)
     {
         if (Density == density)

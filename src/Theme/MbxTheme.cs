@@ -23,8 +23,10 @@ public static class MbxTheme
         Lime,
         Amber,
         Crimson,
+        [Obsolete("Merged into Crimson (too close visually). Resolves to Crimson.")]
         Ruby,
         Saffron,
+        [Obsolete("Merged into Cobalt (too close visually). Resolves to Cobalt.")]
         Azure,
         MagmaMist,
         AuburnDunes,
@@ -35,24 +37,30 @@ public static class MbxTheme
         EarthRoot,
         ObsidianPulse,
         Onyx,
+        [Obsolete("Merged into DeepCharcoal (too close visually). Resolves to DeepCharcoal.")]
         MidnightStatic,
         StormSlate,
         AbyssalNavy,
         CosmicNight,
         MorningButter,
         RaspberryRed,
+        [Obsolete("Merged into AbyssalNavy (too close visually). Resolves to AbyssalNavy.")]
         DeepSpaceBlue,
         FairyTale,
         GiantsOrange,
         LavenderFog,
+        [Obsolete("Merged into DeepCharcoal (too close visually). Resolves to DeepCharcoal.")]
         Ganache,
+        [Obsolete("Merged into FairyTale (too close visually). Resolves to FairyTale.")]
         CottonRose,
         HotFuchsia,
         Chartreuse,
         ElectricRose,
         IcyBlue,
+        [Obsolete("Merged into Crimson (too close visually). Resolves to Crimson.")]
         BerryRed,
         SandyClay,
+        [Obsolete("Merged into DeepCharcoal (too close visually). Resolves to DeepCharcoal.")]
         ShadowGrey,
         PurpleMood,
     }
@@ -67,10 +75,8 @@ public static class MbxTheme
         new(MbxThemePreset.Forest,  "Forest",  "#16A34A"), // Vert finance/nature
         new(MbxThemePreset.Lime,    "Lime",    "#A9C93A"), // Lime adouci Orrik
         new(MbxThemePreset.Amber,   "Amber",   "#B45309"), // Ambre profond
-        new(MbxThemePreset.Crimson, "Crimson", "#BE123C"), // Cramoisi professionnel
-        new(MbxThemePreset.Ruby,    "Ruby",    "#C81E3A"), // Rouge rubis
-        new(MbxThemePreset.Saffron, "Saffron", "#D6A800"), // Jaune safran
-        new(MbxThemePreset.Azure,   "Azure",   "#1D4ED8"), // Bleu azur
+        new(MbxThemePreset.Crimson, "Crimson", "#BE123C"), // Cramoisi professionnel 
+        new(MbxThemePreset.Saffron, "Saffron", "#D6A800"), // Jaune safran 
         new(MbxThemePreset.MagmaMist, "Magma Mist", "#F06F0E"), // Orange volcanique / or / vert-de-mer
         new(MbxThemePreset.AuburnDunes, "Auburn Dunes", "#71351A"), // Auburn / sable / cacao
         new(MbxThemePreset.OlivineMatisse, "Olivine Matisse", "#A2BD7F"), // Olivine / matisse / mousse
@@ -79,54 +85,51 @@ public static class MbxTheme
         new(MbxThemePreset.DeepCharcoal, "Deep Charcoal", "#222222"), // Charbon profond / or vert / abricot
         new(MbxThemePreset.EarthRoot,    "Earth Root",    "#48261D"), // Terre / feu / ciel
         new(MbxThemePreset.ObsidianPulse, "Obsidian Pulse", "#4C1413"), // Obsidienne / rosé / ciel
-        new(MbxThemePreset.Onyx,         "Onyx",         "#151311"), // Onyx / mauve / sable
-        new(MbxThemePreset.MidnightStatic, "Midnight Static", "#1B1C20"), // Palette indigo, rose et nuit
+        new(MbxThemePreset.Onyx,         "Onyx",         "#151311"), // Onyx / mauve / sable 
         new(MbxThemePreset.StormSlate,     "Storm Slate",    "#5B6E7D"), // Palette gris-bleu, bordeaux et blush
         new(MbxThemePreset.AbyssalNavy,    "Abyssal Navy",   "#0D3651"), // Palette marine, corail et sable
         new(MbxThemePreset.CosmicNight,    "Cosmic Night",   "#FFA500"), // Noir profond avec accents orange chauds
         new(MbxThemePreset.MorningButter,  "Morning Butter", "#8662F6"), // Crème, lavande et accents pastel
-        new(MbxThemePreset.RaspberryRed,   "Raspberry Red",  "#EE005A"), // Rose framboise / nuit profonde
-        new(MbxThemePreset.DeepSpaceBlue,  "Deep Space Blue","#012641"), // Marine / rose néon
+        new(MbxThemePreset.RaspberryRed,   "Raspberry Red",  "#EE005A"), // Rose framboise / nuit profonde 
         new(MbxThemePreset.FairyTale,      "Fairy Tale",     "#FFCEEB"), // Rose bonbon / orange
         new(MbxThemePreset.GiantsOrange,   "Giants Orange",  "#FF6634"), // Orange vitaminé / rose
-        new(MbxThemePreset.LavenderFog,    "Lavender Fog",   "#D5C9DD"), // Lavande / chocolat
-        new(MbxThemePreset.Ganache,        "Ganache",        "#34292A"), // Prune sombre / lavande
-        new(MbxThemePreset.CottonRose,     "Cotton Rose",    "#EEB3B5"), // Rose coton / rouge punchy
+        new(MbxThemePreset.LavenderFog,    "Lavender Fog",   "#D5C9DD"), // Lavande / chocolat  
         new(MbxThemePreset.HotFuchsia,     "Hot Fuchsia",    "#F8395A"), // Rose chaud / blush
         new(MbxThemePreset.Chartreuse,     "Chartreuse",     "#C1FE1A"), // Chartreuse / fuchsia
         new(MbxThemePreset.ElectricRose,   "Electric Rose",  "#FE00AE"), // Vert acide / rose électrique
-        new(MbxThemePreset.IcyBlue,        "Icy Blue",       "#B3E6FB"), // Bleu glace / rouge
-        new(MbxThemePreset.BerryRed,       "Berry Red",      "#C21121"), // Rouge baie / ciel
-        new(MbxThemePreset.SandyClay,      "Sandy Clay",     "#D4AA7D"), // Sable / charbon
-        new(MbxThemePreset.ShadowGrey,     "Shadow Grey",    "#272727"), // Gris ombre / beige
+        new(MbxThemePreset.IcyBlue,        "Icy Blue",       "#B3E6FB"), // Bleu glace / rouge 
+        new(MbxThemePreset.SandyClay,      "Sandy Clay",     "#D4AA7D"), // Sable / charbon 
         new(MbxThemePreset.PurpleMood,     "Purple Mood",    "#512BD4"), // Violet profond / nuit encrée
     ];
 
     public static string GetPresetPrimary(MbxThemePreset preset)
-        => Presets.First(p => p.Preset == preset).PrimaryColor;
+        => Presets.First(p => p.Preset == Resolve(preset)).PrimaryColor;
+
+#pragma warning disable CS0618 // Obsolete presets are mapped to their replacement here.
+    /// <summary>Maps retired presets to the preset that replaced them.</summary>
+    public static MbxThemePreset Resolve(MbxThemePreset preset)
+        => preset switch
+        {
+            MbxThemePreset.Azure => MbxThemePreset.Cobalt,
+            MbxThemePreset.MidnightStatic => MbxThemePreset.DeepCharcoal,
+            MbxThemePreset.Ganache => MbxThemePreset.DeepCharcoal,
+            MbxThemePreset.ShadowGrey => MbxThemePreset.DeepCharcoal,
+            MbxThemePreset.DeepSpaceBlue => MbxThemePreset.AbyssalNavy,
+            MbxThemePreset.CottonRose => MbxThemePreset.FairyTale,
+            MbxThemePreset.Ruby => MbxThemePreset.Crimson,
+            MbxThemePreset.BerryRed => MbxThemePreset.Crimson,
+            _ => preset,
+        };
+#pragma warning restore CS0618
 
     /// <summary>Returns a <see cref="MudTheme"/> pre-configured with both palettes.</summary>
     public static MudTheme CreateTheme() => CreateTheme(MbxThemePreset.Cobalt);
 
     /// <summary>Creates a theme from a curated preset.</summary>
     public static MudTheme CreateTheme(MbxThemePreset preset)
-        => preset switch
+        => Resolve(preset) switch
         {
             MbxThemePreset.Lime => CreateLimeTheme(),
-            MbxThemePreset.Ruby => CreateThemeCore(
-                ParseHex("#C81E3A"),
-                ParseHex("#E77A86"),
-                ParseHex("#F8CAD0"),
-                ParseHex("#F4B15C"),
-                ParseHex("#8F1D2C"),
-                darkSidebar: ParseHex("#4B1621"),
-                darkMain: ParseHex("#651C2E"),
-                darkSubSection: ParseHex("#250C12"),
-                darkBackground: ParseHex("#14070A"),
-                lightSidebar: ParseHex("#F5C1C6"),
-                lightSubSection: ParseHex("#FCEBEC"),
-                lightBackground: ParseHex("#FFF7F8"),
-                lightMain: ParseHex("#FFFFFF")),
             MbxThemePreset.Saffron => CreateThemeCore(
                 ParseHex("#D6A800"),
                 ParseHex("#C7A24B"),
@@ -140,20 +143,6 @@ public static class MbxTheme
                 lightSidebar: ParseHex("#F1E0A6"),
                 lightSubSection: ParseHex("#FBF6D9"),
                 lightBackground: ParseHex("#FFFDF2"),
-                lightMain: ParseHex("#FFFFFF")),
-            MbxThemePreset.Azure => CreateThemeCore(
-                ParseHex("#1D4ED8"),
-                ParseHex("#63A4F4"),
-                ParseHex("#D3E4FA"),
-                ParseHex("#E0B645"),
-                ParseHex("#B24B5E"),
-                darkSidebar: ParseHex("#12305C"),
-                darkMain: ParseHex("#173F74"),
-                darkSubSection: ParseHex("#0A1830"),
-                darkBackground: ParseHex("#060B19"),
-                lightSidebar: ParseHex("#C7D7F4"),
-                lightSubSection: ParseHex("#EDF3FB"),
-                lightBackground: ParseHex("#F8FAFE"),
                 lightMain: ParseHex("#FFFFFF")),
             MbxThemePreset.MagmaMist => CreateThemeCore(
                 ParseHex("#F06F0E"),
@@ -203,10 +192,11 @@ public static class MbxTheme
                 ParseHex("#8DA07A"),
                 ParseHex("#A9C49B"),
                 ParseHex("#4A6638"),
-                darkSidebar: ParseHex("#557743"),
-                darkMain: ParseHex("#405C33"),
-                darkSubSection: ParseHex("#2C4022"),
-                darkBackground: ParseHex("#1B2815"),
+                darkPrimary: ParseHex("#9CC285"),
+                darkSidebar: ParseHex("#2C4022"),
+                darkMain: ParseHex("#24361C"),
+                darkSubSection: ParseHex("#1B2815"),
+                darkBackground: ParseHex("#121C0E"),
                 lightSidebar: ParseHex("#BBD0BE"),
                 lightSubSection: ParseHex("#E5EEE1"),
                 lightBackground: ParseHex("#F6F9F4"),
@@ -217,17 +207,18 @@ public static class MbxTheme
                 ParseHex("#F0EDDF"),
                 ParseHex("#960D41"),
                 ParseHex("#7D1436"),
-                darkSidebar: ParseHex("#09443D"),
-                darkMain: ParseHex("#0F5A50"),
-                darkSubSection: ParseHex("#174F42"),
+                darkPrimary: ParseHex("#3FB8A6"),
+                darkSidebar: ParseHex("#0C2E29"),
+                darkMain: ParseHex("#0E3A34"),
+                darkSubSection: ParseHex("#0A2A25"),
                 darkBackground: ParseHex("#061E1A"),
                 lightSidebar: ParseHex("#C9C1B0"),
                 lightSubSection: ParseHex("#F0EDDF"),
                 lightBackground: ParseHex("#FAF8F3"),
                 lightMain: ParseHex("#FFFFFF")),
             MbxThemePreset.DeepCharcoal => CreateDeepCharcoalTheme(),
-            MbxThemePreset.EarthRoot => CreateThemeFromTriad("#48261D", "#F94C00", "#CAE7F7"),
-            MbxThemePreset.ObsidianPulse => CreateThemeFromTriad("#4C1413", "#CAE7F7", "#EA6B7E"),
+            MbxThemePreset.EarthRoot => CreateThemeFromTriadCore("#48261D", "#F94C00", "#CAE7F7", darkPrimary: "#F94C00"),
+            MbxThemePreset.ObsidianPulse => CreateThemeFromTriadCore("#4C1413", "#CAE7F7", "#EA6B7E", darkPrimary: "#EA6B7E"),
             MbxThemePreset.Onyx => CreateThemeCore(
                 ParseHex("#151311"),
                 ParseHex("#4B262F"),
@@ -242,16 +233,6 @@ public static class MbxTheme
                 lightSubSection: ParseHex("#F1E8DA"),
                 lightBackground: ParseHex("#FBF8F2"),
                 lightMain: ParseHex("#FFFFFF")),
-            MbxThemePreset.MidnightStatic => CreateThemeCore(
-                ParseHex("#1B1C20"),
-                ParseHex("#144EA0"),
-                ParseHex("#CF98AF"),
-                ParseHex("#ffb545"),
-                ParseHex("#ff4d6d"),
-                darkSidebar: ParseHex("#2A2C37"),
-                darkMain: ParseHex("#222431"),
-                darkSubSection: ParseHex("#1B1D27"),
-                darkBackground: ParseHex("#11131A")),
             MbxThemePreset.StormSlate => CreateThemeFromTriad("#5B6E7D", "#5C0403", "#EDB1B0"),
             MbxThemePreset.AbyssalNavy => CreateThemeFromTriad("#0D3651", "#EB313F", "#FFF7AE"),
             MbxThemePreset.CosmicNight => CreateCosmicNightTheme(),
@@ -279,7 +260,7 @@ public static class MbxTheme
                 ParseHex("#012641"),
                 ParseHex("#F3D98F"),
                 ParseHex("#FFB545"),
-                ParseHex("#FFFFFF"),
+                ParseHex("#C62828"),
                 darkSidebar: ParseHex("#5E0024"),
                 darkMain: ParseHex("#8A0038"),
                 darkSubSection: ParseHex("#2A0A16"),
@@ -287,20 +268,6 @@ public static class MbxTheme
                 lightSidebar: ParseHex("#F8CCD8"),
                 lightSubSection: ParseHex("#FFF1F6"),
                 lightBackground: ParseHex("#FFF8FA"),
-                lightMain: ParseHex("#FFFFFF")),
-            MbxThemePreset.DeepSpaceBlue => CreateThemeCore(
-                ParseHex("#012641"),
-                ParseHex("#EE005A"),
-                ParseHex("#F3D98F"),
-                ParseHex("#FFB545"),
-                ParseHex("#B3E6FB"),
-                darkSidebar: ParseHex("#001B2D"),
-                darkMain: ParseHex("#00304E"),
-                darkSubSection: ParseHex("#00111E"),
-                darkBackground: ParseHex("#000913"),
-                lightSidebar: ParseHex("#C9E1F1"),
-                lightSubSection: ParseHex("#EDF5FB"),
-                lightBackground: ParseHex("#F8FBFD"),
                 lightMain: ParseHex("#FFFFFF")),
             MbxThemePreset.FairyTale => CreateThemeCore(
                 ParseHex("#FFCEEB"),
@@ -343,34 +310,6 @@ public static class MbxTheme
                 lightSidebar: ParseHex("#EEE7F2"),
                 lightSubSection: ParseHex("#F8F4FA"),
                 lightBackground: ParseHex("#FCFAFD"),
-                lightMain: ParseHex("#FFFFFF")),
-            MbxThemePreset.Ganache => CreateThemeCore(
-                ParseHex("#34292A"),
-                ParseHex("#D5C9DD"),
-                ParseHex("#EEB3B5"),
-                ParseHex("#D4AA7D"),
-                ParseHex("#FFCEEB"),
-                darkSidebar: ParseHex("#221B1C"),
-                darkMain: ParseHex("#2F2526"),
-                darkSubSection: ParseHex("#181213"),
-                darkBackground: ParseHex("#0D0A0B"),
-                lightSidebar: ParseHex("#D9CEDD"),
-                lightSubSection: ParseHex("#F2ECF4"),
-                lightBackground: ParseHex("#FBF8FC"),
-                lightMain: ParseHex("#FFFFFF")),
-            MbxThemePreset.CottonRose => CreateThemeCore(
-                ParseHex("#EEB3B5"),
-                ParseHex("#F8395A"),
-                ParseHex("#FF6634"),
-                ParseHex("#D5C9DD"),
-                ParseHex("#34292A"),
-                darkSidebar: ParseHex("#7B4A4D"),
-                darkMain: ParseHex("#A86A6D"),
-                darkSubSection: ParseHex("#3A2324"),
-                darkBackground: ParseHex("#1A1011"),
-                lightSidebar: ParseHex("#F9DDE0"),
-                lightSubSection: ParseHex("#FFF4F5"),
-                lightBackground: ParseHex("#FFFAFB"),
                 lightMain: ParseHex("#FFFFFF")),
             MbxThemePreset.HotFuchsia => CreateThemeCore(
                 ParseHex("#F8395A"),
@@ -428,20 +367,6 @@ public static class MbxTheme
                 lightSubSection: ParseHex("#F4FAFE"),
                 lightBackground: ParseHex("#FBFDFF"),
                 lightMain: ParseHex("#FFFFFF")),
-            MbxThemePreset.BerryRed => CreateThemeCore(
-                ParseHex("#C21121"),
-                ParseHex("#B3E6FB"),
-                ParseHex("#FFCEEB"),
-                ParseHex("#F3D98F"),
-                ParseHex("#012641"),
-                darkSidebar: ParseHex("#651019"),
-                darkMain: ParseHex("#8E1723"),
-                darkSubSection: ParseHex("#2B0910"),
-                darkBackground: ParseHex("#100407"),
-                lightSidebar: ParseHex("#F6CBD0"),
-                lightSubSection: ParseHex("#FFF1F3"),
-                lightBackground: ParseHex("#FFF9FA"),
-                lightMain: ParseHex("#FFFFFF")),
             MbxThemePreset.SandyClay => CreateThemeCore(
                 ParseHex("#D4AA7D"),
                 ParseHex("#272727"),
@@ -455,20 +380,6 @@ public static class MbxTheme
                 lightSidebar: ParseHex("#EAD0B3"),
                 lightSubSection: ParseHex("#F6EEE7"),
                 lightBackground: ParseHex("#FCFAF7"),
-                lightMain: ParseHex("#FFFFFF")),
-            MbxThemePreset.ShadowGrey => CreateThemeCore(
-                ParseHex("#272727"),
-                ParseHex("#D4AA7D"),
-                ParseHex("#D5C9DD"),
-                ParseHex("#EEB3B5"),
-                ParseHex("#FF6634"),
-                darkSidebar: ParseHex("#2E2E2E"),
-                darkMain: ParseHex("#363636"),
-                darkSubSection: ParseHex("#1A1A1A"),
-                darkBackground: ParseHex("#0F0F0F"),
-                lightSidebar: ParseHex("#D9D9D9"),
-                lightSubSection: ParseHex("#F0F0F0"),
-                lightBackground: ParseHex("#FAFAFA"),
                 lightMain: ParseHex("#FFFFFF")),
             MbxThemePreset.PurpleMood => CreateThemeCore(
                 ParseHex("#512BD4"),
@@ -508,6 +419,9 @@ public static class MbxTheme
     /// Primary drives accents; secondary and tertiary are reused for status colors.
     /// </summary>
     public static MudTheme CreateThemeFromTriad(string primaryHex, string secondaryHex, string tertiaryHex)
+        => CreateThemeFromTriadCore(primaryHex, secondaryHex, tertiaryHex);
+
+    private static MudTheme CreateThemeFromTriadCore(string primaryHex, string secondaryHex, string tertiaryHex, string? darkPrimary = null)
     {
         var primary = ParseHex(primaryHex);
         var secondary = ParseHex(secondaryHex);
@@ -516,7 +430,8 @@ public static class MbxTheme
         var warning = Mix(primary, ParseHex("#ffb545"), 0.68);
         var error = Mix(primary, ParseHex("#ff4d6d"), 0.60);
 
-        return CreateThemeCore(primary, secondary, tertiary, warning, error);
+        return CreateThemeCore(primary, secondary, tertiary, warning, error,
+            darkPrimary: darkPrimary is null ? null : ParseHex(darkPrimary));
     }
 
     private static MudTheme CreateCosmicNightTheme()
@@ -551,7 +466,7 @@ public static class MbxTheme
         var warning = ParseHex("#d8a84a");
         var error = ParseHex("#d96a74");
 
-        var theme = CreateThemeCore(
+        return CreateThemeCore(
             primary,
             info,
             success,
@@ -565,20 +480,17 @@ public static class MbxTheme
             lightSubSection: ParseHex("#f1f4e6"),
             lightBackground: ParseHex("#f4f5ef"),
             lightMain: ParseHex("#ffffff"));
-
-        theme.PaletteDark.PrimaryContrastText = "#11130f";
-        theme.PaletteLight.PrimaryContrastText = "#11130f";
-        return theme;
     }
 
     private static MudTheme CreateDeepCharcoalTheme()
     {
-        var theme = CreateThemeCore(
+        return CreateThemeCore(
             ParseHex("#222222"),
             ParseHex("#CAC426"),
             ParseHex("#EED3BA"),
             ParseHex("#D8A84A"),
             ParseHex("#A85C3F"),
+            darkPrimary: ParseHex("#CAC426"),
             darkSidebar: ParseHex("#2F3138"),
             darkMain: ParseHex("#262830"),
             darkSubSection: ParseHex("#1B1D23"),
@@ -587,10 +499,6 @@ public static class MbxTheme
             lightSubSection: ParseHex("#EEF1F6"),
             lightBackground: ParseHex("#F8F9FB"),
             lightMain: ParseHex("#FFFFFF"));
-
-        theme.PaletteDark.PrimaryContrastText = "#F7F8FB";
-        theme.PaletteLight.PrimaryContrastText = "#F7F8FB";
-        return theme;
     }
 
     private static MudTheme CreateThemeCore(
@@ -614,18 +522,29 @@ public static class MbxTheme
         HexColor? lightBorder = null)
     {
         // ── Dark mode: DrawerBackground > Surface > BackgroundGray > Background ──
-        // Surface (cards) MUST be lighter than BackgroundGray (page area) so cards pop
-        var resolvedDarkSidebar    = darkSidebar    ?? Mix(primary, ParseHex("#2a2d4a"), 0.50); // DrawerBackground — lightest
-        var resolvedDarkMain       = darkMain       ?? Mix(primary, ParseHex("#1a1d33"), 0.72); // Surface — cards (medium)
-        var resolvedDarkSubSection = darkSubSection ?? Mix(primary, ParseHex("#12142a"), 0.85); // BackgroundGray — page area (darker)
-        var resolvedDarkBackground = darkBackground ?? Mix(primary, ParseHex("#0a0c1c"), 0.91); // Background — darkest
-        var resolvedDarkPrimary = darkPrimary ?? primary;
+        // Surface (cards) MUST be lighter than BackgroundGray (page area) so cards pop.
+        // Each layer is capped in luminance so the fixed dark text colors stay readable (WCAG AA),
+        // whatever the primary is (pastel primaries would otherwise produce mid-tone surfaces).
+        var resolvedDarkSidebar    = DarkenToLuminance(darkSidebar ?? Mix(primary, ParseHex("#2a2d4a"), 0.50), DarkDrawerMaxLuminance); // DrawerBackground — lightest
+        var resolvedDarkMain       = DarkenToLuminance(darkMain ?? Mix(primary, ParseHex("#1a1d33"), 0.72), DarkSurfaceMaxLuminance);   // Surface — cards (medium)
+        var resolvedDarkSubSection = DarkenToLuminance(darkSubSection ?? Mix(primary, ParseHex("#12142a"), 0.85), LayerBelow(resolvedDarkMain)); // BackgroundGray — page area (darker)
+        var resolvedDarkBackground = DarkenToLuminance(darkBackground ?? Mix(primary, ParseHex("#0a0c1c"), 0.91), LayerBelow(resolvedDarkSubSection)); // Background — darkest
 
         // ── Light mode: Surface stays white; page background uses neutral gray for stronger contrast ──
-        var resolvedLightSidebar    = lightSidebar    ?? Mix(primary, ParseHex("#e0e0f4"), 0.65); // DrawerBackground — clearly tinted
+        var resolvedLightSidebar    = LightenToLuminance(lightSidebar ?? Mix(primary, ParseHex("#e0e0f4"), 0.65), LightDrawerMinLuminance); // DrawerBackground — clearly tinted
         var resolvedLightSubSection = lightSubSection ?? Mix(primary, ParseHex("#f5f5ff"), 0.93); // BackgroundGray — subtle
-        var resolvedLightBackground = lightBackground ?? ParseHex("#f1f3f6");                      // Background — neutral gray (palette-independent)
         var resolvedLightMain       = lightMain       ?? ParseHex("#ffffff");                      // Surface — pure white
+        var resolvedLightBackground = DarkenToLuminance(lightBackground ?? ParseHex("#f1f3f6"), LayerBelow(resolvedLightMain)); // Background — neutral gray, visibly darker than cards
+
+        // Accents must stand out (WCAG 1.4.11, ≥ 3:1) against every surface they are drawn on.
+        // Dark mode lightens them, light mode darkens them; the hue is preserved.
+        HexColor[] darkLayers = [resolvedDarkSidebar, resolvedDarkMain, resolvedDarkSubSection, resolvedDarkBackground];
+        HexColor[] lightLayers = [resolvedLightSidebar, resolvedLightMain, resolvedLightSubSection, resolvedLightBackground];
+        HexColor ForDark(HexColor c) => EnsureFillReadable(EnsureContrast(c, darkLayers, AccentMinContrast, lighten: true), lighten: true);
+        HexColor ForLight(HexColor c) => EnsureFillReadable(EnsureContrast(c, lightLayers, AccentMinContrast, lighten: false), lighten: false);
+
+        var resolvedDarkPrimary = ForDark(darkPrimary ?? primary);
+        primary = ForLight(primary);
         var resolvedLightTextPrimary = lightTextPrimary ?? ParseHex("#1b2742");
         var resolvedLightTextSecondary = lightTextSecondary ?? ParseHex("#435070");
         var resolvedLightNeutral = lightNeutral ?? ParseHex("#d9e2f2");
@@ -634,13 +553,15 @@ public static class MbxTheme
         // MudBlazor falls back to its own default (a bright pink, "#FF4081") for any color role left
         // unset, and Color.Secondary is commonly reached for by consumers. Derive a deliberate accent
         // from Primary instead of leaving this gap — see https://github.com/miiitch/MudShell/issues/14.
-        var darkSecondary = HueShiftAccent(resolvedDarkPrimary, degrees: 150);
-        var secondary = HueShiftAccent(primary, degrees: 150);
+        var darkSecondary = ForDark(HueShiftAccent(resolvedDarkPrimary, degrees: 150));
+        var secondary = ForLight(HueShiftAccent(primary, degrees: 150));
 
         var darkPalette = new PaletteDark
         {
             Primary = ToHex(resolvedDarkPrimary),
+            PrimaryContrastText = ToHex(BestContrastText(resolvedDarkPrimary)),
             Secondary = ToHex(darkSecondary),
+            SecondaryContrastText = ToHex(BestContrastText(darkSecondary)),
             Surface = ToHex(resolvedDarkMain),
             Background = ToHex(resolvedDarkBackground),
             BackgroundGray = ToHex(resolvedDarkSubSection),
@@ -661,16 +582,15 @@ public static class MbxTheme
             TableLines = ToHex(Mix(resolvedDarkMain, ParseHex("#ffffff"), 0.16)),
             Divider = ToHex(Mix(resolvedDarkMain, ParseHex("#ffffff"), 0.12)),
             OverlayLight = ToRgba(resolvedDarkMain, 0.60),
-            Info = ToHex(info),
-            Success = ToHex(success),
-            Warning = ToHex(warning),
-            Error = ToHex(error),
         };
+        ApplyStatusColors(darkPalette, ForDark(info), ForDark(success), ForDark(warning), ForDark(error));
 
         var lightPalette = new PaletteLight
         {
             Primary = ToHex(primary),
+            PrimaryContrastText = ToHex(BestContrastText(primary)),
             Secondary = ToHex(secondary),
+            SecondaryContrastText = ToHex(BestContrastText(secondary)),
             Black = ToHex(lightTextPrimary ?? ParseHex("#0f1325")),
             Surface = ToHex(resolvedLightMain),
             Background = ToHex(resolvedLightBackground),
@@ -687,11 +607,8 @@ public static class MbxTheme
             TableLines = ToHex(resolvedLightBorder),
             Divider = ToHex(lightBorder ?? Mix(resolvedLightSubSection, ParseHex("#9fb2d3"), 0.40)),
             OverlayLight = ToRgba(ParseHex("#ffffff"), 0.60),
-            Info = ToHex(info),
-            Success = ToHex(success),
-            Warning = ToHex(warning),
-            Error = ToHex(error),
         };
+        ApplyStatusColors(lightPalette, ForLight(info), ForLight(success), ForLight(warning), ForLight(error));
 
         return new MudTheme
         {
@@ -702,6 +619,119 @@ public static class MbxTheme
     }
 
     private readonly record struct HexColor(int R, int G, int B);
+
+    // Luminance caps derived from the fixed dark-mode text colors:
+    // TextSecondary #9fa9c7 ≥ 4.5:1 on Surface, DrawerText #c4cce2 ≥ 4.5:1 on the drawer.
+    private const double DarkSurfaceMaxLuminance = 0.045;
+    private const double DarkDrawerMaxLuminance = 0.088;
+    // Light TextSecondary #435070 ≥ 4.5:1 on the tinted drawer.
+    private const double LightDrawerMinLuminance = 0.56;
+    private const double AccentMinContrast = 3.0;
+    private const double LayerSeparation = 1.06;
+    private static readonly HexColor DarkContrastText = new(0x11, 0x13, 0x0f);
+    private static readonly HexColor White = new(255, 255, 255);
+    private static readonly HexColor Black = new(0, 0, 0);
+
+    private static void ApplyStatusColors(Palette palette, HexColor info, HexColor success, HexColor warning, HexColor error)
+    {
+        palette.Info = ToHex(info);
+        palette.InfoContrastText = ToHex(BestContrastText(info));
+        palette.Success = ToHex(success);
+        palette.SuccessContrastText = ToHex(BestContrastText(success));
+        palette.Warning = ToHex(warning);
+        palette.WarningContrastText = ToHex(BestContrastText(warning));
+        palette.Error = ToHex(error);
+        palette.ErrorContrastText = ToHex(BestContrastText(error));
+    }
+
+    internal static double RelativeLuminance(int r, int g, int b)
+    {
+        static double Channel(int c)
+        {
+            var v = c / 255d;
+            return v <= 0.03928 ? v / 12.92 : Math.Pow((v + 0.055) / 1.055, 2.4);
+        }
+
+        return 0.2126 * Channel(r) + 0.7152 * Channel(g) + 0.0722 * Channel(b);
+    }
+
+    private static double Luminance(HexColor c) => RelativeLuminance(c.R, c.G, c.B);
+
+    private static double ContrastRatio(HexColor a, HexColor b)
+    {
+        var la = Luminance(a);
+        var lb = Luminance(b);
+        return (Math.Max(la, lb) + 0.05) / (Math.Min(la, lb) + 0.05);
+    }
+
+    /// <summary>Max luminance for a layer that must sit visibly below <paramref name="above"/>.</summary>
+    private static double LayerBelow(HexColor above)
+        => Math.Min((Luminance(above) + 0.05) / LayerSeparation - 0.05, Luminance(above));
+
+    private static HexColor DarkenToLuminance(HexColor color, double maxLuminance)
+    {
+        var result = color;
+        for (var i = 1; i <= 100 && Luminance(result) > maxLuminance; i++)
+            result = Mix(color, Black, i / 100d);
+        return result;
+    }
+
+    private static HexColor LightenToLuminance(HexColor color, double minLuminance)
+    {
+        var result = color;
+        for (var i = 1; i <= 100 && Luminance(result) < minLuminance; i++)
+            result = Mix(color, White, i / 100d);
+        return result;
+    }
+
+    /// <summary>
+    /// Shifts the HSL lightness of <paramref name="color"/> (keeping its hue) until it reaches
+    /// <paramref name="minRatio"/> against every background.
+    /// </summary>
+    private static HexColor EnsureContrast(HexColor color, IReadOnlyList<HexColor> backgrounds, double minRatio, bool lighten)
+    {
+        bool Ok(HexColor c) => backgrounds.All(bg => ContrastRatio(c, bg) >= minRatio);
+        if (Ok(color))
+            return color;
+
+        var (h, s, l) = ToHsl(color);
+        var step = lighten ? 0.01 : -0.01;
+        for (var next = l + step; next is >= 0d and <= 1d; next += step)
+        {
+            var candidate = FromHsl(h, s, next);
+            if (Ok(candidate))
+                return candidate;
+        }
+
+        return lighten ? White : Black;
+    }
+
+    /// <summary>White or near-black, whichever reads best on <paramref name="background"/>.</summary>
+    private static HexColor BestContrastText(HexColor background)
+        => ContrastRatio(White, background) >= ContrastRatio(DarkContrastText, background) ? White : DarkContrastText;
+
+    /// <summary>
+    /// Mid-tone fills read poorly with both white and dark text; nudge the lightness (in the
+    /// direction that also keeps the accent contrast against the surfaces) until one text reaches 4.5:1.
+    /// </summary>
+    private static HexColor EnsureFillReadable(HexColor color, bool lighten)
+    {
+        const double minTextContrast = 4.5;
+        bool Ok(HexColor c) => ContrastRatio(BestContrastText(c), c) >= minTextContrast;
+        if (Ok(color))
+            return color;
+
+        var (h, s, l) = ToHsl(color);
+        var step = lighten ? 0.005 : -0.005;
+        for (var next = l + step; next is >= 0d and <= 1d; next += step)
+        {
+            var candidate = FromHsl(h, s, next);
+            if (Ok(candidate))
+                return candidate;
+        }
+
+        return color;
+    }
 
     private static HexColor ParseHex(string value)
     {

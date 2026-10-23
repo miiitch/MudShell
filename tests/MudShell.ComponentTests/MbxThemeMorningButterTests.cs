@@ -16,9 +16,9 @@ public class MbxThemeMorningButterTests
         Assert.Equal("#fffcf5", theme.PaletteLight.Surface.Value[..7].ToLowerInvariant());
         Assert.Equal("#29251f", theme.PaletteLight.TextPrimary.Value[..7].ToLowerInvariant());
         Assert.Equal("#eadab6", theme.PaletteLight.LinesDefault.Value[..7].ToLowerInvariant());
-        Assert.Equal("#2da96f", theme.PaletteLight.Success.Value[..7].ToLowerInvariant());
-        Assert.Equal("#e6a51b", theme.PaletteLight.Warning.Value[..7].ToLowerInvariant());
-        Assert.Equal("#e7777d", theme.PaletteLight.Error.Value[..7].ToLowerInvariant());
+        Assert.Equal("#299964", theme.PaletteLight.Success.Value[..7].ToLowerInvariant());
+        Assert.Equal("#b07e13", theme.PaletteLight.Warning.Value[..7].ToLowerInvariant());
+        Assert.Equal("#e25d64", theme.PaletteLight.Error.Value[..7].ToLowerInvariant());
         Assert.Equal("#18141e", theme.PaletteDark.Background.Value[..7].ToLowerInvariant());
         Assert.Equal("#30283b", theme.PaletteDark.Surface.Value[..7].ToLowerInvariant());
         Assert.Equal("#d6a800", theme.PaletteDark.Primary.Value[..7].ToLowerInvariant());

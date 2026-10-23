@@ -1,5 +1,6 @@
 ﻿@implements IDisposable
 @inject ThemeState ThemeState
+@inject NavigationManager Navigation
 
 <MudThemeProvider Theme="@ThemeState.CurrentTheme" IsDarkMode="@ThemeState.IsDarkMode" />
 <MudPopoverProvider />
@@ -16,7 +17,11 @@
 </Router>
 
 @code {
-    protected override void OnInitialized() => ThemeState.Changed += OnThemeChanged;
+    protected override void OnInitialized()
+    {
+        ThemeState.ApplyFromUri(Navigation.Uri);
+        ThemeState.Changed += OnThemeChanged;
+    }
 
     private void OnThemeChanged() => InvokeAsync(StateHasChanged);
 

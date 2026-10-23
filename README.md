@@ -136,6 +136,10 @@ The sample has no stylesheets or inline CSS. Pages compose MudShell components
 and MudBlazor controls using their public parameters and built-in utilities.
 Layout fixes belong in MudShell, not in sample-specific overrides.
 
+`MdsMainSection` and `MdsMainPart` use neutral theme text for titles and
+supporting copy by default. `TitleColor` remains available for intentional
+accent headings; `Color.Secondary` is a brand accent, not muted text.
+
 Run the sample with `dotnet run --project samples\MyApplication` and run UI tests
 against the running instance using `PLAYWRIGHT_TEST_BASE_URL` (default
 `http://localhost:5265`):

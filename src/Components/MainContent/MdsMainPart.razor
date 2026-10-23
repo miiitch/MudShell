@@ -22,7 +22,7 @@
             </div>
             @if (!string.IsNullOrWhiteSpace(Subtitle))
             {
-                <MudText Typo="Typo.body2" Color="Color.Secondary">@Subtitle</MudText>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary">@Subtitle</MudText>
             }
         }
 
@@ -30,7 +30,7 @@
         {
             <MudStack data-testid="part-loading" AlignItems="AlignItems.Center" Spacing="2" Class="py-6">
                 <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-                <MudText Color="Color.Secondary">@LoadingText</MudText>
+                <MudText Class="mud-text-secondary">@LoadingText</MudText>
             </MudStack>
         }
         else if (!string.IsNullOrWhiteSpace(Error))
@@ -62,7 +62,7 @@
     [Parameter] public string? Title { get; set; }
     [Parameter] public string? Subtitle { get; set; }
     [Parameter] public string? Icon { get; set; }
-    [Parameter] public Color TitleColor { get; set; } = Color.Primary;
+    [Parameter] public Color TitleColor { get; set; } = Color.Default;
     [Parameter] public bool IsLoading { get; set; }
     [Parameter] public string LoadingText { get; set; } = "Loading...";
     [Parameter] public string? Error { get; set; }

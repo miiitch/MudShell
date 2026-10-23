@@ -8,6 +8,44 @@ public class ShowcaseTests : PlaywrightTestBase
 {
     private static readonly string[] Families = ["navigation", "composition", "layouts", "documents", "conversation", "data"];
 
+    [Theory]
+    [InlineData(390)]
+    [InlineData(1280)]
+    public Task Home_UsesNeutralTypographyWithPurpleMood(int width) => RunAsync(
+        $"{nameof(Home_UsesNeutralTypographyWithPurpleMood)}_{width}", async () =>
+    {
+        await Page.SetViewportSizeAsync(width, 900);
+        await Page.GotoAsync("/", new() { WaitUntil = WaitUntilState.NetworkIdle });
+        await Page.GetByTestId("open-appearance").ClickAsync();
+        await Page.GetByRole(AriaRole.Combobox, new() { Name = "Theme", Exact = true }).ClickAsync();
+        await Page.GetByRole(AriaRole.Option, new() { Name = "Purple Mood", Exact = true }).ClickAsync();
+        await Page.GetByRole(AriaRole.Dialog).GetByRole(AriaRole.Button, new() { Name = "Close" }).ClickAsync();
+
+        var home = Page.GetByTestId("showcase-home");
+        await Assertions.Expect(home.Locator(".mud-typography.mud-secondary-text, .mud-typography.mud-primary-text"))
+            .ToHaveCountAsync(0);
+        await Assertions.Expect(home.Locator(".mud-paper .mud-paper")).ToHaveCountAsync(0);
+        var description = Page.GetByText("Navigation, workspaces, data and conversation:", new() { Exact = false });
+        await Assertions.Expect(description).ToHaveClassAsync(new Regex("mud-text-secondary"));
+        Assert.True(await description.EvaluateAsync<bool>("""
+            el => {
+                const probe = document.createElement('span');
+                probe.style.color = 'var(--mud-palette-text-secondary)';
+                el.appendChild(probe);
+                const expected = getComputedStyle(probe).color;
+                probe.remove();
+                return getComputedStyle(el).color === expected;
+            }
+            """));
+        Assert.True(await Page.Locator(".mbx-main-inner")
+            .EvaluateAsync<bool>("el => el.scrollWidth <= el.clientWidth + 1"));
+        await Page.ScreenshotAsync(new()
+        {
+            Path = Path.Combine(Directory.GetCurrentDirectory(), "screenshots", $"home-purple-mood-{width}.png"),
+            FullPage = true
+        });
+    });
+
     [Fact]
     public Task Catalog_ExposesEveryFamilyAndSearchesComponentNames() => RunAsync(nameof(Catalog_ExposesEveryFamilyAndSearchesComponentNames), async () =>
     {

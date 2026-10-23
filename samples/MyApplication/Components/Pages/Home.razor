@@ -4,34 +4,38 @@
 <PageTitle>MudShell — Showcase</PageTitle>
 <MudStack Spacing="4" Class="pa-4" data-testid="showcase-home">
     <MdsMainSection Title="Building blocks. Consistent interfaces."
-                    Description="Navigation, workspaces, data and conversation: explore the building blocks, then discover how to combine them.">
-            <MudText Typo="Typo.overline" Color="Color.Primary">The MudShell showcase</MudText>
-            <MudStack Row Wrap="Wrap.Wrap" Spacing="2">
-                <MdsMainButton Href="/components" DataTestId="explore-components">Explore components</MdsMainButton>
-                <MdsMainButton Href="/examples" Variant="Variant.Outlined" DataTestId="explore-examples">View examples</MdsMainButton>
-            </MudStack>
+                    Description="Navigation, workspaces, data and conversation: explore the building blocks, then discover how to combine them."
+                    AccentBorderSides="MbxAccentBorderSides.None">
+        <MudStack Row Wrap="Wrap.Wrap" Spacing="2">
+            <MdsMainButton Href="/components" DataTestId="explore-components">Explore components</MdsMainButton>
+            <MdsMainButton Href="/examples" Variant="Variant.Outlined" DataTestId="explore-examples">View examples</MdsMainButton>
+        </MudStack>
     </MdsMainSection>
-        <MdsMainPart Title="A workspace built with MudShell">
-            <MdsStatStrip>
-                <MdsStatTile Label="Resources" Value="128" />
-                <MdsStatTile Label="Compliance" Value="84%" />
-                <MdsStatTile Label="Needs review" Value="7" />
-            </MdsStatStrip>
-            <MudButton Href="/examples/workspace/detail" Class="mt-3" EndIcon="@Icons.Material.Outlined.ArrowForward">Open the detail example</MudButton>
-        </MdsMainPart>
-    <MdsMainSection Title="Explore component families">
-    <MudGrid>
+    <MudText Typo="Typo.h5">Explore component families</MudText>
+    <MudGrid Spacing="3">
         @foreach (var family in ShowcaseCatalog.Families)
         {
             <MudItem xs="12" md="6" lg="4">
-                <MdsMainPart Title="@family.Title" Icon="@family.Icon" Subtitle="@family.Description">
-                    <MdsMainButton Href="@family.Href" Variant="Variant.Text" DataTestId="@($"home-family-{family.Id}")">Explore components</MdsMainButton>
+                <MdsMainPart Title="@family.Title" Icon="@family.Icon" Subtitle="@family.Description"
+                             AccentBorderSides="MbxAccentBorderSides.None">
+                    <MudStack Row>
+                        <MdsMainButton Href="@family.Href" Variant="Variant.Text" DataTestId="@($"home-family-{family.Id}")">Explore components</MdsMainButton>
+                    </MudStack>
                 </MdsMainPart>
             </MudItem>
         }
     </MudGrid>
-    </MdsMainSection>
-    <MdsMainSection Title="Better together." Description="Complete examples, separate from individual component demos.">
-        <MdsMainButton Href="/examples" Variant="Variant.Outlined">Discover examples</MdsMainButton>
-    </MdsMainSection>
+    <MdsMainPart Title="A workspace built with MudShell" Subtitle="See the components working together in a complete example."
+                 AccentBorderSides="MbxAccentBorderSides.None">
+        <MdsStatStrip>
+            <MdsStatTile Label="Resources" Value="128" />
+            <MdsStatTile Label="Compliance" Value="84%" />
+            <MdsStatTile Label="Needs review" Value="7" />
+        </MdsStatStrip>
+        <MudStack Row Wrap="Wrap.Wrap">
+            <MdsMainButton Href="/examples/workspace/detail" Variant="Variant.Text"
+                           EndIcon="@Icons.Material.Outlined.ArrowForward">Open the detail example</MdsMainButton>
+            <MdsMainButton Href="/examples" Variant="Variant.Text">Discover examples</MdsMainButton>
+        </MudStack>
+    </MdsMainPart>
 </MudStack>

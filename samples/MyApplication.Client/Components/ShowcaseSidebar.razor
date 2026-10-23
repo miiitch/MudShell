@@ -12,13 +12,13 @@
         }
     </LogoContent>
     <BottomContent>
-        <MudTooltip Text="Apparence">
+        <MudTooltip Text="Appearance">
             <MudIconButton Icon="@Icons.Material.Outlined.Palette" OnClick="@OpenAppearance"
-                           aria-label="Apparence" data-testid="open-appearance" />
+                           aria-label="Appearance" data-testid="open-appearance" />
         </MudTooltip>
         @if (IsExpanded)
         {
-            <span>Apparence</span>
+            <span>Appearance</span>
         }
     </BottomContent>
 </MdsSidebar>
@@ -28,6 +28,6 @@
     [Parameter] public bool IsExpanded { get; set; }
 
     private async Task OpenAppearance() =>
-        await DialogService.ShowAsync<ThemeOptionsPanel>("Apparence",
+        await DialogService.ShowAsync<ThemeOptionsPanel>("Appearance",
             new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true });
 }

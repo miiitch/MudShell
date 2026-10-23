@@ -14,21 +14,21 @@
                   FixedHeader="true" Height="100%"
                   Style="height:100%;">
             <HeaderContent>
-                <MudTh>Nom</MudTh>
+                <MudTh>Name</MudTh>
                 <MudTh>Email</MudTh>
-                <MudTh Class="hide-on-mobile">Rôle</MudTh>
-                <MudTh Class="hide-on-mobile">Ville</MudTh>
-                <MudTh>Statut</MudTh>
+                <MudTh Class="hide-on-mobile">Role</MudTh>
+                <MudTh Class="hide-on-mobile">City</MudTh>
+                <MudTh>Status</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Nom">@context.Name</MudTd>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
                 <MudTd DataLabel="Email">@context.Email</MudTd>
-                <MudTd DataLabel="Rôle" Class="hide-on-mobile">@context.Role</MudTd>
-                <MudTd DataLabel="Ville" Class="hide-on-mobile">@context.City</MudTd>
-                <MudTd DataLabel="Statut">
+                <MudTd DataLabel="Role" Class="hide-on-mobile">@context.Role</MudTd>
+                <MudTd DataLabel="City" Class="hide-on-mobile">@context.City</MudTd>
+                <MudTd DataLabel="Status">
                     <MudChip T="string" Size="Size.Small"
                              Color="@(context.IsActive ? Color.Success : Color.Default)">
-                        @(context.IsActive ? "Actif" : "Inactif")
+                        @(context.IsActive ? "Active" : "Inactive")
                     </MudChip>
                 </MudTd>
             </RowTemplate>
@@ -53,7 +53,7 @@
                                   "Ugo", "Valérie", "William", "Xavier", "Yasmine", "Zoé" };
         var lastNames  = new[] { "Martin", "Bernard", "Dubois", "Thomas", "Robert", "Richard", "Petit", "Durand", "Leroy", "Moreau",
                                   "Simon", "Laurent", "Lefebvre", "Michel", "Garcia", "David", "Bertrand", "Roux", "Vincent", "Fournier" };
-        var roles      = new[] { "Développeur", "Designer", "Chef de projet", "Analyste", "DevOps", "Product Owner", "QA", "Data Engineer", "Architecte", "Support" };
+        var roles      = new[] { "Developer", "Designer", "Project manager", "Analyst", "DevOps", "Product Owner", "QA", "Data Engineer", "Architect", "Support" };
         var cities     = new[] { "Paris", "Lyon", "Marseille", "Toulouse", "Bordeaux", "Nantes", "Lille", "Strasbourg", "Montpellier", "Rennes" };
 
         var people = new Person[50];
@@ -71,4 +71,3 @@
         return people;
     }
 }
-

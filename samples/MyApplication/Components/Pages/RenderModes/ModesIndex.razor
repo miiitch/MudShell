@@ -2,9 +2,9 @@
 @rendermode InteractiveServer
 @inject NavigationManager Nav
 
-<PageTitle>Compatibilité Blazor</PageTitle>
+<PageTitle>Blazor compatibility</PageTitle>
 
-<MdsPageHeader Title="Compatibilité Blazor">
+<MdsPageHeader Title="Blazor compatibility">
     <StartContent><div></div></StartContent>
     <EndContent>
         <MudChip T="string" Color="Color.Default" Size="Size.Small">4 modes x variants</MudChip>
@@ -13,11 +13,11 @@
 
 <MudStack Spacing="3" Class="px-4 pb-6">
     <MudText Typo="Typo.body1" Color="Color.Secondary">
-        Ces scénarios techniques utilisent les mêmes composants. Ils ne constituent pas
-        des rubriques supplémentaires du catalogue. Les routes historiques WebAssembly
-        utilisent actuellement <strong>InteractiveAuto</strong> : premier démarrage Server,
-        puis exécution cliente lorsque les ressources sont disponibles.
-        Le thème et la densité se règlent via <strong>Apparence</strong>, dans la sidebar.
+        These technical scenarios use the same components. They are not
+        additional catalogue categories. The legacy WebAssembly routes
+        currently use <strong>InteractiveAuto</strong>: Server on first launch,
+        then client-side execution when resources are available.
+        Adjust theme and density through <strong>Appearance</strong> in the sidebar.
     </MudText>
 
     <MudGrid Spacing="3">
@@ -90,8 +90,8 @@
             "Interactive components over SignalR. Execution stays on the server.",
             "/modes/server", true, false),
         new(Icons.Material.Outlined.Memory,
-            "Auto — scénario WebAssembly",
-            "Route historique /wasm, configurée en InteractiveAuto avec chargement du client WebAssembly.",
+            "Auto — WebAssembly scenario",
+            "Legacy /wasm route, configured with InteractiveAuto and WebAssembly client loading.",
             "/modes/wasm", true, false),
         new(Icons.Material.Outlined.AutoMode,
             "Interactive Auto",

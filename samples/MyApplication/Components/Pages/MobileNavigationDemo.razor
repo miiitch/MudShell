@@ -2,15 +2,15 @@
 @rendermode InteractiveServer
 @using MudShell.Components.Navigation
 
-<PageTitle>Navigation mobile — MudShell</PageTitle>
+<PageTitle>Mobile navigation — MudShell</PageTitle>
 <div class="showcase-page" style="padding-bottom:100px">
     <ShowcaseHeader FamilyId="navigation" />
-    <h2>Navigation mobile</h2>
-    <p>La démonstration se trouve au bas de la fenêtre. Ouvrez Composants, puis une famille pour explorer les niveaux.</p>
-    <MudSwitch T="bool" @bind-Value="_drilldown" Label="Navigation hiérarchique (sinon barre simple)" data-testid="mobile-nav-mode" />
+    <h2>Mobile navigation</h2>
+    <p>The demo is at the bottom of the window. Open Components, then a family to explore the levels.</p>
+    <MudSwitch T="bool" @bind-Value="_drilldown" Label="Hierarchical navigation (otherwise a simple bar)" data-testid="mobile-nav-mode" />
     <ShowcaseDetails FamilyId="navigation">
-        <p>MdsBottomNav reçoit des raccourcis simples. La version hiérarchique reprend l’arbre de la vitrine,
-            sans liens sur les groupes : seuls les éléments du dernier niveau changent de page.</p>
+        <p>MdsBottomNav takes simple shortcuts. The hierarchical version uses the showcase tree
+            without links on groups: only leaf items navigate to another page.</p>
     </ShowcaseDetails>
 </div>
 @if (_drilldown)

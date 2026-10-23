@@ -1,30 +1,30 @@
 @page "/examples"
 @rendermode InteractiveServer
 
-<PageTitle>Exemples — MudShell</PageTitle>
+<PageTitle>Examples — MudShell</PageTitle>
 <div class="showcase-page" data-testid="showcase-examples">
-    <MdsPageHeader Title="Des interfaces complètes." BreadcrumbItems="@_breadcrumbs" />
-    <p>Des données fictives, des usages concrets. Chaque écran assemble des composants MudShell et MudBlazor.</p>
+    <MdsPageHeader Title="Complete interfaces." BreadcrumbItems="@_breadcrumbs" />
+    <p>Sample data, real use cases. Each screen combines MudShell and MudBlazor components.</p>
     <div class="showcase-cards">
         @foreach (var example in _examples)
         {
             <a class="showcase-card" href="@example.Href">
                 <MudIcon Icon="@example.Icon" Color="Color.Primary" />
-                <h2>@example.Title</h2><p>@example.Description</p><span>Explorer cet exemple →</span>
+                <h2>@example.Title</h2><p>@example.Description</p><span>Explore this example →</span>
             </a>
         }
     </div>
 </div>
 
 @code {
-    private readonly List<BreadcrumbItem> _breadcrumbs = [new("Accueil", "/")];
+    private readonly List<BreadcrumbItem> _breadcrumbs = [new("Home", "/")];
     private readonly (string Title, string Description, string Href, string Icon)[] _examples =
     [
-        ("Espace liste / détail", "Grille, aperçu, onglets, régions à défilement indépendant et indicateurs.", "/examples/workspace", Icons.Material.Outlined.ViewQuilt),
-        ("Bibliothèque documentaire", "Cartes, catégories et recherche de documents.", "/examples/library", Icons.Material.Outlined.Folder),
-        ("Tableau de bord météo", "Indicateurs, filtres et prévisions tabulaires.", "/examples/weather", Icons.Material.Outlined.Cloud),
-        ("Villes européennes", "Exploration tabulaire et comparaison de données.", "/examples/cities", Icons.Material.Outlined.TableChart),
-        ("Conversation et assistant", "Composer un message, recevoir une réponse progressive et afficher du contenu riche.", "/components/conversation", Icons.Material.Outlined.Chat),
-        ("Assistant flottant", "Une conversation accessible au-dessus du contenu.", "/components/conversation/floating", Icons.Material.Outlined.QuestionAnswer)
+        ("List / detail workspace", "A grid, preview, tabs, independently scrolling regions and metrics.", "/examples/workspace", Icons.Material.Outlined.ViewQuilt),
+        ("Document library", "Cards, categories and document search.", "/examples/library", Icons.Material.Outlined.Folder),
+        ("Weather dashboard", "Metrics, filters and tabular forecasts.", "/examples/weather", Icons.Material.Outlined.Cloud),
+        ("European cities", "Explore and compare tabular data.", "/examples/cities", Icons.Material.Outlined.TableChart),
+        ("Conversation and assistant", "Compose a message, stream a response and display rich content.", "/components/conversation", Icons.Material.Outlined.Chat),
+        ("Floating assistant", "A conversation accessible above the page content.", "/components/conversation/floating", Icons.Material.Outlined.QuestionAnswer)
     ];
 }

@@ -15,12 +15,51 @@ public class ShowcaseTests : PlaywrightTestBase
         foreach (var family in Families)
             await Assertions.Expect(Page.GetByTestId($"catalog-family-{family}")).ToBeVisibleAsync();
 
-        var search = Page.GetByRole(AriaRole.Textbox, new() { Name = "Rechercher une famille ou un composant" });
+        var search = Page.GetByRole(AriaRole.Textbox, new() { Name = "Search for a family or component" });
         await search.FillAsync("MdsSparkline");
         await Assertions.Expect(Page.Locator("[data-testid^='catalog-family-']")).ToHaveCountAsync(1);
         await Assertions.Expect(Page.GetByTestId("catalog-family-data")).ToBeVisibleAsync();
         await search.FillAsync("no-such-component");
-        await Assertions.Expect(Page.GetByText("Aucun composant ne correspond", new() { Exact = true })).ToBeVisibleAsync();
+        await Assertions.Expect(Page.GetByText("No matching components", new() { Exact = true })).ToBeVisibleAsync();
+    });
+
+    [Fact]
+    public Task Documents_EnglishFiltersMatchSampleData() => RunAsync(nameof(Documents_EnglishFiltersMatchSampleData), async () =>
+    {
+        await Page.GotoAsync("/components/documents", new() { WaitUntil = WaitUntilState.NetworkIdle });
+        await Page.GetByText("Reports", new() { Exact = true }).ClickAsync();
+        await Assertions.Expect(Page.GetByText("Quarterly report", new() { Exact = true })).ToBeVisibleAsync();
+        await Assertions.Expect(Page.GetByText("Project overview", new() { Exact = true })).Not.ToBeAttachedAsync();
+        await Page.GetByText("Quarterly report", new() { Exact = true }).ClickAsync();
+        await Assertions.Expect(Page.GetByTestId("document-selection")).ToHaveTextAsync("Selected card: Quarterly report");
+        await Page.GetByText("Archived", new() { Exact = true }).ClickAsync();
+        await Assertions.Expect(Page.GetByText("No archived documents", new() { Exact = true })).ToBeVisibleAsync();
+
+        await Page.GotoAsync("/examples/library", new() { WaitUntil = WaitUntilState.NetworkIdle });
+        await Page.GetByText("Reports", new() { Exact = true }).ClickAsync();
+        await Assertions.Expect(Page.GetByText("Quarterly report", new() { Exact = true })).ToBeVisibleAsync();
+        await Assertions.Expect(Page.GetByText("Meeting notes", new() { Exact = true })).Not.ToBeAttachedAsync();
+        await Page.GetByTestId("library-add").ClickAsync();
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Search documents" }).FillAsync("Document 4");
+        await Assertions.Expect(Page.GetByText("Document 4", new() { Exact = true })).ToBeVisibleAsync();
+    });
+
+    [Theory]
+    [InlineData("/technical", "Install and integrate")]
+    [InlineData("/modes", "Auto — WebAssembly scenario")]
+    [InlineData("/modes/server", "Interactivity check")]
+    [InlineData("/modes/server/grid", "Dashboard")]
+    [InlineData("/modes/server/table", "Role")]
+    [InlineData("/library/bg", "Library (image background)")]
+    [InlineData("/density", "Density Showcase")]
+    [InlineData("/examples/weather", "Wind (km/h)")]
+    public Task TechnicalAndLegacyPages_UseEnglish(string route, string text) => RunAsync(
+        $"{nameof(TechnicalAndLegacyPages_UseEnglish)}_{route.Replace('/', '_')}", async () =>
+    {
+        await Page.GotoAsync(route, new() { WaitUntil = WaitUntilState.NetworkIdle });
+        await Assertions.Expect(Page.Locator("html")).ToHaveAttributeAsync("lang", "en");
+        await Assertions.Expect(Page.GetByText(text, new() { Exact = route != "/modes/server" })).ToBeVisibleAsync();
+        await Assertions.Expect(Page.Locator("#blazor-error-ui")).ToBeHiddenAsync();
     });
 
     [Fact]
@@ -41,7 +80,7 @@ public class ShowcaseTests : PlaywrightTestBase
     {
         await Page.GotoAsync("/", new() { WaitUntil = WaitUntilState.NetworkIdle });
         await Page.GetByTestId("open-appearance").ClickAsync();
-        var preset = Page.GetByRole(AriaRole.Combobox, new() { Name = "Thème", Exact = true });
+        var preset = Page.GetByRole(AriaRole.Combobox, new() { Name = "Theme", Exact = true });
         await Assertions.Expect(preset).ToBeVisibleAsync();
         await Assertions.Expect(Page.Locator("input[type='color']")).ToHaveCountAsync(0);
         await preset.ClickAsync();
@@ -63,16 +102,16 @@ public class ShowcaseTests : PlaywrightTestBase
     public Task Composition_ErrorRetryAndEmptyActionRestoreContent() => RunAsync(nameof(Composition_ErrorRetryAndEmptyActionRestoreContent), async () =>
     {
         await Page.GotoAsync("/components/composition", new() { WaitUntil = WaitUntilState.NetworkIdle });
-        await Page.GetByRole(AriaRole.Combobox, new() { Name = "État de la section" }).ClickAsync();
-        await Page.GetByRole(AriaRole.Option, new() { Name = "Erreur simulée", Exact = true }).ClickAsync();
+        await Page.GetByRole(AriaRole.Combobox, new() { Name = "Section state" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Option, new() { Name = "Simulated error", Exact = true }).ClickAsync();
         await Assertions.Expect(Page.GetByTestId("part-error")).ToBeVisibleAsync();
         await Page.GetByTestId("btn-retry").ClickAsync();
         await Assertions.Expect(Page.GetByTestId("part-error")).Not.ToBeAttachedAsync();
-        await Assertions.Expect(Page.GetByText("Présentation du projet", new() { Exact = true })).ToBeVisibleAsync();
-        await Page.GetByRole(AriaRole.Combobox, new() { Name = "État de la section" }).ClickAsync();
-        await Page.GetByRole(AriaRole.Option, new() { Name = "Aucun résultat", Exact = true }).ClickAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Ajouter un document fictif" }).ClickAsync();
-        await Assertions.Expect(Page.GetByTestId("composition-count")).ToContainTextAsync("1 éléments");
+        await Assertions.Expect(Page.GetByText("Project overview", new() { Exact = true })).ToBeVisibleAsync();
+        await Page.GetByRole(AriaRole.Combobox, new() { Name = "Section state" }).ClickAsync();
+        await Page.GetByRole(AriaRole.Option, new() { Name = "No results", Exact = true }).ClickAsync();
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Add a sample document" }).ClickAsync();
+        await Assertions.Expect(Page.GetByTestId("composition-count")).ToContainTextAsync("Items added: 1");
     });
 
     [Theory]
@@ -126,8 +165,8 @@ public class ShowcaseTests : PlaywrightTestBase
         await separator.FocusAsync();
         await separator.PressAsync("ArrowLeft");
         await Assertions.Expect(separator).ToHaveAttributeAsync("aria-valuenow", (value + 16).ToString());
-        await Page.GetByRole(AriaRole.Tab, new() { Name = "Région simple" }).ClickAsync();
-        await Assertions.Expect(Page.GetByText("Une région qui remplit son onglet", new() { Exact = true })).ToBeVisibleAsync();
+        await Page.GetByRole(AriaRole.Tab, new() { Name = "Simple region" }).ClickAsync();
+        await Assertions.Expect(Page.GetByText("A region that fills its tab", new() { Exact = true })).ToBeVisibleAsync();
     });
 
     [Fact]
@@ -137,18 +176,18 @@ public class ShowcaseTests : PlaywrightTestBase
         await Page.SetViewportSizeAsync(390, 900);
         await Page.GotoAsync("/components/navigation/mobile", new() { WaitUntil = WaitUntilState.NetworkIdle });
         var demo = Page.GetByTestId("mobile-drilldown-demo");
-        await demo.GetByRole(AriaRole.Button, new() { Name = "Composants", Exact = true }).ClickAsync();
+        await demo.GetByRole(AriaRole.Button, new() { Name = "Components", Exact = true }).ClickAsync();
         var panel = demo.Locator(".mbx-mobile-drilldown-panel");
         await Assertions.Expect(panel).ToBeVisibleAsync();
-        await panel.GetByText("Documents et filtres", new() { Exact = true }).ClickAsync();
+        await panel.GetByText("Documents and filters", new() { Exact = true }).ClickAsync();
         await Assertions.Expect(Page).ToHaveURLAsync(new Regex("/components/navigation/mobile$"));
-        await panel.GetByText("Démonstration", new() { Exact = true }).ClickAsync();
+        await panel.GetByText("Demo", new() { Exact = true }).ClickAsync();
         await Assertions.Expect(Page).ToHaveURLAsync(new Regex("/components/documents$"));
 
         await Page.GotoAsync("/components/navigation/mobile", new() { WaitUntil = WaitUntilState.NetworkIdle });
         await Page.GetByTestId("mobile-nav-mode").ClickAsync();
         await Assertions.Expect(Page.GetByTestId("mobile-bottom-demo")).ToBeVisibleAsync();
-        await Page.GetByTestId("mobile-bottom-demo").GetByRole(AriaRole.Link, new() { Name = "Exemples", Exact = true }).ClickAsync();
+        await Page.GetByTestId("mobile-bottom-demo").GetByRole(AriaRole.Link, new() { Name = "Examples", Exact = true }).ClickAsync();
         await Assertions.Expect(Page).ToHaveURLAsync(new Regex("/examples$"));
     });
 }

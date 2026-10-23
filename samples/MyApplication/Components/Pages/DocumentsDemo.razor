@@ -1,7 +1,7 @@
 @page "/components/documents"
 @rendermode InteractiveServer
 
-<PageTitle>Documents et filtres — MudShell</PageTitle>
+<PageTitle>Documents and filters — MudShell</PageTitle>
 <div class="showcase-page">
     <ShowcaseHeader FamilyId="documents" />
     <MdsFilterTabBar T="string" Items="@_tabs" @bind-Value="_filter" />
@@ -14,27 +14,27 @@
     </div>
     @if (_selected is not null)
     {
-        <MudText role="status" data-testid="document-selection">Carte sélectionnée : @_selected</MudText>
+        <MudText role="status" data-testid="document-selection">Selected card: @_selected</MudText>
     }
     @if (_filter == "archived")
     {
-        <MdsMainEmptyState Title="Aucun document archivé" Description="Sélectionnez une autre catégorie pour retrouver les documents." />
+        <MdsMainEmptyState Title="No archived documents" Description="Select another category to find documents." />
     }
     <ShowcaseDetails FamilyId="documents">
-        <p>Le filtre est piloté par la page via Value/ValueChanged. Les cartes restent indépendantes de la grille utilisée pour les disposer.</p>
+        <p>The page controls the filter through Value/ValueChanged. Cards are independent of the grid used to arrange them.</p>
         <pre>&lt;MdsFilterTabBar T="string" Items="tabs" @("@bind-Value=\"filter\"") /&gt;</pre>
-        <MudLink Href="/examples/library">Voir la bibliothèque complète</MudLink>
+        <MudLink Href="/examples/library">View the complete library</MudLink>
     </ShowcaseDetails>
 </div>
 
 @code {
     private string _filter = "all";
     private string? _selected;
-    private readonly MbxTabItem<string>[] _tabs = [new("all", "Tous"), new("Page", "Pages"), new("Rapport", "Rapports"), new("archived", "Archives")];
+    private readonly MbxTabItem<string>[] _tabs = [new("all", "All"), new("Page", "Pages"), new("Report", "Reports"), new("archived", "Archived")];
     private readonly (string Title, string Kind, string Description)[] _documents =
     [
-        ("Présentation du projet", "Page", "Objectifs et prochaines étapes."),
-        ("Rapport trimestriel", "Rapport", "Indicateurs et résultats de l’équipe."),
-        ("Notes de réunion", "Page", "Décisions et actions à suivre.")
+        ("Project overview", "Page", "Goals and next steps."),
+        ("Quarterly report", "Report", "Team metrics and results."),
+        ("Meeting notes", "Page", "Decisions and follow-up actions.")
     ];
 }

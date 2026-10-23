@@ -9,17 +9,17 @@
 
     @* Interactivity proof — counter *@
     <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">✅ Preuve d'interactivité</MudText>
+        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">✅ Interactivity check</MudText>
         <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
             <MudButton Variant="Variant.Filled" Color="Color.Primary"
                        OnClick="@(() => _count++)"
                        Style="border-radius:12px; text-transform:none;">
-                Cliquer
+                Click
             </MudButton>
-            <MudText>Clics : <strong>@_count</strong></MudText>
+            <MudText>Clicks: <strong>@_count</strong></MudText>
             @if (_count > 0)
             {
-                <MudChip T="string" Color="Color.Success" Size="Size.Small">Interactif ✓</MudChip>
+                <MudChip T="string" Color="Color.Success" Size="Size.Small">Interactive ✓</MudChip>
             }
         </div>
     </section>
@@ -27,12 +27,12 @@
     @* ChatBar *@
     <section class="showcase-section">
         <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsChatBar</MudText>
-        <MdsChatBar Placeholder="@("Tapez un message pour tester le bind…")"
+        <MdsChatBar Placeholder="@("Type a message to test binding…")"
                     @bind-Value="_chatValue" />
         @if (!string.IsNullOrEmpty(_chatValue))
         {
             <MudText Typo="Typo.caption" Style="margin-top:6px; color: var(--mud-palette-text-secondary);">
-                Valeur liée : @_chatValue
+                Bound value: @_chatValue
             </MudText>
         }
     </section>
@@ -42,7 +42,7 @@
         <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsFilterTabBar</MudText>
         <MdsFilterTabBar T="string" @bind-Value="_tab" Items="@_tabs" />
         <MudText Typo="Typo.caption" Style="margin-top:6px; color: var(--mud-palette-text-secondary);">
-            Onglet sélectionné : @_tab
+            Selected tab: @_tab
         </MudText>
     </section>
 
@@ -64,7 +64,7 @@
         @if (_lastCard is not null)
         {
             <MudText Typo="Typo.caption" Style="margin-top:8px; color: var(--mud-palette-text-secondary);">
-                Dernière carte cliquée : @_lastCard
+                Last card clicked: @_lastCard
             </MudText>
         }
     </section>
@@ -85,16 +85,16 @@
     [
         new("images",   "Images"),
         new("pages",    "Pages"),
-        new("rapports", "Rapports"),
+        new("reports", "Reports"),
     ];
 
     private readonly (string Icon, string Type, string Title, string Desc)[] _cards =
     [
         (Icons.Material.Outlined.Description, "Page",    "Things to do in Tokyo",
          "Tokyo offers a vibrant mix of traditional culture and modern attractions."),
-        (Icons.Material.Outlined.BarChart,    "Rapport", "Rapport Q3",
-         "Analyse des métriques d'engagement utilisateur sur le trimestre."),
-        (Icons.Material.Outlined.Image,       "Image",   "Aperçu du projet",
-         "Maquette haute fidélité pour la page d'accueil de l'application."),
+        (Icons.Material.Outlined.BarChart,    "Report", "Q3 report",
+         "Analysis of user engagement metrics for the quarter."),
+        (Icons.Material.Outlined.Image,       "Image",   "Project preview",
+         "High-fidelity mockup of the application home page."),
     ];
 }

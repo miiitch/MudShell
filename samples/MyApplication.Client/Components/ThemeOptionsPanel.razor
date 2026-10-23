@@ -5,11 +5,11 @@
 @implements IDisposable
 
 <div class="theme-panel">
-    <MudText Typo="Typo.subtitle2">Thème prédéfini</MudText>
+    <MudText Typo="Typo.subtitle2">Theme preset</MudText>
 
     <div class="theme-panel-row">
         <MudSelect T="MbxTheme.MbxThemePreset"
-                   Label="Thème"
+                   Label="Theme"
                    Dense="true"
                    data-testid="theme-preset"
                    Value="@ThemeState.SelectedPreset"
@@ -26,7 +26,7 @@
                    Value="@ThemeState.IsDarkMode"
                    ValueChanged="@ThemeState.SetDarkMode"
                    data-testid="theme-dark-mode"
-                   Label="Mode sombre" />
+                   Label="Dark mode" />
     </div>
 
     <div class="theme-panel-row">
@@ -35,7 +35,7 @@
                    Value="@IsImageMode"
                    ValueChanged="@OnBackgroundModeChanged"
                    data-testid="theme-background"
-                   Label="@(IsImageMode ? "Fond image" : "Fond palette")" />
+                   Label="@(IsImageMode ? "Image background" : "Palette background")" />
     </div>
 
     <div class="theme-panel-row">
@@ -44,7 +44,7 @@
                    Value="@IsCompactDensity"
                    ValueChanged="@OnDensityChanged"
                    data-testid="theme-density"
-                   Label="@(IsCompactDensity ? "Compact" : "Confortable")" />
+                   Label="@(IsCompactDensity ? "Compact" : "Comfortable")" />
     </div>
 
 </div>

@@ -5,9 +5,9 @@
 
 <div style="height:100%;overflow:auto">
     <div class="d-flex justify-end pa-2">
-        <MudTooltip Text="Réduire ou agrandir les sous-sections">
+        <MudTooltip Text="Collapse or expand subsections">
             <MudIconButton Icon="@Icons.Material.Outlined.UnfoldLess"
-                           aria-label="Réduire ou agrandir les sous-sections"
+                           aria-label="Collapse or expand subsections"
                            data-testid="context-panel-toggle" OnClick="@OnToggle" />
         </MudTooltip>
     </div>
@@ -15,7 +15,7 @@
     @if (IsExpanded && IsNavigationDemo)
     {
         <details class="pa-2" data-testid="context-events">
-            <summary>Événements du panneau</summary>
+            <summary>Panel events</summary>
             <div data-testid="context-nav-sort-demo-log" aria-live="polite" style="overflow-wrap:anywhere">
                 @foreach (var entry in _log)
                 {
@@ -41,26 +41,26 @@
         [
             new(id: "navigation-demo", text: "Navigation", href: "/components/navigation", children:
             [
-                new(id: "context-sort-demo", text: "Rapports", icon: Icons.Material.Outlined.Assessment, children: Children("context-item", _primary)),
-                new(id: "context-sort-demo-secondary", text: "Favoris", icon: Icons.Material.Outlined.BookmarkBorder, children: Children("context-secondary-item", _secondary))
+                new(id: "context-sort-demo", text: "Reports", icon: Icons.Material.Outlined.Assessment, children: Children("context-item", _primary)),
+                new(id: "context-sort-demo-secondary", text: "Favorites", icon: Icons.Material.Outlined.BookmarkBorder, children: Children("context-secondary-item", _secondary))
             ])
         ])
         : ShowcaseCatalog.Tree;
 
     private List<MbxNavNode> Children(string prefix, List<string> order)
     {
-        List<MbxNavNode> children = [new(id: $"{prefix}-pinned-top", text: "Épinglé en haut", pin: MbxNavPin.Top)];
+        List<MbxNavNode> children = [new(id: $"{prefix}-pinned-top", text: "Pinned at the top", pin: MbxNavPin.Top)];
         children.AddRange(order.Select(id => new MbxNavNode(id: id, text: Label(id),
-            badge: id.EndsWith("beta") ? new MbxNavBadge(Color: Color.Warning, Dot: true, Tooltip: "Nouvelle activité") : null, trailingActions:
+            badge: id.EndsWith("beta") ? new MbxNavBadge(Color: Color.Warning, Dot: true, Tooltip: "New activity") : null, trailingActions:
         [
-            new MbxNavAction(Icons.Material.Outlined.Close, "Retirer cet élément",
+            new MbxNavAction(Icons.Material.Outlined.Close, "Remove this item",
                 EventCallback.Factory.Create<string>(this, Remove))
         ])));
-        children.Add(new(id: $"{prefix}-pinned-bottom", text: "Épinglé en bas", pin: MbxNavPin.Bottom));
+        children.Add(new(id: $"{prefix}-pinned-bottom", text: "Pinned at the bottom", pin: MbxNavPin.Bottom));
         return children;
     }
 
-    private static string Label(string id) => id.EndsWith("alpha") ? "Synthèse" : id.EndsWith("beta") ? "Activité" : "Tendances";
+    private static string Label(string id) => id.EndsWith("alpha") ? "Summary" : id.EndsWith("beta") ? "Activity" : "Trends";
     private void Remove(string id)
     {
         _primary.Remove(id);

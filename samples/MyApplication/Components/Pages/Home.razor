@@ -1,28 +1,28 @@
 @page "/"
 @rendermode InteractiveServer
 
-<PageTitle>MudShell — La vitrine</PageTitle>
+<PageTitle>MudShell — Showcase</PageTitle>
 <div class="showcase-page" data-testid="showcase-home">
     <div class="showcase-hero">
         <div>
-            <MudText Typo="Typo.overline" Color="Color.Primary">La vitrine MudShell</MudText>
-            <h1>Des composants.<br />Des interfaces cohérentes.</h1>
-            <p>Navigation, espaces de travail, données et conversation : explorez les briques, puis découvrez comment les assembler.</p>
+            <MudText Typo="Typo.overline" Color="Color.Primary">The MudShell showcase</MudText>
+            <h1>Building blocks.<br />Consistent interfaces.</h1>
+            <p>Navigation, workspaces, data and conversation: explore the building blocks, then discover how to combine them.</p>
             <MudStack Row Wrap="Wrap.Wrap" Spacing="2">
-                <MudButton Href="/components" Variant="Variant.Filled" Color="Color.Primary" data-testid="explore-components">Explorer les composants</MudButton>
-                <MudButton Href="/examples" Variant="Variant.Outlined" data-testid="explore-examples">Voir les exemples</MudButton>
+                <MudButton Href="/components" Variant="Variant.Filled" Color="Color.Primary" data-testid="explore-components">Explore components</MudButton>
+                <MudButton Href="/examples" Variant="Variant.Outlined" data-testid="explore-examples">View examples</MudButton>
             </MudStack>
         </div>
-        <MdsMainPart Title="Un espace de travail composé avec MudShell">
+        <MdsMainPart Title="A workspace built with MudShell">
             <MdsStatStrip>
-                <MdsStatTile Label="Ressources" Value="128" />
-                <MdsStatTile Label="Conformité" Value="84 %" />
-                <MdsStatTile Label="À examiner" Value="7" />
+                <MdsStatTile Label="Resources" Value="128" />
+                <MdsStatTile Label="Compliance" Value="84%" />
+                <MdsStatTile Label="Needs review" Value="7" />
             </MdsStatStrip>
-            <MudButton Href="/examples/workspace/detail" Class="mt-3" EndIcon="@Icons.Material.Outlined.ArrowForward">Ouvrir la fiche exemple</MudButton>
+            <MudButton Href="/examples/workspace/detail" Class="mt-3" EndIcon="@Icons.Material.Outlined.ArrowForward">Open the detail example</MudButton>
         </MdsMainPart>
     </div>
-    <h2 class="mb-4">Explorez les familles de composants</h2>
+    <h2 class="mb-4">Explore component families</h2>
     <div class="showcase-cards">
         @foreach (var family in ShowcaseCatalog.Families)
         {
@@ -34,7 +34,7 @@
         }
     </div>
     <div class="showcase-callout">
-        <div><h2>Les briques prennent tout leur sens ensemble.</h2><p>Des exemples complets, séparés des démonstrations isolées.</p></div>
-        <MudButton Href="/examples" Variant="Variant.Outlined">Découvrir les exemples</MudButton>
+        <div><h2>Better together.</h2><p>Complete examples, separate from individual component demos.</p></div>
+        <MudButton Href="/examples" Variant="Variant.Outlined">Discover examples</MudButton>
     </div>
 </div>

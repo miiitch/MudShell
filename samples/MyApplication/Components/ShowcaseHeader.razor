@@ -4,5 +4,5 @@
 @code {
     [Parameter, EditorRequired] public string FamilyId { get; set; } = "";
     private ShowcaseCatalog.Family Family => ShowcaseCatalog.Families.Single(f => f.Id == FamilyId);
-    private List<BreadcrumbItem> Breadcrumbs => [new("Composants", "/components")];
+    private List<BreadcrumbItem> Breadcrumbs => [new("Components", "/components")];
 }

@@ -2,62 +2,62 @@
 @page "/components/composition"
 @rendermode InteractiveServer
 
-<PageTitle>Composition de page — MudShell</PageTitle>
+<PageTitle>Page composition — MudShell</PageTitle>
 <div class="showcase-page" data-testid="composition-demo">
     <ShowcaseHeader FamilyId="composition" />
     <MdsMainToolbar>
-        <MudTooltip Text="Ajouter un élément fictif">
+        <MudTooltip Text="Add a sample item">
             <MudIconButton Icon="@Icons.Material.Outlined.Add" Variant="Variant.Filled" Color="Color.Primary"
-                           aria-label="Ajouter un élément fictif" data-testid="composition-add" OnClick="@(() => _counter++)" />
+                           aria-label="Add a sample item" data-testid="composition-add" OnClick="@(() => _counter++)" />
         </MudTooltip>
         <MdsMainToolbarDivider />
-        <MudTooltip Text="Réinitialiser la démonstration">
-            <MudIconButton Icon="@Icons.Material.Outlined.Refresh" aria-label="Réinitialiser la démonstration"
+        <MudTooltip Text="Reset the demo">
+            <MudIconButton Icon="@Icons.Material.Outlined.Refresh" aria-label="Reset the demo"
                            data-testid="composition-reset" OnClick="@Reset" />
         </MudTooltip>
         <MudSpacer />
-        <span data-testid="composition-count">@_counter éléments ajoutés</span>
+        <span data-testid="composition-count">Items added: @_counter</span>
     </MdsMainToolbar>
     <div class="showcase-demo-grid">
         <div>
-            <MdsMainSection Title="Documents récents" Description="Un titre, une description et un contenu hiérarchisé.">
-                <MdsMainPart Title="Résultats" IsLoading="@(_state == "loading")"
-                             Error="@(_state == "error" ? "Erreur simulée : impossible de charger les documents." : null)"
+            <MdsMainSection Title="Recent documents" Description="A title, a description and structured content.">
+                <MdsMainPart Title="Results" IsLoading="@(_state == "loading")"
+                             Error="@(_state == "error" ? "Simulated error: unable to load documents." : null)"
                              OnRetry="@ResetState">
                     @if (_state == "empty")
                     {
-                        <MdsMainEmptyState Title="Aucun document" Description="Ajoutez un élément pour commencer.">
-                            <Action><MdsMainButton OnClick="@AddFirst">Ajouter un document fictif</MdsMainButton></Action>
+                        <MdsMainEmptyState Title="No documents" Description="Add an item to get started.">
+                            <Action><MdsMainButton OnClick="@AddFirst">Add a sample document</MdsMainButton></Action>
                         </MdsMainEmptyState>
                     }
                     else
                     {
-                        <p>Présentation du projet</p><p>Rapport de synthèse</p><p>Notes de réunion</p>
+                        <p>Project overview</p><p>Summary report</p><p>Meeting notes</p>
                     }
                 </MdsMainPart>
             </MdsMainSection>
-            <MdsMainSection Title="Statuts">
+            <MdsMainSection Title="Statuses">
                 <MudStack Row Wrap="Wrap.Wrap">
-                    <MdsMainStatusBadge Label="Actif" Status="active" />
-                    <MdsMainStatusBadge Label="En attente" Status="pending" />
-                    <MdsMainStatusBadge Label="Erreur" Status="error" />
+                    <MdsMainStatusBadge Label="Active" Status="active" />
+                    <MdsMainStatusBadge Label="Pending" Status="pending" />
+                    <MdsMainStatusBadge Label="Error" Status="error" />
                 </MudStack>
             </MdsMainSection>
         </div>
         <aside class="showcase-controls">
-            <h2>Essayer les états</h2>
-            <MudSelect T="string" Label="État de la section" @bind-Value="_state" data-testid="composition-state">
-                <MudSelectItem Value="@("content")">Contenu</MudSelectItem>
-                <MudSelectItem Value="@("loading")">Chargement simulé</MudSelectItem>
-                <MudSelectItem Value="@("empty")">Aucun résultat</MudSelectItem>
-                <MudSelectItem Value="@("error")">Erreur simulée</MudSelectItem>
+            <h2>Try the states</h2>
+            <MudSelect T="string" Label="Section state" @bind-Value="_state" data-testid="composition-state">
+                <MudSelectItem Value="@("content")">Content</MudSelectItem>
+                <MudSelectItem Value="@("loading")">Simulated loading</MudSelectItem>
+                <MudSelectItem Value="@("empty")">No results</MudSelectItem>
+                <MudSelectItem Value="@("error")">Simulated error</MudSelectItem>
             </MudSelect>
-            <p>Ces commandes pilotent la démo, pas l’apparence de la vitrine.</p>
+            <p>These controls affect the demo, not the showcase appearance.</p>
         </aside>
     </div>
     <ShowcaseDetails FamilyId="composition">
-        <pre>&lt;MdsMainPart Title="Résultats" IsLoading="loading" Error="error" OnRetry="Reload"&gt;...&lt;/MdsMainPart&gt;</pre>
-        <p>La toolbar contient les actions. Les filtres d’une page de liste se placent sur une ligne distincte.</p>
+        <pre>&lt;MdsMainPart Title="Results" IsLoading="loading" Error="error" OnRetry="Reload"&gt;...&lt;/MdsMainPart&gt;</pre>
+        <p>The toolbar contains actions. List page filters belong on a separate row.</p>
     </ShowcaseDetails>
 </div>
 

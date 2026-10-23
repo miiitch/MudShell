@@ -112,7 +112,7 @@ _shell.ToggleContextPanel();
 
 ## Recommended page layout pattern (sample app)
 
-The sample is a UI showcase, with technical material kept separate:
+The sample is an English-language UI showcase, with technical material kept separate:
 
 | Entry | Content |
 | --- | --- |

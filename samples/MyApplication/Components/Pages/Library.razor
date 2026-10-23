@@ -3,16 +3,16 @@
 @rendermode InteractiveServer
 
 <div class="showcase-page">
-    <MdsPageHeader Title="Bibliothèque" BreadcrumbItems="@_breadcrumbs" />
+    <MdsPageHeader Title="Library" BreadcrumbItems="@_breadcrumbs" />
     <MdsMainToolbar>
-        <MudTooltip Text="Ajouter un document fictif">
+        <MudTooltip Text="Add a sample document">
             <MudIconButton Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Outlined.Add"
-                           aria-label="Ajouter un document fictif" OnClick="@AddPage" data-testid="library-add" />
+                           aria-label="Add a sample document" OnClick="@AddPage" data-testid="library-add" />
         </MudTooltip>
         <MudSpacer />
-        <MudText Typo="Typo.caption">@_pages.Count documents fictifs</MudText>
+        <MudText Typo="Typo.caption">@_pages.Count sample documents</MudText>
     </MdsMainToolbar>
-    <MudTextField T="string" @bind-Value="_query" Immediate Label="Rechercher un document" Class="mb-3" />
+    <MudTextField T="string" @bind-Value="_query" Immediate Label="Search documents" Class="mb-3" />
     <MdsFilterTabBar T="string" Items="@_tabs" @bind-Value="_selectedTab" />
     <div class="showcase-cards my-4">
         @foreach (var doc in Visible)
@@ -23,8 +23,8 @@
     </div>
     @if (!Visible.Any())
     {
-        <MdsMainEmptyState Title="Aucun document" Description="Modifiez la recherche ou ajoutez un document fictif.">
-            <Action><MdsMainButton OnClick="@AddPage">Ajouter un document fictif</MdsMainButton></Action>
+        <MdsMainEmptyState Title="No documents" Description="Change the search or add a sample document.">
+            <Action><MdsMainButton OnClick="@AddPage">Add a sample document</MdsMainButton></Action>
         </MdsMainEmptyState>
     }
     <ShowcaseDetails FamilyId="documents" />
@@ -33,19 +33,19 @@
 @code {
     private string _selectedTab = "all";
     private string _query = "";
-    private readonly List<BreadcrumbItem> _breadcrumbs = [new("Exemples", "/examples")];
-    private readonly MbxTabItem<string>[] _tabs = [new("all", "Tous"), new("Page", "Pages"), new("Rapport", "Rapports"), new("Image", "Images")];
+    private readonly List<BreadcrumbItem> _breadcrumbs = [new("Examples", "/examples")];
+    private readonly MbxTabItem<string>[] _tabs = [new("all", "All"), new("Page", "Pages"), new("Report", "Reports"), new("Image", "Images")];
     private readonly List<PageItem> _pages =
     [
-        new("Présentation du projet", "Objectifs, équipe et prochaines étapes.", "Page"),
-        new("Notes de réunion", "Décisions et actions à suivre.", "Page"),
-        new("Rapport trimestriel", "Indicateurs et résultats de l’équipe.", "Rapport")
+        new("Project overview", "Goals, team and next steps.", "Page"),
+        new("Meeting notes", "Decisions and follow-up actions.", "Page"),
+        new("Quarterly report", "Team metrics and results.", "Report")
     ];
     private IEnumerable<PageItem> Visible => _pages.Where(p => (_selectedTab == "all" || p.Kind == _selectedTab)
         && p.Title.Contains(_query, StringComparison.OrdinalIgnoreCase));
     private void AddPage()
     {
-        _pages.Insert(0, new($"Document {_pages.Count + 1}", "Document fictif ajouté dans cette session.", "Page"));
+        _pages.Insert(0, new($"Document {_pages.Count + 1}", "Sample document added in this session.", "Page"));
         _selectedTab = "all";
         _query = "";
     }

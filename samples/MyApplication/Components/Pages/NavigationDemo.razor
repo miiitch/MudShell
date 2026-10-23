@@ -1,0 +1,60 @@
+@page "/components/navigation"
+@page "/demo"
+@rendermode InteractiveServer
+@using MudShell.Components.Navigation
+
+<PageTitle>Navigation — MudShell</PageTitle>
+<div class="showcase-page" data-testid="navigation-demo">
+    <ShowcaseHeader FamilyId="navigation" />
+    <p>Les sous-sections du panneau contextuel ont deux niveaux : un groupe puis ses éléments.
+        Dépliez Rapports ou Favoris et glissez les éléments entre les deux positions épinglées.</p>
+    <MdsMainSection Title="Le même comportement dans la sidebar">
+        <p>Les éléments épinglés restent en place. Les actions retirent un élément ; les autres peuvent être réordonnés.</p>
+        <div class="mbx-nav mbx-nav-expanded showcase-nav-sample">
+            <MdsSidebarNav Tree="@Tree" IsExpanded="true" OnSortChanged="@SortChanged" />
+        </div>
+        <details class="showcase-details" data-testid="sidebar-events">
+            <summary>Événements de la sidebar</summary>
+            <div class="pa-3" data-testid="sidebar-nav-sort-demo-log" aria-live="polite">
+                @foreach (var entry in _log) { <div>@entry</div> }
+            </div>
+        </details>
+    </MdsMainSection>
+    <MudButton Href="/components/navigation/mobile" Variant="Variant.Outlined" Class="my-3">Essayer la navigation mobile</MudButton>
+    <ShowcaseDetails FamilyId="navigation">
+        <p>Chaque groupe conserve son ordre. Le panneau contextuel route les événements par GroupId ;
+            une suppression ou un tri ne modifie pas les autres groupes. Les zones épinglées ne sont pas triables.</p>
+        <pre>&lt;MdsSidebarNav Tree="tree" IsExpanded="true" OnSortChanged="HandleSort" /&gt;</pre>
+    </ShowcaseDetails>
+</div>
+
+@code {
+    private List<string> _order = ["report-alpha", "report-beta", "report-gamma"];
+    private readonly List<string> _log = [];
+    private MbxNavTree Tree => new(
+    [
+        new(id: "sort-demo-section", text: "Reports", icon: Icons.Material.Outlined.Folder, children: Children())
+    ]);
+    private List<MbxNavNode> Children()
+    {
+        List<MbxNavNode> nodes = [new(id: "report-pinned-top", text: "Épinglé en haut", pin: MbxNavPin.Top)];
+        nodes.AddRange(_order.Select(id => new MbxNavNode(id: id,
+            text: id.EndsWith("alpha") ? "Synthèse" : id.EndsWith("beta") ? "Activité" : "Tendances",
+            badge: id.EndsWith("alpha") ? new MbxNavBadge("3", Color.Primary) : null, trailingActions:
+        [
+            new MbxNavAction(Icons.Material.Outlined.Close, "Retirer cet élément", EventCallback.Factory.Create<string>(this, Remove))
+        ])));
+        nodes.Add(new(id: "report-pinned-bottom", text: "Épinglé en bas", pin: MbxNavPin.Bottom));
+        return nodes;
+    }
+    private void SortChanged(MbxNavSortChangedArgs args)
+    {
+        _order = args.OrderedIds.ToList();
+        _log.Insert(0, $"OnSortChanged → [{string.Join(", ", args.OrderedIds)}]");
+    }
+    private void Remove(string id)
+    {
+        _order.Remove(id);
+        _log.Insert(0, $"Removed: {id}");
+    }
+}

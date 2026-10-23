@@ -13,11 +13,13 @@ public class SidebarNavSubMenuTests : PlaywrightTestBase
 
     private async Task GotoAndExpandGroupAsync()
     {
-        await Page.GotoAsync("/demo", new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle });
+        await Page.GotoAsync("/components/navigation", new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle });
 
         var toggle = Page.GetByTestId(GroupTestId);
         await Assertions.Expect(toggle).ToBeVisibleAsync();
-        await toggle.ClickAsync();
+        if (!await Page.GetByTestId("nav-report-pinned-top").IsVisibleAsync())
+            await toggle.ClickAsync();
+        await Page.GetByTestId("sidebar-events").Locator("summary").ClickAsync();
 
         await Assertions.Expect(Page.GetByTestId("nav-report-pinned-top")).ToBeVisibleAsync();
 
@@ -76,6 +78,22 @@ public class SidebarNavSubMenuTests : PlaywrightTestBase
         SubMenu.Locator("[data-testid^='nav-report']")
             .EvaluateAllAsync<string[]>("els => els.map(e => e.getAttribute('data-testid'))");
 
+    [Fact]
+    public Task SubMenu_CompactDensity_StillSupportsBeforeAndAfterDrops() => RunAsync(
+        nameof(SubMenu_CompactDensity_StillSupportsBeforeAndAfterDrops), async () =>
+    {
+        await GotoAndExpandGroupAsync();
+        await Page.GetByTestId("open-appearance").ClickAsync();
+        await Page.GetByTestId("theme-density").ClickAsync();
+        await Page.GetByRole(AriaRole.Dialog).GetByRole(AriaRole.Button, new() { Name = "Close" }).ClickAsync();
+        await Assertions.Expect(Page.Locator(".mbx-density-compact")).ToBeVisibleAsync();
+        await DragAsync("nav-report-gamma", "nav-report-alpha");
+        await DragAsync("nav-report-alpha", "nav-report-beta", dropOnBottomHalf: true);
+        Assert.Equal(
+            ["nav-report-pinned-top", "nav-report-gamma", "nav-report-beta", "nav-report-alpha", "nav-report-pinned-bottom"],
+            await GetItemOrderAsync());
+    });
+
     /// <summary>
     /// Drags <paramref name="sourceId"/> onto <paramref name="targetId"/>. Dropping on the target's
     /// top half inserts the dragged item just before it; dropping on its bottom half inserts it
@@ -96,7 +114,9 @@ public class SidebarNavSubMenuTests : PlaywrightTestBase
     /// </remarks>
     private async Task DragAsync(string sourceId, string targetId, bool dropOnBottomHalf = false)
     {
-        var targetPosition = dropOnBottomHalf ? new TargetPosition { X = 5, Y = 30 } : new TargetPosition { X = 5, Y = 3 };
+        var box = await Page.GetByTestId(targetId).BoundingBoxAsync();
+        Assert.NotNull(box);
+        var targetPosition = new TargetPosition { X = 5, Y = box.Height * (dropOnBottomHalf ? .75f : .25f) };
 
         for (var attempt = 1; attempt <= 3; attempt++)
         {

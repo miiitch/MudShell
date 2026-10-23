@@ -1,86 +1,70 @@
 @page "/main-components"
+@page "/components/composition"
 @rendermode InteractiveServer
 
-<PageTitle>Main components</PageTitle>
-
-<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
-<MdsPageHeader Title="Main components">
-    <StartContent><div></div></StartContent>
-    <EndContent>
-        <MdsMainButton Variant="Variant.Outlined" Color="Color.Inherit" Href="/main-components/bg" Compact="true">
-            View BG version
-        </MdsMainButton>
-    </EndContent>
-</MdsPageHeader>
-
-<MudStack Spacing="4" Class="my-2">
+<PageTitle>Composition de page — MudShell</PageTitle>
+<div class="showcase-page" data-testid="composition-demo">
+    <ShowcaseHeader FamilyId="composition" />
     <MdsMainToolbar>
-        <MdsMainButton StartIcon="@Icons.Material.Outlined.Add" OnClick="@(() => _counter++)">New item</MdsMainButton>
-        <MdsMainButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Outlined.FilterList">Filter</MdsMainButton>
-        <MdsMainStatusBadge Label="Active" Status="active" />
-        <MdsMainStatusBadge Label="Pending" Status="pending" />
+        <MudTooltip Text="Ajouter un élément fictif">
+            <MudIconButton Icon="@Icons.Material.Outlined.Add" Variant="Variant.Filled" Color="Color.Primary"
+                           aria-label="Ajouter un élément fictif" data-testid="composition-add" OnClick="@(() => _counter++)" />
+        </MudTooltip>
+        <MdsMainToolbarDivider />
+        <MudTooltip Text="Réinitialiser la démonstration">
+            <MudIconButton Icon="@Icons.Material.Outlined.Refresh" aria-label="Réinitialiser la démonstration"
+                           data-testid="composition-reset" OnClick="@Reset" />
+        </MudTooltip>
         <MudSpacer />
-        <MudText Typo="Typo.body2" Color="Color.Secondary">Triggered actions: @_counter</MudText>
+        <span data-testid="composition-count">@_counter éléments ajoutés</span>
     </MdsMainToolbar>
-
-    <MudGrid Spacing="3">
-        <MudItem xs="12" md="7">
-            <MdsMainSection Title="Catalog section"
-                            Description="Consistent section wrapper aligned with the MudShell theme."
-                            Icon="@Icons.Material.Outlined.ViewAgenda">
-                <MudStack Spacing="1">
-                    <MudText Typo="Typo.body2"><MudIcon Icon="@Icons.Material.Outlined.Description" Size="Size.Small" Class="mr-2" />Pages</MudText>
-                    <MudText Typo="Typo.body2"><MudIcon Icon="@Icons.Material.Outlined.Image" Size="Size.Small" Class="mr-2" />Images</MudText>
-                    <MudText Typo="Typo.body2"><MudIcon Icon="@Icons.Material.Outlined.TableChart" Size="Size.Small" Class="mr-2" />Reports</MudText>
+    <div class="showcase-demo-grid">
+        <div>
+            <MdsMainSection Title="Documents récents" Description="Un titre, une description et un contenu hiérarchisé.">
+                <MdsMainPart Title="Résultats" IsLoading="@(_state == "loading")"
+                             Error="@(_state == "error" ? "Erreur simulée : impossible de charger les documents." : null)"
+                             OnRetry="@ResetState">
+                    @if (_state == "empty")
+                    {
+                        <MdsMainEmptyState Title="Aucun document" Description="Ajoutez un élément pour commencer.">
+                            <Action><MdsMainButton OnClick="@AddFirst">Ajouter un document fictif</MdsMainButton></Action>
+                        </MdsMainEmptyState>
+                    }
+                    else
+                    {
+                        <p>Présentation du projet</p><p>Rapport de synthèse</p><p>Notes de réunion</p>
+                    }
+                </MdsMainPart>
+            </MdsMainSection>
+            <MdsMainSection Title="Statuts">
+                <MudStack Row Wrap="Wrap.Wrap">
+                    <MdsMainStatusBadge Label="Actif" Status="active" />
+                    <MdsMainStatusBadge Label="En attente" Status="pending" />
+                    <MdsMainStatusBadge Label="Erreur" Status="error" />
                 </MudStack>
             </MdsMainSection>
-        </MudItem>
-
-        <MudItem xs="12" md="5">
-            <MdsMainPart Title="State part"
-                         Subtitle="Loading / error / content through a single API"
-                         Icon="@Icons.Material.Outlined.DataObject"
-                         IsLoading="@_isLoading"
-                         Error="@_error"
-                         OnRetry="@RetryPart">
-                <MudStack Spacing="1">
-                    <MudText Typo="Typo.body2">Primary content for this part.</MudText>
-                    <MudText Typo="Typo.caption" Color="Color.Secondary">Last updated: @DateTime.Now.ToString("HH:mm:ss")</MudText>
-                </MudStack>
-            </MdsMainPart>
-            <MudStack Row="true" Spacing="1" Class="mt-2">
-                <MdsMainButton Variant="Variant.Text" Color="Color.Inherit" Compact="true" OnClick="@ToggleLoading">Toggle loading</MdsMainButton>
-                <MdsMainButton Variant="Variant.Text" Color="Color.Error" Compact="true" OnClick="@ToggleError">Toggle error</MdsMainButton>
-            </MudStack>
-        </MudItem>
-    </MudGrid>
-
-    <MdsMainEmptyState Title="No filtered documents"
-                       Description="Adjust your filters or create a new document to populate the main area."
-                       Icon="@Icons.Material.Outlined.Inbox">
-        <Action>
-            <MdsMainButton StartIcon="@Icons.Material.Outlined.CreateNewFolder">Create document</MdsMainButton>
-        </Action>
-    </MdsMainEmptyState>
-</MudStack>
-</MudContainer>
+        </div>
+        <aside class="showcase-controls">
+            <h2>Essayer les états</h2>
+            <MudSelect T="string" Label="État de la section" @bind-Value="_state" data-testid="composition-state">
+                <MudSelectItem Value="@("content")">Contenu</MudSelectItem>
+                <MudSelectItem Value="@("loading")">Chargement simulé</MudSelectItem>
+                <MudSelectItem Value="@("empty")">Aucun résultat</MudSelectItem>
+                <MudSelectItem Value="@("error")">Erreur simulée</MudSelectItem>
+            </MudSelect>
+            <p>Ces commandes pilotent la démo, pas l’apparence de la vitrine.</p>
+        </aside>
+    </div>
+    <ShowcaseDetails FamilyId="composition">
+        <pre>&lt;MdsMainPart Title="Résultats" IsLoading="loading" Error="error" OnRetry="Reload"&gt;...&lt;/MdsMainPart&gt;</pre>
+        <p>La toolbar contient les actions. Les filtres d’une page de liste se placent sur une ligne distincte.</p>
+    </ShowcaseDetails>
+</div>
 
 @code {
     private int _counter;
-    private bool _isLoading;
-    private string? _error;
-
-    private void ToggleLoading() => _isLoading = !_isLoading;
-
-    private void ToggleError()
-    {
-        _error = _error is null ? "Unable to load data right now." : null;
-        _isLoading = false;
-    }
-
-    private void RetryPart()
-    {
-        _error = null;
-        _isLoading = true;
-    }
+    private string _state = "content";
+    private void ResetState() => _state = "content";
+    private void Reset() { _counter = 0; ResetState(); }
+    private void AddFirst() { _counter++; ResetState(); }
 }

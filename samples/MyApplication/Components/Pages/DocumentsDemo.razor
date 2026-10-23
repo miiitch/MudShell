@@ -1,0 +1,40 @@
+@page "/components/documents"
+@rendermode InteractiveServer
+
+<PageTitle>Documents et filtres — MudShell</PageTitle>
+<div class="showcase-page">
+    <ShowcaseHeader FamilyId="documents" />
+    <MdsFilterTabBar T="string" Items="@_tabs" @bind-Value="_filter" />
+    <div class="showcase-cards my-4">
+        @foreach (var doc in _documents.Where(d => _filter == "all" || d.Kind == _filter))
+        {
+            <MdsDocumentCard Title="@doc.Title" TypeLabel="@doc.Kind" Description="@doc.Description"
+                             Icon="@Icons.Material.Outlined.Description" OnClick="@(() => _selected = doc.Title)" />
+        }
+    </div>
+    @if (_selected is not null)
+    {
+        <MudText role="status" data-testid="document-selection">Carte sélectionnée : @_selected</MudText>
+    }
+    @if (_filter == "archived")
+    {
+        <MdsMainEmptyState Title="Aucun document archivé" Description="Sélectionnez une autre catégorie pour retrouver les documents." />
+    }
+    <ShowcaseDetails FamilyId="documents">
+        <p>Le filtre est piloté par la page via Value/ValueChanged. Les cartes restent indépendantes de la grille utilisée pour les disposer.</p>
+        <pre>&lt;MdsFilterTabBar T="string" Items="tabs" @("@bind-Value=\"filter\"") /&gt;</pre>
+        <MudLink Href="/examples/library">Voir la bibliothèque complète</MudLink>
+    </ShowcaseDetails>
+</div>
+
+@code {
+    private string _filter = "all";
+    private string? _selected;
+    private readonly MbxTabItem<string>[] _tabs = [new("all", "Tous"), new("Page", "Pages"), new("Rapport", "Rapports"), new("archived", "Archives")];
+    private readonly (string Title, string Kind, string Description)[] _documents =
+    [
+        ("Présentation du projet", "Page", "Objectifs et prochaines étapes."),
+        ("Rapport trimestriel", "Rapport", "Indicateurs et résultats de l’équipe."),
+        ("Notes de réunion", "Page", "Décisions et actions à suivre.")
+    ];
+}

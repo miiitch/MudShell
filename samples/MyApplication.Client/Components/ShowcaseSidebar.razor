@@ -1,0 +1,33 @@
+@namespace MyApplication.Client.Components
+@inject IDialogService DialogService
+
+<MdsSidebar IsExpanded="@IsExpanded" OnToggle="@(() => ShellRef?.ToggleSidebar())"
+            PrimaryItems="@ShowcaseCatalog.PrimaryItems[..3]"
+            SecondaryItems="@ShowcaseCatalog.PrimaryItems[3..]">
+    <LogoContent>
+        <MudIcon Icon="@Icons.Material.Outlined.Layers" Color="Color.Primary" />
+        @if (IsExpanded)
+        {
+            <span style="font-size:18px;font-weight:600">MudShell</span>
+        }
+    </LogoContent>
+    <BottomContent>
+        <MudTooltip Text="Apparence">
+            <MudIconButton Icon="@Icons.Material.Outlined.Palette" OnClick="@OpenAppearance"
+                           aria-label="Apparence" data-testid="open-appearance" />
+        </MudTooltip>
+        @if (IsExpanded)
+        {
+            <span>Apparence</span>
+        }
+    </BottomContent>
+</MdsSidebar>
+
+@code {
+    [Parameter] public MdsAppShell? ShellRef { get; set; }
+    [Parameter] public bool IsExpanded { get; set; }
+
+    private async Task OpenAppearance() =>
+        await DialogService.ShowAsync<ThemeOptionsPanel>("Apparence",
+            new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true });
+}

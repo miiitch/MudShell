@@ -14,8 +14,11 @@ public class CaptureDesktopPagesTests : PlaywrightTestBase
 
     [Theory]
     [InlineData("/", "home.png")]
-    [InlineData("/library", "library.png")]
-    [InlineData("/demo", "components-demo.png")]
+    [InlineData("/components", "catalogue.png")]
+    [InlineData("/examples", "examples.png")]
+    [InlineData("/examples/library", "library.png")]
+    [InlineData("/components/navigation", "navigation.png")]
+    [InlineData("/components/composition", "composition.png")]
     public Task Capture_DesktopPage(string route, string fileName) => RunAsync($"{nameof(Capture_DesktopPage)}_{fileName}", async () =>
     {
         await CaptureRouteAsync(route, fileName);

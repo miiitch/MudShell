@@ -1,0 +1,43 @@
+@page "/components/data"
+@rendermode InteractiveServer
+
+<PageTitle>Indicateurs et données — MudShell</PageTitle>
+<div class="showcase-page">
+    <ShowcaseHeader FamilyId="data" />
+    <MdsMainSection Title="Valeurs et tendances">
+        <MdsStatStrip>
+            <MdsStatTile Label="Ressources" Value="128" Delta="+12" DeltaTone="MbxDeltaTone.Positive" />
+            <MdsStatTile Label="À examiner" Value="7" Tone="MbxTone.Warning" />
+            <MdsStatTile Label="Conformité" Value="84 %" />
+            <MdsStatTile Label="Actualisation simulée" Loading="true" />
+        </MdsStatStrip>
+        <MdsStatStrip Class="mt-3">
+            <MdsStatTile Variant="MbxStatTileVariant.Cell" Label="Équipe" Value="Plateforme" />
+            <MdsStatTile Variant="MbxStatTileVariant.Cell" Label="Dernier contrôle" Value="Aujourd’hui" />
+        </MdsStatStrip>
+    </MdsMainSection>
+    <MdsMainSection Title="Répartition et activité">
+        <MudSwitch T="bool" @bind-Value="_empty" Label="Afficher des données vides" data-testid="data-empty" />
+        <h3 class="mb-2">Conformité</h3>
+        <MdsDistributionBar Segments="@(_empty ? [] : _segments)" />
+        <h3 class="mt-4 mb-2">Tendance</h3>
+        <MdsSparkline Values="@(_empty ? [] : _trend)" Width="260" Height="48" />
+        <h3 class="mt-4 mb-2">Dernières exécutions</h3>
+        <MdsRunStrip Runs="@(_empty ? [] : _runs)" />
+    </MdsMainSection>
+    <ShowcaseDetails FamilyId="data">
+        <p>Les données sont fournies par l’application : ces composants n’effectuent aucun chargement réseau.</p>
+        <MudLink Href="/examples/workspace/detail">Voir ces indicateurs dans une fiche</MudLink>
+    </ShowcaseDetails>
+</div>
+
+@code {
+    private bool _empty;
+    private readonly List<MbxDistributionSegment> _segments = [new("Conforme", 41, Tone: MbxTone.Success), new("À examiner", 7, Tone: MbxTone.Warning), new("Non évalué", 5)];
+    private readonly List<double> _trend = [60, 65, 62, 70, 76, 72, 80, 84];
+    private readonly List<MbxRun> _runs =
+    [
+        new(MbxRunOutcome.Success), new(MbxRunOutcome.Failed, "Erreur simulée : délai dépassé"),
+        new(MbxRunOutcome.Success), new(MbxRunOutcome.Running)
+    ];
+}

@@ -1,61 +1,36 @@
 @page "/components"
 @rendermode InteractiveServer
 
-<PageTitle>Components</PageTitle>
+<PageTitle>Composants — MudShell</PageTitle>
+<div class="showcase-page" data-testid="showcase-catalog">
+    <MdsPageHeader Title="Trouvez la bonne brique." BreadcrumbItems="@_breadcrumbs" />
+    <p>Une entrée par usage. Chaque composant reste identifiable par son nom.</p>
+    <MudTextField T="string" Value="@_query" ValueChanged="@(value => _query = value)" Immediate
+                  Label="Rechercher une famille ou un composant" data-testid="catalog-search" Class="mb-5" />
+    <div class="showcase-cards">
+        @foreach (var family in Matches)
+        {
+            <a class="showcase-card" href="@family.Href" data-testid="@($"catalog-family-{family.Id}")">
+                <MudIcon Icon="@family.Icon" Color="Color.Primary" />
+                <h2>@family.Title</h2><p>@family.Description</p>
+                <div class="showcase-component-list">
+                    @foreach (var component in family.Components)
+                    {
+                        <code>@component</code>
+                    }
+                </div>
+            </a>
+        }
+    </div>
+    @if (!Matches.Any())
+    {
+        <MdsMainEmptyState Title="Aucun composant ne correspond" Description="Essayez un nom de composant ou un autre usage." />
+    }
+</div>
 
-<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
-
-    <MdsPageHeader Title="Components">
-        <StartContent><div></div></StartContent>
-        <EndContent>
-            <MudChip T="string" Color="Color.Default" Size="Size.Small">Subsection</MudChip>
-        </EndContent>
-    </MdsPageHeader>
-
-    <MdsMainPart Title="Component pages">
-        <ChildContent>
-            <MudGrid Spacing="2">
-                <MudItem xs="12" md="4">
-                    <MudPaper Outlined="true" Class="pa-3">
-                        <MudStack Spacing="1">
-                            <MudText Typo="Typo.subtitle1">Chat</MudText>
-                            <MudText Typo="Typo.body2" Color="Color.Secondary">Landing, composer, transcript and streaming.</MudText>
-                            <MudStack Row="true" Spacing="1">
-                                <MudButton Variant="Variant.Outlined" Href="/chat" StartIcon="@Icons.Material.Outlined.ArrowForward" data-testid="open-chat-demo">Open</MudButton>
-                                <MudButton Variant="Variant.Text" Href="/chat-floating">Floating</MudButton>
-                            </MudStack>
-                        </MudStack>
-                    </MudPaper>
-                </MudItem>
-                <MudItem xs="12" md="4">
-                    <MudPaper Outlined="true" Class="pa-3">
-                        <MudStack Spacing="1">
-                            <MudText Typo="Typo.subtitle1">Main Components</MudText>
-                            <MudText Typo="Typo.body2" Color="Color.Secondary">Toolbar, sections, part states, and empty states.</MudText>
-                            <MudButton Variant="Variant.Outlined" Href="/main-components" StartIcon="@Icons.Material.Outlined.ArrowForward">Open</MudButton>
-                        </MudStack>
-                    </MudPaper>
-                </MudItem>
-                <MudItem xs="12" md="4">
-                    <MudPaper Outlined="true" Class="pa-3">
-                        <MudStack Spacing="1">
-                            <MudText Typo="Typo.subtitle1">Main Components (BG)</MudText>
-                            <MudText Typo="Typo.body2" Color="Color.Secondary">Same main components on background-image mode.</MudText>
-                            <MudButton Variant="Variant.Outlined" Href="/main-components/bg" StartIcon="@Icons.Material.Outlined.ArrowForward">Open</MudButton>
-                        </MudStack>
-                    </MudPaper>
-                </MudItem>
-                <MudItem xs="12" md="4">
-                    <MudPaper Outlined="true" Class="pa-3">
-                        <MudStack Spacing="1">
-                            <MudText Typo="Typo.subtitle1">Library</MudText>
-                            <MudText Typo="Typo.body2" Color="Color.Secondary">Documents, cards, and filter-chip browsing layout.</MudText>
-                            <MudButton Variant="Variant.Outlined" Href="/library" StartIcon="@Icons.Material.Outlined.ArrowForward">Open</MudButton>
-                        </MudStack>
-                    </MudPaper>
-                </MudItem>
-            </MudGrid>
-        </ChildContent>
-    </MdsMainPart>
-
-</MudContainer>
+@code {
+    private string _query = "";
+    private readonly List<BreadcrumbItem> _breadcrumbs = [new("Accueil", "/")];
+    private IEnumerable<ShowcaseCatalog.Family> Matches => ShowcaseCatalog.Families.Where(f =>
+        $"{f.Title} {f.Description} {string.Join(" ", f.Components)}".Contains(_query, StringComparison.OrdinalIgnoreCase));
+}

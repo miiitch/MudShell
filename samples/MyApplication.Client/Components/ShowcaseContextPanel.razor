@@ -1,0 +1,81 @@
+@namespace MyApplication.Client.Components
+@using MudShell.Components.Navigation
+@using MudShell.Components.Navigation.Models
+@inject NavigationManager Nav
+
+<div style="height:100%;overflow:auto">
+    <div class="d-flex justify-end pa-2">
+        <MudTooltip Text="Réduire ou agrandir les sous-sections">
+            <MudIconButton Icon="@Icons.Material.Outlined.UnfoldLess"
+                           aria-label="Réduire ou agrandir les sous-sections"
+                           data-testid="context-panel-toggle" OnClick="@OnToggle" />
+        </MudTooltip>
+    </div>
+    <MdsContextNavPanel Tree="@Tree" CurrentUri="@CurrentUri" IsExpanded="@IsExpanded" OnSortChanged="@SortChanged" />
+    @if (IsExpanded && IsNavigationDemo)
+    {
+        <details class="pa-2" data-testid="context-events">
+            <summary>Événements du panneau</summary>
+            <div data-testid="context-nav-sort-demo-log" aria-live="polite" style="overflow-wrap:anywhere">
+                @foreach (var entry in _log)
+                {
+                    <div>@entry</div>
+                }
+            </div>
+        </details>
+    }
+</div>
+
+@code {
+    [Parameter] public bool IsExpanded { get; set; }
+    [Parameter] public EventCallback OnToggle { get; set; }
+    private string Path => ShowcaseCatalog.CanonicalPath(new Uri(Nav.Uri).AbsolutePath);
+    private string CurrentUri => new Uri(new Uri(Nav.BaseUri), Path).AbsoluteUri;
+    private bool IsNavigationDemo => Path == "/components/navigation";
+    private readonly List<string> _log = [];
+    private List<string> _primary = ["context-item-alpha", "context-item-beta", "context-item-gamma"];
+    private List<string> _secondary = ["context-secondary-item-alpha", "context-secondary-item-beta", "context-secondary-item-gamma"];
+
+    private MbxNavTree Tree => IsNavigationDemo
+        ? new MbxNavTree(
+        [
+            new(id: "navigation-demo", text: "Navigation", href: "/components/navigation", children:
+            [
+                new(id: "context-sort-demo", text: "Rapports", icon: Icons.Material.Outlined.Assessment, children: Children("context-item", _primary)),
+                new(id: "context-sort-demo-secondary", text: "Favoris", icon: Icons.Material.Outlined.BookmarkBorder, children: Children("context-secondary-item", _secondary))
+            ])
+        ])
+        : ShowcaseCatalog.Tree;
+
+    private List<MbxNavNode> Children(string prefix, List<string> order)
+    {
+        List<MbxNavNode> children = [new(id: $"{prefix}-pinned-top", text: "Épinglé en haut", pin: MbxNavPin.Top)];
+        children.AddRange(order.Select(id => new MbxNavNode(id: id, text: Label(id),
+            badge: id.EndsWith("beta") ? new MbxNavBadge(Color: Color.Warning, Dot: true, Tooltip: "Nouvelle activité") : null, trailingActions:
+        [
+            new MbxNavAction(Icons.Material.Outlined.Close, "Retirer cet élément",
+                EventCallback.Factory.Create<string>(this, Remove))
+        ])));
+        children.Add(new(id: $"{prefix}-pinned-bottom", text: "Épinglé en bas", pin: MbxNavPin.Bottom));
+        return children;
+    }
+
+    private static string Label(string id) => id.EndsWith("alpha") ? "Synthèse" : id.EndsWith("beta") ? "Activité" : "Tendances";
+    private void Remove(string id)
+    {
+        _primary.Remove(id);
+        _secondary.Remove(id);
+        _log.Insert(0, $"Removed: {id}");
+    }
+
+    private void SortChanged(MbxNavSortChangedArgs args)
+    {
+        switch (args.GroupId)
+        {
+            case "context-sort-demo": _primary = args.OrderedIds.ToList(); break;
+            case "context-sort-demo-secondary": _secondary = args.OrderedIds.ToList(); break;
+            default: return;
+        }
+        _log.Insert(0, $"OnSortChanged[{args.GroupId}] → [{string.Join(", ", args.OrderedIds)}]");
+    }
+}

@@ -87,7 +87,7 @@ public class AppShellTests : PlaywrightTestBase
         var isExpanded = await panel.EvaluateAsync<bool>("el => el.classList.contains('mbx-context-panel-expanded')");
         Assert.True(isExpanded);
 
-        await Page.Locator(".mbx-context-panel .mud-icon-button").First.ClickAsync();
+        await Page.GetByTestId("context-panel-toggle").ClickAsync();
 
         // ToHaveClassAsync retries until the class appears. A one-shot EvaluateAsync right after
         // the click can race the Blazor Server round trip that applies the collapsed class.

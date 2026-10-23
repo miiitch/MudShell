@@ -1,7 +1,17 @@
 @page "/chat"
+@page "/components/conversation"
 @rendermode InteractiveServer
 
 <PageTitle>Chat</PageTitle>
+
+<div class="px-4">
+    <ShowcaseHeader FamilyId="conversation" />
+    <ShowcaseDetails FamilyId="conversation">
+        <p>Réponse fictive, sans service IA. Essayez Entrée, Maj+Entrée, les suggestions et l’arrêt de la réponse.</p>
+        <MdsChatBar @bind-Value="_barDemo" Placeholder="Exemple de barre de saisie simple" />
+        <MudLink Href="/components/conversation/floating">Essayer l’assistant flottant</MudLink>
+    </ShowcaseDetails>
+</div>
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="px-4 pb-4 pt-0 d-flex flex-column" Style="height: calc(100vh - 140px); min-height: 420px;">
 
@@ -55,6 +65,7 @@
 </MudContainer>
 
 @code {
+    private string _barDemo = "";
     private sealed class Msg
     {
         public bool IsUser { get; init; }

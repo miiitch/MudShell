@@ -79,18 +79,6 @@ public sealed class ThemeState
         Changed?.Invoke();
     }
 
-    public void ApplyPrimary(string primaryHex)
-    {
-        CurrentTheme = MbxTheme.CreateThemeFromPrimary(primaryHex);
-        Changed?.Invoke();
-    }
-
-    public void ApplyTriad(string primaryHex, string secondaryHex, string tertiaryHex)
-    {
-        CurrentTheme = MbxTheme.CreateThemeFromTriad(primaryHex, secondaryHex, tertiaryHex);
-        Changed?.Invoke();
-    }
-
     public void SetBackgroundMode(MdsAppShell.MbxBackgroundMode mode, string? imageUrl = null)
     {
         var normalizedImageUrl = mode == MdsAppShell.MbxBackgroundMode.Image

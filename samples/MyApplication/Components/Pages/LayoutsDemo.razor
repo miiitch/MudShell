@@ -1,0 +1,55 @@
+@page "/components/layouts"
+@rendermode InteractiveServer
+
+<PageTitle>Layouts — MudShell</PageTitle>
+<MdsFillLayout>
+    <Header><ShowcaseHeader FamilyId="layouts" /></Header>
+    <Bands>
+        <MudStack Row Wrap="Wrap.Wrap" Class="px-4 pb-2">
+            <MudButton Href="/examples/workspace">Exemple liste et aperçu</MudButton>
+            <MudButton Href="/examples/workspace/detail">Exemple de fiche</MudButton>
+        </MudStack>
+        <div class="px-4">
+            <ShowcaseDetails FamilyId="layouts">
+                <p>Header et Bands restent fixes ; Body remplit le reste. Les feuilles gèrent leur propre défilement.</p>
+                <pre>&lt;MdsFillLayout&gt;
+  &lt;Header&gt;...&lt;/Header&gt;
+  &lt;Bands&gt;...&lt;/Bands&gt;
+  &lt;Body&gt;&lt;MdsSplitPane&gt;...&lt;/MdsSplitPane&gt;&lt;/Body&gt;
+&lt;/MdsFillLayout&gt;</pre>
+            </ShowcaseDetails>
+        </div>
+    </Bands>
+    <Body>
+        <MdsTabbedFill data-testid="layout-tabs">
+            <MudTabPanel>
+                <TabContent><MdsTabHeader Text="Panneaux et défilement" /></TabContent>
+                <ChildContent>
+                    <MdsSplitPane StorageKey="showcase.layouts" data-testid="layout-split">
+                        <Main>
+                            <div class="pa-4">
+                                <h2>Contenu principal</h2>
+                                <p>Redimensionnez la séparation. Cette région défile sans déplacer l’en-tête ni les onglets.</p>
+                                @for (var i = 1; i <= 70; i++) { <p>Ligne de démonstration @i</p> }
+                            </div>
+                        </Main>
+                        <Side>
+                            <div class="pa-4"><h2>Aperçu indépendant</h2>
+                                @for (var i = 1; i <= 40; i++) { <p>Information complémentaire @i</p> }
+                            </div>
+                        </Side>
+                    </MdsSplitPane>
+                </ChildContent>
+            </MudTabPanel>
+            <MudTabPanel>
+                <TabContent><MdsTabHeader Text="Région simple" /></TabContent>
+                <ChildContent>
+                    <MdsFillRegion Class="pa-4">
+                        <h2>Une région qui remplit son onglet</h2>
+                        @for (var i = 1; i <= 70; i++) { <p>Ligne de la région simple @i</p> }
+                    </MdsFillRegion>
+                </ChildContent>
+            </MudTabPanel>
+        </MdsTabbedFill>
+    </Body>
+</MdsFillLayout>

@@ -1,11 +1,14 @@
 @page "/chat-floating"
+@page "/components/conversation/floating"
 @rendermode InteractiveServer
 
 <PageTitle>Floating chat</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="px-4 pb-4 pt-0">
-    <MudText Typo="Typo.h5">Floating chat</MudText>
-    <MudText Typo="Typo.body2" Color="Color.Secondary">Use the button at the bottom of the screen to open the assistant over any page.</MudText>
+    <ShowcaseHeader FamilyId="conversation" />
+    <MudText Typo="Typo.h5">Assistant flottant</MudText>
+    <MudText Typo="Typo.body2" Color="Color.Secondary">Ouvrez l’assistant avec le bouton en bas de la fenêtre. Échap le referme sans perdre les messages.</MudText>
+    <ShowcaseDetails FamilyId="conversation" />
 </MudContainer>
 
 <MdsChatFloating @bind-IsOpen="_open" Title="Assistant" Height="520px">

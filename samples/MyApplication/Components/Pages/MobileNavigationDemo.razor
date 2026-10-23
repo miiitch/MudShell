@@ -1,0 +1,30 @@
+@page "/components/navigation/mobile"
+@rendermode InteractiveServer
+@using MudShell.Components.Navigation
+
+<PageTitle>Navigation mobile — MudShell</PageTitle>
+<div class="showcase-page" style="padding-bottom:100px">
+    <ShowcaseHeader FamilyId="navigation" />
+    <h2>Navigation mobile</h2>
+    <p>La démonstration se trouve au bas de la fenêtre. Ouvrez Composants, puis une famille pour explorer les niveaux.</p>
+    <MudSwitch T="bool" @bind-Value="_drilldown" Label="Navigation hiérarchique (sinon barre simple)" data-testid="mobile-nav-mode" />
+    <ShowcaseDetails FamilyId="navigation">
+        <p>MdsBottomNav reçoit des raccourcis simples. La version hiérarchique reprend l’arbre de la vitrine,
+            sans liens sur les groupes : seuls les éléments du dernier niveau changent de page.</p>
+    </ShowcaseDetails>
+</div>
+@if (_drilldown)
+{
+    <MdsMobileDrilldownNav Tree="@_demoTree" data-testid="mobile-drilldown-demo" />
+}
+else
+{
+    <MdsBottomNav Items="@ShowcaseCatalog.PrimaryItems" data-testid="mobile-bottom-demo" />
+}
+
+@code {
+    private bool _drilldown = true;
+    private readonly MbxNavTree _demoTree = new(ShowcaseCatalog.Tree.Roots.Select(root =>
+        new MbxNavNode(root.Id, root.Text, root.Icon, children: root.Children.Select(group =>
+            new MbxNavNode(group.Id, group.Text, group.Icon, children: group.Children)).ToList())).ToList());
+}

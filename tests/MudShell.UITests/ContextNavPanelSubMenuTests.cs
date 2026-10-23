@@ -21,7 +21,8 @@ public class ContextNavPanelSubMenuTests : PlaywrightTestBase
     {
         var toggle = Page.GetByTestId(groupTestId);
         await Assertions.Expect(toggle).ToBeVisibleAsync();
-        await toggle.ClickAsync();
+        if (!await Page.GetByTestId(firstItemTestId).IsVisibleAsync())
+            await toggle.ClickAsync();
 
         await Assertions.Expect(Page.GetByTestId(firstItemTestId)).ToBeVisibleAsync();
 
@@ -31,8 +32,11 @@ public class ContextNavPanelSubMenuTests : PlaywrightTestBase
         await Page.WaitForTimeoutAsync(200);
     }
 
-    private Task GotoDemoAsync() =>
-        Page.GotoAsync("/demo", new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle });
+    private async Task GotoDemoAsync()
+    {
+        await Page.GotoAsync("/components/navigation", new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle });
+        await Page.GetByTestId("context-events").Locator("summary").ClickAsync();
+    }
 
     private Task<string[]> GetItemOrderAsync(string idPrefix) =>
         Page.Locator($"[data-testid^='{idPrefix}']")
@@ -46,11 +50,9 @@ public class ContextNavPanelSubMenuTests : PlaywrightTestBase
     /// </summary>
     private async Task DragAsync(string idPrefix, string sourceId, string targetId, bool dropOnBottomHalf = false)
     {
-        // MdsContextNavPanel's rows (~31px, vs. the sidebar demo's taller rows) leave less margin
-        // below the row's own bottom edge, so a bottom-half offset copied verbatim from
-        // SidebarNavSubMenuTests would land right on the boundary with the next row and intercept
-        // pointer events instead of registering on the target itself.
-        var targetPosition = dropOnBottomHalf ? new TargetPosition { X = 5, Y = 22 } : new TargetPosition { X = 5, Y = 3 };
+        var box = await Page.GetByTestId(targetId).BoundingBoxAsync();
+        Assert.NotNull(box);
+        var targetPosition = new TargetPosition { X = 5, Y = box.Height * (dropOnBottomHalf ? .75f : .25f) };
 
         for (var attempt = 1; attempt <= 3; attempt++)
         {
@@ -206,6 +208,21 @@ public class ContextNavPanelSubMenuTests : PlaywrightTestBase
 
     private Task ExpandSecondaryGroupAsync() =>
         ExpandGroupAsync(SecondaryGroupTestId, "nav-context-secondary-item-pinned-top");
+
+    [Fact]
+    public Task PrimaryGroup_RemovalThenDropAfterLast_PreservesPinnedEdges() => RunAsync(
+        nameof(PrimaryGroup_RemovalThenDropAfterLast_PreservesPinnedEdges), async () =>
+    {
+        await GotoDemoAsync();
+        await ExpandPrimaryGroupAsync();
+        await Page.GetByTestId("nav-action-context-item-beta-0").ClickAsync();
+        await Assertions.Expect(Page.GetByTestId("nav-context-item-beta")).Not.ToBeAttachedAsync();
+        await DragAsync(PrimaryIdPrefix, "nav-context-item-alpha", "nav-context-item-gamma", dropOnBottomHalf: true);
+        Assert.Equal(
+            ["nav-context-item-pinned-top", "nav-context-item-gamma", "nav-context-item-alpha", "nav-context-item-pinned-bottom"],
+            await GetItemOrderAsync(PrimaryIdPrefix));
+        await Assertions.Expect(Page.Locator("#blazor-error-ui")).ToBeHiddenAsync();
+    });
 
     [Fact]
     public Task SecondaryGroup_FixedTopAndBottomItems_AreRenderedAtTheirPositions() => RunAsync(

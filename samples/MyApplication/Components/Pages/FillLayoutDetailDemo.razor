@@ -1,4 +1,5 @@
 @page "/fill-demo/detail"
+@page "/examples/workspace/detail"
 @rendermode InteractiveServer
 
 <PageTitle>Fill layout - detail</PageTitle>
@@ -63,7 +64,12 @@
             <MudTabPanel>
                 <TabContent><MdsTabHeader Text="History" Count="124" /></TabContent>
                 <ChildContent>
-                    <MdsFillRegion Class="pa-3"><MudText>History goes here.</MudText></MdsFillRegion>
+                    <MdsFillRegion Class="pa-3">
+                        @for (var i = 0; i < 124; i++)
+                        {
+                            <MudText Typo="Typo.body2" Class="mb-2">Contrôle @(i + 1) — données fictives, @DateTime.Today.AddDays(-i).ToString("dd/MM/yyyy")</MudText>
+                        }
+                    </MdsFillRegion>
                 </ChildContent>
             </MudTabPanel>
         </MdsTabbedFill>
@@ -71,7 +77,7 @@
 </MdsFillLayout>
 
 @code {
-    private readonly List<BreadcrumbItem> _breadcrumbs = [new("Home", href: "/"), new("Fill layout", href: "/fill-demo")];
+    private readonly List<BreadcrumbItem> _breadcrumbs = [new("Exemples", href: "/examples"), new("Ressources", href: "/examples/workspace")];
     private readonly List<MbxDistributionSegment> _compliance =
     [
         new("Pass", 41, Tone: MbxTone.Success),

@@ -1,72 +1,53 @@
 @page "/library"
+@page "/examples/library"
 @rendermode InteractiveServer
 
-<PageTitle>Library</PageTitle>
-
-<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
-<MdsPageHeader Title="Library" />
-
-<MdsMainToolbar>
-    <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">Create page</MudButton>
-</MdsMainToolbar>
-
-<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Wrap="MudBlazor.Wrap.Wrap" Class="mb-3">
-    <MudText Typo="Typo.caption" Color="Color.Secondary">Type</MudText>
-    @foreach (var tab in _tabs)
-    {
-        <MudChip T="string"
-                 Color="@(_selectedTab == tab.Value ? Color.Primary : Color.Default)"
-                 Variant="@(_selectedTab == tab.Value ? Variant.Filled : Variant.Outlined)"
-                 OnClick="@(() => _selectedTab = tab.Value)">@tab.Label</MudChip>
-    }
-</MudStack>
-
-@if (_selectedTab == "pages")
-{
-    <MudGrid Spacing="3">
-        @foreach (var doc in _pages)
+<div class="showcase-page">
+    <MdsPageHeader Title="Bibliothèque" BreadcrumbItems="@_breadcrumbs" />
+    <MdsMainToolbar>
+        <MudTooltip Text="Ajouter un document fictif">
+            <MudIconButton Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Outlined.Add"
+                           aria-label="Ajouter un document fictif" OnClick="@AddPage" data-testid="library-add" />
+        </MudTooltip>
+        <MudSpacer />
+        <MudText Typo="Typo.caption">@_pages.Count documents fictifs</MudText>
+    </MdsMainToolbar>
+    <MudTextField T="string" @bind-Value="_query" Immediate Label="Rechercher un document" Class="mb-3" />
+    <MdsFilterTabBar T="string" Items="@_tabs" @bind-Value="_selectedTab" />
+    <div class="showcase-cards my-4">
+        @foreach (var doc in Visible)
         {
-            <MudItem xs="12" sm="6" md="4" lg="3">
-                <MdsDocumentCard Icon="@Icons.Material.Outlined.Description"
-                                 TypeLabel="Page"
-                                 Title="@doc.Title"
-                                 Description="@doc.Description" />
-            </MudItem>
+            <MdsDocumentCard Icon="@Icons.Material.Outlined.Description" TypeLabel="@doc.Kind"
+                             Title="@doc.Title" Description="@doc.Description" />
         }
-    </MudGrid>
-}
-
-<MudStack AlignItems="AlignItems.Center" Class="px-4 py-8">
-    <MudText Typo="Typo.h5" Align="Align.Center">
-        Organize your ideas, edit<br />and share your documents
-    </MudText>
-    <MudButton Variant="Variant.Filled" Size="Size.Large">
-        Create page
-    </MudButton>
-</MudStack>
-</MudContainer>
+    </div>
+    @if (!Visible.Any())
+    {
+        <MdsMainEmptyState Title="Aucun document" Description="Modifiez la recherche ou ajoutez un document fictif.">
+            <Action><MdsMainButton OnClick="@AddPage">Ajouter un document fictif</MdsMainButton></Action>
+        </MdsMainEmptyState>
+    }
+    <ShowcaseDetails FamilyId="documents" />
+</div>
 
 @code {
-    private string _selectedTab = "pages";
-
-    private readonly MbxTabItem<string>[] _tabs =
-    [
-        new("images",   "Images"),
-        new("pages",    "Pages"),
-        new("reports", "Research reports"),
-    ];
-
+    private string _selectedTab = "all";
+    private string _query = "";
+    private readonly List<BreadcrumbItem> _breadcrumbs = [new("Exemples", "/examples")];
+    private readonly MbxTabItem<string>[] _tabs = [new("all", "Tous"), new("Page", "Pages"), new("Rapport", "Rapports"), new("Image", "Images")];
     private readonly List<PageItem> _pages =
     [
-        new("Things to do in Tokyo",
-            "Tokyo offers a vibrant mix of traditional culture and modern attractions. Here are some highlights to consider during your..."),
-        new("Cover Letter Draft",
-            "Dear [Hiring Manager], I am writing to express my interest in the [Position]. [Company Name]..."),
-        new("History Class Essay",
-            "The Industrial Revolution, which began in the late 18th century and continued into the mid-19th century, fundamentally..."),
-        new("Poem Draft",
-            "In morning light, the city wakes, With fog that dances, swirls and breaks. Cobalt skies emerge above...")
+        new("Présentation du projet", "Objectifs, équipe et prochaines étapes.", "Page"),
+        new("Notes de réunion", "Décisions et actions à suivre.", "Page"),
+        new("Rapport trimestriel", "Indicateurs et résultats de l’équipe.", "Rapport")
     ];
-
-    private record PageItem(string Title, string Description);
+    private IEnumerable<PageItem> Visible => _pages.Where(p => (_selectedTab == "all" || p.Kind == _selectedTab)
+        && p.Title.Contains(_query, StringComparison.OrdinalIgnoreCase));
+    private void AddPage()
+    {
+        _pages.Insert(0, new($"Document {_pages.Count + 1}", "Document fictif ajouté dans cette session.", "Page"));
+        _selectedTab = "all";
+        _query = "";
+    }
+    private sealed record PageItem(string Title, string Description, string Kind);
 }

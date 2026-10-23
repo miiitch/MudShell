@@ -1,0 +1,8 @@
+<MdsPageHeader Title="@Family.Title" Icon="@Family.Icon" BreadcrumbItems="@Breadcrumbs" />
+<p class="showcase-description">@Family.Description</p>
+
+@code {
+    [Parameter, EditorRequired] public string FamilyId { get; set; } = "";
+    private ShowcaseCatalog.Family Family => ShowcaseCatalog.Families.Single(f => f.Id == FamilyId);
+    private List<BreadcrumbItem> Breadcrumbs => [new("Composants", "/components")];
+}

@@ -5,14 +5,14 @@
 @implements IDisposable
 
 <div class="theme-panel">
-    <MudText Typo="Typo.subtitle2">Theme</MudText>
+    <MudText Typo="Typo.subtitle2">Thème prédéfini</MudText>
 
     <div class="theme-panel-row">
         <MudSelect T="MbxTheme.MbxThemePreset"
-                   Label="Preset"
+                   Label="Thème"
                    Dense="true"
-                   Variant="Variant.Outlined"
-                   Value="@_selectedPreset"
+                   data-testid="theme-preset"
+                   Value="@ThemeState.SelectedPreset"
                    ValueChanged="@OnPresetChanged"
                    Class="theme-panel-select">
             @foreach (var preset in ThemeState.Presets.OrderBy(p => p.Label))
@@ -25,7 +25,8 @@
                    Color="Color.Primary"
                    Value="@ThemeState.IsDarkMode"
                    ValueChanged="@ThemeState.SetDarkMode"
-                   Label="@(ThemeState.IsDarkMode ? "Dark" : "Light")" />
+                   data-testid="theme-dark-mode"
+                   Label="Mode sombre" />
     </div>
 
     <div class="theme-panel-row">
@@ -33,6 +34,7 @@
                    Color="Color.Primary"
                    Value="@IsImageMode"
                    ValueChanged="@OnBackgroundModeChanged"
+                   data-testid="theme-background"
                    Label="@(IsImageMode ? "Fond image" : "Fond palette")" />
     </div>
 
@@ -41,44 +43,15 @@
                    Color="Color.Primary"
                    Value="@IsCompactDensity"
                    ValueChanged="@OnDensityChanged"
+                   data-testid="theme-density"
                    Label="@(IsCompactDensity ? "Compact" : "Confortable")" />
     </div>
 
-    <div class="theme-panel-row theme-panel-row-colors">
-        <label class="theme-color-field">
-            <span>Primary</span>
-            <input type="color" @bind="_primary" />
-        </label>
-        <MudButton Variant="Variant.Text" Size="Size.Small" Color="Color.Primary" OnClick="ApplyPrimary">
-            Appliquer
-        </MudButton>
-    </div>
-
-    <div class="theme-panel-row theme-panel-row-colors">
-        <label class="theme-color-field">
-            <span>T2</span>
-            <input type="color" @bind="_triad2" />
-        </label>
-        <label class="theme-color-field">
-            <span>T3</span>
-            <input type="color" @bind="_triad3" />
-        </label>
-        <MudButton Variant="Variant.Text" Size="Size.Small" Color="Color.Secondary" OnClick="ApplyTriad">
-            Triad
-        </MudButton>
-    </div>
 </div>
 
 @code {
-    private MbxTheme.MbxThemePreset _selectedPreset = MbxTheme.MbxThemePreset.Cobalt;
-    private string _primary = "#1D4ED8";
-    private string _triad2 = "#0D9488";
-    private string _triad3 = "#7C3AED";
-
     protected override void OnInitialized()
     {
-        _selectedPreset = ThemeState.SelectedPreset;
-        _primary = MbxTheme.GetPresetPrimary(_selectedPreset);
         ThemeState.Changed += OnThemeChanged;
     }
 
@@ -86,8 +59,6 @@
 
     private void OnPresetChanged(MbxTheme.MbxThemePreset preset)
     {
-        _selectedPreset = preset;
-        _primary = MbxTheme.GetPresetPrimary(preset);
         ThemeState.ApplyPreset(preset);
     }
 
@@ -104,10 +75,5 @@
     private void OnDensityChanged(bool compact) =>
         ThemeState.SetDensity(compact ? MdsDensity.Compact : MdsDensity.Comfortable);
 
-    private void ApplyPrimary() => ThemeState.ApplyPrimary(_primary);
-
-    private void ApplyTriad() => ThemeState.ApplyTriad(_primary, _triad2, _triad3);
-
     public void Dispose() => ThemeState.Changed -= OnThemeChanged;
 }
-

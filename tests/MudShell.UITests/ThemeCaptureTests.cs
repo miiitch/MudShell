@@ -34,7 +34,7 @@ public class ThemeCaptureTests : PlaywrightTestBase
     [MemberData(nameof(PresetModes))]
     public Task Capture_Theme(string preset, string mode) => RunAsync($"{nameof(Capture_Theme)}_{preset}_{mode}", async () =>
     {
-        foreach (var (route, suffix) in new[] { ("/", "home"), ("/demo", "demo") })
+        foreach (var (route, suffix) in new[] { ("/", "home"), ("/components/composition", "composition"), ("/components/navigation", "navigation") })
         {
             await Page.GotoAsync($"{route}?preset={preset}&mode={mode}",
                 new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle, Timeout = 60_000 });

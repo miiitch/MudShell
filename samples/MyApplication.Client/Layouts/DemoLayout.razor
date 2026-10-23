@@ -3,162 +3,76 @@
 @implements IDisposable
 @inject NavigationManager Nav
 @inject ThemeState ThemeState
-@inject IDialogService DialogService
-@using MudShell.Components.Navigation.Models
 
+<MudBreakpointProvider OnBreakpointChanged="@BreakpointChanged">
+<div class="showcase-shell">
 <MdsAppShell @ref="_shell"
              BackgroundMode="@ThemeState.BackgroundMode"
              BackgroundImageUrl="@ThemeState.BackgroundImageUrl"
              IsDarkMode="@ThemeState.IsDarkMode"
              IsDarkModeChanged="@ThemeState.SetDarkMode"
              Density="@ThemeState.Density"
-             ContextPanelExpanded="@_contextPanelExpanded"
-             ContextPanelExpandedChanged="@(v => _contextPanelExpanded = v)"
-             ContextPanelWidth="288"
-             ContextPanelCollapsedWidth="72"
+             ContextPanelExpanded="@_contextExpanded"
+             ContextPanelExpandedChanged="@(v => _contextExpanded = v)"
+             ContextPanelWidth="288" ContextPanelCollapsedWidth="72"
              ContextPanelContent="@ContextPanel"
              SidebarExpanded="@_expanded"
              SidebarExpandedChanged="@(v => _expanded = v)">
-
     <SidebarContent>
-        <MdsSidebar IsExpanded="@_expanded"
-                    OnToggle="@HandleToggle"
-                    PrimaryItems="@_navItems">
-            <LogoContent>
-                <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Medium"
-                         Style="background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #7e6fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 28px; flex-shrink:0;" />
-                @if (_expanded)
-                {
-                    <span style="font-size:17px; font-weight:600; white-space:nowrap;">Copilot</span>
-                }
-            </LogoContent>
-            <BottomContent>
-                <MudIconButton Icon="@Icons.Material.Outlined.ColorLens"
-                               Size="Size.Small" Color="Color.Inherit"
-                               title="Thème et fond"
-                               OnClick="@OpenThemeDialog" />
-                @if (_expanded)
-                {
-                    <span style="font-size:13px; color:var(--mud-palette-text-secondary);">
-                        Thème et fond
-                    </span>
-                }
-            </BottomContent>
-        </MdsSidebar>
+        <ShowcaseSidebar ShellRef="@_shell" IsExpanded="@_expanded" />
     </SidebarContent>
-
     <ChildContent>@Body</ChildContent>
-
 </MdsAppShell>
+</div>
+</MudBreakpointProvider>
+
+<div id="blazor-error-ui" data-nosnippet>
+    Une erreur inattendue est survenue.
+    <a href="." class="reload">Recharger</a>
+</div>
 
 @code {
     private MdsAppShell _shell = default!;
     private bool _expanded;
-    private bool _showContextPanel;
-    private bool _contextPanelExpanded = true;
-    private RenderFragment? ContextPanel => _showContextPanel
-        ? @<div>
-              <div style="display:flex; justify-content:flex-end; align-items:center; height:40px; padding:0 8px;">
-                  <MudIconButton Icon="@(_contextPanelExpanded ? Icons.Material.Outlined.KeyboardDoubleArrowLeft : Icons.Material.Outlined.KeyboardDoubleArrowRight)"
-                                 Size="Size.Small"
-                                 Color="Color.Inherit"
-                                 Style="margin:0;"
-                                 title="Réduire/agrandir le panneau contextuel"
-                                 OnClick="@(() => _shell.ToggleContextPanel())" />
-              </div>
-              <MdsContextNavPanel Tree="@_libraryContextTree" IsExpanded="@_contextPanelExpanded" />
-          </div>
+    private bool _contextExpanded = true;
+    private bool _showContext;
+    private bool _narrow;
+    private RenderFragment? ContextPanel => _showContext
+        ? @<ShowcaseContextPanel IsExpanded="@_contextExpanded" OnToggle="@(() => _shell.ToggleContextPanel())" />
         : null;
-
-    private static readonly MbxNavTree _libraryContextTree = new(
-    [
-        new(
-            id: "library",
-            text: "Bibliothèque",
-            icon: Icons.Material.Outlined.ContentCopy,
-            href: "/library/bg",
-            match: MbxNavMatchMode.Prefix,
-            children:
-            [
-                new(
-                    id: "library.documents",
-                    text: "Mes documents",
-                    icon: Icons.Material.Outlined.Folder,
-                    href: "/library/bg",
-                    match: MbxNavMatchMode.Prefix,
-                    children:
-                    [
-                        new(
-                            id: "library.documents.folder1",
-                            text: "Dossier 1",
-                            href: "/library/bg"),
-                        new(
-                            id: "library.documents.folder2",
-                            text: "Dossier 2",
-                            href: "/library/bg")
-                    ],
-                    defaultExpanded: true),
-                new(
-                    id: "library.history",
-                    text: "Historique",
-                    icon: Icons.Material.Outlined.History,
-                    href: "/library/bg")
-            ])
-    ]);
 
     protected override void OnInitialized()
     {
-        Nav.LocationChanged += OnLocationChanged;
-        ThemeState.Changed += OnThemeChanged;
-        ApplyRouteLayout(Nav.Uri);
+        Nav.LocationChanged += LocationChanged;
+        ThemeState.Changed += ThemeChanged;
+        ApplyRoute();
     }
 
-    private void OnThemeChanged() => InvokeAsync(StateHasChanged);
-
-    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    private void ThemeChanged() => InvokeAsync(StateHasChanged);
+    private void BreakpointChanged(Breakpoint breakpoint)
     {
-        ApplyRouteLayout(e.Location);
-        StateHasChanged();
+        var narrow = breakpoint is Breakpoint.Xs or Breakpoint.Sm;
+        if (_narrow == narrow) return;
+        _narrow = narrow;
+        _contextExpanded = !narrow;
+    }
+    private void LocationChanged(object? sender, LocationChangedEventArgs args)
+    {
+        ApplyRoute();
+        InvokeAsync(StateHasChanged);
     }
 
-    private void ApplyRouteLayout(string uri)
+    private void ApplyRoute()
     {
-        var path = new Uri(uri).AbsolutePath.TrimEnd('/');
-        _showContextPanel = path.StartsWith("/library", StringComparison.OrdinalIgnoreCase);
-
-        var isBgRoute = path.EndsWith("/bg", StringComparison.OrdinalIgnoreCase);
-        ThemeState.SetBackgroundMode(isBgRoute
-            ? MdsAppShell.MbxBackgroundMode.Image
-            : MdsAppShell.MbxBackgroundMode.Palette);
-    }
-
-    private void HandleToggle() => _shell.ToggleSidebar();
-
-    private async Task OpenThemeDialog()
-    {
-        var options = new DialogOptions
-        {
-            CloseButton = true,
-            MaxWidth = MaxWidth.Small,
-            FullWidth = true
-        };
-
-        await DialogService.ShowAsync<ThemeOptionsPanel>("Thème et fond", options);
+        var path = new Uri(Nav.Uri).AbsolutePath.TrimEnd('/');
+        _showContext = ShowcaseCatalog.HasContext(path) || path == "/demo";
+        if (path.EndsWith("/bg", StringComparison.OrdinalIgnoreCase))
+            ThemeState.SetBackgroundMode(MdsAppShell.MbxBackgroundMode.Image);
     }
 
     public void Dispose()
     {
-        Nav.LocationChanged -= OnLocationChanged;
-        ThemeState.Changed -= OnThemeChanged;
+        Nav.LocationChanged -= LocationChanged;
+        ThemeState.Changed -= ThemeChanged;
     }
-
-    private readonly MbxNavItem[] _navItems =
-    [
-        new(Icons.Material.Outlined.GridView,      "Accueil",         "/"),
-        new(Icons.Material.Outlined.ContentCopy,   "Bibliothèque",    "/library"),
-        new(Icons.Material.Outlined.Widgets,       "Composants",      "/main-components"),
-        new(Icons.Material.Outlined.Palette,       "Demo",            "/demo"),
-        new(Icons.Material.Outlined.DeveloperMode, "Render Modes",    "/modes"),
-        new(Icons.Material.Outlined.ViewCompact,   "Density",         "/density"),
-    ];
 }

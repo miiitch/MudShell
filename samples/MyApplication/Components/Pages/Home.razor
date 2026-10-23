@@ -1,78 +1,40 @@
 @page "/"
 @rendermode InteractiveServer
-@inject NavigationManager Nav
 
-<PageTitle>Home</PageTitle>
-
-<MudContainer MaxWidth="MaxWidth.Medium" Class="px-4 pb-4 pt-0">
-<MudStack Spacing="3">
-    <MudStack Row="true" Justify="Justify.FlexEnd">
-        <MudIconButton Icon="@Icons.Material.Outlined.Tune" Color="Color.Inherit" Size="Size.Small" />
-    </MudStack>
-
-    <MudText Typo="Typo.h4">
-        Great to see you again, Michel.<br />
-        What's the latest?
-    </MudText>
-
-    <MdsChatBar Placeholder="@("Message Copilot or @mention a tab")"
-                @bind-Value="_chatMessage">
-        <Actions>
-            <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" />
-            <MudButton Variant="Variant.Text" Color="Color.Inherit" Size="Size.Small"
-                       EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
-                       Class="text-none">Smart</MudButton>
-            <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Size="Size.Small" Color="Color.Inherit" />
-        </Actions>
-    </MdsChatBar>
-
-    <MudPaper Outlined="true" Class="pa-4">
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mds-u-inline-title">
-            <MudIcon Icon="@Icons.Material.Outlined.Devices" Size="Size.Small" />
-            <MudText Typo="Typo.subtitle1">Blazor render modes</MudText>
-        </MudStack>
-
-        <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="1" Class="mt-2">
-            <MudButton Variant="Variant.Outlined" Color="Color.Default"
-                       OnClick="@(() => Nav.NavigateTo("/modes/ssr", true))"
-                       StartIcon="@Icons.Material.Outlined.Article">
-                Static SSR
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="/modes/server"
-                       StartIcon="@Icons.Material.Outlined.Hub">
-                Interactive Server
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Success" Href="/modes/wasm"
-                       StartIcon="@Icons.Material.Outlined.Memory">
-                Auto (WASM)
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Warning" Href="/modes/auto"
-                       StartIcon="@Icons.Material.Outlined.AutoMode">
-                Interactive Auto
-            </MudButton>
-        </MudStack>
-
-        <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/modes"
-                   EndIcon="@Icons.Material.Filled.ArrowForward"
-                   Class="mt-1 text-none">
-            View all combinations
-        </MudButton>
-    </MudPaper>
-
-    <MudPaper Outlined="true" Class="pa-4">
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mds-u-inline-title">
-            <MudIcon Icon="@Icons.Material.Outlined.TableChart" Size="Size.Small" />
-            <MudText Typo="Typo.subtitle2">Quick access</MudText>
-        </MudStack>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/europe-cities"
-                   StartIcon="@Icons.Material.Outlined.TravelExplore" Class="text-none">
-            Open Europe Cities dashboard
-        </MudButton>
-    </MudPaper>
-</MudStack>
- </MudContainer>
-
-@code {
-    private string _chatMessage = string.Empty;
-}
+<PageTitle>MudShell — La vitrine</PageTitle>
+<div class="showcase-page" data-testid="showcase-home">
+    <div class="showcase-hero">
+        <div>
+            <MudText Typo="Typo.overline" Color="Color.Primary">La vitrine MudShell</MudText>
+            <h1>Des composants.<br />Des interfaces cohérentes.</h1>
+            <p>Navigation, espaces de travail, données et conversation : explorez les briques, puis découvrez comment les assembler.</p>
+            <MudStack Row Wrap="Wrap.Wrap" Spacing="2">
+                <MudButton Href="/components" Variant="Variant.Filled" Color="Color.Primary" data-testid="explore-components">Explorer les composants</MudButton>
+                <MudButton Href="/examples" Variant="Variant.Outlined" data-testid="explore-examples">Voir les exemples</MudButton>
+            </MudStack>
+        </div>
+        <MdsMainPart Title="Un espace de travail composé avec MudShell">
+            <MdsStatStrip>
+                <MdsStatTile Label="Ressources" Value="128" />
+                <MdsStatTile Label="Conformité" Value="84 %" />
+                <MdsStatTile Label="À examiner" Value="7" />
+            </MdsStatStrip>
+            <MudButton Href="/examples/workspace/detail" Class="mt-3" EndIcon="@Icons.Material.Outlined.ArrowForward">Ouvrir la fiche exemple</MudButton>
+        </MdsMainPart>
+    </div>
+    <h2 class="mb-4">Explorez les familles de composants</h2>
+    <div class="showcase-cards">
+        @foreach (var family in ShowcaseCatalog.Families)
+        {
+            <a class="showcase-card" href="@family.Href" data-testid="@($"home-family-{family.Id}")">
+                <MudIcon Icon="@family.Icon" Color="Color.Primary" />
+                <h3>@family.Title</h3>
+                <p>@family.Description</p>
+            </a>
+        }
+    </div>
+    <div class="showcase-callout">
+        <div><h2>Les briques prennent tout leur sens ensemble.</h2><p>Des exemples complets, séparés des démonstrations isolées.</p></div>
+        <MudButton Href="/examples" Variant="Variant.Outlined">Découvrir les exemples</MudButton>
+    </div>
+</div>

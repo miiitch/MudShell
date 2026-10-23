@@ -1,4 +1,5 @@
 @page "/europe-cities"
+@page "/examples/cities"
 @rendermode InteractiveServer
 
 <MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
@@ -12,12 +13,6 @@
     </MdsPageHeader>
 
     <MdsMainPart Title="Business Widgets">
-        <HeaderActions>
-            <MudStack Row="true" Spacing="1">
-                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.FilterList">Filters</MudButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.Download">Export</MudButton>
-            </MudStack>
-        </HeaderActions>
         <ChildContent>
             <MudGrid Spacing="2">
                 @foreach (var widget in _widgets)
@@ -102,7 +97,7 @@
 @code {
     private readonly List<BreadcrumbItem> _breadcrumbItems =
     [
-        new("Home", href: "/")
+        new("Exemples", href: "/examples")
     ];
 
     private readonly WidgetItem[] _widgets =
@@ -232,4 +227,3 @@
         _selectedRegion = null;
     }
 }
-

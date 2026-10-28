@@ -50,7 +50,7 @@
                                  title="Collapse/expand context panel"
                                  OnClick="@(() => _shell.ToggleContextPanel())" />
               </div>
-              <MdsContextNavPanel Tree="@_navTree" IsExpanded="@_contextPanelExpanded" OnSortChanged="@HandleContextSortDemoSortChanged" />
+              <MdsContextNavPanel Tree="@_navTree" IsExpanded="@_contextPanelExpanded" IsExpandedChanged="@(v => _contextPanelExpanded = v)" OnSortChanged="@HandleContextSortDemoSortChanged" />
               @if (_contextPanelExpanded)
               {
                   <MudSimpleTable Dense="true" Hover="true" Class="pa-2" data-testid="context-nav-sort-demo-log">

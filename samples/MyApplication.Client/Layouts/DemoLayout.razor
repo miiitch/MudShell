@@ -66,7 +66,7 @@
                                  title="Réduire/agrandir le panneau contextuel"
                                  OnClick="@(() => _shell.ToggleContextPanel())" />
               </div>
-              <MdsContextNavPanel Tree="@_libraryContextTree" IsExpanded="@_contextPanelExpanded" />
+              <MdsContextNavPanel Tree="@_libraryContextTree" IsExpanded="@_contextPanelExpanded" IsExpandedChanged="@(v => _contextPanelExpanded = v)" />
           </div>
         : null;
 

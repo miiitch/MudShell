@@ -100,7 +100,7 @@ Navigate to `https://localhost:5001`. You should see the dark shell with a colla
 
 - [Theming](theming.md) — customise colours
 - [MudBlazor integration](mudblazor-integration.md) — integrate MudShell into an existing MudBlazor app
-- [Scheduler](components/scheduler.md) — optional calendar built on Radzen; needs two host assets (see its Setup section)
+- [Scheduler](components/scheduler.md) — optional calendar built on Radzen; needs no extra setup
 - [Page blueprint](page-blueprint.md) — build pages with the recommended structure
 - [Model](model.md) — understand the MudShell composition model
 - [Architecture](architecture.md) — understand the shell pattern

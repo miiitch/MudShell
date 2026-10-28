@@ -1,7 +1,13 @@
 @namespace MudShell.Components.Scheduler
 @typeparam TItem
+@implements IAsyncDisposable
 @using System.Globalization
 @using Radzen.Blazor
+@inject IJSRuntime JS
+
+<HeadContent>
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css" />
+</HeadContent>
 
 <div class="@RootClass" style="@Style" @attributes="AdditionalAttributes">
     <div class="mds-scheduler-toolbar">
@@ -30,23 +36,26 @@
          aria-busy="@(Loading ? "true" : null)"
          aria-disabled="@(Disabled ? "true" : null)"
          inert="@(Disabled ? "" : null)">
-        <RadzenScheduler @ref="_scheduler"
-                         TItem="TItem"
-                         Data="@(Items ?? Array.Empty<TItem>())"
-                         StartProperty="@StartProperty"
-                         EndProperty="@EndProperty"
-                         TextProperty="@TextProperty"
-                         Date="_date"
-                         ShowHeader="false"
-                         Culture="EnglishCulture"
-                         SelectedIndex="(int)View"
-                         Template="AppointmentTemplate"
-                         AppointmentSelect="OnAppointmentSelectAsync"
-                         SlotSelect="OnSlotSelectAsync">
-            <RadzenDayView @ref="_dayView" />
-            <RadzenWeekView @ref="_weekView" />
-            <RadzenMonthView @ref="_monthView" />
-        </RadzenScheduler>
+        @if (_radzenReady)
+        {
+            <RadzenScheduler @ref="_scheduler"
+                             TItem="TItem"
+                             Data="@(Items ?? Array.Empty<TItem>())"
+                             StartProperty="@StartProperty"
+                             EndProperty="@EndProperty"
+                             TextProperty="@TextProperty"
+                             Date="_date"
+                             ShowHeader="false"
+                             Culture="EnglishCulture"
+                             SelectedIndex="(int)View"
+                             Template="AppointmentTemplate"
+                             AppointmentSelect="OnAppointmentSelectAsync"
+                             SlotSelect="OnSlotSelectAsync">
+                <RadzenDayView @ref="_dayView" />
+                <RadzenWeekView @ref="_weekView" />
+                <RadzenMonthView @ref="_monthView" />
+            </RadzenScheduler>
+        }
 
         <MudOverlay Visible="Loading" Absolute="true" Class="mds-scheduler-loading">
             <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
@@ -61,6 +70,8 @@
     /// </summary>
     private static readonly CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-US");
 
+    private IJSObjectReference? _module;
+    private bool _radzenReady;
     private RadzenScheduler<TItem>? _scheduler;
     private RadzenDayView? _dayView;
     private RadzenWeekView? _weekView;
@@ -127,6 +138,30 @@
         MdsSchedulerView.Week => WeekTitle(),
         _ => _date.ToString("MMMM yyyy", EnglishCulture),
     };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        // Radzen measures itself through its script on first render, so the grid is rendered only after the
+        // script is in place. The module and script are shared by every scheduler on the page.
+        _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/MudShell/js/mudshell-scheduler.js");
+        await _module.InvokeVoidAsync("ensureRadzen", "_content/Radzen.Blazor/Radzen.Blazor.js");
+
+        _radzenReady = true;
+        StateHasChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.DisposeAsync();
+        }
+    }
 
     protected override void OnParametersSet()
     {

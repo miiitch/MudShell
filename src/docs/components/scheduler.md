@@ -10,18 +10,8 @@ the application culture (`fr-FR`, for example). Application content such as appo
 
 ## Setup
 
-`MdsScheduler` needs two things from the host page, because Radzen's grid is structured by its stylesheet and
-measures itself through its script:
-
-```html
-<link rel="stylesheet" href="_content/MudShell/MudShell.bundle.scp.css" />
-<link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css" />
-<script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
-```
-
-The first line is MudShell's own scoped stylesheet: without it, no `MudShell` component styles apply, including the scheduler's height and theme bridge. Load the **`-base`** stylesheet, not the full theme: the full theme sets `body` colours and would override
-the MudBlazor theme. `AddMudShell()` registers the Radzen `DialogService` the month view requires. No other
-Radzen service is registered.
+Nothing beyond MudShell's own setup. `MdsScheduler` loads Radzen's stylesheet and script itself the first time
+it renders, and `AddMudShell()` registers the Radzen `DialogService` the month view needs.
 
 ## Example
 
@@ -123,8 +113,6 @@ and does not change the application's `CurrentCulture`, so rendering a schedule 
 
 - Drag, resize and recurrence are not supported in this version.
 - There is no built-in empty-state message; an empty `Items` list shows an empty grid.
-- The grid needs the host setup above. Without it, Radzen's stylesheet and script are missing and the
-  schedule does not lay out.
 - Radzen's own navigation header is hidden in favour of the MudBlazor toolbar, so Radzen's navigation
   template and header customisation are not available.
 - `Items` is read as given; the component does not observe the collection for in-place changes. Assign a new

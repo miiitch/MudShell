@@ -90,15 +90,7 @@ duplicate section-ID crash at runtime:
 
 ### Optional: the scheduler (Radzen)
 
-`MdsScheduler<TItem>` renders the free and open-source [Radzen Blazor](https://blazor.radzen.com) scheduler (MIT). Radzen is pulled in as a dependency of MudShell and stays internal: you only use MudShell types. The host page must load two Radzen assets, or the grid does not lay out:
-
-```html
-<link rel="stylesheet" href="_content/MudShell/MudShell.bundle.scp.css" />
-<link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css" />
-<script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
-```
-
-Use the `-base` stylesheet, not the full Radzen theme: the full theme sets `body` colours and would override MudBlazor. See [the scheduler docs](src/docs/components/scheduler.md) for usage.
+`MdsScheduler<TItem>` renders the free and open-source [Radzen Blazor](https://blazor.radzen.com) scheduler (MIT). Radzen is a dependency of MudShell and stays internal: the component loads its own stylesheet and script, so no extra host setup is needed. See [the scheduler docs](src/docs/components/scheduler.md) for usage.
 
 ### Hierarchical single-source navigation
 

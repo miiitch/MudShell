@@ -23,6 +23,8 @@ In `Program.cs`, register MudShell and do **not** call `AddMudServices()` separa
 builder.Services.AddMudShell();
 ```
 
+`AddMudShell()` also registers the Radzen `DialogService` that the optional [scheduler](components/scheduler.md) needs.
+
 ## Step 3 — Add imports
 
 In your app's `_Imports.razor`:
@@ -98,6 +100,7 @@ Navigate to `https://localhost:5001`. You should see the dark shell with a colla
 
 - [Theming](theming.md) — customise colours
 - [MudBlazor integration](mudblazor-integration.md) — integrate MudShell into an existing MudBlazor app
+- [Scheduler](components/scheduler.md) — optional calendar built on Radzen; needs two host assets (see its Setup section)
 - [Page blueprint](page-blueprint.md) — build pages with the recommended structure
 - [Model](model.md) — understand the MudShell composition model
 - [Architecture](architecture.md) — understand the shell pattern

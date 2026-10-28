@@ -34,6 +34,8 @@
 builder.Services.AddMudShell();
 ```
 
+`AddMudShell()` also registers the Radzen `DialogService` used by `MdsScheduler`. No other Radzen service is registered.
+
 ### 3. Add global imports
 
 ```razor
@@ -86,6 +88,17 @@ duplicate section-ID crash at runtime:
 </MdsAppShell>
 ```
 
+### Optional: the scheduler (Radzen)
+
+`MdsScheduler<TItem>` renders the free and open-source [Radzen Blazor](https://blazor.radzen.com) scheduler (MIT). Radzen is pulled in as a dependency of MudShell and stays internal: you only use MudShell types. The host page must load two Radzen assets, or the grid does not lay out:
+
+```html
+<link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css" />
+<script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+```
+
+Use the `-base` stylesheet, not the full Radzen theme: the full theme sets `body` colours and would override MudBlazor. See [the scheduler docs](src/docs/components/scheduler.md) for usage.
+
 ### Hierarchical single-source navigation
 
 ```razor
@@ -131,4 +144,4 @@ For a full page blueprint and MudBlazor migration guidance, see the dedicated do
 - [Theming](src/docs/theming.md)
 - [Responsive](src/docs/responsive.md)
 - [Architecture](src/docs/architecture.md)
-- Components: [AppShell](src/docs/components/app-shell.md) · [Sidebar](src/docs/components/sidebar.md) · [BottomNav](src/docs/components/bottom-nav.md) · [ChatBar](src/docs/components/chat-bar.md) · [Chat](src/docs/components/chat.md) · [DocumentCard](src/docs/components/document-card.md) · [FilterTabBar](src/docs/components/filter-tab-bar.md) · [PageHeader](src/docs/components/page-header.md)
+- Components: [AppShell](src/docs/components/app-shell.md) · [Sidebar](src/docs/components/sidebar.md) · [BottomNav](src/docs/components/bottom-nav.md) · [ChatBar](src/docs/components/chat-bar.md) · [Chat](src/docs/components/chat.md) · [DocumentCard](src/docs/components/document-card.md) · [FilterTabBar](src/docs/components/filter-tab-bar.md) · [PageHeader](src/docs/components/page-header.md) · [Scheduler](src/docs/components/scheduler.md)

@@ -90,6 +90,12 @@ public class SchedulerTests : PlaywrightTestBase
 
         var appointment = Page.GetByRole(AriaRole.Button, new() { Name = "Réunion client" });
         await Assertions.Expect(appointment).ToBeVisibleAsync(new() { Timeout = 15000 });
+
+        // Radzen positions appointments from a JS measurement after its first render; wait for a laid-out box.
+        await Page.WaitForFunctionAsync(@"() => {
+            const el = [...document.querySelectorAll('.mds-scheduler .rz-event')].find(e => e.textContent.includes('Réunion client'));
+            return el && el.getBoundingClientRect().height > 0;
+        }", null, new() { Timeout = 15000 });
         await appointment.ClickAsync();
 
         var title = Page.Locator(".mud-dialog-title");

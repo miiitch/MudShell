@@ -126,16 +126,16 @@ public class SchedulerTests : PlaywrightTestBase
     });
 
     [Fact]
-    public Task Scheduler_GridFollowsMudBlazorSurface() => RunAsync(nameof(Scheduler_GridFollowsMudBlazorSurface), async () =>
+    public Task Scheduler_GridFollowsMudBlazorBackground() => RunAsync(nameof(Scheduler_GridFollowsMudBlazorBackground), async () =>
     {
         await OpenPageAsync();
 
-        // The Radzen grid must paint the MudBlazor surface token of the active theme, never a Radzen palette colour.
+        // The Radzen grid must paint the MudBlazor background token of the active theme, never a Radzen palette colour.
         var matches = await Page.EvaluateAsync<bool>(@"() => {
             const root = document.querySelector('.mds-scheduler');
             const grid = document.querySelector('.mds-scheduler .rz-scheduler');
             const probe = document.createElement('div');
-            probe.style.backgroundColor = getComputedStyle(root).getPropertyValue('--mud-palette-surface');
+            probe.style.backgroundColor = getComputedStyle(root).getPropertyValue('--mud-palette-background');
             document.body.appendChild(probe);
             const expected = getComputedStyle(probe).backgroundColor;
             probe.remove();

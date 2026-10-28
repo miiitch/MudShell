@@ -1,0 +1,85 @@
+@using System.Globalization
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudTextField @bind-Value="_title"
+                          Label="Title"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          aria-label="Title" />
+            <MudTextField @bind-Value="_start"
+                          Label="Start (yyyy-MM-dd HH:mm)"
+                          Variant="Variant.Outlined"
+                          Error="_error is not null"
+                          ErrorText="@_error"
+                          aria-label="Start" />
+            <MudTextField @bind-Value="_end"
+                          Label="End (yyyy-MM-dd HH:mm)"
+                          Variant="Variant.Outlined"
+                          Error="_error is not null"
+                          aria-label="End" />
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private const string DateFormat = "yyyy-MM-dd HH:mm";
+
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public DateTime Start { get; set; }
+    [Parameter] public DateTime End { get; set; }
+
+    private string _title = string.Empty;
+    private string _start = string.Empty;
+    private string _end = string.Empty;
+    private string? _error;
+
+    protected override void OnInitialized()
+    {
+        _title = Title;
+        _start = Start.ToString(DateFormat, CultureInfo.InvariantCulture);
+        _end = End.ToString(DateFormat, CultureInfo.InvariantCulture);
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private void Save()
+    {
+        _error = null;
+
+        if (string.IsNullOrWhiteSpace(_title))
+        {
+            _error = "A title is required.";
+            return;
+        }
+
+        if (!TryParse(_start, out var start) || !TryParse(_end, out var end))
+        {
+            _error = $"Use the format {DateFormat}.";
+            return;
+        }
+
+        if (end <= start)
+        {
+            _error = "The end must be after the start.";
+            return;
+        }
+
+        MudDialog.Close(DialogResult.Ok(new SchedulerBooking
+        {
+            Title = _title.Trim(),
+            Start = start,
+            End = end,
+        }));
+    }
+
+    private static bool TryParse(string text, out DateTime value) =>
+        DateTime.TryParseExact(text, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
+}

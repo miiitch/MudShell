@@ -1,0 +1,162 @@
+/*
+ * Theme bridge: Radzen's structural stylesheet (default-base.css) reads its colours and fonts from
+ * --rz-* custom properties. They are remapped here onto the active MudBlazor palette, so light and
+ * dark themes follow automatically and no Radzen palette is ever shown. Every rule stays under
+ * .mds-scheduler, so nothing outside the component is affected.
+ */
+
+.mds-scheduler {
+    --rz-base-50: var(--mud-palette-surface);
+    --rz-base-100: color-mix(in srgb, var(--mud-palette-text-primary) 4%, var(--mud-palette-surface));
+    --rz-base-200: color-mix(in srgb, var(--mud-palette-text-primary) 7%, var(--mud-palette-surface));
+    --rz-base-300: var(--mud-palette-divider);
+    --rz-base-400: var(--mud-palette-lines-default);
+    --rz-base-500: var(--mud-palette-text-disabled);
+    --rz-base-600: var(--mud-palette-text-secondary);
+    --rz-base-700: var(--mud-palette-text-secondary);
+    --rz-base-800: var(--mud-palette-text-primary);
+    --rz-base-900: var(--mud-palette-text-primary);
+
+    --rz-white: var(--mud-palette-surface);
+    --rz-black: var(--mud-palette-text-primary);
+
+    --rz-base-background-color: var(--mud-palette-surface);
+    --rz-text-color: var(--mud-palette-text-primary);
+    --rz-text-title-color: var(--mud-palette-text-primary);
+    --rz-text-secondary-color: var(--mud-palette-text-secondary);
+    --rz-text-tertiary-color: var(--mud-palette-text-disabled);
+    --rz-text-font-family: var(--mud-typography-default-family);
+    --rz-border-normal: var(--mud-palette-lines-default);
+    --rz-border-radius: var(--mud-default-borderradius);
+
+    --rz-primary: var(--mud-palette-primary);
+    --rz-primary-light: var(--mud-palette-primary-lighten);
+    --rz-primary-dark: var(--mud-palette-primary-darken);
+    --rz-primary-darker: var(--mud-palette-primary-darken);
+    --rz-primary-lighter: color-mix(in srgb, var(--mud-palette-primary) 16%, transparent);
+    --rz-on-primary: var(--mud-palette-primary-text);
+
+    --rz-info: var(--mud-palette-info);
+    --rz-success: var(--mud-palette-success);
+    --rz-warning: var(--mud-palette-warning);
+    --rz-danger: var(--mud-palette-error);
+    --rz-outline-focus: var(--mud-palette-primary);
+
+    /* Radzen's scheduler tokens are declared on :root and resolve their references there, so
+       overriding the base tokens above is not enough: the scheduler's own tokens are set here too. */
+    --rz-scheduler-background-color: var(--mud-palette-surface);
+    --rz-scheduler-color: var(--mud-palette-text-primary);
+    --rz-scheduler-border-color: var(--mud-palette-lines-default);
+    --rz-scheduler-border-radius: var(--mud-default-borderradius);
+    --rz-scheduler-shadow: none;
+    --rz-scheduler-minor-border-color: var(--mud-palette-divider);
+    --rz-scheduler-header-background-color: color-mix(in srgb, var(--mud-palette-text-primary) 6%, var(--mud-palette-surface));
+    --rz-scheduler-header-border: 1px solid var(--mud-palette-lines-default);
+    --rz-scheduler-header-color: var(--mud-palette-text-secondary);
+    --rz-scheduler-weekend-background-color: color-mix(in srgb, var(--mud-palette-text-primary) 3%, var(--mud-palette-surface));
+    --rz-scheduler-weekend-color: var(--mud-palette-text-secondary);
+    --rz-scheduler-other-month-background-color: color-mix(in srgb, var(--mud-palette-text-primary) 3%, var(--mud-palette-surface));
+    --rz-scheduler-highlight-background-color: color-mix(in srgb, var(--mud-palette-primary) 16%, transparent);
+    --rz-scheduler-event-background-color: var(--mud-palette-primary);
+    --rz-scheduler-event-color: var(--mud-palette-primary-text);
+    --rz-scheduler-event-list-button-color: var(--mud-palette-primary);
+    --rz-scheduler-focus-outline: 2px solid var(--mud-palette-primary);
+    --rz-scheduler-view-button-background-color: var(--mud-palette-surface);
+    --rz-scheduler-view-button-border: 1px solid var(--mud-palette-lines-default);
+    --rz-scheduler-view-button-color: var(--mud-palette-text-secondary);
+    --rz-scheduler-view-selected-background-color: var(--mud-palette-primary);
+    --rz-scheduler-view-selected-border-color: var(--mud-palette-primary);
+    --rz-scheduler-view-selected-color: var(--mud-palette-primary-text);
+    --rz-scheduler-prev-next-button-background-color: var(--mud-palette-surface);
+    --rz-scheduler-prev-next-button-color: var(--mud-palette-text-secondary);
+    --rz-scheduler-toolbar-background-color: var(--mud-palette-surface);
+    --rz-scheduler-toolbar-title-color: var(--mud-palette-text-primary);
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    max-width: 100%;
+    color: var(--mud-palette-text-primary);
+    font-family: var(--mud-typography-default-family);
+}
+
+/* Toolbar: MudBlazor controls only, so buttons and focus rings match the rest of the app. */
+.mds-scheduler-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+}
+
+.mds-scheduler-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.mds-scheduler-title {
+    min-width: 0;
+    margin-inline-start: 4px;
+    overflow-wrap: anywhere;
+}
+
+/* Schedule surface: the Radzen grid fills it and scrolls inside it, never the page. */
+.mds-scheduler-body {
+    position: relative;
+    height: 40rem;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: var(--mud-default-borderradius);
+    background-color: var(--mud-palette-surface);
+}
+
+.mds-scheduler-body[aria-disabled="true"] {
+    opacity: 0.6;
+}
+
+.mds-scheduler-body[aria-busy="true"] {
+    cursor: progress;
+}
+
+@media (max-width: 599.98px) {
+    .mds-scheduler-body {
+        height: 32rem;
+    }
+}
+
+.mds-scheduler :deep(.rz-scheduler) {
+    width: 100%;
+    height: 100%;
+    color: var(--mud-palette-text-primary);
+    background-color: var(--mud-palette-surface);
+    font-family: var(--mud-typography-default-family);
+}
+
+/* Appointments take their colours from the --rz-scheduler-event-* tokens above; hover uses the MudBlazor hover tone. */
+.mds-scheduler :deep(.rz-event-content) {
+    border-radius: var(--mud-default-borderradius);
+}
+
+.mds-scheduler :deep(.rz-event:hover .rz-event-content) {
+    background-color: var(--mud-palette-primary-hover);
+}
+
+.mds-scheduler :deep(.rz-event:focus-visible),
+.mds-scheduler :deep(.rz-slot:focus-visible) {
+    outline: 2px solid var(--mud-palette-primary);
+    outline-offset: 2px;
+}
+
+.mds-scheduler :deep(.rz-slot:hover) {
+    background-color: color-mix(in srgb, var(--mud-palette-text-primary) 4%, transparent);
+}
+
+.mds-scheduler :deep(.rz-slot-title),
+.mds-scheduler :deep(.rz-slot-hour-header) {
+    color: var(--mud-palette-text-secondary);
+}

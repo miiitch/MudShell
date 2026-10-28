@@ -1,5 +1,6 @@
 @namespace MudShell.Components.MainContent
 
+<div class="mds-main-part-host">
 <MudPaper Elevation="2" Class="@RootClass" Style="@RootStyle" @attributes="AdditionalAttributes">
     <MudStack Spacing="2">
         @if (!string.IsNullOrWhiteSpace(Title) || HeaderActions is not null)
@@ -53,6 +54,7 @@
         }
     </MudStack>
 </MudPaper>
+</div>
 
 @code {
     /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
@@ -75,9 +77,20 @@
     [Parameter] public string AccentBorderColor { get; set; } = "var(--mud-palette-primary)";
     [Parameter] public int AccentBorderWidth { get; set; } = 2;
 
-    private string RootClass => $"pa-4 mb-3 {Class}".Trim();
+    /// <summary>Opt-in: fades a thin outline in around the part while the pointer is over it, and out again on leave.</summary>
+    [Parameter] public bool HoverBorder { get; set; }
+    /// <summary>Colour of the hover outline: any CSS colour or palette variable.</summary>
+    [Parameter] public string HoverBorderColor { get; set; } = "var(--mud-palette-primary)";
+    /// <summary>Duration, in milliseconds, of the hover outline fade (in and out).</summary>
+    [Parameter] public int HoverBorderDuration { get; set; } = 250;
+
+    private string RootClass => HoverBorder
+        ? $"pa-4 mb-3 mds-main-part-hoverable {Class}".Trim()
+        : $"pa-4 mb-3 {Class}".Trim();
     private string RootStyle => MergeStyles(
-        MbxAccentBorderStyle.Build(AccentBorderSides, AccentBorderColor, AccentBorderWidth),
+        MergeStyles(
+            MbxAccentBorderStyle.Build(AccentBorderSides, AccentBorderColor, AccentBorderWidth),
+            HoverBorder ? $"--mds-part-hover-color:{HoverBorderColor};--mds-part-hover-ms:{HoverBorderDuration}ms;" : null),
         Style);
 
     private static string MergeStyles(string? first, string? second)

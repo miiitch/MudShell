@@ -1,1 +1,23 @@
-/* MdsMainPart — no overrides; MudPaper Elevation handles all visual styling */
+/* MdsMainPart — MudPaper Elevation handles the base styling; only the opt-in hover outline lives here.
+   MudPaper's root does not receive this component's scope attribute, so the layout-neutral host
+   wrapper carries it and the rules reach the paper through ::deep.
+   The transition sits on the resting state so it also plays when the pointer leaves. */
+.mds-main-part-host {
+    display: contents;
+}
+
+::deep .mds-main-part-hoverable {
+    outline: 1px solid transparent;
+    outline-offset: -1px;
+    transition: outline-color var(--mds-part-hover-ms, 250ms) ease-in-out;
+}
+
+::deep .mds-main-part-hoverable:hover {
+    outline-color: color-mix(in srgb, var(--mds-part-hover-color, var(--mud-palette-primary)) 55%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::deep .mds-main-part-hoverable {
+        transition: none;
+    }
+}

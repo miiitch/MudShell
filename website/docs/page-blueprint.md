@@ -135,6 +135,14 @@ Use for:
 - charts,
 - API-backed page blocks with loading and error states.
 
+Opt-in hover effect: set `HoverBorder="true"` to fade a thin outline in around the part while the pointer is over it (and out again on leave). `HoverBorderColor` picks the colour (any CSS colour or palette variable, default `var(--mud-palette-primary)`) and `HoverBorderDuration` the fade time in milliseconds (default `250`). The animation is disabled for users who prefer reduced motion.
+
+```razor
+<MdsMainPart Title="Summary" HoverBorder="true" HoverBorderColor="var(--mud-palette-tertiary)">
+    ...
+</MdsMainPart>
+```
+
 ### `MdsMainSection`
 
 Use for:

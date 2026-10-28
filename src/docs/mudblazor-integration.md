@@ -31,6 +31,8 @@ Or:
 <ProjectReference Include="..\MudShell\MudShell.csproj" />
 ```
 
+MudShell depends on `Radzen.Blazor` (MIT, free) for its optional scheduler. The scheduler loads its own assets, so no extra host setup is needed.
+
 ## 2. Register services
 
 In `Program.cs`:

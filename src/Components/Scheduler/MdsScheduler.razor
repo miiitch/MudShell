@@ -1,0 +1,286 @@
+@namespace MudShell.Components.Scheduler
+@typeparam TItem
+@implements IAsyncDisposable
+@using System.Globalization
+@using Radzen.Blazor
+@inject IJSRuntime JS
+
+<HeadContent>
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css" />
+</HeadContent>
+
+<div class="@RootClass" style="@Style" @attributes="AdditionalAttributes">
+    <div class="mds-scheduler-toolbar">
+        <div class="mds-scheduler-nav">
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" Size="Size.Small" Disabled="Disabled"
+                           aria-label="Previous period" OnClick="() => MoveAsync(-1)" />
+            <MudButton Variant="Variant.Outlined" Size="Size.Small" Disabled="Disabled" OnClick="GoToTodayAsync">Today</MudButton>
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" Size="Size.Small" Disabled="Disabled"
+                           aria-label="Next period" OnClick="() => MoveAsync(1)" />
+            <MudText Typo="Typo.subtitle1" Class="mds-scheduler-title">@PeriodTitle</MudText>
+        </div>
+        <MudButtonGroup Variant="MudBlazor.Variant.Outlined" Size="Size.Small">
+            @foreach (var view in Enum.GetValues<MdsSchedulerView>())
+            {
+                var selected = view == _view;
+                <MudButton Variant="@(selected ? MudBlazor.Variant.Filled : MudBlazor.Variant.Outlined)"
+                           Color="@(selected ? Color.Primary : Color.Default)"
+                           Disabled="Disabled"
+                           aria-pressed="@(selected ? "true" : "false")"
+                           OnClick="() => SetViewAsync(view)">@ViewLabel(view)</MudButton>
+            }
+        </MudButtonGroup>
+    </div>
+
+    <div class="mds-scheduler-body"
+         aria-busy="@(Loading ? "true" : null)"
+         aria-disabled="@(Disabled ? "true" : null)"
+         inert="@(Disabled ? "" : null)">
+        @if (_radzenReady)
+        {
+            <RadzenScheduler @ref="_scheduler"
+                             TItem="TItem"
+                             Data="@(Items ?? Array.Empty<TItem>())"
+                             StartProperty="@StartProperty"
+                             EndProperty="@EndProperty"
+                             TextProperty="@TextProperty"
+                             Date="_date"
+                             ShowHeader="false"
+                             Culture="EnglishCulture"
+                             SelectedIndex="(int)View"
+                             Template="AppointmentTemplate"
+                             AppointmentSelect="OnAppointmentSelectAsync"
+                             SlotSelect="OnSlotSelectAsync">
+                <RadzenDayView @ref="_dayView" />
+                <RadzenWeekView @ref="_weekView" />
+                <RadzenMonthView @ref="_monthView" />
+            </RadzenScheduler>
+        }
+
+        <MudOverlay Visible="Loading" Absolute="true" Class="mds-scheduler-loading">
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+        </MudOverlay>
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// English culture applied to the Radzen grid. It is handed to the scheduler only, so the
+    /// application's own culture is never changed by rendering the component.
+    /// </summary>
+    private static readonly CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-US");
+
+    private IJSObjectReference? _module;
+    private bool _radzenReady;
+    private RadzenScheduler<TItem>? _scheduler;
+    private RadzenDayView? _dayView;
+    private RadzenWeekView? _weekView;
+    private RadzenMonthView? _monthView;
+
+    private MdsSchedulerView _view;
+    private DateTime _date = DateTime.Today;
+    private DateTime? _seenSelectedDate;
+
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>The application items to display. Each item is rendered as one appointment.</summary>
+    [Parameter] public IEnumerable<TItem>? Items { get; set; }
+
+    /// <summary>Name of the <typeparamref name="TItem"/> property holding the start of the appointment.</summary>
+    [Parameter] public string StartProperty { get; set; } = string.Empty;
+
+    /// <summary>Name of the <typeparamref name="TItem"/> property holding the end of the appointment.</summary>
+    [Parameter] public string EndProperty { get; set; } = string.Empty;
+
+    /// <summary>Name of the <typeparamref name="TItem"/> property holding the appointment text.</summary>
+    [Parameter] public string TextProperty { get; set; } = string.Empty;
+
+    /// <summary>The date the period is anchored on. Use <c>@bind-SelectedDate</c> to follow navigation.</summary>
+    [Parameter] public DateTime? SelectedDate { get; set; }
+
+    /// <summary>Raised when the user navigates to another period.</summary>
+    [Parameter] public EventCallback<DateTime?> SelectedDateChanged { get; set; }
+
+    /// <summary>The period shown: day, week or month.</summary>
+    [Parameter] public MdsSchedulerView View { get; set; } = MdsSchedulerView.Week;
+
+    /// <summary>Raised when the user selects another view in the toolbar.</summary>
+    [Parameter] public EventCallback<MdsSchedulerView> ViewChanged { get; set; }
+
+    /// <summary>Raised when an appointment is clicked. The application decides what to open, for example a <c>MudDialog</c>.</summary>
+    [Parameter] public EventCallback<MdsSchedulerAppointmentEventArgs<TItem>> AppointmentClicked { get; set; }
+
+    /// <summary>Raised when an empty time slot is clicked.</summary>
+    [Parameter] public EventCallback<MdsSchedulerSlotEventArgs> SlotClicked { get; set; }
+
+    /// <summary>Optional content rendered for each appointment. When omitted, the appointment text is shown.</summary>
+    [Parameter] public RenderFragment<TItem>? AppointmentTemplate { get; set; }
+
+    /// <summary>Shows a loading overlay over the schedule.</summary>
+    [Parameter] public bool Loading { get; set; }
+
+    /// <summary>Makes the schedule read-only. Content stays readable; navigation controls are disabled.</summary>
+    [Parameter] public bool Disabled { get; set; }
+
+    /// <summary>Extra CSS classes applied to the root element.</summary>
+    [Parameter] public string? Class { get; set; }
+
+    /// <summary>Inline styles applied to the root element.</summary>
+    [Parameter] public string? Style { get; set; }
+
+    private string RootClass => $"mds-scheduler {Class}".Trim();
+
+    private string PeriodTitle => _view switch
+    {
+        MdsSchedulerView.Day => _date.ToString("dddd, MMMM d, yyyy", EnglishCulture),
+        MdsSchedulerView.Week => WeekTitle(),
+        _ => _date.ToString("MMMM yyyy", EnglishCulture),
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        // Radzen measures itself through its script on first render, so the grid is rendered only after the
+        // script is in place. The module and script are shared by every scheduler on the page.
+        _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/MudShell/js/mudshell-scheduler.js");
+        await _module.InvokeVoidAsync("ensureRadzen", "_content/Radzen.Blazor/Radzen.Blazor.js");
+
+        _radzenReady = true;
+        StateHasChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.DisposeAsync();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        ValidateMapping(nameof(StartProperty), StartProperty);
+        ValidateMapping(nameof(EndProperty), EndProperty);
+        ValidateMapping(nameof(TextProperty), TextProperty);
+
+        if (SelectedDate != _seenSelectedDate)
+        {
+            _seenSelectedDate = SelectedDate;
+            if (SelectedDate is { } selected)
+            {
+                _date = selected.Date;
+            }
+        }
+
+        if (View != _view)
+        {
+            _view = View;
+            SelectRadzenView();
+        }
+    }
+
+    private void ValidateMapping(string parameter, string property)
+    {
+        if (string.IsNullOrWhiteSpace(property))
+        {
+            throw new InvalidOperationException($"MdsScheduler<{typeof(TItem).Name}>: parameter '{parameter}' is required.");
+        }
+
+        if (typeof(TItem).GetProperty(property) is null)
+        {
+            throw new InvalidOperationException(
+                $"MdsScheduler<{typeof(TItem).Name}>: parameter '{parameter}' is '{property}', which is not a public property of {typeof(TItem).Name}.");
+        }
+    }
+
+    private async Task MoveAsync(int direction)
+    {
+        _date = _view switch
+        {
+            MdsSchedulerView.Day => _date.AddDays(direction),
+            MdsSchedulerView.Week => _date.AddDays(7 * direction),
+            _ => _date.AddMonths(direction),
+        };
+
+        await ApplyDateAsync();
+    }
+
+    private Task GoToTodayAsync()
+    {
+        _date = DateTime.Today;
+        return ApplyDateAsync();
+    }
+
+    private async Task ApplyDateAsync()
+    {
+        if (_scheduler is not null)
+        {
+            _scheduler.CurrentDate = _date;
+            await _scheduler.Reload();
+        }
+
+        _seenSelectedDate = _date;
+        await SelectedDateChanged.InvokeAsync(_date);
+    }
+
+    private async Task SetViewAsync(MdsSchedulerView view)
+    {
+        if (view == _view)
+        {
+            return;
+        }
+
+        _view = view;
+        SelectRadzenView();
+        await ViewChanged.InvokeAsync(view);
+    }
+
+    private void SelectRadzenView()
+    {
+        if (_scheduler is null)
+        {
+            return;
+        }
+
+        var radzenView = _view switch
+        {
+            MdsSchedulerView.Day => (ISchedulerView?)_dayView,
+            MdsSchedulerView.Week => _weekView,
+            _ => _monthView,
+        };
+
+        if (radzenView is not null)
+        {
+            _scheduler.SelectView(radzenView);
+        }
+    }
+
+    private Task OnAppointmentSelectAsync(Radzen.SchedulerAppointmentSelectEventArgs<TItem> args) =>
+        // Radzen only raises this for an appointment bound to one of the Items, so Data is never null here.
+        AppointmentClicked.InvokeAsync(new MdsSchedulerAppointmentEventArgs<TItem> { Item = args.Data! });
+
+    private Task OnSlotSelectAsync(Radzen.SchedulerSlotSelectEventArgs args) =>
+        SlotClicked.InvokeAsync(new MdsSchedulerSlotEventArgs { Start = args.Start, End = args.End });
+
+    private static string ViewLabel(MdsSchedulerView view) => view switch
+    {
+        MdsSchedulerView.Day => "Day",
+        MdsSchedulerView.Week => "Week",
+        _ => "Month",
+    };
+
+    private string WeekTitle()
+    {
+        var offset = ((int)_date.DayOfWeek - (int)EnglishCulture.DateTimeFormat.FirstDayOfWeek + 7) % 7;
+        var start = _date.AddDays(-offset);
+        var end = start.AddDays(6);
+
+        return $"{start.ToString("MMM d", EnglishCulture)} – {end.ToString("MMM d, yyyy", EnglishCulture)}";
+    }
+}

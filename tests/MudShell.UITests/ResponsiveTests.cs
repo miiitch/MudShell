@@ -31,6 +31,9 @@ public class ResponsiveDesktopTests : PlaywrightTestBase
         var sidebar = Page.Locator(".mbx-sidebar").First;
         await Assertions.Expect(sidebar).ToBeVisibleAsync();
 
+        // The sidebar is visible before its first layout pass completes on a slow host; wait for a width.
+        await Page.WaitForFunctionAsync("() => document.querySelector('.mbx-sidebar')?.getBoundingClientRect().width > 0");
+
         var widthBefore = await sidebar.EvaluateAsync<double>("el => el.getBoundingClientRect().width");
         Assert.InRange(widthBefore, 54, 58);
 

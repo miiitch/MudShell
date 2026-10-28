@@ -88,9 +88,12 @@ public class SchedulerTests : PlaywrightTestBase
     {
         await OpenPageAsync();
 
-        await Page.Locator(".mds-scheduler .rz-event", new() { HasText = "Réunion client" }).First.ClickAsync();
+        var appointment = Page.GetByRole(AriaRole.Button, new() { Name = "Réunion client" });
+        await Assertions.Expect(appointment).ToBeVisibleAsync(new() { Timeout = 15000 });
+        await appointment.ClickAsync();
 
-        await Assertions.Expect(Page.Locator(".mud-dialog-title")).ToContainTextAsync("Edit appointment");
+        var title = Page.Locator(".mud-dialog-title");
+        await Assertions.Expect(title).ToContainTextAsync("Edit appointment", new() { Timeout = 15000 });
         await Assertions.Expect(Page.GetByLabel("Title")).ToHaveValueAsync("Réunion client");
     });
 

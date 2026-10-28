@@ -14,11 +14,12 @@ the application culture (`fr-FR`, for example). Application content such as appo
 measures itself through its script:
 
 ```html
+<link rel="stylesheet" href="_content/MudShell/MudShell.bundle.scp.css" />
 <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css" />
 <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
 ```
 
-Load the **`-base`** stylesheet, not the full theme: the full theme sets `body` colours and would override
+The first line is MudShell's own scoped stylesheet: without it, no `MudShell` component styles apply, including the scheduler's height and theme bridge. Load the **`-base`** stylesheet, not the full theme: the full theme sets `body` colours and would override
 the MudBlazor theme. `AddMudShell()` registers the Radzen `DialogService` the month view requires. No other
 Radzen service is registered.
 

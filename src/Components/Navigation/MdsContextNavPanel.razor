@@ -18,7 +18,21 @@
             var isActiveL2 = _state.ActivePath.Contains(node.Id);
             var collapsedLinkClass = $"mbx-context-collapsed-link{(isActiveL2 ? " mbx-context-collapsed-link-active" : "")}";
             <MudTooltip Text="@node.Text" Placement="Placement.Right">
-                @if (!string.IsNullOrWhiteSpace(node.Href) && !node.Disabled)
+                @if (node.Children.Any(c => c.Visible))
+                {
+                    @* Parent of a sub-menu: highlighted when the current page is one of its descendants,
+                       and a click re-opens the panel so the sub-menu becomes visible. *@
+                    <button type="button"
+                            data-testid="@MudShell.MbxTestId.Nav(node.Id)"
+                            class="@collapsedLinkClass"
+                            title="@node.Text"
+                            disabled="@node.Disabled"
+                            @onclick="@(() => HandleCollapsedParentClick(node))">
+                        <MudIcon Icon="@icon" Size="Size.Small" />
+                        <NavBadgeView Badge="@node.Badge" DotOnly="true" DotClassName="mds-nav-badge-overlay" />
+                    </button>
+                }
+                else if (!string.IsNullOrWhiteSpace(node.Href) && !node.Disabled)
                 {
                     <NavLink href="@node.Href"
                              Match="@ToNavLinkMatch(node.Match)"
@@ -102,6 +116,9 @@
     [Parameter] public string? CurrentUri            { get; set; }
     [Parameter] public bool SingleExpandedLevel2     { get; set; } = true;
     [Parameter] public bool IsExpanded               { get; set; } = true;
+
+    /// <summary>Raised with <c>true</c> when a click on a collapsed parent entry asks the panel to open.</summary>
+    [Parameter] public EventCallback<bool> IsExpandedChanged { get; set; }
     [Parameter] public string? Class                 { get; set; }
 
     /// <summary>Invoked after a drag-and-drop reorder inside the sortable segment of a group.</summary>
@@ -147,6 +164,16 @@
             Nav.NavigateTo(node.Href);
 
         RecomputeState();
+    }
+
+    private async Task HandleCollapsedParentClick(MbxNavNode node)
+    {
+        if (node.Disabled) return;
+        _expanded.Add(node.Id);
+        RecomputeState();
+        await IsExpandedChanged.InvokeAsync(true);
+        if (!string.IsNullOrWhiteSpace(node.Href))
+            Nav.NavigateTo(node.Href);
     }
 
     private void HandleLevel2Click(MbxNavNode node)

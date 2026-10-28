@@ -1,5 +1,6 @@
 @page "/"
 @rendermode InteractiveServer
+@using MudShell.Components.Scheduler
 @inject NavigationManager Nav
 
 <PageTitle>Home</PageTitle>
@@ -62,6 +63,20 @@
 
     <MudPaper Outlined="true" Class="pa-4">
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mds-u-inline-title">
+            <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" Size="Size.Small" />
+            <MudText Typo="Typo.subtitle1">This week</MudText>
+        </MudStack>
+        <MdsScheduler TItem="HomeAppointment"
+                      Class="mt-2"
+                      Items="_appointments"
+                      StartProperty="@nameof(HomeAppointment.Start)"
+                      EndProperty="@nameof(HomeAppointment.End)"
+                      TextProperty="@nameof(HomeAppointment.Title)"
+                      View="MdsSchedulerView.Week" />
+    </MudPaper>
+
+    <MudPaper Outlined="true" Class="pa-4">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mds-u-inline-title">
             <MudIcon Icon="@Icons.Material.Outlined.TableChart" Size="Size.Small" />
             <MudText Typo="Typo.subtitle2">Quick access</MudText>
         </MudStack>
@@ -75,4 +90,27 @@
 
 @code {
     private string _chatMessage = string.Empty;
+
+    private List<HomeAppointment> _appointments = [];
+
+    protected override void OnInitialized()
+    {
+        var monday = DateTime.Today.AddDays(-(((int)DateTime.Today.DayOfWeek + 6) % 7));
+
+        _appointments =
+        [
+            new() { Title = "Stand-up équipe", Start = monday.AddHours(9), End = monday.AddHours(9).AddMinutes(15) },
+            new() { Title = "Revue d'architecture", Start = monday.AddDays(1).AddHours(14), End = monday.AddDays(1).AddHours(15) },
+            new() { Title = "Atelier Blazor", Start = monday.AddDays(2).AddHours(10), End = monday.AddDays(2).AddHours(12) },
+            new() { Title = "Déjeuner client", Start = monday.AddDays(3).AddHours(12), End = monday.AddDays(3).AddHours(13).AddMinutes(30) },
+            new() { Title = "Rétrospective", Start = monday.AddDays(4).AddHours(16), End = monday.AddDays(4).AddHours(17) },
+        ];
+    }
+
+    public sealed class HomeAppointment
+    {
+        public string Title { get; set; } = string.Empty;
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+    }
 }

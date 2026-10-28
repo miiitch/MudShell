@@ -46,12 +46,12 @@
        overriding the base tokens above is not enough: the scheduler's own tokens are set here too. */
     --rz-scheduler-background-color: var(--mud-palette-background);
     --rz-scheduler-color: var(--mud-palette-text-primary);
-    --rz-scheduler-border-color: var(--mud-palette-lines-default);
+    --rz-scheduler-border-color: color-mix(in srgb, var(--mud-palette-text-primary) 10%, transparent);
     --rz-scheduler-border-radius: var(--mud-default-borderradius);
     --rz-scheduler-shadow: none;
     --rz-scheduler-minor-border-color: var(--mud-palette-divider);
     --rz-scheduler-header-background-color: color-mix(in srgb, var(--mud-palette-text-primary) 8%, var(--mud-palette-background));
-    --rz-scheduler-header-border: 1px solid var(--mud-palette-lines-default);
+    --rz-scheduler-header-border: 1px solid color-mix(in srgb, var(--mud-palette-text-primary) 10%, transparent);
     --rz-scheduler-header-color: var(--mud-palette-text-secondary);
     --rz-scheduler-weekend-background-color: color-mix(in srgb, var(--mud-palette-text-primary) 4%, var(--mud-palette-background));
     --rz-scheduler-weekend-color: var(--mud-palette-text-secondary);
@@ -110,7 +110,7 @@
     height: 40rem;
     min-width: 0;
     overflow: hidden;
-    border: 1px solid var(--mud-palette-lines-default);
+    border: 1px solid color-mix(in srgb, var(--mud-palette-text-primary) 10%, transparent);
     border-radius: var(--mud-default-borderradius);
     background-color: var(--mud-palette-background);
 }

@@ -306,3 +306,113 @@ public class ResponsivePageComponentsTests : PlaywrightTestBase
         }
     });
 }
+
+/// <summary>
+/// Regression: at tablet width the level-2 overlay used to be visible at first paint (SSR renders ShellMode=Desktop with
+/// the panel expanded, so the tablet CSS showed it until C# collapsed it). It must stay hidden unless the aside has
+/// mbx-context-overlay-open.
+/// </summary>
+public class ResponsiveContextOverlayFirstPaintTests : PlaywrightTestBase
+{
+    protected override BrowserNewContextOptions ContextOptions => new()
+    {
+        BaseURL = BaseUrl,
+        IgnoreHTTPSErrors = true,
+        ViewportSize = new() { Width = 820, Height = 1180 },
+    };
+
+    private const string SampleScript = @"() => {
+        // Before the render-blocking stylesheets have applied nothing has been painted: not a first-paint state.
+        if ([...document.querySelectorAll('link[rel=stylesheet]')].some(l => !l.sheet)) return null;
+        const p = document.querySelector('.mbx-context-panel');
+        const shell = document.querySelector('[data-testid=shell-mode]');
+        const rail = document.querySelector('.mbx-sidebar');
+        const el = document.elementFromPoint(28, 100);
+        if (!p) return null;
+        const r = p.getBoundingClientRect();
+        return { vis: getComputedStyle(p).visibility, x: r.x, w: r.width, open: p.classList.contains('mbx-context-overlay-open'),
+                 mode: shell ? shell.getAttribute('data-shell-mode') : null,
+                 railCovered: !!rail && !!el && !el.closest('.mbx-sidebar') };
+    }";
+
+    [Theory]
+    [InlineData("/demo")]
+    [InlineData("/library")]
+    [InlineData("/main-components")]
+    [InlineData("/modes/ssr")]
+    [InlineData("/modes/server")]
+    public Task Tablet_ContextOverlay_NeverVisibleAtFirstPaint_AndRailNotCovered(string route) => RunAsync($"{nameof(Tablet_ContextOverlay_NeverVisibleAtFirstPaint_AndRailNotCovered)}_{route.Trim('/').Replace('/', '_')}", async () =>
+    {
+        await Page.GotoAsync(route, new() { WaitUntil = WaitUntilState.Commit });
+
+        var samples = new List<string>();
+        var seen = 0;
+        var started = DateTime.UtcNow;
+        while ((DateTime.UtcNow - started).TotalMilliseconds < 2000)
+        {
+            JsonElement? s = null;
+            try { s = await Page.EvaluateAsync<JsonElement?>(SampleScript); } catch (PlaywrightException) { /* navigation in flight */ }
+            if (s is { ValueKind: JsonValueKind.Object } v)
+            {
+                seen++;
+                var open = v.GetProperty("open").GetBoolean();
+                var vis = v.GetProperty("vis").GetString();
+                var x = v.GetProperty("x").GetDouble(); var w = v.GetProperty("w").GetDouble();
+                var mode = v.GetProperty("mode").ValueKind == JsonValueKind.String ? v.GetProperty("mode").GetString() : null;
+                var at = $"t={(DateTime.UtcNow - started).TotalMilliseconds:0}ms mode={mode} vis={vis} x={x:0.#} w={w:0.#}";
+                if (!open)
+                {
+                    Assert.True(vis == "hidden", $"{route}: closed context panel is visible ({at})");
+                    Assert.True(x + w <= 57, $"{route}: closed context panel not off-screen left of the rail ({at})");
+                }
+                Assert.True(!v.GetProperty("railCovered").GetBoolean(), $"{route}: rail icon point (28,100) is covered by something outside .mbx-sidebar ({at})");
+                samples.Add(at);
+            }
+            await Page.WaitForTimeoutAsync(100);
+        }
+        Assert.True(seen >= 3, $"{route}: only {seen} samples captured with a context panel present");
+
+        // Settled: still closed, rail still uncovered.
+        await Assertions.Expect(Page.GetByTestId("shell-mode")).ToHaveAttributeAsync("data-shell-mode", "tablet");
+        await Assertions.Expect(Page.Locator(".mbx-context-panel")).ToBeHiddenAsync();
+        Assert.Equal(0, await Page.Locator(".mbx-context-overlay-open").CountAsync());
+    });
+
+    [Fact]
+    public Task Tablet_RailMenuButton_TogglesOverlayOpenClass() => RunAsync(nameof(Tablet_RailMenuButton_TogglesOverlayOpenClass), async () =>
+    {
+        await Page.GotoAsync("/demo", new() { WaitUntil = WaitUntilState.NetworkIdle });
+        await Assertions.Expect(Page.GetByTestId("shell-mode")).ToHaveAttributeAsync("data-shell-mode", "tablet");
+        var panel = Page.GetByTestId("context-overlay");
+        await Assertions.Expect(panel).Not.ToHaveClassAsync(new System.Text.RegularExpressions.Regex("mbx-context-overlay-open"));
+
+        await Page.Locator(".mbx-nav-toggle-btn").First.ClickAsync();
+
+        await Assertions.Expect(panel).ToHaveClassAsync(new System.Text.RegularExpressions.Regex("mbx-context-overlay-open"));
+        await Assertions.Expect(panel).ToBeVisibleAsync();
+        await Assertions.Expect(Page.GetByTestId("nav-scrim")).ToBeVisibleAsync();
+        await Page.WaitForTimeoutAsync(500);
+        var box = await panel.BoundingBoxAsync();
+        Assert.InRange(box!.X, 55, 57);
+
+        await Page.Mouse.ClickAsync(800, 900);
+
+        await Assertions.Expect(panel).Not.ToHaveClassAsync(new System.Text.RegularExpressions.Regex("mbx-context-overlay-open"));
+        await Assertions.Expect(panel).ToBeHiddenAsync();
+        await Assertions.Expect(Page.GetByTestId("nav-scrim")).ToHaveCountAsync(0);
+    });
+
+    [Fact]
+    public Task Desktop_ContextPanel_HasNoOverlayOpenClass_AndIsInline() => RunAsync(nameof(Desktop_ContextPanel_HasNoOverlayOpenClass_AndIsInline), async () =>
+    {
+        await Page.SetViewportSizeAsync(1280, 800);
+        await Page.GotoAsync("/library", new() { WaitUntil = WaitUntilState.NetworkIdle });
+        await Assertions.Expect(Page.GetByTestId("shell-mode")).ToHaveAttributeAsync("data-shell-mode", "desktop");
+
+        var panel = Page.GetByTestId("context-overlay");
+        await Assertions.Expect(panel).ToBeVisibleAsync();
+        Assert.Equal(0, await Page.Locator(".mbx-context-overlay-open").CountAsync());
+        var pos = await panel.EvaluateAsync<string>("el => getComputedStyle(el).position");
+        Assert.True(pos is "static" or "relative", $"desktop context panel position is '{pos}', expected static/relative");
+    });
+}

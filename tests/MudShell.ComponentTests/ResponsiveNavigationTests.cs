@@ -355,3 +355,60 @@ public class BottomNavElementTypeTests
         Assert.NotNull(button.QuerySelector(".mbx-bottom-nav-label"));
     }
 }
+
+public class AppShellContextOverlayClassTests
+{
+    private static TestContext NewContext()
+    {
+        var context = new TestContext();
+        context.Services.AddMudServices();
+        context.JSInterop.Mode = JSRuntimeMode.Loose;
+        return context;
+    }
+
+    [Fact]
+    public void AppShell_Should_NeverHaveOverlayOpenClass_When_DefaultDesktopMode_EvenIfExpanded()
+    {
+        using var context = NewContext();
+
+        var rendered = context.RenderComponent<MdsAppShell>(p => p
+            .Add(c => c.ContextPanelExpanded, true)
+            .Add(c => c.ContextPanelContent, b => b.AddContent(0, "panel")));
+
+        Assert.DoesNotContain("mbx-context-overlay-open", rendered.Find("[data-testid='context-overlay']").ClassList);
+    }
+
+    [Fact]
+    public void AppShell_Should_AddOverlayOpenClass_Only_When_TabletAndExpanded()
+    {
+        using var context = NewContext();
+        var rendered = context.RenderComponent<MdsAppShell>(p => p
+            .Add(c => c.ContextPanelExpanded, true)
+            .Add(c => c.ContextPanelContent, b => b.AddContent(0, "panel")));
+
+        // Entering tablet collapses an expanded panel (it starts closed): no class.
+        rendered.InvokeAsync(() => rendered.Instance.OnViewportModeChanged("tablet"));
+        Assert.DoesNotContain("mbx-context-overlay-open", rendered.Find("[data-testid='context-overlay']").ClassList);
+
+        // Opened by the user (expanded + tablet): class present.
+        rendered.InvokeAsync(() => rendered.Instance.ToggleContextPanel());
+        Assert.Contains("mbx-context-overlay-open", rendered.Find("[data-testid='context-overlay']").ClassList);
+
+        // Closed again: class removed.
+        rendered.InvokeAsync(() => rendered.Instance.ToggleContextPanel());
+        Assert.DoesNotContain("mbx-context-overlay-open", rendered.Find("[data-testid='context-overlay']").ClassList);
+    }
+
+    [Fact]
+    public void AppShell_Should_NotHaveOverlayOpenClass_When_TabletAndCollapsed()
+    {
+        using var context = NewContext();
+        var rendered = context.RenderComponent<MdsAppShell>(p => p
+            .Add(c => c.ContextPanelExpanded, false)
+            .Add(c => c.ContextPanelContent, b => b.AddContent(0, "panel")));
+
+        rendered.InvokeAsync(() => rendered.Instance.OnViewportModeChanged("tablet"));
+
+        Assert.DoesNotContain("mbx-context-overlay-open", rendered.Find("[data-testid='context-overlay']").ClassList);
+    }
+}

@@ -172,6 +172,18 @@
 
     protected override void OnInitialized() => Nav.LocationChanged += OnLocationChanged;
 
+    protected override void OnParametersSet()
+    {
+        // Tablet: an "open" flag with no level-2 content to show (page without a context panel) would
+        // linger invisibly and make the next toggle look dead. Reset it as soon as the content is known to be absent.
+        // Not while a rail tap is waiting for its navigation: the target page has not rendered its content yet.
+        if (IsTablet && ContextPanelExpanded && ContextPanelContent is null && !_openContextOnNextNavigation)
+        {
+            ContextPanelExpanded = false;
+            _ = ContextPanelExpandedChanged.InvokeAsync(false);
+        }
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (_disposed) return;

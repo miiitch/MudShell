@@ -1,4 +1,5 @@
 using Bunit;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 using MudShell.Components.AppShell;
@@ -583,5 +584,23 @@ public class SidebarTreeTests
         nav.NavigateTo("/");
         rendered.WaitForAssertion(() => Assert.True(Active("/")));
         Assert.False(Active("/library"));
+    }
+
+    [Fact]
+    public void AppShell_Should_DropStaleOpenState_When_TabletAndNoContextPanelContent()
+    {
+        using var context = NewContext();
+        bool? raised = null;
+        var rendered = context.RenderComponent<MdsAppShell>(p => p
+            .Add(c => c.ContextPanelExpandedChanged, EventCallback.Factory.Create<bool>(this, v => raised = v)));
+
+        rendered.InvokeAsync(() => rendered.Instance.OnViewportModeChanged("tablet"));
+        raised = null;
+
+        // A rail tap on a page without level 2 leaves ContextPanelExpanded=true with nothing to show.
+        rendered.SetParametersAndRender(p => p.Add(c => c.ContextPanelExpanded, true));
+
+        Assert.False(rendered.Instance.ContextPanelExpanded);
+        Assert.False(raised);
     }
 }

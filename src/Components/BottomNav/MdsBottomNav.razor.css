@@ -68,10 +68,16 @@
 .mbx-bottom-nav-label {
     font-size: 10px;
     font-weight: 500;
-    line-height: 1.2;
-    white-space: nowrap;
+    line-height: 1.15;
+    /* Up to two lines so a longer label ("Europe Cities") wraps instead of being cut with an ellipsis. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    text-align: center;
     overflow: hidden;
-    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
     max-width: 100%;
 }
 

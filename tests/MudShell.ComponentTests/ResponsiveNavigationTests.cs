@@ -5,6 +5,7 @@ using MudShell.Components.AppShell;
 using MudShell.Components.BottomNav;
 using MudShell.Components.Navigation;
 using MudShell.Components.Navigation.Models;
+using MudShell.Components.Sidebar;
 using Xunit;
 
 namespace MudShell.ComponentTests;
@@ -410,5 +411,177 @@ public class AppShellContextOverlayClassTests
         rendered.InvokeAsync(() => rendered.Instance.OnViewportModeChanged("tablet"));
 
         Assert.DoesNotContain("mbx-context-overlay-open", rendered.Find("[data-testid='context-overlay']").ClassList);
+    }
+}
+
+public class RailTapOpenContextTests
+{
+    private static TestContext NewContext()
+    {
+        var context = new TestContext();
+        context.Services.AddMudServices();
+        context.JSInterop.Mode = JSRuntimeMode.Loose;
+        return context;
+    }
+
+    [Fact]
+    public void Sidebar_Should_RenderCollapsedIconLinks_And_RaiseOnItemClickWithClickedItem()
+    {
+        using var context = NewContext();
+        MbxNavItem? clicked = null;
+        var items = new[]
+        {
+            new MbxNavItem("home-icon", "Home", "/"),
+            new MbxNavItem("lib-icon", "Library", "/library"),
+        };
+
+        var rendered = context.RenderComponent<MdsSidebar>(p => p
+            .Add(c => c.IsExpanded, false)
+            .Add(c => c.PrimaryItems, items)
+            .Add(c => c.OnItemClick, i => clicked = i));
+
+        var links = rendered.FindAll("a.mbx-sidebar-icon-link");
+        Assert.Equal(2, links.Count);
+        links[1].Click();
+
+        Assert.NotNull(clicked);
+        Assert.Equal("/library", clicked!.Href);
+    }
+
+    private static IRenderedComponent<MdsAppShell> Shell(TestContext context, List<bool> changes, bool expanded = false) =>
+        context.RenderComponent<MdsAppShell>(p => p
+            .Add(c => c.ContextPanelExpanded, expanded)
+            .Add(c => c.ContextPanelExpandedChanged, v => changes.Add(v))
+            .Add(c => c.ContextPanelContent, b => b.AddContent(0, "panel")));
+
+    [Fact]
+    public void AppShell_Tablet_OpenContextPanelOnNextNavigation_OpensAndRaises_FirstNavigationKeepsOpen_SecondCloses()
+    {
+        using var context = NewContext();
+        var nav = context.Services.GetRequiredService<Microsoft.AspNetCore.Components.NavigationManager>();
+        var changes = new List<bool>();
+        var rendered = Shell(context, changes);
+        rendered.InvokeAsync(() => rendered.Instance.OnViewportModeChanged("tablet"));
+        changes.Clear();
+
+        rendered.InvokeAsync(() => rendered.Instance.OpenContextPanelOnNextNavigation());
+
+        Assert.Equal(new[] { true }, changes);
+        Assert.Contains("mbx-context-overlay-open", rendered.Find("[data-testid='context-overlay']").ClassList);
+
+        nav.NavigateTo("/first");
+        Assert.Contains("mbx-context-overlay-open", rendered.Find("[data-testid='context-overlay']").ClassList);
+
+        nav.NavigateTo("/second");
+        rendered.WaitForAssertion(() =>
+            Assert.DoesNotContain("mbx-context-overlay-open", rendered.Find("[data-testid='context-overlay']").ClassList));
+        Assert.False(changes.Last());
+    }
+
+    [Fact]
+    public void AppShell_Desktop_OpenContextPanelOnNextNavigation_IsNoOp()
+    {
+        using var context = NewContext();
+        var nav = context.Services.GetRequiredService<Microsoft.AspNetCore.Components.NavigationManager>();
+        var changes = new List<bool>();
+        var rendered = Shell(context, changes);
+
+        rendered.InvokeAsync(() => rendered.Instance.OpenContextPanelOnNextNavigation());
+        nav.NavigateTo("/x");
+
+        Assert.Empty(changes);
+        Assert.False(rendered.Instance.ContextPanelExpanded);
+        Assert.DoesNotContain("mbx-context-overlay-open", rendered.Find("[data-testid='context-overlay']").ClassList);
+    }
+}
+
+public class SidebarTreeTests
+{
+    private static TestContext NewContext()
+    {
+        var context = new TestContext();
+        context.Services.AddMudServices();
+        context.JSInterop.Mode = JSRuntimeMode.Loose;
+        return context;
+    }
+
+    private static MbxNavTree Tree() => new(
+    [
+        new MbxNavNode(id: "home", text: "Home", icon: "i", href: "/", match: MbxNavMatchMode.All),
+        new MbxNavNode(id: "lib", text: "Library", icon: "i", href: "/library", children: [new MbxNavNode(id: "lib.x", text: "X", href: "/library/x")]),
+        new MbxNavNode(id: "hidden", text: "Hidden", icon: "i", href: "/hidden", visible: false),
+        new MbxNavNode(id: "action", text: "Action", icon: "i"),
+    ]);
+
+    private static IRenderedComponent<MdsSidebar> Render(TestContext context, Action<ComponentParameterCollectionBuilder<MdsSidebar>> setup) =>
+        context.RenderComponent<MdsSidebar>(p => { p.Add(c => c.IsExpanded, false); setup(p); });
+
+    [Fact]
+    public void Tree_Should_RenderOneIconLinkPerVisibleRootWithHref_AndExcludeHiddenRoots()
+    {
+        using var context = NewContext();
+
+        var rendered = Render(context, p => p.Add(c => c.Tree, Tree()));
+
+        var hrefs = rendered.FindAll("a.mbx-sidebar-icon-link").Select(a => a.GetAttribute("href")).ToList();
+        Assert.Equal(new[] { "/", "/library" }, hrefs.Select(h => new Uri(new Uri("http://localhost"), h).AbsolutePath).ToArray());
+        Assert.DoesNotContain(hrefs, h => h!.Contains("hidden"));
+    }
+
+    [Fact]
+    public void Tree_Should_RenderRootWithoutHrefAsButton_NotAnchor()
+    {
+        using var context = NewContext();
+
+        var rendered = Render(context, p => p.Add(c => c.Tree, Tree()));
+
+        Assert.Equal(2, rendered.FindAll("a.mbx-sidebar-icon-link").Count);
+        // The href-less root has no anchor: it is a MudIconButton (a <button>) next to the toggle.
+        var buttons = rendered.FindAll(".mbx-nav-items button");
+        Assert.Single(buttons);
+    }
+
+    [Fact]
+    public void PrimaryItems_Should_TakePrecedenceOverTree()
+    {
+        using var context = NewContext();
+        var items = new[] { new MbxNavItem("i", "Only", "/only") };
+
+        var rendered = Render(context, p => p.Add(c => c.Tree, Tree()).Add(c => c.PrimaryItems, items));
+
+        var links = rendered.FindAll("a.mbx-sidebar-icon-link");
+        Assert.Single(links);
+        Assert.EndsWith("/only", links[0].GetAttribute("href"));
+    }
+
+    [Fact]
+    public void NullTreeAndNullPrimaryItems_Should_RenderNoItems_WithoutThrowing()
+    {
+        using var context = NewContext();
+
+        var rendered = Render(context, _ => { });
+
+        Assert.Empty(rendered.FindAll("a.mbx-sidebar-icon-link"));
+        Assert.Empty(rendered.FindAll(".mbx-nav-items"));
+    }
+
+    [Fact]
+    public void Tree_Should_FollowActiveStateFromUri_PrefixMatch_AndHomeOnlyOnRoot()
+    {
+        using var context = NewContext();
+        var nav = context.Services.GetRequiredService<Microsoft.AspNetCore.Components.NavigationManager>();
+        nav.NavigateTo("/library/x");
+        var rendered = Render(context, p => p.Add(c => c.Tree, Tree()));
+
+        bool Active(string hrefEnd) => rendered.FindAll("a.mbx-sidebar-icon-link")
+            .Single(a => a.GetAttribute("href")!.EndsWith(hrefEnd) && (hrefEnd != "/" || a.GetAttribute("href")!.TrimEnd('/') == "" || a.GetAttribute("href") == "/"))
+            .ClassList.Contains("mbx-sidebar-icon-link-active");
+
+        Assert.True(Active("/library"));   // prefix match on a descendant page
+        Assert.False(Active("/"));          // '/' is active only on '/'
+
+        nav.NavigateTo("/");
+        rendered.WaitForAssertion(() => Assert.True(Active("/")));
+        Assert.False(Active("/library"));
     }
 }

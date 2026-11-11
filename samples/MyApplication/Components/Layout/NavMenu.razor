@@ -1,12 +1,13 @@
-﻿@inject IDialogService DialogService
-@inject ThemeState ThemeState
+﻿@inject ThemeState ThemeState
+@using MudShell.Components.Navigation.Models
 
 @* On mobile the level-1 bar is rendered by MainLayout (MdsBottomNav), so the rail is not rendered here. *@
 @if (ShellMode != MdsAppShell.MbxShellMode.Mobile)
 {
     <MdsSidebar IsExpanded="@(IsExpanded && ShellMode == MdsAppShell.MbxShellMode.Desktop)"
                 OnToggle="@HandleToggle"
-                PrimaryItems="@_primaryItems">
+                OnItemClick="@HandleItemClick"
+                Tree="@Tree">
 
         <LogoContent>
             <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Medium"
@@ -27,16 +28,7 @@
                     <span class="nav-profile-name">Michel</span>
                     <span class="nav-profile-sub">Microsoft 365</span>
                 </div>
-                <MudIconButton Icon="@(ThemeState.IsDarkMode ? Icons.Material.Outlined.LightMode : Icons.Material.Outlined.DarkMode)"
-                               Size="Size.Small" Color="Color.Inherit"
-                               title="@(ThemeState.IsDarkMode ? "Light mode" : "Dark mode")"
-                               OnClick="@(() => ThemeState.SetDarkMode(!ThemeState.IsDarkMode))"
-                               Style="flex-shrink:0;" />
-                <MudIconButton Icon="@Icons.Material.Outlined.ColorLens"
-                               Size="Size.Small" Color="Color.Inherit"
-                               title="Theme and background"
-                               OnClick="@OpenThemeDialog"
-                               Style="flex-shrink:0; margin-left:0;" />
+                <ThemeActions />
             }
         </BottomContent>
 
@@ -45,6 +37,9 @@
 
 @code {
     [Parameter] public MdsAppShell? ShellRef    { get; set; }
+
+    /// <summary>The single navigation source: its roots are the rail entries.</summary>
+    [Parameter] public MbxNavTree? Tree         { get; set; }
     [Parameter] public bool          IsExpanded  { get; set; }
     [Parameter] public MdsAppShell.MbxShellMode ShellMode { get; set; } = MdsAppShell.MbxShellMode.Desktop;
 
@@ -56,27 +51,6 @@
         else ShellRef?.ToggleContextPanel();
     }
 
-    private readonly MbxNavItem[] _primaryItems =
-    [
-        new(Icons.Material.Outlined.GridView,      "Home",          "/"),
-        new(Icons.Material.Outlined.Cloud,         "Weather",       "/meteo"),
-        new(Icons.Material.Outlined.TableChart,    "Europe Cities", "/europe-cities"),
-        new(Icons.Material.Outlined.ContentCopy,   "Library",       "/library"),
-        new(Icons.Material.Outlined.Palette,       "Demo",          "/demo"),
-        new(Icons.Material.Outlined.Widgets,       "Components",    "/components"),
-        new(Icons.Material.Outlined.ViewQuilt,     "Fill layout",   "/fill-demo"),
-    ];
-
-
-    private async Task OpenThemeDialog()
-    {
-        var options = new DialogOptions
-        {
-            CloseButton = true,
-            MaxWidth = MaxWidth.Small,
-            FullWidth = true
-        };
-
-        await DialogService.ShowAsync<ThemeOptionsPanel>("Theme and background", options);
-    }
+    // Tablet: tapping a rail icon opens the level-2 overlay for that section (the page it navigates to).
+    private void HandleItemClick(MbxNavItem item) => ShellRef?.OpenContextPanelOnNextNavigation();
 }

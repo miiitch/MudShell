@@ -42,6 +42,7 @@ Registering them in both places causes a `System.InvalidOperationException` (dup
 | `ShellMode` | Current tier: `MbxShellMode.Desktop`, `Tablet` or `Mobile`. Also cascaded to descendants as `CascadingParameter(Name = "MbxShellMode")` |
 | `ToggleSidebar()` | Flips `SidebarExpanded` and triggers re-render |
 | `ToggleContextPanel()` | Flips `ContextPanelExpanded` and triggers re-render |
+| `OpenContextPanelOnNextNavigation()` | Tablet only: opens the level-2 overlay now and keeps it open across the navigation that follows (navigation normally closes it). Call it from `MdsSidebar.OnItemClick`. No-op on desktop and mobile |
 | `SetBackgroundMode(mode, imageUrl?)` | Changes background mode at runtime |
 
 ## Responsive tiers

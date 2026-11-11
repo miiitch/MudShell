@@ -392,8 +392,17 @@
         visibility: visible;
     }
 
+    /* Keep the rounded left corners, but fill the gap they leave against the rail with the rail colour
+       (otherwise the dark content shows through at the top and bottom corners). The 20px strip is
+       drawn by an offset shadow of the panel's own rounded box. */
+    .mbx-shell.mbx-mode-palette.mbx-has-context-panel:not(.mbx-responsive-desktop) .mbx-context-panel {
+        box-shadow: -20px 0 0 0 var(--mud-palette-drawer-background), 8px 0 32px rgba(0, 0, 0, 0.35);
+    }
+
     .mbx-shell:not(.mbx-responsive-desktop) .mbx-nav-scrim {
         position: fixed;
+        /* Start at the rail's edge: the rail stays undimmed and clickable, and matches the corner fill. */
+        left: var(--mbx-sidebar-width, 56px);
     }
 }
 

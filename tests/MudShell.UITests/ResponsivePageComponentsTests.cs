@@ -416,3 +416,383 @@ public class ResponsiveContextOverlayFirstPaintTests : PlaywrightTestBase
         Assert.True(pos is "static" or "relative", $"desktop context panel position is '{pos}', expected static/relative");
     });
 }
+
+/// <summary>Tablet: tapping a rail icon opens level 2, overlay styling and scrim geometry (rail stays visible and clickable).</summary>
+public class ResponsiveRailTapAndOverlayStyleTests : PlaywrightTestBase
+{
+    private static readonly System.Text.RegularExpressions.Regex OpenClass = new("mbx-context-overlay-open");
+
+    protected override BrowserNewContextOptions ContextOptions => new()
+    {
+        BaseURL = BaseUrl,
+        IgnoreHTTPSErrors = true,
+        ViewportSize = new() { Width = 820, Height = 1180 },
+    };
+
+    private ILocator Panel => Page.GetByTestId("context-overlay");
+    private ILocator Scrim => Page.GetByTestId("nav-scrim");
+    private ILocator RailIcon(string href) => Page.Locator($".mbx-sidebar-icon-link[href='{href}']").First;
+
+    private async Task GotoTabletAsync(string path, int width = 820, int height = 1180)
+    {
+        await Page.SetViewportSizeAsync(width, height);
+        await Page.GotoAsync(path, new() { WaitUntil = WaitUntilState.NetworkIdle });
+        await Assertions.Expect(Page.GetByTestId("shell-mode")).ToHaveAttributeAsync("data-shell-mode", width >= 1280 ? "desktop" : width >= 600 ? "tablet" : "mobile");
+        await Page.WaitForTimeoutAsync(300);
+    }
+
+    private async Task AssertOverlayOpenAsync()
+    {
+        await Assertions.Expect(Panel).ToHaveClassAsync(OpenClass);
+        await Assertions.Expect(Panel).ToBeVisibleAsync();
+        await Assertions.Expect(Scrim).ToHaveCountAsync(1);
+        await Page.WaitForTimeoutAsync(500); // slide-in
+        Assert.InRange((await Panel.BoundingBoxAsync())!.X, 55, 57);
+    }
+
+    [Fact]
+    public Task Tablet_RailIconTap_OpensLevel2_KeepsItOpenAcrossNavigation_AndHomeClosesIt() => RunAsync(nameof(Tablet_RailIconTap_OpensLevel2_KeepsItOpenAcrossNavigation_AndHomeClosesIt), async () =>
+    {
+        var errors = new List<string>();
+        Page.Console += (_, m) => { if (m.Type == "error") errors.Add(m.Text); };
+        Page.PageError += (_, e) => errors.Add("pageerror: " + e);
+
+        await GotoTabletAsync("/");
+
+        await RailIcon("/library").ClickAsync();
+        await Page.WaitForURLAsync(new System.Text.RegularExpressions.Regex("/library$"));
+        await AssertOverlayOpenAsync();
+
+        // Rail stays clickable while the overlay is open; the overlay stays open for the new section.
+        await RailIcon("/demo").ClickAsync();
+        await Page.WaitForURLAsync(new System.Text.RegularExpressions.Regex("/demo$"));
+        await AssertOverlayOpenAsync();
+
+        // Home has no context panel: navigation works, nothing is left over.
+        await RailIcon("/").ClickAsync();
+        await Page.WaitForURLAsync(new System.Text.RegularExpressions.Regex(@"/$"));
+        await Assertions.Expect(Page.Locator(".mbx-context-panel")).ToHaveCountAsync(0);
+        await Assertions.Expect(Scrim).ToHaveCountAsync(0);
+        Assert.True(errors.Count == 0, "console/page errors: " + string.Join(" | ", errors));
+    });
+
+    [Fact]
+    public Task Tablet_OverlayOpenedByRailIcon_ClosesOnEscape() => RunAsync(nameof(Tablet_OverlayOpenedByRailIcon_ClosesOnEscape), async () =>
+    {
+        await GotoTabletAsync("/");
+        await RailIcon("/library").ClickAsync();
+        await Page.WaitForURLAsync(new System.Text.RegularExpressions.Regex("/library$"));
+        await AssertOverlayOpenAsync();
+
+        await Page.Keyboard.PressAsync("Escape");
+
+        await Assertions.Expect(Panel).Not.ToHaveClassAsync(OpenClass);
+        await Assertions.Expect(Scrim).ToHaveCountAsync(0);
+    });
+
+    [Fact]
+    public Task Tablet_OverlayOpenedByRailIcon_ClosesOnInPageLinkNavigation() => RunAsync(nameof(Tablet_OverlayOpenedByRailIcon_ClosesOnInPageLinkNavigation), async () =>
+    {
+        await GotoTabletAsync("/");
+        await RailIcon("/demo").ClickAsync();
+        await Page.WaitForURLAsync(new System.Text.RegularExpressions.Regex("/demo$"));
+        await AssertOverlayOpenAsync();
+
+        await Panel.GetByTestId("nav-demo.render-modes").ClickAsync();
+
+        await Page.WaitForURLAsync(new System.Text.RegularExpressions.Regex("/modes$"));
+        await Assertions.Expect(Panel).Not.ToHaveClassAsync(OpenClass);
+        await Assertions.Expect(Scrim).ToHaveCountAsync(0);
+    });
+
+    [Fact]
+    public Task Tablet_TapOnCurrentPageIcon_OpensOverlay_AndLaterNavigationStillCloses() => RunAsync(nameof(Tablet_TapOnCurrentPageIcon_OpensOverlay_AndLaterNavigationStillCloses), async () =>
+    {
+        await GotoTabletAsync("/demo");
+
+        await RailIcon("/demo").ClickAsync();
+        await AssertOverlayOpenAsync();
+
+        await Page.WaitForTimeoutAsync(2200); // the open-on-navigation flag is dropped after 1.5 s
+        await Panel.GetByTestId("nav-demo.render-modes").ClickAsync();
+
+        await Page.WaitForURLAsync(new System.Text.RegularExpressions.Regex("/modes$"));
+        await Assertions.Expect(Panel).Not.ToHaveClassAsync(OpenClass);
+        await Assertions.Expect(Scrim).ToHaveCountAsync(0);
+    });
+
+    [Fact]
+    public Task Desktop_RailIconTap_DoesNotOpenOverlay() => RunAsync(nameof(Desktop_RailIconTap_DoesNotOpenOverlay), async () =>
+    {
+        await GotoTabletAsync("/", 1280, 800);
+
+        await RailIcon("/library").ClickAsync();
+
+        await Page.WaitForURLAsync(new System.Text.RegularExpressions.Regex("/library$"));
+        await Page.WaitForTimeoutAsync(500);
+        Assert.Equal(0, await Page.Locator(".mbx-context-overlay-open").CountAsync());
+        Assert.Equal(0, await Page.GetByTestId("nav-scrim").CountAsync());
+    });
+
+    [Fact]
+    public Task Mobile_HasNoRailIcons() => RunAsync(nameof(Mobile_HasNoRailIcons), async () =>
+    {
+        await GotoTabletAsync("/", 375, 812);
+
+        Assert.Equal(0, await Page.Locator(".mbx-sidebar-icon-link").CountAsync());
+        await Assertions.Expect(Page.Locator(".mbx-sidebar").First).ToBeHiddenAsync();
+    });
+
+    // ── Palette-mode corner fill ─────────────────────────────────────────────
+
+    private async Task<(string Shadow, string RadiusTl, string RadiusBl, string RailBg, string ShellClass)> StyleAsync() =>
+        ToTuple(await Page.EvaluateAsync<string[]>(@"() => {
+            const p = document.querySelector('.mbx-context-panel'), cs = getComputedStyle(p);
+            return [cs.boxShadow, cs.borderTopLeftRadius, cs.borderBottomLeftRadius,
+                    getComputedStyle(document.querySelector('.mbx-sidebar')).backgroundColor,
+                    document.querySelector('.mbx-shell').className];
+        }"));
+
+    private static (string, string, string, string, string) ToTuple(string[] a) => (a[0], a[1], a[2], a[3], a[4]);
+
+    private static readonly System.Text.RegularExpressions.Regex FillLayer = new(@"^(rgba?\([^)]*\))\s+-20px 0px 0px 0px");
+
+    [Fact]
+    public Task Tablet_PaletteMode_OpenOverlay_CornerGapFilledWithRailColour_RadiusKept() => RunAsync(nameof(Tablet_PaletteMode_OpenOverlay_CornerGapFilledWithRailColour_RadiusKept), async () =>
+    {
+        await GotoTabletAsync("/library");
+        await Page.Locator(".mbx-nav-toggle-btn").First.ClickAsync();
+        await AssertOverlayOpenAsync();
+
+        var (shadow, tl, bl, railBg, shellClass) = await StyleAsync();
+
+        Assert.Contains("mbx-mode-palette", shellClass);
+        Assert.Equal("20px", tl);
+        Assert.Equal("20px", bl);
+        var m = FillLayer.Match(shadow);
+        Assert.True(m.Success, $"first box-shadow layer is not '-20px 0px 0px 0px': {shadow}");
+        Assert.True(m.Groups[1].Value == railBg, $"corner fill colour {m.Groups[1].Value} != rail background {railBg}");
+    });
+
+    [Fact]
+    public Task Tablet_ImageMode_OpenOverlay_HasNoCornerFillShadow() => RunAsync(nameof(Tablet_ImageMode_OpenOverlay_HasNoCornerFillShadow), async () =>
+    {
+        await GotoTabletAsync("/library/bg");
+        await Page.Locator(".mbx-nav-toggle-btn").First.ClickAsync();
+        await AssertOverlayOpenAsync();
+
+        var (shadow, _, _, _, shellClass) = await StyleAsync();
+
+        Assert.Contains("mbx-mode-image", shellClass);
+        Assert.False(FillLayer.IsMatch(shadow), $"image mode must not get the palette corner fill: {shadow}");
+    });
+
+    [Fact]
+    public Task Desktop_PaletteMode_ContextPanel_HasNoCornerFillShadow() => RunAsync(nameof(Desktop_PaletteMode_ContextPanel_HasNoCornerFillShadow), async () =>
+    {
+        await GotoTabletAsync("/library", 1280, 800);
+
+        var (shadow, _, _, _, _) = await StyleAsync();
+
+        Assert.False(shadow.Contains("-20px"), $"desktop panel must not use the tablet corner fill: {shadow}");
+    });
+
+    // ── Scrim starts at the rail edge ────────────────────────────────────────
+
+    [Fact]
+    public Task Tablet_Scrim_StartsAtRailEdge_RailNotDimmedOrCovered() => RunAsync(nameof(Tablet_Scrim_StartsAtRailEdge_RailNotDimmedOrCovered), async () =>
+    {
+        await GotoTabletAsync("/demo");
+        await Page.Locator(".mbx-nav-toggle-btn").First.ClickAsync();
+        await AssertOverlayOpenAsync();
+
+        var box = await Scrim.BoundingBoxAsync();
+        Assert.InRange(box!.X, 55, 57);
+
+        var rail = await Page.EvaluateAsync<bool>("() => !!document.elementFromPoint(28, 300)?.closest('.mbx-sidebar')");
+        Assert.True(rail, "elementFromPoint(28,300) is not inside .mbx-sidebar");
+        var scrim = await Page.EvaluateAsync<bool>("() => !!document.elementFromPoint(600, 600)?.closest('[data-testid=nav-scrim]')");
+        Assert.True(scrim, "elementFromPoint(600,600) is not the scrim");
+    });
+}
+
+/// <summary>
+/// One navigation tree feeds the rail, the bottom bar, the hamburger sheet and the context panel: 7 roots, reachable
+/// everywhere, plus theme actions in the mobile top bar and wrapped (not truncated) bottom-bar labels.
+/// </summary>
+public class ResponsiveSingleSourceNavigationTests : PlaywrightTestBase
+{
+    private static readonly string[] RootPaths = ["/", "/meteo", "/europe-cities", "/library", "/demo", "/components", "/fill-demo"];
+    private static readonly string[] RootIds = ["home", "meteo", "europe-cities", "library", "demo", "components", "fill-demo"];
+
+    protected override BrowserNewContextOptions ContextOptions => new()
+    {
+        BaseURL = BaseUrl,
+        IgnoreHTTPSErrors = true,
+        ViewportSize = new() { Width = 375, Height = 812 },
+    };
+
+    private ILocator Sheet => Page.GetByTestId("context-sheet");
+    private ILocator Bar => Page.GetByTestId("bottom-nav");
+
+    private async Task GotoAsync(string path, int width = 375, int height = 812)
+    {
+        await Page.SetViewportSizeAsync(width, height);
+        await Page.GotoAsync(path, new() { WaitUntil = WaitUntilState.NetworkIdle });
+        await Assertions.Expect(Page.GetByTestId("shell-mode")).ToHaveAttributeAsync("data-shell-mode", width >= 1280 ? "desktop" : width >= 600 ? "tablet" : "mobile");
+        await Page.WaitForTimeoutAsync(300);
+    }
+
+    private async Task OpenHamburgerAsync()
+    {
+        await Page.GetByTestId("mobile-menu-button").ClickAsync();
+        await Assertions.Expect(Sheet).ToBeVisibleAsync();
+    }
+
+    private static string PathOf(string url) => new Uri(url).AbsolutePath;
+
+    [Fact]
+    public Task Mobile_BottomBar_ShowsFourRootsPlusPlus_AndPlusListsRemainingThree() => RunAsync(nameof(Mobile_BottomBar_ShowsFourRootsPlusPlus_AndPlusListsRemainingThree), async () =>
+    {
+        await GotoAsync("/");
+
+        var labels = (await Bar.Locator(".mbx-bottom-nav-item .mbx-bottom-nav-label").AllTextContentsAsync()).Select(t => t.Trim()).ToArray();
+        Assert.Equal(new[] { "Home", "Weather", "Europe Cities", "Library", "Plus" }, labels);
+        Assert.Equal(5, await Bar.Locator(".mbx-bottom-nav-item").CountAsync());
+
+        await Page.GetByTestId("bottom-nav-more").ClickAsync();
+
+        await Assertions.Expect(Sheet).ToBeVisibleAsync();
+        var ids = await Sheet.Locator(".mbx-nav-sheet-item").EvaluateAllAsync<string[]>("els => els.map(e => e.getAttribute('data-testid'))");
+        Assert.Equal(new[] { "nav-demo", "nav-components", "nav-fill-demo" }, ids);
+    });
+
+    [Fact]
+    public Task Mobile_Hamburger_ListsAllSevenRoots() => RunAsync(nameof(Mobile_Hamburger_ListsAllSevenRoots), async () =>
+    {
+        await GotoAsync("/");
+
+        await OpenHamburgerAsync();
+
+        var ids = await Sheet.Locator(".mbx-nav-sheet-item").EvaluateAllAsync<string[]>("els => els.map(e => e.getAttribute('data-testid'))");
+        Assert.Equal(RootIds.Select(i => $"nav-{i}").ToArray(), ids);
+    });
+
+    [Theory]
+    [InlineData("bar")]
+    [InlineData("plus")]
+    [InlineData("hamburger")]
+    public Task Mobile_EveryRoot_IsReachableByTaps(string via) => RunAsync($"{nameof(Mobile_EveryRoot_IsReachableByTaps)}_{via}", async () =>
+    {
+        var failures = new List<string>();
+        for (var i = 0; i < RootIds.Length; i++)
+        {
+            var id = RootIds[i]; var path = RootPaths[i];
+            // Start away from the target so a URL change is observable (Home starts from /library).
+            await GotoAsync(path == "/" ? "/library" : "/");
+
+            switch (via)
+            {
+                case "bar" when i < 4:
+                    await Bar.GetByTestId($"nav-{id}").ClickAsync();
+                    break;
+                case "bar":
+                    continue; // reachable through Plus / hamburger
+                case "plus" when i >= 4:
+                    await Page.GetByTestId("bottom-nav-more").ClickAsync();
+                    await Sheet.GetByTestId($"nav-{id}").ClickAsync();
+                    break;
+                case "plus":
+                    continue;
+                default:
+                    await OpenHamburgerAsync();
+                    await Sheet.GetByTestId($"nav-{id}").ClickAsync();
+                    break;
+            }
+
+            await Page.WaitForTimeoutAsync(700);
+            var actual = PathOf(Page.Url);
+            if (actual != path) failures.Add($"{via}: tapping '{id}' ended at {actual}, expected {path}");
+        }
+        Assert.True(failures.Count == 0, string.Join("\n", failures));
+    });
+
+    [Fact]
+    public Task Mobile_TopBar_HasThemeButtonAndDarkModeToggle_ThatWork() => RunAsync(nameof(Mobile_TopBar_HasThemeButtonAndDarkModeToggle_ThatWork), async () =>
+    {
+        await GotoAsync("/");
+        var top = Page.GetByTestId("mobile-topbar");
+        var themeBtn = top.Locator("[title='Theme and background']");
+        await Assertions.Expect(themeBtn).ToBeVisibleAsync();
+        var toggle = top.Locator("[title='Light mode'], [title='Dark mode']");
+        await Assertions.Expect(toggle).ToHaveCountAsync(1);
+
+        var shell = Page.Locator(".mbx-shell");
+        var wasLight = (await shell.GetAttributeAsync("class"))!.Contains("mbx-light");
+        var titleBefore = await toggle.GetAttributeAsync("title");
+
+        await toggle.ClickAsync();
+
+        await Page.WaitForFunctionAsync("l => document.querySelector('.mbx-shell').classList.contains('mbx-light') !== l", wasLight);
+        var titleAfter = await top.Locator("[title='Light mode'], [title='Dark mode']").GetAttributeAsync("title");
+        Assert.NotEqual(titleBefore, titleAfter);
+        Assert.Equal(wasLight ? "Light mode" : "Dark mode", titleAfter);
+
+        await themeBtn.ClickAsync();
+        await Assertions.Expect(Page.Locator(".mud-dialog")).ToBeVisibleAsync();
+        await Assertions.Expect(Page.Locator(".mud-dialog")).ToContainTextAsync("Theme and background");
+    });
+
+    [Fact]
+    public Task Mobile_BottomBarLabels_WrapAtMostTwoLines_NeverTruncated() => RunAsync(nameof(Mobile_BottomBarLabels_WrapAtMostTwoLines_NeverTruncated), async () =>
+    {
+        await GotoAsync("/");
+
+        var rows = await Page.EvaluateAsync<System.Text.Json.JsonElement>(@"() => [...document.querySelectorAll('[data-testid=bottom-nav] .mbx-bottom-nav-label')].map(l => {
+            const cs = getComputedStyle(l); const fs = parseFloat(cs.fontSize);
+            const lh = parseFloat(cs.lineHeight); 
+            return { text: l.textContent.trim(), sh: l.scrollHeight, ch: l.clientHeight, sw: l.scrollWidth, cw: l.clientWidth,
+                     h: l.getBoundingClientRect().height, lh: isNaN(lh) ? fs * 1.2 : lh };
+        })");
+        var texts = new List<string>();
+        foreach (var r in rows.EnumerateArray())
+        {
+            var t = r.GetProperty("text").GetString()!; texts.Add(t);
+            Assert.True(r.GetProperty("sh").GetDouble() <= r.GetProperty("ch").GetDouble() + 1, $"label '{t}' clipped vertically (scrollHeight {r.GetProperty("sh")} > clientHeight {r.GetProperty("ch")})");
+            Assert.True(r.GetProperty("sw").GetDouble() <= r.GetProperty("cw").GetDouble() + 1, $"label '{t}' clipped horizontally (scrollWidth {r.GetProperty("sw")} > clientWidth {r.GetProperty("cw")})");
+            Assert.True(r.GetProperty("h").GetDouble() <= 2 * r.GetProperty("lh").GetDouble() + 1, $"label '{t}' occupies more than 2 lines (height {r.GetProperty("h")}, line-height {r.GetProperty("lh")})");
+        }
+        Assert.Contains("Europe Cities", texts); // full text in the DOM, not cut
+    });
+
+    [Theory]
+    [InlineData(820)]
+    [InlineData(1280)]
+    public Task Rail_HasSevenIconLinks_InOrder(int width) => RunAsync($"{nameof(Rail_HasSevenIconLinks_InOrder)}_{width}", async () =>
+    {
+        await GotoAsync("/", width, 900);
+
+        var paths = await Page.Locator(".mbx-sidebar-icon-link").EvaluateAllAsync<string[]>("els => els.map(a => a.pathname)");
+        Assert.Equal(RootPaths, paths);
+    });
+
+    [Fact]
+    public Task SingleSource_RailHrefsAt820_EqualRootsReachableFromHamburgerAt375() => RunAsync(nameof(SingleSource_RailHrefsAt820_EqualRootsReachableFromHamburgerAt375), async () =>
+    {
+        await GotoAsync("/", 820, 1180);
+        var rail = (await Page.Locator(".mbx-sidebar-icon-link").EvaluateAllAsync<string[]>("els => els.map(a => a.pathname)")).ToHashSet();
+
+        var reached = new HashSet<string>();
+        for (var i = 0; i < RootIds.Length; i++)
+        {
+            await GotoAsync("/components/", 375, 812); // a start page that is none of the roots' exact paths except by prefix
+            await OpenHamburgerAsync();
+            var item = Sheet.Locator(".mbx-nav-sheet-item").Nth(i);
+            await item.ClickAsync();
+            await Page.WaitForTimeoutAsync(700);
+            reached.Add(PathOf(Page.Url));
+        }
+
+        Assert.True(rail.SetEquals(reached), $"rail (820): [{string.Join(", ", rail.Order())}] vs hamburger (375): [{string.Join(", ", reached.Order())}]");
+    });
+}

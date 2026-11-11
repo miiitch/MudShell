@@ -234,8 +234,32 @@
         StateHasChanged();
     }
 
+    private bool _openContextOnNextNavigation;
+
+    /// <summary>
+    /// Tablet: call when a rail item is tapped. Opens the level-2 overlay now and keeps it open across the
+    /// navigation that follows (otherwise navigating closes it). No-op outside tablet mode.
+    /// </summary>
+    public void OpenContextPanelOnNextNavigation()
+    {
+        if (!IsTablet) return;
+        _openContextOnNextNavigation = true;
+        // The tapped item may be the current page (no navigation): drop the flag so it cannot swallow a later close.
+        _ = Task.Delay(1500).ContinueWith(_ => _openContextOnNextNavigation = false, TaskScheduler.Default);
+        if (ContextPanelExpanded) return;
+        ContextPanelExpanded = true;
+        _ = ContextPanelExpandedChanged.InvokeAsync(true);
+        StateHasChanged();
+    }
+
     private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
     {
+        if (_openContextOnNextNavigation)
+        {
+            _openContextOnNextNavigation = false;
+            return;
+        }
+
         if (!IsTablet || !ContextPanelExpanded) return;
         _ = InvokeAsync(CloseContextOverlay);
     }

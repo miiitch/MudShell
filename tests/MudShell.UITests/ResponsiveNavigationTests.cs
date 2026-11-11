@@ -300,8 +300,10 @@ public class ResponsiveNavigationMobileTests : ResponsiveNavigationTestsBase
     public Task Mobile_LeafTap_Navigates_ClosesSheet_UpdatesUrl() => RunAsync(nameof(Mobile_LeafTap_Navigates_ClosesSheet_UpdatesUrl), async () =>
     {
         await GotoAsync("/library", "mobile");
-        await BottomNav.GetByTestId("nav-demo").ClickAsync();
+        // Demo is the 5th root: it now sits under "Plus" (4 direct entries + Plus).
+        await Page.GetByTestId("bottom-nav-more").ClickAsync();
         await Assertions.Expect(Sheet).ToBeVisibleAsync();
+        await Sheet.GetByTestId("nav-demo").ClickAsync(); // drills into Demo's children
 
         await Sheet.GetByTestId("nav-demo.render-modes").ClickAsync();
 

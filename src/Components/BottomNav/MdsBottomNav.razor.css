@@ -31,7 +31,7 @@
     }
 }
 
-.mbx-bottom-nav-item {
+::deep .mbx-bottom-nav-item {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -50,17 +50,17 @@
     min-width: 0;
 }
 
-.mbx-bottom-nav-item:hover {
+::deep .mbx-bottom-nav-item:hover {
     color: var(--mud-palette-text-primary);
     background-color: var(--mbx-nav-hover-bg, color-mix(in srgb, var(--mud-palette-primary) 14%, transparent));
 }
 
-.mbx-bottom-nav-item:disabled {
+::deep .mbx-bottom-nav-item:disabled {
     opacity: 0.45;
     cursor: default;
 }
 
-.mbx-bottom-nav-item.mbx-bottom-nav-item-active {
+::deep .mbx-bottom-nav-item.mbx-bottom-nav-item-active {
     color: var(--mud-palette-primary);
     background-color: var(--mbx-subtle-bg, color-mix(in srgb, var(--mud-palette-primary) 10%, transparent));
 }
@@ -228,13 +228,13 @@
     white-space: nowrap;
 }
 
-.mbx-nav-sheet-chevron {
+::deep .mbx-nav-sheet-chevron {
     margin-left: auto;
     opacity: 0.7;
 }
 
 /* Focus rings for keyboard users. */
-.mbx-bottom-nav-item:focus-visible,
+::deep .mbx-bottom-nav-item:focus-visible,
 .mbx-nav-sheet-item:focus-visible,
 .mbx-nav-sheet-back:focus-visible,
 .mbx-nav-sheet-close:focus-visible {

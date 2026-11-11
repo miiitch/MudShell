@@ -11,7 +11,7 @@ It replaces the former `MdsMobileDrilldownNav` (still available as a thin wrappe
 | `Tree` | `MbxNavTree?` | `null` | Navigation tree. Its visible roots are the level-1 entries, and their children feed the sheet |
 | `CurrentUri` | `string?` | `null` | URI used to compute the active path. Defaults to the current location |
 | `ActiveHref` | `string?` | `null` | Href of the currently active item, highlighted with the primary colour (flat `Items`) |
-| `MaxVisible` | `int` | `5` | Level-1 entries shown directly. Further ones go under the overflow entry |
+| `MaxVisible` | `int` | `5` | Maximum number of buttons in the bar, overflow entry included. With more roots, `MaxVisible - 1` are shown and the rest go under the overflow entry |
 | `MoreLabel` | `string` | `"Plus"` | Label of the overflow entry |
 | `Class` / `Style` | `string?` | `null` | Classes and inline style of the bar |
 | `AdditionalAttributes` | `IReadOnlyDictionary<string, object>?` | `null` | Undeclared attributes, splatted onto the bar element (e.g. `data-testid`, ARIA attributes) |
@@ -25,7 +25,7 @@ It replaces the former `MdsMobileDrilldownNav` (still available as a thin wrappe
 
 ## Mobile behaviour
 
-- **Bar.** Shows up to `MaxVisible` level-1 entries. When there are more, an overflow entry opens the rest in the sheet.
+- **Bar.** Shows at most `MaxVisible` buttons (default 5). When there are more roots, the last slot becomes the overflow entry ("Plus") and opens the rest in the sheet, so labels keep enough width at 375px.
 - **Entries without children** navigate directly.
 - **Entries with children** open the sheet with those children. An entry with an `Href` also navigates to it.
 - **Drill-down.** A child that has its own children opens a deeper level. The back row returns one level up.

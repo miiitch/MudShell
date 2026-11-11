@@ -99,3 +99,30 @@
     border-left: 1px solid var(--mbx-content-border, var(--mud-palette-lines-default));
     background: var(--mbx-content-surface, var(--mud-palette-surface));
 }
+
+/* Mobile: a side-by-side split cannot fit, so the side pane stacks under the main area instead of being
+   clipped (its inline pixel width is overridden; the drag handle is meaningless in a column). */
+@media (max-width: 599.98px) {
+    .mds-split {
+        flex-direction: column;
+    }
+
+    .mds-split-side {
+        width: auto !important;
+        flex: 1 1 0;
+        border-left: 0;
+        border-top: 1px solid var(--mbx-content-border, var(--mud-palette-lines-default));
+    }
+
+    .mds-split-handle {
+        display: none;
+    }
+
+    .mds-split-rail {
+        flex: 0 0 36px;
+        flex-direction: row;
+        padding: 0 8px;
+        border-left: 0;
+        border-top: 1px solid var(--mbx-content-border, var(--mud-palette-lines-default));
+    }
+}

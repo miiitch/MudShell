@@ -8,7 +8,7 @@
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
-@* Mobile navigation: level 1 bottom bar (up to MaxVisible entries plus a "Plus" overflow entry),
+@* Mobile navigation: level 1 bottom bar (at most MaxVisible buttons, the last one being the "Plus" overflow entry when roots overflow),
    level 2 and level 3 in a bottom sheet with a drill-down back row. *@
 <div class="mbx-bottom-nav-host">
     @if (_sheetOpen)
@@ -162,9 +162,12 @@
         var tree = Tree ?? (Items is null ? null : MbxNavTree.FromLegacy(Items));
         _state = MbxNavStateResolver.Resolve(tree, CurrentUri ?? Nav.Uri);
         _roots = tree?.Roots.Where(r => r.Visible).ToList() ?? [];
+        // MaxVisible is the maximum number of buttons in the bar, "Plus" included: when the roots
+        // overflow, one slot is given to "Plus" so labels keep enough width on a 375px screen.
         var max = Math.Max(1, MaxVisible);
-        _visibleRoots = _roots.Take(max).ToList();
-        _overflowRoots = _roots.Skip(max).ToList();
+        var direct = _roots.Count > max ? Math.Max(1, max - 1) : max;
+        _visibleRoots = _roots.Take(direct).ToList();
+        _overflowRoots = _roots.Skip(direct).ToList();
     }
 
     private static IReadOnlyList<MbxNavNode> VisibleChildren(MbxNavNode node) =>

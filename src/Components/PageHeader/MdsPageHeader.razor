@@ -5,6 +5,7 @@
     <PageTitle>@EffectivePageTitle</PageTitle>
 }
 
+<div class="mds-page-header-host">
 <MudToolBar Class="@RootClass" Style="@Style" Gutters="false" @attributes="AdditionalAttributes">
     <div class="mbx-page-header-core">
         @if (StartContent is not null)
@@ -34,6 +35,7 @@
         </div>
     }
 </MudToolBar>
+</div>
 
 @code {
     /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>

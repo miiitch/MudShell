@@ -5,8 +5,8 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.Medium" Class="px-4 pb-4 pt-0">
-<MudStack Spacing="3">
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack">
+<MudStack Class="mbx-stack">
     <MudStack Row="true" Justify="Justify.FlexEnd">
         <MudIconButton Icon="@Icons.Material.Outlined.Tune" Color="Color.Inherit" Size="Size.Small" />
     </MudStack>
@@ -17,6 +17,7 @@
     </MudText>
 
     <MdsChatBar Placeholder="@("Message Copilot or @mention a tab")"
+                MaxWidth="100%"
                 @bind-Value="_chatMessage">
         <Actions>
             <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" />

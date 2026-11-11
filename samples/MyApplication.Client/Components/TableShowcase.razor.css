@@ -3,8 +3,8 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: 0 32px;
-    gap: 20px;
+    padding: 0;
+    gap: var(--mbx-block-gap, 16px);
 }
 
 .showcase-badge {
@@ -34,7 +34,7 @@
 /* Hide secondary columns on mobile */
 @media (max-width: 959px) {
     .table-showcase {
-        padding: 0 16px;
+        padding: 0;
     }
 
     ::deep .hide-on-mobile {

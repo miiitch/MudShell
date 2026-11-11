@@ -3,7 +3,6 @@
 <PageTitle>Static SSR — Active background</PageTitle>
 
 <MdsPageHeader Title="Static SSR — Background image">
-    <StartContent><div></div></StartContent>
     <EndContent>
         <MudStack Row="true" Spacing="1" Class="mds-u-chip-row">
             <MudChip T="string" Color="Color.Default" Size="Size.Small" Variant="Variant.Outlined">No active circuit</MudChip>
@@ -12,7 +11,7 @@
     </EndContent>
 </MdsPageHeader>
 
-<MudStack Spacing="4" Class="px-4 pb-6">
+<MudStack Class="mbx-stack">
 
     <MudPaper Outlined="true" Class="pa-4">
         <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Start">
@@ -51,7 +50,6 @@
         <MudText Typo="Typo.subtitle1" Class="mds-u-section-title">MdsPageHeader (static)</MudText>
         <MudPaper Outlined="true" Class="mds-u-surface-wrap">
             <MdsPageHeader Title="Page title">
-                <StartContent><div></div></StartContent>
                 <EndContent>
                     <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
                                disabled>

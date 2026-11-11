@@ -23,7 +23,7 @@
     [Parameter] public string AccentBorderColor { get; set; } = "var(--mud-palette-primary)";
     [Parameter] public int AccentBorderWidth { get; set; } = 2;
 
-    private string RootClass => $"pa-2 mb-3 {Class}".Trim();
+    private string RootClass => $"pa-2 {Class}".Trim();
     private string RootStyle => MergeStyles(
         MbxAccentBorderStyle.Build(AccentBorderSides, AccentBorderColor, AccentBorderWidth),
         Style);

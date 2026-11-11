@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 @inject IDialogService DialogService
 
-<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack">
 
     <MdsPageHeader Title="Weather"
                    Icon="@Icons.Material.Outlined.Cloud"
@@ -24,7 +24,7 @@
         <MudSwitch T="bool" @bind-Value="_isDense" Color="Color.Primary" Label="Dense table" />
     </MdsMainToolbar>
 
-    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Wrap="MudBlazor.Wrap.Wrap" Class="mb-3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Wrap="MudBlazor.Wrap.Wrap">
             <MudText Typo="Typo.caption" Color="Color.Secondary">Period</MudText>
             <MudChip T="string"
                      Color="@(_selectedPeriod == "today" ? Color.Primary : Color.Default)"

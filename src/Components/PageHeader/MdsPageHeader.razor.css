@@ -1,13 +1,25 @@
 /* =====================================================================
    MdsPageHeader — header de page
+   MudToolBar is a component: Blazor CSS isolation stamps its scope attribute on plain HTML elements
+   only, never on a child component's root. The layout-neutral host wrapper therefore owns the scope
+   and every rule that targets the toolbar (or anything MudBlazor renders) goes through
+   `.mds-page-header-host ::deep ...`. A bare `.mbx-page-header-*` selector on a Mud* element, or a
+   leading `::deep` with no scoped ancestor, matches nothing.
    ===================================================================== */
-::deep .mbx-page-header.mud-toolbar {
-    padding: var(--mbx-space-5) var(--mbx-space-6) var(--mbx-space-3) var(--mbx-space-6);
-    gap: var(--mbx-space-4);
+.mds-page-header-host {
+    display: contents;
+}
+
+.mds-page-header-host ::deep .mbx-page-header.mud-toolbar {
+    /* No horizontal padding: the title lines up with the page blocks below (the container owns the gutter). */
+    padding: var(--mbx-space-5) 0 var(--mbx-space-3) 0;
+    gap: var(--mbx-space-2) var(--mbx-space-4);
     min-height: 48px;
     height: auto;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: var(--mbx-block-gap, 16px);
 }
 
 .mbx-page-header-core {
@@ -15,38 +27,43 @@
     align-items: center;
     gap: var(--mbx-space-3);
     min-height: 36px;
+    min-width: 0;
+    flex: 1 1 auto;
     flex-wrap: wrap;
 }
 
-::deep .mbx-page-header-title {
+.mds-page-header-host ::deep .mbx-page-header-title {
     font-weight: 600;
     margin: 0;
     line-height: 1.2;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
-::deep .mbx-page-header-icon {
+.mds-page-header-host ::deep .mbx-page-header-icon {
     color: var(--mud-palette-primary);
     flex: 0 0 auto;
 }
 
-::deep .mbx-page-header-breadcrumbs {
+.mds-page-header-host ::deep .mbx-page-header-breadcrumbs {
     display: inline-flex;
     align-items: center;
+    min-width: 0;
 }
 
-::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-item,
-::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-separator {
+.mds-page-header-host ::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-item,
+.mds-page-header-host ::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-separator {
     font-size: 0.875rem;
     line-height: 1.2;
 }
 
-::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-item > a {
+.mds-page-header-host ::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-item > a {
     font-size: inherit;
     font-weight: 400;
     color: var(--mud-palette-text-secondary);
 }
 
-::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-item.mud-disabled > a {
+.mds-page-header-host ::deep .mbx-page-header-breadcrumbs .mud-breadcrumb-item.mud-disabled > a {
     color: var(--mud-palette-text-primary);
     font-weight: 600;
     opacity: 1;
@@ -60,24 +77,36 @@
 .mbx-page-header-end {
     margin-left: auto;
     gap: var(--mbx-space-2);
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
 }
 
-@media (max-width: 599px) {
-    ::deep .mbx-page-header.mud-toolbar {
-        flex-wrap: wrap;
-        padding: var(--mbx-space-4);
+/* Tablet and mobile: the actions drop under the title and wrap instead of being clipped. */
+@media (max-width: 1279.98px) {
+    .mbx-page-header-core {
+        flex-basis: 240px;
+    }
+}
+
+@media (max-width: 599.98px) {
+    .mds-page-header-host ::deep .mbx-page-header.mud-toolbar {
+        padding: var(--mbx-space-3) 0;
         justify-content: flex-start;
     }
 
     .mbx-page-header-core {
+        flex: 1 1 100%;
         width: 100%;
     }
 
-    .mbx-page-header-title {
+    .mds-page-header-host ::deep .mbx-page-header-title {
         font-size: 1.25rem;
     }
 
     .mbx-page-header-end {
+        flex: 1 1 100%;
         width: 100%;
         justify-content: flex-start;
         margin-left: 0;

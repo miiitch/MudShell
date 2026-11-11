@@ -50,7 +50,7 @@
 }
 
 /* MudNavMenu overrides for context panel */
-.mbx-context-mud-nav {
+::deep .mbx-context-mud-nav {
     width: 100%;
 }
 

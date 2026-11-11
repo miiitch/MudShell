@@ -32,3 +32,7 @@ Keyboard on the handle: Left/Right resize by 16 px, Home/End jump to min/max.
 ```
 
 Stored value format: `"<width>|<1 or 0>"`. Storage failures (private mode, blocked) are ignored.
+
+## Responsive
+
+Below 600 px the side pane stacks under the main area (its pixel width and the drag handle are ignored) instead of being clipped.

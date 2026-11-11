@@ -11,6 +11,9 @@
     --mbx-space-4:                16px;
     --mbx-space-5:                20px;
     --mbx-space-6:                24px;
+    /* Vertical gap between sibling page blocks (header, toolbar, sections, tile rows, card grids).
+       Resolves through --mbx-space-4, so the compact density maps it for free (16px -> 12px). */
+    --mbx-block-gap:              var(--mbx-space-4);
     --mbx-radius-sm:              10px;
     --mbx-radius-md:              14px;
     --mbx-radius-lg:              18px;
@@ -19,7 +22,9 @@
     --mbx-content-surface-hover:  color-mix(in srgb, var(--mud-palette-primary, #594AE2) 12%, var(--mbx-content-surface));
     --mbx-content-border:         color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 70%, var(--mud-palette-surface, #121212));
     --mbx-focus-ring:             color-mix(in srgb, var(--mud-palette-primary, #594AE2) 56%, transparent);
-    --mbx-main-content-padding:   var(--mbx-space-4);
+    /* Left/right gutter of the page area (.mbx-main-inner): the one edge shared by the page header and every block. */
+    --mbx-page-gutter:            var(--mbx-space-4);
+    --mbx-main-content-padding:   var(--mbx-page-gutter);
 
     /* responsive layout tokens (tablet / mobile) */
     --mbx-bottom-nav-height:      60px;
@@ -73,7 +78,7 @@
     --mbx-space-4:              12px;
     --mbx-space-5:              14px;
     --mbx-space-6:              16px;
-    --mbx-main-content-padding: var(--mbx-space-3);
+    --mbx-page-gutter:          var(--mbx-space-3);
 }
 
 .mbx-shell.mbx-density-compact ::deep .mbx-page-header.mud-toolbar {
@@ -292,6 +297,37 @@
     border-radius: var(--mbx-radius-md);
 }
 
+/* Page-block stack: the one place that owns the vertical rhythm between sibling blocks.
+   Blocks inside it carry no outer margin of their own (Mud spacing utilities such as mb-3 are !important and
+   must not be added to a block). */
+::deep .mbx-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mbx-block-gap);
+    min-width: 0;
+}
+
+::deep .mbx-stack > * {
+    min-width: 0;
+}
+
+/* The page header carries its own bottom margin when it sits above a stack; inside one the gap wins. */
+::deep .mbx-stack .mbx-page-header.mud-toolbar {
+    margin-bottom: 0 !important;
+}
+
+/* Desktop widths (variables set inline by MdsAppShell.razor); the tier rules below override them. */
+.mbx-shell ::deep .mud-drawer.mbx-sidebar {
+    width: var(--mbx-sidebar-desktop-w, 56px) !important;
+    min-width: var(--mbx-sidebar-desktop-w, 56px) !important;
+    max-width: var(--mbx-sidebar-desktop-w, 56px) !important;
+    flex: 0 0 var(--mbx-sidebar-desktop-w, 56px) !important;
+}
+
+.mbx-shell ::deep .mud-main-content.mbx-main-outer {
+    margin-left: var(--mbx-main-desktop-offset, 56px) !important;
+}
+
 /* ═════════════════════════════════════════════════════════════════════
    Responsive tiers (see src/docs/responsive.md)
    Desktop (>= 1280 px) keeps the inline widths emitted by MdsAppShell.razor.
@@ -339,15 +375,21 @@
         min-width: 0;
         z-index: var(--mbx-z-nav, 1200);
         box-shadow: 8px 0 32px rgba(0, 0, 0, 0.35);
-        transform: translateX(0);
+        /* Closed unless MdsAppShell adds .mbx-context-overlay-open (tablet + user opened it). Closed by
+           default so the first server render and static pages never flash or keep an open overlay. */
+        transform: translateX(calc(-100% - 16px));
+        visibility: hidden;
         transition: transform 0.25s cubic-bezier(.4,0,.2,1), visibility 0.25s;
     }
 
     .mbx-shell:not(.mbx-responsive-desktop) .mbx-context-panel.mbx-context-panel-collapsed {
         width: min(var(--mbx-context-panel-width, 288px), calc(100vw - var(--mbx-sidebar-width, 56px)));
         min-width: 0;
-        transform: translateX(calc(-100% - 16px));
-        visibility: hidden;
+    }
+
+    .mbx-shell:not(.mbx-responsive-desktop) .mbx-context-panel.mbx-context-overlay-open {
+        transform: translateX(0);
+        visibility: visible;
     }
 
     .mbx-shell:not(.mbx-responsive-desktop) .mbx-nav-scrim {
@@ -423,7 +465,7 @@
 
 @media (prefers-reduced-motion: reduce) {
     .mbx-context-panel,
-    .mbx-main-outer {
+    ::deep .mbx-main-outer {
         transition: none !important;
     }
 }

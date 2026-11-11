@@ -1,5 +1,12 @@
+/* MdsSidebarNav's expanded root is a MudNavMenu component, which never receives this file's scope
+   attribute. The layout-neutral host wrapper owns it and every rule that reaches MudBlazor's markup
+   goes through `.mbx-sidebar-nav-host ::deep ...` (a leading ::deep with no scoped ancestor matches nothing). */
+.mbx-sidebar-nav-host {
+    display: contents;
+}
+
 /* MudNavMenu/MudNavLink overrides for sidebar nav */
-::deep .mbx-sidebar-nav .mud-nav-link {
+.mbx-sidebar-nav-host ::deep .mbx-sidebar-nav .mud-nav-link {
     color: var(--mud-palette-text-secondary) !important;
     border-radius: var(--mbx-radius-md) !important;
     font-size: 14px !important;
@@ -7,18 +14,18 @@
     transition: color 0.2s ease, background-color 0.2s ease !important;
 }
 
-::deep .mbx-sidebar-nav .mud-nav-link:hover {
+.mbx-sidebar-nav-host ::deep .mbx-sidebar-nav .mud-nav-link:hover {
     color: var(--mud-palette-text-primary) !important;
     background-color: var(--mbx-nav-hover-bg) !important;
 }
 
-::deep .mbx-sidebar-nav .mud-nav-link.mbx-nav-link-active,
-::deep .mbx-sidebar-nav .mud-nav-link.active {
+.mbx-sidebar-nav-host ::deep .mbx-sidebar-nav .mud-nav-link.mbx-nav-link-active,
+.mbx-sidebar-nav-host ::deep .mbx-sidebar-nav .mud-nav-link.active {
     color: var(--mud-palette-primary) !important;
     background-color: var(--mbx-nav-hover-bg) !important;
 }
 
-::deep .mbx-sidebar-nav .mud-nav-group-title {
+.mbx-sidebar-nav-host ::deep .mbx-sidebar-nav .mud-nav-group-title {
     color: var(--mud-palette-text-secondary) !important;
     font-size: 14px !important;
     font-weight: 500 !important;
@@ -26,7 +33,7 @@
 }
 
 /* Badge: rendered by NavBadgeView as a dot (overlaid on the icon when collapsed). */
-::deep .mbx-sidebar-nav .mud-nav-link-text {
+.mbx-sidebar-nav-host ::deep .mbx-sidebar-nav .mud-nav-link-text {
     display: flex;
     align-items: center;
     gap: var(--mbx-space-2);
@@ -34,7 +41,7 @@
     min-width: 0;
 }
 
-::deep .mbx-sidebar-nav-icon-link {
+.mbx-sidebar-nav-host ::deep .mbx-sidebar-nav-icon-link {
     position: relative;
 }
 

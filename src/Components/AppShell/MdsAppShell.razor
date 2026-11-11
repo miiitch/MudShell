@@ -36,7 +36,7 @@
                     {
                         <div class="mbx-nav-scrim" data-testid="nav-scrim" aria-hidden="true" @onclick="CloseContextOverlay"></div>
                     }
-                    <aside class="mbx-context-panel @(ContextPanelExpanded ? "mbx-context-panel-expanded" : "mbx-context-panel-collapsed")"
+                    <aside class="@ContextPanelClass"
                            style="@ContextPanelStyle"
                            data-testid="context-overlay"
                            @ref="_contextRef"
@@ -126,6 +126,10 @@
     public MbxShellMode ShellMode { get; private set; } = MbxShellMode.Desktop;
 
     private bool IsTablet => ShellMode == MbxShellMode.Tablet;
+    // .mbx-context-overlay-open is the only thing that shows the tablet overlay (see MdsAppShell.razor.css).
+    private string ContextPanelClass =>
+        "mbx-context-panel " + (ContextPanelExpanded ? "mbx-context-panel-expanded" : "mbx-context-panel-collapsed")
+        + (IsTablet && ContextPanelExpanded ? " mbx-context-overlay-open" : string.Empty);
     private string ShellModeName => ShellMode switch
     {
         MbxShellMode.Mobile => "mobile",
@@ -141,14 +145,13 @@
     private int SidebarWidthPx => Math.Max(SidebarWidth, 120);
     private int SidebarCollapsedWidthPx => Math.Max(Math.Min(SidebarCollapsedWidth, SidebarWidthPx), 40);
 
-    // Desktop keeps the inline !important widths it always had (byte-compatible). Tablet and mobile
-    // size the rail and main area from --mbx-sidebar-width / --mbx-main-offset in MdsAppShell.razor.css.
-    private string SidebarDrawerStyle => ShellMode != MbxShellMode.Desktop ? string.Empty
-        : SidebarExpanded
-            ? $"width:{SidebarWidthPx}px !important;min-width:{SidebarWidthPx}px !important;max-width:{SidebarWidthPx}px !important;flex:0 0 {SidebarWidthPx}px !important;"
-            : $"width:{SidebarCollapsedWidthPx}px !important;min-width:{SidebarCollapsedWidthPx}px !important;max-width:{SidebarCollapsedWidthPx}px !important;flex:0 0 {SidebarCollapsedWidthPx}px !important;";
-    private string MainContentStyle => ShellMode != MbxShellMode.Desktop ? string.Empty
-        : $"margin-left:{(SidebarExpanded ? SidebarWidthPx : SidebarCollapsedWidthPx)}px !important;";
+    // Desktop widths are exposed as CSS variables (not inline !important declarations) so the tier
+    // media queries in MdsAppShell.razor.css can override them before the JS viewport observer has
+    // reported the mode (no desktop-layout flash on tablet/mobile first paint).
+    private string SidebarDrawerStyle =>
+        $"--mbx-sidebar-desktop-w:{(SidebarExpanded ? SidebarWidthPx : SidebarCollapsedWidthPx)}px;";
+    private string MainContentStyle =>
+        $"--mbx-main-desktop-offset:{(SidebarExpanded ? SidebarWidthPx : SidebarCollapsedWidthPx)}px;";
 
     private string _shellStyle => $"--mbx-sidebar-width:{SidebarCollapsedWidthPx}px; --mbx-main-offset:{SidebarCollapsedWidthPx}px;";
 

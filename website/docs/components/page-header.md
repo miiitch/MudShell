@@ -55,16 +55,20 @@ The title can also be synced automatically to browser `PageTitle`.
 
 ## Responsive
 
-On xs (≤ 599 px):
-- Header wraps cleanly
-- Core row (icon/path/title) stays vertically centered
-- Right action area moves below while staying left-aligned
+- The header height is `auto`: a long title wraps and the header grows, it never overlaps the next block.
+- 600-1279 px: the actions stay beside the title when they fit and wrap onto a new row otherwise.
+- On xs (≤ 599 px): the actions move under the title, left-aligned, and wrap; they are never clipped.
+- The header ends with `margin-bottom: var(--mbx-block-gap)`; inside a `.mbx-stack` the stack's gap is used instead
+  (see [Responsive](../responsive.md)).
+- Implementation note: the root `MudToolBar` is wrapped in a `display: contents` host (`.mds-page-header-host`) that owns the CSS
+  isolation scope, because Blazor does not stamp it on a child component's root.
 
 ## Customisation
 
 ```css
 /* Adjust padding */
-.mbx-page-header {
-  padding: 16px 24px;
+/* in your global stylesheet */
+.mbx-page-header.mud-toolbar {
+  padding: 16px 0 8px;
 }
 ```

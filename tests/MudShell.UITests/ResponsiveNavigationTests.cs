@@ -188,7 +188,7 @@ public class ResponsiveNavigationTabletTests : ResponsiveNavigationTestsBase
 
         await Overlay.GetByTestId("nav-demo.render-modes").ClickAsync();
 
-        await Page.WaitForURLAsync(new Regex("/modes$"));
+        await Assertions.Expect(Page).ToHaveURLAsync(new Regex("/modes$"), new() { Timeout = 60_000 });
         await Assertions.Expect(Overlay).ToBeHiddenAsync();
         await Assertions.Expect(Scrim).ToHaveCountAsync(0);
     });
@@ -305,7 +305,9 @@ public class ResponsiveNavigationMobileTests : ResponsiveNavigationTestsBase
 
         await Sheet.GetByTestId("nav-demo.render-modes").ClickAsync();
 
-        await Page.WaitForURLAsync(new Regex("/modes$"));
+        // Assert on the URL only: /modes is a heavy render-mode page whose "load" event can exceed
+        // the default navigation timeout on slow CI runners.
+        await Assertions.Expect(Page).ToHaveURLAsync(new Regex("/modes$"), new() { Timeout = 60_000 });
         await Assertions.Expect(Sheet).ToHaveCountAsync(0);
         await Assertions.Expect(Scrim).ToHaveCountAsync(0);
         await Assertions.Expect(Shell).ToHaveAttributeAsync("data-shell-mode", "mobile");
@@ -438,5 +440,190 @@ public class ResponsiveNavigationResizeTests : ResponsiveNavigationTestsBase
         await Assertions.Expect(Shell).ToHaveAttributeAsync("data-shell-mode", "mobile");
         await Assertions.Expect(Page.GetByTestId("nav-scrim")).ToHaveCountAsync(0);
         await Assertions.Expect(Page.GetByTestId("context-sheet")).ToHaveCountAsync(0);
+    });
+}
+
+/// <summary>
+/// Regression: the leaf bottom-nav entry is a NavLink-rendered &lt;a&gt; (no Blazor CSS-isolation scope attribute),
+/// so it used to be laid out differently from the &lt;button&gt; entries. Failure messages name the element type.
+/// </summary>
+public class ResponsiveNavigationBottomBarConsistencyTests : ResponsiveNavigationTestsBase
+{
+    protected override int ViewportWidth => 375;
+    protected override int ViewportHeight => 812;
+
+    private const string ItemMetricsScript = @"() => [...document.querySelector('[data-testid=bottom-nav]').children].map(el => {
+        const r = el.getBoundingClientRect();
+        const cs = getComputedStyle(el);
+        const icon = el.querySelector('svg, .mud-icon-root');
+        const ir = icon?.getBoundingClientRect();
+        return {
+            tag: el.tagName.toLowerCase(), testid: el.getAttribute('data-testid'),
+            x: r.x, w: r.width, h: r.height, right: r.right,
+            iw: ir ? ir.width : -1, ih: ir ? ir.height : -1,
+            display: cs.display, flexDirection: cs.flexDirection, alignItems: cs.alignItems,
+            textDecoration: cs.textDecorationLine, minHeight: parseFloat(cs.minHeight),
+            bg: cs.backgroundColor, color: cs.color,
+        };
+    })";
+
+    private record Item(string Tag, string Testid, double X, double W, double H, double Right,
+        double Iw, double Ih, string Display, string FlexDirection, string AlignItems,
+        string TextDecoration, double MinHeight, string Bg, string Color);
+
+    private async Task<List<Item>> MeasureAsync(string path, string expectedTag)
+    {
+        await GotoAsync(path, "mobile");
+        await Assertions.Expect(BottomNav).ToBeVisibleAsync();
+        await Page.WaitForTimeoutAsync(400); // transitions on colour/background
+        var json = await Page.EvaluateAsync<System.Text.Json.JsonElement>(ItemMetricsScript);
+        var items = json.EnumerateArray().Select(e => new Item(
+            e.GetProperty("tag").GetString()!, e.GetProperty("testid").GetString()!,
+            e.GetProperty("x").GetDouble(), e.GetProperty("w").GetDouble(), e.GetProperty("h").GetDouble(),
+            e.GetProperty("right").GetDouble(), e.GetProperty("iw").GetDouble(), e.GetProperty("ih").GetDouble(),
+            e.GetProperty("display").GetString()!, e.GetProperty("flexDirection").GetString()!,
+            e.GetProperty("alignItems").GetString()!, e.GetProperty("textDecoration").GetString()!,
+            e.GetProperty("minHeight").GetDouble(), e.GetProperty("bg").GetString()!, e.GetProperty("color").GetString()!)).ToList();
+        Assert.True(items.Count >= 4, $"expected >= 4 bottom-nav items, got {items.Count}");
+        Assert.Contains(items, i => i.Tag == "a");      // leaf entry (Home) is a NavLink anchor
+        Assert.Contains(items, i => i.Tag == "button"); // entries with children are buttons
+        return items;
+    }
+
+    private static string Describe(IEnumerable<Item> items) =>
+        string.Join("; ", items.Select(i => $"<{i.Tag}> {i.Testid} x={i.X:0.#} w={i.W:0.#} h={i.H:0.#}"));
+
+    [Theory]
+    [InlineData("/library")] // active root is a <button> (has children)
+    [InlineData("/")]        // active root is the leaf <a>
+    public Task BottomBar_AllItems_SameSize_EvenlySpaced_SpanBar_AnchorVsButton(string path) => RunAsync($"{nameof(BottomBar_AllItems_SameSize_EvenlySpaced_SpanBar_AnchorVsButton)}_{path.Trim('/')}", async () =>
+    {
+        var items = await MeasureAsync(path, "a");
+        var d = Describe(items);
+
+        var refItem = items.First(i => i.Tag == "button");
+        foreach (var i in items)
+        {
+            Assert.True(Math.Abs(i.W - refItem.W) <= 1, $"<{i.Tag}> '{i.Testid}' width {i.W:0.#} differs from <button> width {refItem.W:0.#}. {d}");
+            Assert.True(Math.Abs(i.H - refItem.H) <= 1, $"<{i.Tag}> '{i.Testid}' height {i.H:0.#} differs from <button> height {refItem.H:0.#}. {d}");
+        }
+
+        var ordered = items.OrderBy(i => i.X).ToList();
+        for (var k = 1; k < ordered.Count; k++)
+        {
+            var gap = ordered[k].X - ordered[k - 1].Right;
+            Assert.InRange(gap, -2, 10);
+            Assert.True(Math.Abs(gap - (ordered[1].X - ordered[0].Right)) <= 2, $"uneven spacing before <{ordered[k].Tag}> '{ordered[k].Testid}'. {d}");
+        }
+
+        // Items span the bar (bar is 375 wide with 8px padding).
+        Assert.InRange(ordered[0].X, 0, 16);
+        Assert.InRange(ordered[^1].Right, 375 - 16, 375);
+    });
+
+    [Theory]
+    [InlineData("/library")]
+    [InlineData("/")]
+    public Task BottomBar_Icons_HaveIdenticalSize_AnchorVsButton(string path) => RunAsync($"{nameof(BottomBar_Icons_HaveIdenticalSize_AnchorVsButton)}_{path.Trim('/')}", async () =>
+    {
+        var items = await MeasureAsync(path, "a");
+        var refItem = items.First(i => i.Tag == "button");
+        Assert.True(refItem.Iw > 0, "button icon not found");
+        foreach (var i in items)
+        {
+            Assert.True(i.Iw > 0, $"<{i.Tag}> '{i.Testid}' has no icon");
+            Assert.True(Math.Abs(i.Iw - refItem.Iw) <= 0.5 && Math.Abs(i.Ih - refItem.Ih) <= 0.5,
+                $"<{i.Tag}> '{i.Testid}' icon {i.Iw:0.#}x{i.Ih:0.#} differs from <button> icon {refItem.Iw:0.#}x{refItem.Ih:0.#}");
+        }
+    });
+
+    [Theory]
+    [InlineData("/library")]
+    [InlineData("/")]
+    public Task BottomBar_AnchorComputedStyle_MatchesButton(string path) => RunAsync($"{nameof(BottomBar_AnchorComputedStyle_MatchesButton)}_{path.Trim('/')}", async () =>
+    {
+        var items = await MeasureAsync(path, "a");
+        var btn = items.First(i => i.Tag == "button");
+        foreach (var a in items.Where(i => i.Tag == "a"))
+        {
+            Assert.True(a.Display == btn.Display, $"<a> display '{a.Display}' != <button> '{btn.Display}'");
+            Assert.True(a.FlexDirection == btn.FlexDirection, $"<a> flex-direction '{a.FlexDirection}' != <button> '{btn.FlexDirection}'");
+            Assert.True(a.AlignItems == btn.AlignItems, $"<a> align-items '{a.AlignItems}' != <button> '{btn.AlignItems}'");
+            Assert.True(a.TextDecoration == "none", $"<a> text-decoration-line is '{a.TextDecoration}', expected none");
+            Assert.True(a.MinHeight >= 44, $"<a> min-height {a.MinHeight} < 44");
+        }
+        foreach (var b in items.Where(i => i.Tag == "button"))
+            Assert.True(b.MinHeight >= 44, $"<button> '{b.Testid}' min-height {b.MinHeight} < 44");
+        Assert.Equal("flex", btn.Display);
+        Assert.Equal("column", btn.FlexDirection);
+    });
+
+    [Fact]
+    public Task BottomBar_ActiveState_Anchor_MatchesActiveButton() => RunAsync(nameof(BottomBar_ActiveState_Anchor_MatchesActiveButton), async () =>
+    {
+        var onLeaf = await MeasureAsync("/", "a");
+        var activeAnchor = onLeaf.First(i => i.Testid == "nav-home");
+        var inactiveButton = onLeaf.First(i => i.Tag == "button");
+        Assert.Equal("a", activeAnchor.Tag);
+
+        var onButton = await MeasureAsync("/library", "a");
+        var activeButton = onButton.First(i => i.Testid == "nav-library");
+        Assert.Equal("button", activeButton.Tag);
+
+        Assert.True(activeAnchor.Bg == activeButton.Bg, $"active <a> background '{activeAnchor.Bg}' != active <button> '{activeButton.Bg}'");
+        Assert.True(activeAnchor.Color == activeButton.Color, $"active <a> colour '{activeAnchor.Color}' != active <button> '{activeButton.Color}'");
+        // And it really is different from an inactive entry.
+        Assert.True(activeAnchor.Color != inactiveButton.Color, $"active <a> colour '{activeAnchor.Color}' equals inactive <button> colour");
+        Assert.True(activeAnchor.Bg != inactiveButton.Bg, $"active <a> background '{activeAnchor.Bg}' equals inactive <button> background");
+    });
+}
+
+/// <summary>Guard: no blank strip on the left; content starts right of the rail (tablet) or at the edge (mobile).</summary>
+public class ResponsiveNavigationLayoutGuardTests : ResponsiveNavigationTestsBase
+{
+    protected override int ViewportWidth => 375;
+    protected override int ViewportHeight => 812;
+
+    private async Task AssertContentStartsAtAsync(string path, string mode, int vw, int offset)
+    {
+        await GotoAsync(path, mode);
+        await Page.WaitForTimeoutAsync(400);
+
+        foreach (var sel in new[] { ".mbx-main-outer", ".mbx-main", ".mbx-main-inner" })
+        {
+            var box = await Page.Locator(sel).First.BoundingBoxAsync();
+            Assert.NotNull(box);
+            Assert.True(Math.Abs(box!.X - offset) <= 0.5, $"{sel} x={box.X} at {path} ({mode}), expected {offset}");
+            Assert.True(Math.Abs(box.Width - (vw - offset)) <= 1, $"{sel} width={box.Width} at {path} ({mode}), expected {vw - offset}");
+        }
+
+        var heading = await Page.EvaluateAsync<System.Text.Json.JsonElement>("() => { const h = document.querySelector('.mbx-main-inner h1, .mbx-main-inner h2, .mbx-main-inner h3, .mbx-main-inner .mud-typography-h1, .mbx-main-inner .mud-typography-h2, .mbx-main-inner .mud-typography-h3, .mbx-main-inner .mud-typography-h4, .mbx-main-inner .mud-typography-h5, .mbx-main-inner .mud-typography-h6'); if (!h) return { x: -1, chain: '' }; const chain = []; for (let e = h; e && !e.classList.contains('mbx-main-inner'); e = e.parentElement) chain.push(e.tagName + '.' + String(e.className).split(' ')[0] + '@' + Math.round(e.getBoundingClientRect().x)); return { x: h.getBoundingClientRect().x, chain: chain.join(' < ') }; }");
+        var headingX = heading.GetProperty("x").GetDouble();
+        Assert.True(headingX >= 0, $"no heading found on {path}");
+        Assert.True(headingX <= offset + 48, $"first heading at x={headingX} on {path} ({mode}), expected <= {offset + 48} (container 16 + toolbar 16 + gap 12 = 44 is the page-header design). Ancestors: {heading.GetProperty("chain").GetString()}");
+
+        var hit = await Page.EvaluateAsync<string>("() => { const e = document.elementFromPoint(10, 300); return e ? (e.closest('.mbx-sidebar, .mud-drawer, aside') ? 'chrome:' + e.className : 'content') : 'none'; }");
+        if (offset == 0)
+            Assert.True(hit == "content", $"element at (10,300) on {path} is nav chrome: {hit}");
+
+        var scroll = await Page.EvaluateAsync<double[]>("() => [document.documentElement.scrollWidth, window.innerWidth]");
+        Assert.Equal(scroll[1], scroll[0]);
+    }
+
+    [Theory]
+    [InlineData("/library")]
+    [InlineData("/responsive-nav")]
+    public Task Mobile_NoBlankStripOnLeft(string path) => RunAsync($"{nameof(Mobile_NoBlankStripOnLeft)}_{path.Trim('/')}", () =>
+        AssertContentStartsAtAsync(path, "mobile", 375, 0));
+
+    [Theory]
+    [InlineData("/library")]
+    [InlineData("/responsive-nav")]
+    public Task Tablet_ContentStartsExactlyAtRail(string path) => RunAsync($"{nameof(Tablet_ContentStartsExactlyAtRail)}_{path.Trim('/')}", async () =>
+    {
+        await Page.SetViewportSizeAsync(820, 1180);
+        await AssertContentStartsAtAsync(path, "tablet", 820, 56);
+        var rail = await Page.Locator(".mbx-sidebar").First.BoundingBoxAsync();
+        Assert.InRange(rail!.Width, 55.5, 56.5);
     });
 }

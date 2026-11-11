@@ -21,3 +21,21 @@
         transition: none;
     }
 }
+
+/* Header row: title on the left, actions on the right; on narrow widths the actions wrap under the title
+   instead of being pushed past the card edge. These are plain elements, so the scope applies directly. */
+.mds-main-part-header {
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.mds-main-part-heading {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.mds-main-part-actions {
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
+}

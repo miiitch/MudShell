@@ -4,6 +4,7 @@
 @using MudShell.Components.Navigation.State
 @inject NavigationManager Nav
 
+<div class="mbx-sidebar-nav-host">
 @if (IsExpanded)
 {
     <MudNavMenu Color="Color.Primary" Rounded="true" Dense="true" Class="@($"mbx-sidebar-nav {Class}")" @attributes="AdditionalAttributes">
@@ -83,6 +84,7 @@ else
         }
     </div>
 }
+</div>
 
 @code {
     /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>

@@ -103,3 +103,53 @@ protected override async Task OnAfterRenderAsync(bool firstRender)
     }
 }
 ```
+
+---
+
+## Page content: wrapping, clipping and the block gap
+
+Every page-level component adapts below 1280 px instead of clipping:
+
+| Component | Tablet / mobile behaviour |
+|---|---|
+| `MdsPageHeader` | Grows in height; the title wraps; the actions sit under the title (< 600 px) or beside it (600-1279 px) and wrap |
+| `MdsMainToolbar` | Buttons wrap onto new rows |
+| `MdsMainSection` / `MdsMainPart` | Header actions wrap under the title |
+| `MdsStatStrip` | Stays one row at every width and scrolls horizontally (thin scrollbar plus snap points) |
+| `MdsFilterTabBar` | Scrolls horizontally with a thin scrollbar below 1280 px |
+| `MdsSplitPane` | < 600 px: the side pane stacks under the main area |
+
+### One vertical gap: `--mbx-block-gap`
+
+`MdsAppShell` defines `--mbx-block-gap` (default `var(--mbx-space-4)`, so 16 px, 12 px in compact density) next to the other
+`--mbx-*` tokens. Put sibling page blocks in a `.mbx-stack` (flex column, `gap: var(--mbx-block-gap)`):
+
+```razor
+<MudContainer MaxWidth="MaxWidth.False" Class="mbx-stack px-4 pb-4 pt-0">
+  <MdsPageHeader Title="Orders" />
+  <MdsMainToolbar>...</MdsMainToolbar>
+  <MdsStatStrip>...</MdsStatStrip>
+  <MdsMainSection Title="Latest">...</MdsMainSection>
+</MudContainer>
+```
+
+Blocks (`MdsMainToolbar`, `MdsMainSection`, `MdsMainPart`, `MdsMainEmptyState`) no longer carry their own outer margin; the stack owns
+the rhythm. `MdsPageHeader` keeps a `margin-bottom: var(--mbx-block-gap)` for use outside a stack. Do not add Mud spacing utilities
+(`mb-3`, `my-2`: they are `!important`) to blocks inside a stack. `MudGrid` rows keep their own `Spacing` (use `4` to match 16 px).
+
+### One horizontal edge: `--mbx-page-gutter`
+
+`--mbx-page-gutter` (default `var(--mbx-space-4)`, 8 px in compact density) is the left/right padding of `.mbx-main-inner`. The page header
+(which has no horizontal padding of its own), its actions and every block share that edge, so pages must not add their own gutter:
+no `px-4` on blocks, and use `<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack">` (a default `MudContainer`
+adds its own 16-24 px gutter and a `MaxWidth` centres the content). Avoid an empty `<StartContent><div></div></StartContent>` in the
+header: it adds a 12 px gap before the title.
+
+### Pitfall: `::deep` on a component root (library contributors)
+
+Blazor CSS isolation stamps its `b-xxxx` attribute on **plain HTML elements of the .razor file only**, never on the root element
+of a child component (`MudToolBar`, `MudPaper`, `MudNavMenu`...). A rule such as `::deep .my-root.mud-toolbar { ... }`
+(leading `::deep`, no scoped ancestor) or a bare `.my-root { ... }` on a Mud* element therefore matches nothing, silently, including
+its `@media` variants. Fix: wrap the component in a layout-neutral host that owns the scope
+(`<div class="mds-xxx-host">` with `display: contents`) and write `.mds-xxx-host ::deep .my-root { ... }`. Used by `MdsPageHeader`,
+`MdsMainPart`, `MdsSidebarNav` and `MdsTabbedFill`.

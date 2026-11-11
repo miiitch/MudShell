@@ -1,1 +1,3 @@
-/* MdsMainToolbar — no overrides; MudPaper Elevation handles all visual styling */
+/* MdsMainToolbar — MudPaper Outlined handles the visual styling; the inner MudStack wraps by default
+   (AllowWrap) so the buttons flow onto new rows instead of being clipped. The block carries no outer
+   margin; vertical rhythm comes from .mbx-stack (--mbx-block-gap). */

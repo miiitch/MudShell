@@ -49,8 +49,11 @@ public class ResponsiveNavigationTests
             .Add(c => c.Tree, Tree())
             .Add(c => c.CurrentUri, "http://localhost/a"));
 
-        Assert.Equal(5 + 1, rendered.FindAll(".mbx-bottom-nav-item").Count);
+        // MaxVisible (5) counts the "Plus" button: 4 direct entries + Plus.
+        Assert.Equal(5, rendered.FindAll(".mbx-bottom-nav-item").Count);
         Assert.NotEmpty(rendered.FindAll("[data-testid='nav-a']"));
+        Assert.NotEmpty(rendered.FindAll("[data-testid='nav-d']"));
+        Assert.Empty(rendered.FindAll("[data-testid='nav-e']"));
         Assert.Empty(rendered.FindAll("[data-testid='nav-f']"));
         Assert.Empty(rendered.FindAll("[data-testid='nav-g']"));
         var more = rendered.Find("[data-testid='bottom-nav-more']");
@@ -322,5 +325,33 @@ public class ResponsiveNavigationTests
         rendered.Find("[data-testid='mobile-menu-button']").Click();
 
         Assert.True(clicked);
+    }
+}
+
+public class BottomNavElementTypeTests
+{
+    [Fact]
+    public void BottomNav_Should_RenderLeafAsAnchorAndParentsAsButtons_WithSameItemClass()
+    {
+        using var context = new TestContext();
+        context.Services.AddMudServices();
+        context.JSInterop.Mode = JSRuntimeMode.Loose;
+        var tree = new MbxNavTree(
+        [
+            new MbxNavNode(id: "home", text: "Home", href: "/"),
+            new MbxNavNode(id: "lib", text: "Lib", href: "/lib", children: [new MbxNavNode(id: "lib.x", text: "X", href: "/lib/x")]),
+        ]);
+
+        var rendered = context.RenderComponent<MdsBottomNav>(p => p.Add(c => c.Tree, tree).Add(c => c.CurrentUri, "http://localhost/"));
+
+        var anchor = rendered.Find("[data-testid='nav-home']");
+        var button = rendered.Find("[data-testid='nav-lib']");
+        Assert.Equal("a", anchor.TagName.ToLowerInvariant());
+        Assert.Equal("button", button.TagName.ToLowerInvariant());
+        Assert.Contains("mbx-bottom-nav-item", anchor.ClassList);
+        Assert.Contains("mbx-bottom-nav-item", button.ClassList);
+        Assert.Contains("mbx-bottom-nav-item-active", anchor.ClassList);
+        Assert.NotNull(anchor.QuerySelector(".mbx-bottom-nav-label"));
+        Assert.NotNull(button.QuerySelector(".mbx-bottom-nav-label"));
     }
 }

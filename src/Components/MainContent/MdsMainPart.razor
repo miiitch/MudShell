@@ -5,8 +5,8 @@
     <MudStack Spacing="2">
         @if (!string.IsNullOrWhiteSpace(Title) || HeaderActions is not null)
         {
-            <div class="d-flex align-center justify-space-between gap-3">
-                <div class="d-flex align-center gap-2">
+            <div class="mds-main-part-header d-flex align-center justify-space-between gap-3">
+                <div class="mds-main-part-heading d-flex align-center gap-2">
                     @if (!string.IsNullOrWhiteSpace(Icon))
                     {
                         <MudIcon Icon="@Icon" Color="@TitleColor" />
@@ -18,7 +18,7 @@
                 </div>
                 @if (HeaderActions is not null)
                 {
-                    <div class="d-flex align-center gap-2">@HeaderActions</div>
+                    <div class="mds-main-part-actions d-flex align-center gap-2">@HeaderActions</div>
                 }
             </div>
             @if (!string.IsNullOrWhiteSpace(Subtitle))
@@ -85,8 +85,8 @@
     [Parameter] public int HoverBorderDuration { get; set; } = 250;
 
     private string RootClass => HoverBorder
-        ? $"pa-4 mb-3 mds-main-part-hoverable {Class}".Trim()
-        : $"pa-4 mb-3 {Class}".Trim();
+        ? $"pa-4 mds-main-part-hoverable {Class}".Trim()
+        : $"pa-4 {Class}".Trim();
     private string RootStyle => MergeStyles(
         MergeStyles(
             MbxAccentBorderStyle.Build(AccentBorderSides, AccentBorderColor, AccentBorderWidth),

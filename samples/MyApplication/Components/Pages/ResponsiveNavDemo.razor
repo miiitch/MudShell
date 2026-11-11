@@ -1,0 +1,45 @@
+@page "/responsive-nav"
+@rendermode InteractiveServer
+
+<PageTitle>Responsive navigation</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack">
+
+    <MdsPageHeader Title="Responsive navigation">
+    </MdsPageHeader>
+
+    <MdsMainPart Title="Three layout tiers">
+        <ChildContent>
+            <MudStack Spacing="2">
+                <MudText Typo="Typo.body2" Color="Color.Secondary">
+                    Resize the window to see the shell switch tier. The tier is reported by the shell's
+                    <code>ShellModeChanged</code> event and by <code>data-shell-mode</code> on its root element.
+                </MudText>
+
+                <MudPaper Outlined="true" Class="pa-3">
+                    <MudText Typo="Typo.subtitle1">Desktop (1280 px and up)</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                        Sidebar rail (56 px) that expands to 240 px with labels. Level 2 is a side panel.
+                    </MudText>
+                </MudPaper>
+
+                <MudPaper Outlined="true" Class="pa-3">
+                    <MudText Typo="Typo.subtitle1">Tablet (600 to 1279 px)</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                        Icon rail fixed at 56 px. The rail's menu button opens level 2 as an overlay sliding from the rail.
+                        Tap the scrim, press Esc, or navigate to close it.
+                    </MudText>
+                </MudPaper>
+
+                <MudPaper Outlined="true" Class="pa-3">
+                    <MudText Typo="Typo.subtitle1">Mobile (under 600 px)</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                        Top bar with the menu button, and a bottom bar with up to five entries plus "Plus" for the overflow.
+                        Tapping an entry that has children opens a bottom sheet; sub-sections drill down with a back row.
+                    </MudText>
+                </MudPaper>
+            </MudStack>
+        </ChildContent>
+    </MdsMainPart>
+
+</MudContainer>

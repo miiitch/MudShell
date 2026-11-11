@@ -1,0 +1,20 @@
+@inject IDialogService DialogService
+@inject ThemeState ThemeState
+
+@* Dark-mode toggle + theme dialog: one component reused by the rail (desktop) and the mobile top bar. *@
+<MudIconButton Icon="@(ThemeState.IsDarkMode ? Icons.Material.Outlined.LightMode : Icons.Material.Outlined.DarkMode)"
+               Size="Size.Small" Color="Color.Inherit"
+               title="@(ThemeState.IsDarkMode ? "Light mode" : "Dark mode")"
+               OnClick="@(() => ThemeState.SetDarkMode(!ThemeState.IsDarkMode))"
+               Style="flex-shrink:0;" />
+<MudIconButton Icon="@Icons.Material.Outlined.ColorLens"
+               Size="Size.Small" Color="Color.Inherit"
+               title="Theme and background"
+               OnClick="@OpenThemeDialog"
+               Style="flex-shrink:0; margin-left:0;" />
+
+@code {
+    private Task OpenThemeDialog() =>
+        DialogService.ShowAsync<ThemeOptionsPanel>("Theme and background",
+            new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true });
+}

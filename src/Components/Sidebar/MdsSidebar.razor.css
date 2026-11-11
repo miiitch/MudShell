@@ -63,7 +63,7 @@
 }
 
 /* ── MudNavMenu overrides ─────────────────────────────────────────────── */
-.mbx-sidebar-mud-nav {
+::deep .mbx-sidebar-mud-nav {
     width: 100%;
 }
 

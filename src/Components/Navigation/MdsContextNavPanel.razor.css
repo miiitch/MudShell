@@ -5,6 +5,12 @@
     padding: var(--mbx-space-4) var(--mbx-space-2);
     width: 100%;
     box-sizing: border-box;
+    /* The hosting aside is overflow:hidden; constrain to its height and scroll when the menu is taller than the screen. */
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
 }
 
 .mbx-context-nav-panel.mbx-context-nav-panel-collapsed {
@@ -44,7 +50,7 @@
 }
 
 /* MudNavMenu overrides for context panel */
-.mbx-context-mud-nav {
+::deep .mbx-context-mud-nav {
     width: 100%;
 }
 

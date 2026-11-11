@@ -1,41 +1,342 @@
 @namespace MudShell.Components.BottomNav
+@implements IAsyncDisposable
 @using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using MudShell.Components.Navigation.Models
+@using MudShell.Components.Navigation.State
 @using MudShell.Components.Sidebar
+@inject NavigationManager Nav
+@inject IJSRuntime JS
 
-<div class="@RootClass" style="@Style" @attributes="AdditionalAttributes">
-    @foreach (var item in Items ?? [])
+@* Mobile navigation: level 1 bottom bar (at most MaxVisible buttons, the last one being the "Plus" overflow entry when roots overflow),
+   level 2 and level 3 in a bottom sheet with a drill-down back row. *@
+<div class="mbx-bottom-nav-host">
+    @if (_sheetOpen)
     {
-        @if (!string.IsNullOrWhiteSpace(item.Href))
+        <div class="mbx-nav-scrim" data-testid="nav-scrim" aria-hidden="true" @onclick="CloseSheet"></div>
+        <div class="mbx-nav-sheet" role="dialog" aria-modal="true" aria-label="@_sheetTitle"
+             data-testid="context-sheet" tabindex="-1" @ref="_sheetRef" @onkeydown="HandleSheetKeyDown">
+            <div class="mbx-nav-sheet-grip" aria-hidden="true"></div>
+
+            @if (_stack.Count > 0)
+            {
+                <button type="button" class="mbx-nav-sheet-back" data-testid="drilldown-back" @onclick="GoBack">
+                    <MudIcon Icon="@Icons.Material.Outlined.ArrowBack" Size="Size.Small" />
+                    <span class="mbx-nav-sheet-back-label">@_stack.Peek().Title</span>
+                </button>
+            }
+
+            <div class="mbx-nav-sheet-header">
+                <span class="mbx-nav-sheet-title">@_sheetTitle</span>
+                <button type="button" class="mbx-nav-sheet-close" data-testid="context-sheet-close"
+                        aria-label="Close" @onclick="CloseSheet">
+                    <MudIcon Icon="@Icons.Material.Outlined.Close" Size="Size.Small" />
+                </button>
+            </div>
+
+            <ul class="mbx-nav-sheet-list" role="list">
+                @foreach (var node in _sheetNodes)
+                {
+                    var nodeChildren = VisibleChildren(node);
+                    var isActive = _state.ActivePath.Contains(node.Id);
+                    <li>
+                        <button type="button"
+                                class="mbx-nav-sheet-item @(isActive ? "mbx-nav-sheet-item-active" : "")"
+                                data-testid="@MudShell.MbxTestId.Nav(node.Id)"
+                                disabled="@node.Disabled"
+                                aria-current="@(isActive ? "page" : null)"
+                                aria-haspopup="@(nodeChildren.Count > 0 ? "dialog" : null)"
+                                @onclick="() => HandleSheetItemClick(node)">
+                            <MudIcon Icon="@(node.Icon ?? Icons.Material.Outlined.Circle)" Size="Size.Small" />
+                            <span class="mbx-nav-sheet-label">@node.Text</span>
+                            @if (nodeChildren.Count > 0)
+                            {
+                                <MudIcon Icon="@Icons.Material.Outlined.ChevronRight" Size="Size.Small" Class="mbx-nav-sheet-chevron" />
+                            }
+                        </button>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+    <nav class="mbx-bottom-nav @Class" style="@Style" data-testid="bottom-nav" aria-label="Main navigation" @attributes="AdditionalAttributes">
+        @foreach (var root in _visibleRoots)
         {
-            var isForcedActive = string.Equals(item.Href, ActiveHref, StringComparison.OrdinalIgnoreCase);
-            var navClass = $"mbx-bottom-nav-item {(isForcedActive ? "mbx-bottom-nav-item-active" : string.Empty)}".Trim();
-            <NavLink href="@item.Href"
-                     Match="NavLinkMatch.Prefix"
-                     class="@navClass"
-                     ActiveClass="mbx-bottom-nav-item-active">
-                <MudIcon Icon="@item.Icon" Size="Size.Small" />
-                <span class="mbx-bottom-nav-label">@item.Label</span>
-            </NavLink>
+            var isActive = IsRootActive(root);
+            var hasChildren = VisibleChildren(root).Count > 0;
+            var itemClass = $"mbx-bottom-nav-item{(isActive ? " mbx-bottom-nav-item-active" : string.Empty)}";
+
+            @if (hasChildren || string.IsNullOrWhiteSpace(root.Href) || root.Disabled)
+            {
+                <button type="button"
+                        class="@itemClass"
+                        data-testid="@MudShell.MbxTestId.Nav(root.Id)"
+                        disabled="@root.Disabled"
+                        aria-current="@(isActive ? "page" : null)"
+                        aria-haspopup="@(hasChildren ? "dialog" : null)"
+                        @onclick="() => HandleRootClick(root)">
+                    <MudIcon Icon="@(root.Icon ?? Icons.Material.Outlined.Circle)" Size="Size.Small" />
+                    <span class="mbx-bottom-nav-label">@root.Text</span>
+                </button>
+            }
+            else
+            {
+                <NavLink href="@root.Href"
+                         Match="@ToNavLinkMatch(root.Match)"
+                         class="@itemClass"
+                         ActiveClass="mbx-bottom-nav-item-active"
+                         data-testid="@MudShell.MbxTestId.Nav(root.Id)">
+                    <MudIcon Icon="@(root.Icon ?? Icons.Material.Outlined.Circle)" Size="Size.Small" />
+                    <span class="mbx-bottom-nav-label">@root.Text</span>
+                </NavLink>
+            }
         }
-        else
+
+        @if (_overflowRoots.Count > 0)
         {
-            <button type="button" class="mbx-bottom-nav-item" disabled>
-                <MudIcon Icon="@item.Icon" Size="Size.Small" />
-                <span class="mbx-bottom-nav-label">@item.Label</span>
+            <button type="button" class="mbx-bottom-nav-item" data-testid="bottom-nav-more"
+                    aria-haspopup="dialog" aria-expanded="@(_sheetOpen ? "true" : "false")" @onclick="OpenOverflow">
+                <MudIcon Icon="@Icons.Material.Outlined.MoreHoriz" Size="Size.Small" />
+                <span class="mbx-bottom-nav-label">@MoreLabel</span>
             </button>
         }
-    }
+    </nav>
 </div>
 
 @code {
-    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    /// <summary>Undeclared attributes, splatted onto the bottom bar element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
+    /// <summary>Flat level-1 entries (no sheet). Ignored when <see cref="Tree"/> is set.</summary>
     [Parameter] public MbxNavItem[]? Items     { get; set; }
-    [Parameter] public string?       ActiveHref { get; set; }
-    [Parameter] public string?       Class      { get; set; }
-    [Parameter] public string?       Style      { get; set; }
 
-    private string RootClass => $"mbx-bottom-nav {Class}".Trim();
+    /// <summary>Navigation tree: its visible roots are the level-1 entries, their children feed the sheet.</summary>
+    [Parameter] public MbxNavTree? Tree        { get; set; }
+
+    /// <summary>URI used to compute the active path. Defaults to the current location.</summary>
+    [Parameter] public string? CurrentUri      { get; set; }
+
+    /// <summary>Href forced as active, for flat <see cref="Items"/>.</summary>
+    [Parameter] public string? ActiveHref      { get; set; }
+
+    /// <summary>Maximum number of level-1 entries shown directly; further ones go under the "Plus" entry.</summary>
+    [Parameter] public int MaxVisible          { get; set; } = 5;
+
+    /// <summary>Label of the overflow entry.</summary>
+    [Parameter] public string MoreLabel        { get; set; } = "Plus";
+
+    [Parameter] public string? Class           { get; set; }
+    [Parameter] public string? Style           { get; set; }
+
+    private const string MenuTitle = "Menu";
+
+    private MbxNavState _state = MbxNavState.Empty;
+    private IReadOnlyList<MbxNavNode> _roots = [];
+    private IReadOnlyList<MbxNavNode> _visibleRoots = [];
+    private IReadOnlyList<MbxNavNode> _overflowRoots = [];
+
+    private bool _sheetOpen;
+    private string _sheetTitle = string.Empty;
+    private IReadOnlyList<MbxNavNode> _sheetNodes = [];
+    private readonly Stack<(string Title, IReadOnlyList<MbxNavNode> Nodes)> _stack = new();
+    private ElementReference _sheetRef;
+
+    // URI of a navigation started from inside the sheet: its LocationChanged must not close the sheet.
+    private string? _expectedUri;
+    private IJSObjectReference? _module;
+    private IJSObjectReference? _trap;
+    private bool _disposed;
+
+    protected override void OnInitialized()
+    {
+        Nav.LocationChanged += OnLocationChanged;
+        RecomputeState();
+    }
+
+    protected override void OnParametersSet() => RecomputeState();
+
+    private void RecomputeState()
+    {
+        var tree = Tree ?? (Items is null ? null : MbxNavTree.FromLegacy(Items));
+        _state = MbxNavStateResolver.Resolve(tree, CurrentUri ?? Nav.Uri);
+        _roots = tree?.Roots.Where(r => r.Visible).ToList() ?? [];
+        // MaxVisible is the maximum number of buttons in the bar, "Plus" included: when the roots
+        // overflow, one slot is given to "Plus" so labels keep enough width on a 375px screen.
+        var max = Math.Max(1, MaxVisible);
+        var direct = _roots.Count > max ? Math.Max(1, max - 1) : max;
+        _visibleRoots = _roots.Take(direct).ToList();
+        _overflowRoots = _roots.Skip(direct).ToList();
+    }
+
+    private static IReadOnlyList<MbxNavNode> VisibleChildren(MbxNavNode node) =>
+        node.Children.Where(c => c.Visible).ToList();
+
+    private bool IsRootActive(MbxNavNode root) =>
+        string.Equals(_state.ActiveRootId, root.Id, StringComparison.Ordinal)
+        || (!string.IsNullOrWhiteSpace(ActiveHref) && string.Equals(root.Href, ActiveHref, StringComparison.OrdinalIgnoreCase));
+
+    private static NavLinkMatch ToNavLinkMatch(MbxNavMatchMode mode) =>
+        mode == MbxNavMatchMode.All ? NavLinkMatch.All : NavLinkMatch.Prefix;
+
+    // ── Public API ────────────────────────────────────────────────────────────
+
+    /// <summary>Opens the sheet listing every level-1 entry (the mobile top bar's menu button).</summary>
+    public void OpenMenu()
+    {
+        OpenSheet(MenuTitle, _roots);
+        StateHasChanged();
+    }
+
+    /// <summary>Closes the sheet if it is open.</summary>
+    public async Task CloseMenuAsync() => await CloseSheet();
+
+    // ── Bar and sheet interaction ─────────────────────────────────────────────
+
+    private async Task HandleRootClick(MbxNavNode root)
+    {
+        if (root.Disabled) return;
+
+        var children = VisibleChildren(root);
+        if (!string.IsNullOrWhiteSpace(root.Href)) NavigateKeepingSheet(root.Href);
+
+        if (children.Count == 0)
+        {
+            await CloseSheet();
+            return;
+        }
+
+        OpenSheet(root.Text, children);
+    }
+
+    private void OpenOverflow() => OpenSheet(MoreLabel, _overflowRoots);
+
+    private async Task HandleSheetItemClick(MbxNavNode node)
+    {
+        if (node.Disabled) return;
+
+        var children = VisibleChildren(node);
+        if (children.Count > 0)
+        {
+            // Level 3: drill down. A href on a parent navigates but keeps the sheet open.
+            _stack.Push((_sheetTitle, _sheetNodes));
+            _sheetTitle = node.Text;
+            _sheetNodes = children;
+            if (!string.IsNullOrWhiteSpace(node.Href)) NavigateKeepingSheet(node.Href);
+            return;
+        }
+
+        // Leaf: navigate directly and close.
+        if (!string.IsNullOrWhiteSpace(node.Href)) Nav.NavigateTo(node.Href);
+        await CloseSheet();
+    }
+
+    private void GoBack()
+    {
+        if (_stack.Count == 0) return;
+        var previous = _stack.Pop();
+        _sheetTitle = previous.Title;
+        _sheetNodes = previous.Nodes;
+    }
+
+    private Task HandleSheetKeyDown(KeyboardEventArgs e) =>
+        e.Key is "Escape" or "Esc" ? CloseSheet() : Task.CompletedTask;
+
+    private void OpenSheet(string title, IReadOnlyList<MbxNavNode> nodes)
+    {
+        _stack.Clear();
+        _sheetTitle = title;
+        _sheetNodes = nodes;
+        _sheetOpen = true;
+    }
+
+    private async Task CloseSheet()
+    {
+        _sheetOpen = false;
+        _stack.Clear();
+        _sheetNodes = [];
+        await ReleaseTrapAsync();
+    }
+
+    private void NavigateKeepingSheet(string href)
+    {
+        _expectedUri = Nav.ToAbsoluteUri(href).ToString();
+        Nav.NavigateTo(href);
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        var keepOpen = _expectedUri is not null && string.Equals(_expectedUri, e.Location, StringComparison.Ordinal);
+        _expectedUri = null;
+
+        RecomputeState();
+        if (!keepOpen && _sheetOpen)
+        {
+            _sheetOpen = false;
+            _stack.Clear();
+            _sheetNodes = [];
+        }
+
+        _ = InvokeAsync(async () =>
+        {
+            if (!_sheetOpen) await ReleaseTrapAsync();
+            StateHasChanged();
+        });
+    }
+
+    // ── Focus management (best-effort; never breaks rendering) ───────────────
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_disposed) return;
+        try
+        {
+            if (firstRender)
+            {
+                _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/MudShell/js/mudshell-layout.js");
+            }
+
+            if (_sheetOpen && _trap is null && _module is not null && _sheetRef.Context is not null)
+            {
+                _trap = await _module.InvokeAsync<IJSObjectReference>("trapFocus", _sheetRef);
+            }
+        }
+        catch (Exception)
+        {
+            // Focus trap is an enhancement: a failed interop must not break navigation.
+        }
+    }
+
+    private async Task ReleaseTrapAsync()
+    {
+        var trap = _trap;
+        _trap = null;
+        if (trap is null) return;
+        try
+        {
+            await trap.InvokeVoidAsync("release");
+            await trap.DisposeAsync();
+        }
+        catch (Exception)
+        {
+            // Circuit already gone.
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        Nav.LocationChanged -= OnLocationChanged;
+        await ReleaseTrapAsync();
+        try
+        {
+            if (_module is not null) await _module.DisposeAsync();
+        }
+        catch (Exception)
+        {
+            // Circuit already gone.
+        }
+    }
 }

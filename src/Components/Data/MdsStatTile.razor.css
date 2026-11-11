@@ -124,3 +124,11 @@
 @media (prefers-reduced-motion: reduce) {
     .mds-stat-skeleton { animation: none; }
 }
+
+/* A distribution bar used as the tile value gets a fixed, shrinkable width: without it the legend (nowrap
+   inherited from the value) sets the tile's max-content width and the tile grows past the viewport. */
+.mds-stat-value ::deep .mds-dist {
+    width: 14rem;
+    max-width: 100%;
+    white-space: normal;
+}

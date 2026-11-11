@@ -3,9 +3,8 @@
 
 <PageTitle>Main components</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack">
 <MdsPageHeader Title="Main components">
-    <StartContent><div></div></StartContent>
     <EndContent>
         <MdsMainButton Variant="Variant.Outlined" Color="Color.Inherit" Href="/main-components/bg" Compact="true">
             View BG version
@@ -13,7 +12,7 @@
     </EndContent>
 </MdsPageHeader>
 
-<MudStack Spacing="4" Class="my-2">
+<MudStack Class="mbx-stack">
     <MdsMainToolbar>
         <MdsMainButton StartIcon="@Icons.Material.Outlined.Add" OnClick="@(() => _counter++)">New item</MdsMainButton>
         <MdsMainButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Outlined.FilterList">Filter</MdsMainButton>

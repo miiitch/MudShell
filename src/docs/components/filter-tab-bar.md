@@ -45,5 +45,5 @@ public record MbxTabItem<T>(T Value, string Label);
 
 ## Responsive
 
-On mobile (≤ 959 px), the tab bar scrolls horizontally (`overflow-x: auto`).
-The scrollbar is hidden (`scrollbar-width: none`) for a clean look.
+The tab bar scrolls horizontally (`overflow-x: auto`) when the pills do not fit. Below 1280 px a thin scrollbar is shown so
+a partly visible pill reads as scrollable; on desktop the scrollbar stays hidden (`scrollbar-width: none`) for a clean look.

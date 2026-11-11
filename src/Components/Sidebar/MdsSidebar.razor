@@ -1,5 +1,6 @@
 @namespace MudShell.Components.Sidebar
 @using Microsoft.AspNetCore.Components.Routing
+@using MudShell.Components.Navigation.Models
 @using MudShell.Components.Navigation.State
 @implements IDisposable
 @inject NavigationManager NavigationManager
@@ -24,13 +25,13 @@
     }
 
     @* Primary nav items *@
-    @if (PrimaryItems is not null)
+    @if (EffectivePrimaryItems is not null)
     {
         <div class="mbx-nav-items">
             @if (IsExpanded)
             {
                 <MudNavMenu Color="Color.Primary" Rounded="true" Dense="true" Class="mbx-sidebar-mud-nav">
-                    @foreach (var item in PrimaryItems)
+                    @foreach (var item in EffectivePrimaryItems!)
                     {
                         <MudNavLink Href="@item.Href"
                                     Icon="@item.Icon"
@@ -45,7 +46,7 @@
             }
             else
             {
-                @foreach (var item in PrimaryItems)
+                @foreach (var item in EffectivePrimaryItems!)
                 {
                     <MudTooltip Text="@item.Label" Placement="Placement.Right">
                         @if (item.Href != null)
@@ -53,7 +54,8 @@
                             <NavLink href="@item.Href"
                                      class="@($"mbx-sidebar-icon-link {(IsActive(item.ActiveHref ?? item.Href) ? "mbx-sidebar-icon-link-active" : "")}")"
                                      Match="NavLinkMatch.All"
-                                     ActiveClass="">
+                                     ActiveClass=""
+                                     @onclick="() => OnItemClick.InvokeAsync(item)">
                                 <MudIcon Icon="@item.Icon" Size="Size.Small" />
                             </NavLink>
                         }
@@ -131,12 +133,26 @@
 
     [Parameter] public bool                  IsExpanded     { get; set; }
     [Parameter] public EventCallback         OnToggle       { get; set; }
+    /// <summary>Raised when a rail item (icon mode) is clicked, before navigation. Use it to open the level-2 panel on tablet.</summary>
+    [Parameter] public EventCallback<MbxNavItem> OnItemClick    { get; set; }
     [Parameter] public MbxNavItem[]?         PrimaryItems   { get; set; }
+    /// <summary>
+    /// Navigation tree whose visible roots become the primary rail items (icon, label, href). Lets the rail, the
+    /// mobile <c>MdsBottomNav</c> and the context panel share ONE source. Ignored when <see cref="PrimaryItems"/> is set.
+    /// </summary>
+    [Parameter] public MbxNavTree?           Tree           { get; set; }
     [Parameter] public MbxNavItem[]?         SecondaryItems { get; set; }
     [Parameter] public RenderFragment?       LogoContent    { get; set; }
     [Parameter] public RenderFragment?       BottomContent  { get; set; }
 
     private async Task HandleToggle() => await OnToggle.InvokeAsync();
+
+    private IReadOnlyList<MbxNavItem>? EffectivePrimaryItems =>
+        PrimaryItems is not null
+            ? PrimaryItems
+            : Tree?.Roots.Where(r => r.Visible)
+                .Select(r => new MbxNavItem(r.Icon ?? Icons.Material.Outlined.Circle, r.Text, r.Href, r.Href))
+                .ToList();
 
     private bool IsActive(string? href) => MbxNavStateResolver.IsPrefixMatch(href, NavigationManager.Uri);
 

@@ -1,6 +1,6 @@
 @namespace MyApplication.Client.Components
 
-<div class="showcase-wrap">
+<div class="showcase-wrap mbx-stack">
     @* Render mode badge *@
     <div class="showcase-badge showcase-badge-@BadgeColor">
         <MudIcon Icon="@BadgeIcon" Size="Size.Small" />
@@ -49,7 +49,7 @@
     @* DocumentCards *@
     <section class="showcase-section">
         <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsDocumentCard</MudText>
-        <MudGrid Spacing="3">
+        <MudGrid Spacing="4">
             @foreach (var card in _cards)
             {
                 <MudItem xs="12" sm="6" md="4">

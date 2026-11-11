@@ -3,14 +3,14 @@
 
 <PageTitle>Library</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.False" Class="px-4 pb-4 pt-0">
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack">
 <MdsPageHeader Title="Library" />
 
 <MdsMainToolbar>
     <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">Create page</MudButton>
 </MdsMainToolbar>
 
-<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Wrap="MudBlazor.Wrap.Wrap" Class="mb-3">
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Wrap="MudBlazor.Wrap.Wrap">
     <MudText Typo="Typo.caption" Color="Color.Secondary">Type</MudText>
     @foreach (var tab in _tabs)
     {

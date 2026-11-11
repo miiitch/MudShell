@@ -4,6 +4,7 @@
 @inject ThemeState ThemeState
 @using MudShell.Components.Navigation
 @using MudShell.Components.Navigation.Models
+@using MudShell.Components.BottomNav
 
 <MdsAppShell @ref="_shell"
              BackgroundMode="@ThemeState.BackgroundMode"
@@ -17,10 +18,17 @@
              ContextPanelCollapsedWidth="72"
              ContextPanelContent="@ContextPanel"
              SidebarExpanded="@_sidebarExpanded"
-             SidebarExpandedChanged="@(v => _sidebarExpanded = v)">
+             SidebarExpandedChanged="@(v => _sidebarExpanded = v)"
+             ShellModeChanged="@(mode => _shellMode = mode)"
+             MobileTitle="Copilot"
+             MobileMenuClicked="@OpenMobileMenu">
+
+    <MobileActions>
+        <ThemeActions />
+    </MobileActions>
 
     <SidebarContent>
-        <NavMenu ShellRef="@_shell" IsExpanded="@_sidebarExpanded" />
+        <NavMenu Tree="@_navTree" ShellRef="@_shell" IsExpanded="@_sidebarExpanded" ShellMode="@_shellMode" />
     </SidebarContent>
 
     <ChildContent>
@@ -28,6 +36,12 @@
     </ChildContent>
 
 </MdsAppShell>
+
+@* Mobile level-1 bar lives outside the shell so it stays pinned to the bottom edge. *@
+@if (_shellMode == MdsAppShell.MbxShellMode.Mobile)
+{
+    <MdsBottomNav @ref="_mobileNav" Tree="@_navTree" />
+}
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
@@ -37,6 +51,8 @@
 
 @code {
     private MdsAppShell _shell = default!;
+    private MdsAppShell.MbxShellMode _shellMode = MdsAppShell.MbxShellMode.Desktop;
+    private MdsBottomNav? _mobileNav;
     private bool _sidebarExpanded = false;
     private bool _showContextPanel;
     private bool _contextPanelExpanded = true;
@@ -164,6 +180,16 @@
             href: "/",
             match: MbxNavMatchMode.All),
         new(
+            id: "meteo",
+            text: "Weather",
+            icon: Icons.Material.Outlined.Cloud,
+            href: "/meteo"),
+        new(
+            id: "europe-cities",
+            text: "Europe Cities",
+            icon: Icons.Material.Outlined.TableChart,
+            href: "/europe-cities"),
+        new(
             id: "library",
             text: "Library",
             icon: Icons.Material.Outlined.ContentCopy,
@@ -262,7 +288,12 @@
                     icon: Icons.Material.Outlined.Wallpaper,
                     href: "/main-components/bg")
             ],
-            defaultExpanded: true)
+            defaultExpanded: true),
+        new(
+            id: "fill-demo",
+            text: "Fill layout",
+            icon: Icons.Material.Outlined.ViewQuilt,
+            href: "/fill-demo"),
     ]);
 
     protected override void OnInitialized()
@@ -273,6 +304,8 @@
     }
 
     private void OnThemeChanged() => InvokeAsync(StateHasChanged);
+
+    private void OpenMobileMenu() => _mobileNav?.OpenMenu();
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {

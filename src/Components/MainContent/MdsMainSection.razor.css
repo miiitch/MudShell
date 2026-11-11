@@ -1,1 +1,12 @@
-/* MdsMainSection — no overrides; MudPaper Elevation handles all visual styling */
+/* MdsMainSection — MudPaper Elevation handles the visual styling. The root is a MudPaper component and
+   therefore never receives this file's scope attribute: only the plain header elements below are styled
+   here. The block carries no outer margin; vertical rhythm comes from .mbx-stack (--mbx-block-gap). */
+.mds-main-section-header {
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.mds-main-section-actions {
+    min-width: 0;
+    max-width: 100%;
+}

@@ -17,6 +17,8 @@ Collapsible vertical navigation. Renders as icon-only (56 px) by default and exp
 | `IsExpanded` | `bool` | `false` | Controls collapsed/expanded state |
 | `OnToggle` | `EventCallback` | — | Called when the toggle button is clicked |
 | `PrimaryItems` | `MbxNavItem[]?` | `null` | Main navigation items |
+| `Tree` | `MbxNavTree?` | `null` | Navigation tree whose visible roots become the primary items. Share the same tree with `MdsBottomNav` and `MdsContextNavPanel` so the rail, the mobile bar and the level-2 panel never drift apart. Ignored when `PrimaryItems` is set |
+| `OnItemClick` | `EventCallback<MbxNavItem>` | — | Called when an icon-mode item is clicked, before navigation. On tablet, call `MdsAppShell.OpenContextPanelOnNextNavigation()` from it to open the level-2 overlay |
 | `SecondaryItems` | `MbxNavItem[]?` | `null` | Secondary items (shown after divider) |
 | `LogoContent` | `RenderFragment?` | `null` | Logo area at the top |
 | `BottomContent` | `RenderFragment?` | `null` | Profile / settings area at the bottom |

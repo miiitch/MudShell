@@ -4,7 +4,8 @@ sidebar_position: 3
 
 # MdsBottomNav
 
-Compact bottom navigation bar component you can place in your own layouts.
+The mobile navigation: a level-1 bottom bar, plus a bottom sheet for level 2 and level 3.
+It replaces the former `MdsMobileDrilldownNav` (still available as a thin wrapper around it).
 
 ![MdsBottomNav — fixed bottom bar on mobile viewport with active highlight](/img/screenshots/home-mobile.png)
 
@@ -16,8 +17,31 @@ Compact bottom navigation bar component you can place in your own layouts.
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `Items` | `MbxNavItem[]?` | `null` | Navigation items (shares the same record as `MdsSidebar`) |
-| `ActiveHref` | `string?` | `null` | Href of the currently active item — highlighted with primary colour |
+| `Items` | `MbxNavItem[]?` | `null` | Flat level-1 entries, no sheet (shares the same record as `MdsSidebar`). Ignored when `Tree` is set |
+| `Tree` | `MbxNavTree?` | `null` | Navigation tree. Its visible roots are the level-1 entries, and their children feed the sheet |
+| `CurrentUri` | `string?` | `null` | URI used to compute the active path. Defaults to the current location |
+| `ActiveHref` | `string?` | `null` | Href of the currently active item, highlighted with the primary colour (flat `Items`) |
+| `MaxVisible` | `int` | `5` | Maximum number of buttons in the bar, overflow entry included. With more roots, `MaxVisible - 1` are shown and the rest go under the overflow entry |
+| `MoreLabel` | `string` | `"Plus"` | Label of the overflow entry |
+| `Class` / `Style` | `string?` | `null` | Classes and inline style of the bar |
+
+## Public methods
+
+| Method | Description |
+|---|---|
+| `OpenMenu()` | Opens the sheet listing every level-1 entry. Wire it to the mobile top bar's menu button |
+| `CloseMenuAsync()` | Closes the sheet if it is open |
+
+## Mobile behaviour
+
+- **Bar.** Shows at most `MaxVisible` buttons (default 5). When there are more roots, the last slot becomes the overflow entry ("Plus") and opens the rest in the sheet, so labels keep enough width at 375px.
+- **Entries without children** navigate directly.
+- **Entries with children** open the sheet with those children. An entry with an `Href` also navigates to it.
+- **Drill-down.** A child that has its own children opens a deeper level. The back row returns one level up.
+- **Leaf** entries navigate and close the sheet.
+- **Closing.** Scrim tap, the close button, Esc, and any navigation that the sheet did not start.
+- **Accessibility.** The sheet is `role="dialog"` with `aria-modal="true"`. Focus is trapped inside it and returns to the trigger on close.
+- **Placement.** Render it outside `MdsAppShell`. On phones (under 600 px) the bar is `position: fixed` to the bottom edge, and the shell reserves room for it.
 
 ## Example
 

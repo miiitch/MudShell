@@ -43,3 +43,9 @@ a nominal tile stays neutral.
   <MdsStatTile Variant="MbxStatTileVariant.Cell" Label="Findings" Value="7" Tone="MbxTone.Danger" />
 </MdsStatStrip>
 ```
+
+## Responsive
+
+The strip never wraps, at any width: on tablet and mobile it scrolls horizontally with a thin scrollbar and snap points, so a partly
+visible tile reads as scrollable. Place it in a `.mbx-stack` so it is separated from its neighbours by `--mbx-block-gap`
+(see [Responsive](../responsive.md)).

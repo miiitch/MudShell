@@ -39,3 +39,17 @@
     background: var(--mbx-subtle-bg-hover);
     color: var(--mud-palette-primary);
 }
+
+/* Tablet and mobile: when the pills do not fit, the row scrolls and shows a thin scrollbar so a partly
+   visible pill reads as scrollable rather than clipped. Desktop keeps the clean, scrollbar-less look. */
+@media (max-width: 1279.98px) {
+    .mbx-filter-tabs {
+        scrollbar-width: thin;
+        scroll-snap-type: x proximity;
+    }
+
+    .mbx-filter-tabs::-webkit-scrollbar {
+        display: block;
+        height: 4px;
+    }
+}

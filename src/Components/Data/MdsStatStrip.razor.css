@@ -1,4 +1,5 @@
-/* One row, never wraps: overflow scrolls horizontally. */
+/* One row, never wraps at any width: overflow scrolls horizontally (a visible thin scrollbar plus snap
+   points are the scroll affordance, so a partly visible tile never reads as clipped). */
 .mds-stat-strip {
     display: flex;
     flex-direction: row;
@@ -10,8 +11,12 @@
     overflow-y: hidden;
     padding: var(--mbx-space-1, 4px) 0;
     scrollbar-width: thin;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--mbx-space-1, 4px);
+    -webkit-overflow-scrolling: touch;
 }
 
 .mds-stat-strip > ::deep * {
     flex-shrink: 0;
+    scroll-snap-align: start;
 }

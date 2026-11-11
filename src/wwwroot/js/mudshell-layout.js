@@ -69,3 +69,69 @@ export function initResize(handle, pane, min, max, dotnet) {
         },
     };
 }
+
+// ── Responsive shell tiers ──────────────────────────────────────────────────
+// Breakpoints mirror MdsAppShell.razor.css: mobile < 600px, tablet 600-1279px, desktop >= 1280px.
+const MOBILE_QUERY = '(max-width: 599.98px)';
+const TABLET_QUERY = '(min-width: 600px) and (max-width: 1279.98px)';
+
+// Reports the current tier ('desktop' | 'tablet' | 'mobile') to .NET now and on every change.
+// Returns { dispose } to stop listening.
+export function observeShellMode(dotnet, callbackName) {
+    const mobile = window.matchMedia(MOBILE_QUERY);
+    const tablet = window.matchMedia(TABLET_QUERY);
+    const report = () => {
+        const mode = mobile.matches ? 'mobile' : tablet.matches ? 'tablet' : 'desktop';
+        dotnet.invokeMethodAsync(callbackName, mode);
+    };
+    mobile.addEventListener('change', report);
+    tablet.addEventListener('change', report);
+    report();
+    return {
+        dispose: () => {
+            mobile.removeEventListener('change', report);
+            tablet.removeEventListener('change', report);
+        },
+    };
+}
+
+// ── Modal focus management (overlay / bottom sheet) ─────────────────────────
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), '
+    + 'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+// Moves focus into `container` (which must be focusable, e.g. tabindex="-1"), keeps Tab / Shift+Tab
+// cycling inside it, and remembers the element that had focus. Returns { release } which restores
+// that element's focus.
+export function trapFocus(container) {
+    const previous = document.activeElement;
+
+    const onKeyDown = (e) => {
+        if (e.key !== 'Tab') return;
+        const items = Array.from(container.querySelectorAll(FOCUSABLE));
+        if (items.length === 0) {
+            e.preventDefault();
+            return;
+        }
+        const first = items[0];
+        const last = items[items.length - 1];
+        const active = document.activeElement;
+        const outside = !container.contains(active);
+        if (e.shiftKey && (active === first || active === container || outside)) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && (active === last || outside)) {
+            e.preventDefault();
+            first.focus();
+        }
+    };
+
+    container.addEventListener('keydown', onKeyDown);
+    container.focus({ preventScroll: true });
+
+    return {
+        release: () => {
+            container.removeEventListener('keydown', onKeyDown);
+            if (previous && typeof previous.focus === 'function') previous.focus({ preventScroll: true });
+        },
+    };
+}

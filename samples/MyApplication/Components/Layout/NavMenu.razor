@@ -1,14 +1,11 @@
 ﻿@inject IDialogService DialogService
 @inject ThemeState ThemeState
 
-@if (MobileMode)
+@* On mobile the level-1 bar is rendered by MainLayout (MdsBottomNav), so the rail is not rendered here. *@
+@if (ShellMode != MdsAppShell.MbxShellMode.Mobile)
 {
-    <MdsBottomNav Items="@_allItems" />
-}
-else
-{
-    <MdsSidebar IsExpanded="@IsExpanded"
-                OnToggle="@(() => ShellRef?.ToggleSidebar())"
+    <MdsSidebar IsExpanded="@(IsExpanded && ShellMode == MdsAppShell.MbxShellMode.Desktop)"
+                OnToggle="@HandleToggle"
                 PrimaryItems="@_primaryItems">
 
         <LogoContent>
@@ -49,7 +46,15 @@ else
 @code {
     [Parameter] public MdsAppShell? ShellRef    { get; set; }
     [Parameter] public bool          IsExpanded  { get; set; }
-    [Parameter] public bool          MobileMode  { get; set; } = false;
+    [Parameter] public MdsAppShell.MbxShellMode ShellMode { get; set; } = MdsAppShell.MbxShellMode.Desktop;
+
+    // Desktop: the rail toggle expands the sidebar. Tablet: it opens the level-2 overlay instead,
+    // because the rail has no expanded mode there.
+    private void HandleToggle()
+    {
+        if (ShellMode == MdsAppShell.MbxShellMode.Desktop) ShellRef?.ToggleSidebar();
+        else ShellRef?.ToggleContextPanel();
+    }
 
     private readonly MbxNavItem[] _primaryItems =
     [
@@ -62,7 +67,6 @@ else
         new(Icons.Material.Outlined.ViewQuilt,     "Fill layout",   "/fill-demo"),
     ];
 
-    private MbxNavItem[] _allItems => _primaryItems;
 
     private async Task OpenThemeDialog()
     {

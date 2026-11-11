@@ -5,6 +5,7 @@
 @inject ThemeState ThemeState
 @inject IDialogService DialogService
 @using MudShell.Components.Navigation.Models
+@using MudShell.Components.BottomNav
 
 <MdsAppShell @ref="_shell"
              BackgroundMode="@ThemeState.BackgroundMode"
@@ -18,10 +19,15 @@
              ContextPanelCollapsedWidth="72"
              ContextPanelContent="@ContextPanel"
              SidebarExpanded="@_expanded"
-             SidebarExpandedChanged="@(v => _expanded = v)">
+             SidebarExpandedChanged="@(v => _expanded = v)"
+             ShellModeChanged="@(mode => _shellMode = mode)"
+             MobileTitle="Copilot"
+             MobileMenuClicked="@OpenMobileMenu">
 
     <SidebarContent>
-        <MdsSidebar IsExpanded="@_expanded"
+        @if (_shellMode != MdsAppShell.MbxShellMode.Mobile)
+        {
+        <MdsSidebar IsExpanded="@(_expanded && _shellMode == MdsAppShell.MbxShellMode.Desktop)"
                     OnToggle="@HandleToggle"
                     PrimaryItems="@_navItems">
             <LogoContent>
@@ -45,11 +51,18 @@
                 }
             </BottomContent>
         </MdsSidebar>
+        }
     </SidebarContent>
 
     <ChildContent>@Body</ChildContent>
 
 </MdsAppShell>
+
+@* Mobile level-1 bar lives outside the shell so it stays pinned to the bottom edge. *@
+@if (_shellMode == MdsAppShell.MbxShellMode.Mobile)
+{
+    <MdsBottomNav @ref="_mobileNav" Items="@_navItems" />
+}
 
 @code {
     private MdsAppShell _shell = default!;
@@ -132,7 +145,18 @@
             : MdsAppShell.MbxBackgroundMode.Palette);
     }
 
-    private void HandleToggle() => _shell.ToggleSidebar();
+    private MdsAppShell.MbxShellMode _shellMode = MdsAppShell.MbxShellMode.Desktop;
+    private MdsBottomNav? _mobileNav;
+
+    // Desktop: the rail toggle expands the sidebar. Tablet: it opens the level-2 overlay instead.
+    private void HandleToggle()
+    {
+        if (_shellMode == MdsAppShell.MbxShellMode.Desktop) _shell.ToggleSidebar();
+        else _shell.ToggleContextPanel();
+    }
+
+    // Mobile top bar menu button: lists every level-1 entry in the bottom sheet.
+    private void OpenMobileMenu() => _mobileNav?.OpenMenu();
 
     private async Task OpenThemeDialog()
     {

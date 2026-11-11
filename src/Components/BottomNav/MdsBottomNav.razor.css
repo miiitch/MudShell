@@ -1,19 +1,34 @@
 /* =====================================================================
-   MdsBottomNav — barre de navigation mobile
+   MdsBottomNav — mobile navigation: level-1 bottom bar + level 2/3 sheet.
+   Shared by MdsMobileDrilldownNav (thin wrapper). All values use the
+   --mbx-* tokens defined on .mbx-shell, with fallbacks for standalone use.
    ===================================================================== */
 
+/* ── Bottom bar ─────────────────────────────────────────────────────── */
 .mbx-bottom-nav {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-around;
-    background: var(--mbx-content-surface);
-    border-top: 1px solid var(--mbx-content-border);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    height: 60px;
-    padding: 0 var(--mbx-space-2);
+    gap: var(--mbx-space-1, 4px);
+    height: var(--mbx-bottom-nav-height, 60px);
+    padding: 0 var(--mbx-space-2, 8px);
     width: 100%;
     box-sizing: border-box;
+    background: var(--mbx-content-surface, var(--mud-palette-surface));
+    border-top: 1px solid var(--mbx-content-border, var(--mud-palette-lines-default));
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+
+/* Phones: the bar pins to the bottom edge. */
+@media (max-width: 599.98px) {
+    .mbx-bottom-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: var(--mbx-z-nav, 1200);
+    }
 }
 
 .mbx-bottom-nav-item {
@@ -22,33 +37,207 @@
     align-items: center;
     justify-content: center;
     gap: 2px;
-    flex: 1;
-    padding: var(--mbx-space-2) var(--mbx-space-1);
-    border-radius: var(--mbx-radius-md);
-    text-decoration: none;
+    flex: 1 1 0;
+    min-height: 44px;
+    padding: var(--mbx-space-1, 4px) var(--mbx-space-1, 4px);
     border: 0;
+    border-radius: var(--mbx-radius-md, 14px);
     background: transparent;
-    cursor: pointer;
     color: var(--mud-palette-text-secondary);
+    text-decoration: none;
+    cursor: pointer;
     transition: color 0.2s ease, background-color 0.2s ease;
     min-width: 0;
 }
 
 .mbx-bottom-nav-item:hover {
     color: var(--mud-palette-text-primary);
-    background-color: var(--mbx-nav-hover-bg);
+    background-color: var(--mbx-nav-hover-bg, color-mix(in srgb, var(--mud-palette-primary) 14%, transparent));
+}
+
+.mbx-bottom-nav-item:disabled {
+    opacity: 0.45;
+    cursor: default;
 }
 
 .mbx-bottom-nav-item.mbx-bottom-nav-item-active {
     color: var(--mud-palette-primary);
-    background-color: var(--mbx-subtle-bg);
+    background-color: var(--mbx-subtle-bg, color-mix(in srgb, var(--mud-palette-primary) 10%, transparent));
 }
 
 .mbx-bottom-nav-label {
     font-size: 10px;
     font-weight: 500;
+    line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
+}
+
+/* ── Scrim behind the sheet ─────────────────────────────────────────── */
+.mbx-nav-scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.36);
+    z-index: var(--mbx-z-overlay, 1100);
+    cursor: pointer;
+}
+
+/* ── Bottom sheet (level 2 and level 3) ─────────────────────────────── */
+.mbx-nav-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--mbx-bottom-nav-height, 60px);
+    z-index: var(--mbx-z-nav, 1200);
+    display: flex;
+    flex-direction: column;
+    max-height: 70vh;
+    background: var(--mud-palette-surface);
+    color: var(--mud-palette-text-primary);
+    border-top-left-radius: var(--mbx-sheet-radius, 16px);
+    border-top-right-radius: var(--mbx-sheet-radius, 16px);
+    border-top: 1px solid var(--mbx-content-border, var(--mud-palette-lines-default));
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
+    outline: none;
+    animation: mbx-sheet-in 0.25s cubic-bezier(.4,0,.2,1);
+}
+
+@keyframes mbx-sheet-in {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mbx-nav-sheet {
+        animation: none;
+    }
+}
+
+.mbx-nav-sheet-grip {
+    width: 36px;
+    height: 4px;
+    margin: 8px auto 4px;
+    border-radius: 2px;
+    background: var(--mud-palette-lines-default);
+    flex: 0 0 auto;
+}
+
+.mbx-nav-sheet-back {
+    display: flex;
+    align-items: center;
+    gap: var(--mbx-space-2, 8px);
+    min-height: 44px;
+    padding: 0 var(--mbx-space-3, 12px);
+    border: 0;
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+    background: transparent;
+    color: var(--mud-palette-text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    flex: 0 0 auto;
+    text-align: left;
+}
+
+.mbx-nav-sheet-back-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mbx-nav-sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mbx-space-2, 8px);
+    padding: 0 var(--mbx-space-2, 8px) 0 var(--mbx-space-4, 16px);
+    min-height: 44px;
+    flex: 0 0 auto;
+}
+
+.mbx-nav-sheet-title {
+    font-size: 14px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mbx-nav-sheet-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    border: 0;
+    border-radius: var(--mbx-radius-md, 14px);
+    background: transparent;
+    color: var(--mud-palette-text-secondary);
+    cursor: pointer;
+}
+
+.mbx-nav-sheet-list {
+    list-style: none;
+    margin: 0;
+    padding: var(--mbx-space-1, 4px) var(--mbx-space-2, 8px) var(--mbx-space-3, 12px);
+    overflow-y: auto;
+    flex: 1 1 auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mbx-nav-sheet-item {
+    display: flex;
+    align-items: center;
+    gap: var(--mbx-space-3, 12px);
+    width: 100%;
+    min-height: 44px;
+    padding: var(--mbx-space-2, 8px) var(--mbx-space-3, 12px);
+    border: 0;
+    border-radius: var(--mbx-radius-md, 14px);
+    background: transparent;
+    color: var(--mud-palette-text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.mbx-nav-sheet-item:hover {
+    color: var(--mud-palette-text-primary);
+    background-color: var(--mbx-nav-hover-bg, color-mix(in srgb, var(--mud-palette-primary) 14%, transparent));
+}
+
+.mbx-nav-sheet-item:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.mbx-nav-sheet-item.mbx-nav-sheet-item-active {
+    color: var(--mud-palette-primary);
+    background-color: var(--mbx-subtle-bg, color-mix(in srgb, var(--mud-palette-primary) 10%, transparent));
+}
+
+.mbx-nav-sheet-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mbx-nav-sheet-chevron {
+    margin-left: auto;
+    opacity: 0.7;
+}
+
+/* Focus rings for keyboard users. */
+.mbx-bottom-nav-item:focus-visible,
+.mbx-nav-sheet-item:focus-visible,
+.mbx-nav-sheet-back:focus-visible,
+.mbx-nav-sheet-close:focus-visible {
+    outline: 2px solid var(--mbx-focus-ring, color-mix(in srgb, var(--mud-palette-primary) 56%, transparent));
+    outline-offset: -2px;
 }

@@ -21,6 +21,13 @@
     --mbx-focus-ring:             color-mix(in srgb, var(--mud-palette-primary, #594AE2) 56%, transparent);
     --mbx-main-content-padding:   var(--mbx-space-4);
 
+    /* responsive layout tokens (tablet / mobile) */
+    --mbx-bottom-nav-height:      60px;
+    --mbx-top-bar-height:         56px;
+    --mbx-z-overlay:              1100;
+    --mbx-z-nav:                  1200;
+    --mbx-sheet-radius:           16px;
+
     --mbx-chat-bg:                color-mix(in srgb, var(--mud-palette-surface, #121212) 92%, transparent);
     --mbx-chat-border:            color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 55%, transparent);
     --mbx-chat-shadow:            0 8px 32px color-mix(in srgb, var(--mud-palette-overlay-light, rgba(0, 0, 0, 0.6)) 58%, transparent);
@@ -283,4 +290,140 @@
 ::deep .mds-u-surface-wrap {
     overflow: hidden;
     border-radius: var(--mbx-radius-md);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   Responsive tiers (see src/docs/responsive.md)
+   Desktop (>= 1280 px) keeps the inline widths emitted by MdsAppShell.razor.
+   Tablet (600–1279 px): icon rail fixed at --mbx-sidebar-width; the level-2
+   panel becomes a fixed overlay sliding from the rail, with a scrim.
+   Mobile (< 600 px): no rail; top bar here, bottom bar + sheet in MdsBottomNav.
+   Every rule is skipped when ResponsiveMode="Desktop" (.mbx-responsive-desktop).
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ── Scrim (tablet overlay) ─────────────────────────────────────────── */
+.mbx-nav-scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.36);
+    z-index: var(--mbx-z-overlay, 1100);
+    cursor: pointer;
+}
+
+/* ── Mobile top bar: hidden unless the mobile tier applies ──────────── */
+.mbx-mobile-topbar {
+    display: none;
+}
+
+@media (min-width: 600px) and (max-width: 1279.98px) {
+    /* Rail: fixed 56 px, no expanded mode. */
+    .mbx-shell:not(.mbx-responsive-desktop) ::deep .mud-drawer.mbx-sidebar {
+        width: var(--mbx-sidebar-width, 56px) !important;
+        min-width: var(--mbx-sidebar-width, 56px) !important;
+        max-width: var(--mbx-sidebar-width, 56px) !important;
+        flex: 0 0 var(--mbx-sidebar-width, 56px) !important;
+    }
+
+    .mbx-shell:not(.mbx-responsive-desktop) ::deep .mud-main-content.mbx-main-outer {
+        margin-left: var(--mbx-main-offset, 56px) !important;
+    }
+
+    /* Level 2 becomes a fixed overlay sliding from the rail's right edge. */
+    .mbx-shell:not(.mbx-responsive-desktop) .mbx-context-panel {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: var(--mbx-sidebar-width, 56px);
+        height: 100%;
+        width: min(var(--mbx-context-panel-width, 288px), calc(100vw - var(--mbx-sidebar-width, 56px)));
+        min-width: 0;
+        z-index: var(--mbx-z-nav, 1200);
+        box-shadow: 8px 0 32px rgba(0, 0, 0, 0.35);
+        transform: translateX(0);
+        transition: transform 0.25s cubic-bezier(.4,0,.2,1), visibility 0.25s;
+    }
+
+    .mbx-shell:not(.mbx-responsive-desktop) .mbx-context-panel.mbx-context-panel-collapsed {
+        width: min(var(--mbx-context-panel-width, 288px), calc(100vw - var(--mbx-sidebar-width, 56px)));
+        min-width: 0;
+        transform: translateX(calc(-100% - 16px));
+        visibility: hidden;
+    }
+
+    .mbx-shell:not(.mbx-responsive-desktop) .mbx-nav-scrim {
+        position: fixed;
+    }
+}
+
+@media (max-width: 599.98px) {
+    /* No rail: its content is replaced by the bottom bar (MdsBottomNav). */
+    .mbx-shell:not(.mbx-responsive-desktop) ::deep .mud-drawer.mbx-sidebar {
+        display: none !important;
+    }
+
+    .mbx-shell:not(.mbx-responsive-desktop) ::deep .mud-main-content.mbx-main-outer {
+        margin-left: 0 !important;
+        box-sizing: border-box;
+        padding-top: var(--mbx-top-bar-height, 56px);
+        padding-bottom: var(--mbx-bottom-nav-height, 60px);
+    }
+
+    /* Level 2 on mobile is the bottom sheet in MdsBottomNav, not this aside. */
+    .mbx-shell:not(.mbx-responsive-desktop) .mbx-context-panel {
+        display: none;
+    }
+
+    .mbx-shell:not(.mbx-responsive-desktop) .mbx-mobile-topbar {
+        display: flex;
+        align-items: center;
+        gap: var(--mbx-space-2);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--mbx-top-bar-height, 56px);
+        padding: 0 var(--mbx-space-2);
+        box-sizing: border-box;
+        z-index: var(--mbx-z-nav, 1200);
+        background: var(--mbx-content-surface, var(--mud-palette-surface));
+        border-bottom: 1px solid var(--mbx-content-border, var(--mud-palette-lines-default));
+    }
+
+    .mbx-mobile-topbar-menu {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+        border: 0;
+        border-radius: var(--mbx-radius-md);
+        background: transparent;
+        color: var(--mud-palette-text-primary);
+        cursor: pointer;
+    }
+
+    .mbx-mobile-topbar-title {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--mud-palette-text-primary);
+    }
+
+    .mbx-mobile-topbar-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--mbx-space-1);
+        flex: 0 0 auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mbx-context-panel,
+    .mbx-main-outer {
+        transition: none !important;
+    }
 }

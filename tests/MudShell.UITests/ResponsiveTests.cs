@@ -56,11 +56,20 @@ public class ResponsiveDesktopTests : PlaywrightTestBase
         var widthBefore = await sidebar.EvaluateAsync<double>("el => el.getBoundingClientRect().width");
         Assert.InRange(widthBefore, 238, 242);
 
-        await Page.SetViewportSizeAsync(900, 800);
+        // Still desktop (>= 1280): the expanded width is stable across a resize that stays in the tier.
+        await Page.SetViewportSizeAsync(1400, 800);
         await Page.WaitForTimeoutAsync(150);
 
         var widthAfter = await sidebar.EvaluateAsync<double>("el => el.getBoundingClientRect().width");
         Assert.InRange(widthAfter, 238, 242);
+
+        // Below 1280 the shell becomes a tablet: the rail is a fixed 56px, with no expanded mode.
+        await Page.SetViewportSizeAsync(900, 800);
+        await Assertions.Expect(Page.GetByTestId("shell-mode")).ToHaveAttributeAsync("data-shell-mode", "tablet");
+        await Page.WaitForTimeoutAsync(150);
+
+        var widthTablet = await sidebar.EvaluateAsync<double>("el => el.getBoundingClientRect().width");
+        Assert.InRange(widthTablet, 54, 58);
     });
 
     [Fact]
@@ -110,7 +119,7 @@ public class ResponsiveDesktopTests : PlaywrightTestBase
         await Page.GotoAsync("/library");
         await Page.Locator(".mbx-nav-toggle-btn").First.ClickAsync();
         await Page.WaitForTimeoutAsync(200);
-        await Page.SetViewportSizeAsync(920, 800);
+        await Page.SetViewportSizeAsync(1400, 800);
         await Page.WaitForTimeoutAsync(150);
 
         var sidebar = Page.Locator(".mbx-sidebar").First;
@@ -121,5 +130,18 @@ public class ResponsiveDesktopTests : PlaywrightTestBase
         var panelLeft = await panel.EvaluateAsync<double>("el => el.getBoundingClientRect().left");
 
         Assert.True(panelLeft >= sidebarRight - 1, $"Context panel is overlapped after resize: panelLeft={panelLeft}, sidebarRight={sidebarRight}");
+
+        // Tablet (920px): the context panel is an overlay, closed by default, so it cannot be hidden by the rail.
+        await Page.SetViewportSizeAsync(920, 800);
+        await Assertions.Expect(Page.GetByTestId("shell-mode")).ToHaveAttributeAsync("data-shell-mode", "tablet");
+        await Assertions.Expect(panel).ToBeHiddenAsync();
+
+        // Opened from the rail, it slides out from the rail's right edge instead of sitting under it.
+        await Page.Locator(".mbx-nav-toggle-btn").First.ClickAsync();
+        await Assertions.Expect(panel).ToBeVisibleAsync();
+        await Page.WaitForTimeoutAsync(500); // let the slide-in transition settle
+        var railRight = await sidebar.EvaluateAsync<double>("el => el.getBoundingClientRect().right");
+        var overlayLeft = await panel.EvaluateAsync<double>("el => el.getBoundingClientRect().left");
+        Assert.True(overlayLeft >= railRight - 1, $"Overlay is under the rail: overlayLeft={overlayLeft}, railRight={railRight}");
     });
 }

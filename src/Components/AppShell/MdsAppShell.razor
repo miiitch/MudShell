@@ -1,7 +1,16 @@
 @namespace MudShell.Components.AppShell
 @using MudShell.Theme
+@implements IAsyncDisposable
+@inject NavigationManager Nav
+@inject IJSRuntime JS
 <CascadingValue Value="this">
-    <div class="mbx-shell @ModeClass @ThemeClass @ContextLayoutClass @DensityClass" @attributes="AdditionalAttributes">
+<CascadingValue Name="MbxShellMode" Value="ShellMode">
+    <div class="mbx-shell @ModeClass @ThemeClass @ContextLayoutClass @DensityClass @ResponsiveClass"
+         style="@_shellStyle"
+         data-testid="shell-mode"
+         data-shell-mode="@ShellModeName"
+         @onkeydown="HandleRootKeyDown"
+         @attributes="AdditionalAttributes">
 
         @* Background layer (image mode only) *@
         @if (BackgroundMode == MbxBackgroundMode.Image)
@@ -23,8 +32,18 @@
             <MudMainContent Class="mbx-main-outer" Style="@MainContentStyle">
                 @if (ContextPanelContent is not null)
                 {
+                    @if (IsTablet && ContextPanelExpanded)
+                    {
+                        <div class="mbx-nav-scrim" data-testid="nav-scrim" aria-hidden="true" @onclick="CloseContextOverlay"></div>
+                    }
                     <aside class="mbx-context-panel @(ContextPanelExpanded ? "mbx-context-panel-expanded" : "mbx-context-panel-collapsed")"
-                           style="@ContextPanelStyle">
+                           style="@ContextPanelStyle"
+                           data-testid="context-overlay"
+                           @ref="_contextRef"
+                           role="@(IsTablet ? "dialog" : null)"
+                           aria-modal="@(IsTablet ? "true" : null)"
+                           aria-label="@(IsTablet ? "Section navigation" : null)"
+                           tabindex="@(IsTablet ? "-1" : null)">
                         @ContextPanelContent
                     </aside>
                 }
@@ -36,7 +55,18 @@
             </MudMainContent>
         </MudLayout>
 
+        @* Mobile top bar (hidden outside the mobile tier by CSS) *@
+        <header class="mbx-mobile-topbar" data-testid="mobile-topbar">
+            <button type="button" class="mbx-mobile-topbar-menu" data-testid="mobile-menu-button"
+                    aria-label="Open menu" @onclick="HandleMobileMenuClick">
+                <MudIcon Icon="@Icons.Material.Outlined.Menu" Size="Size.Medium" />
+            </button>
+            <div class="mbx-mobile-topbar-title">@MobileTitle</div>
+            <div class="mbx-mobile-topbar-actions">@MobileActions</div>
+        </header>
+
     </div>
+</CascadingValue>
 </CascadingValue>
 
 @code {
@@ -45,6 +75,15 @@
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
     public enum MbxBackgroundMode { Palette, Image }
+
+    /// <summary>
+    /// <c>Auto</c> follows the viewport (CSS media queries plus a <c>matchMedia</c> observer that drives
+    /// <see cref="ShellMode"/>). <c>Desktop</c> pins the desktop layout at every width.
+    /// </summary>
+    public enum MbxResponsiveMode { Auto, Desktop }
+
+    /// <summary>Layout tier currently in effect: desktop &gt;= 1280 px, tablet 600–1279 px, mobile &lt; 600 px.</summary>
+    public enum MbxShellMode { Desktop, Tablet, Mobile }
 
     // ── Parameters ────────────────────────────────────────────────────────────
 
@@ -68,22 +107,192 @@
     [Parameter] public int                   ContextPanelWidth { get; set; } = 288;
     [Parameter] public int                   ContextPanelCollapsedWidth { get; set; } = 72;
 
+    /// <summary>Responsive behaviour. <c>Auto</c> (default) adapts to the viewport; <c>Desktop</c> always renders the desktop layout.</summary>
+    [Parameter] public MbxResponsiveMode     ResponsiveMode   { get; set; } = MbxResponsiveMode.Auto;
+
+    /// <summary>Raised when the layout tier changes (only in <see cref="MbxResponsiveMode.Auto"/>). Consumers use it to pick rail vs bottom bar.</summary>
+    [Parameter] public EventCallback<MbxShellMode> ShellModeChanged { get; set; }
+
+    /// <summary>Raised when the mobile top bar's menu button is pressed.</summary>
+    [Parameter] public EventCallback    MobileMenuClicked { get; set; }
+
+    /// <summary>Title shown in the mobile top bar.</summary>
+    [Parameter] public string?          MobileTitle       { get; set; }
+
+    /// <summary>Trailing actions shown in the mobile top bar.</summary>
+    [Parameter] public RenderFragment?  MobileActions     { get; set; }
+
+    /// <summary>Current layout tier (cascaded as <c>MbxShellMode</c> to descendants).</summary>
+    public MbxShellMode ShellMode { get; private set; } = MbxShellMode.Desktop;
+
+    private bool IsTablet => ShellMode == MbxShellMode.Tablet;
+    private string ShellModeName => ShellMode switch
+    {
+        MbxShellMode.Mobile => "mobile",
+        MbxShellMode.Tablet => "tablet",
+        _ => "desktop",
+    };
+
     private string ModeClass  => BackgroundMode == MbxBackgroundMode.Image ? "mbx-mode-image" : "mbx-mode-palette";
     private string ThemeClass => IsDarkMode ? "" : "mbx-light";
     private string ContextLayoutClass => ContextPanelContent is null ? "mbx-no-context-panel" : "mbx-has-context-panel";
     private string DensityClass => Density == MdsDensity.Compact ? "mbx-density-compact" : "";
+    private string ResponsiveClass => ResponsiveMode == MbxResponsiveMode.Desktop ? "mbx-responsive-desktop" : "";
     private int SidebarWidthPx => Math.Max(SidebarWidth, 120);
     private int SidebarCollapsedWidthPx => Math.Max(Math.Min(SidebarCollapsedWidth, SidebarWidthPx), 40);
-    private string SidebarDrawerStyle => SidebarExpanded
-        ? $"width:{SidebarWidthPx}px !important;min-width:{SidebarWidthPx}px !important;max-width:{SidebarWidthPx}px !important;flex:0 0 {SidebarWidthPx}px !important;"
-        : $"width:{SidebarCollapsedWidthPx}px !important;min-width:{SidebarCollapsedWidthPx}px !important;max-width:{SidebarCollapsedWidthPx}px !important;flex:0 0 {SidebarCollapsedWidthPx}px !important;";
-    private string MainContentStyle => $"margin-left:{(SidebarExpanded ? SidebarWidthPx : SidebarCollapsedWidthPx)}px !important;";
+
+    // Desktop keeps the inline !important widths it always had (byte-compatible). Tablet and mobile
+    // size the rail and main area from --mbx-sidebar-width / --mbx-main-offset in MdsAppShell.razor.css.
+    private string SidebarDrawerStyle => ShellMode != MbxShellMode.Desktop ? string.Empty
+        : SidebarExpanded
+            ? $"width:{SidebarWidthPx}px !important;min-width:{SidebarWidthPx}px !important;max-width:{SidebarWidthPx}px !important;flex:0 0 {SidebarWidthPx}px !important;"
+            : $"width:{SidebarCollapsedWidthPx}px !important;min-width:{SidebarCollapsedWidthPx}px !important;max-width:{SidebarCollapsedWidthPx}px !important;flex:0 0 {SidebarCollapsedWidthPx}px !important;";
+    private string MainContentStyle => ShellMode != MbxShellMode.Desktop ? string.Empty
+        : $"margin-left:{(SidebarExpanded ? SidebarWidthPx : SidebarCollapsedWidthPx)}px !important;";
+
+    private string _shellStyle => $"--mbx-sidebar-width:{SidebarCollapsedWidthPx}px; --mbx-main-offset:{SidebarCollapsedWidthPx}px;";
 
     private string _bgStyle => !string.IsNullOrEmpty(BackgroundImageUrl)
         ? $"background-image: url('{BackgroundImageUrl}');"
         : "";
     private string ContextPanelStyle =>
         $"--mbx-context-panel-width:{Math.Max(ContextPanelWidth, 160)}px; --mbx-context-panel-collapsed-width:{Math.Max(ContextPanelCollapsedWidth, 56)}px;";
+
+    // ── Responsive plumbing ───────────────────────────────────────────────────
+
+    private IJSObjectReference? _module;
+    private IJSObjectReference? _viewportObserver;
+    private IJSObjectReference? _contextTrap;
+    private DotNetObjectReference<MdsAppShell>? _self;
+    private ElementReference _contextRef;
+    private bool _disposed;
+
+    protected override void OnInitialized() => Nav.LocationChanged += OnLocationChanged;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_disposed) return;
+
+        // JS is best-effort: without it the CSS media queries still render the right visuals, and
+        // ShellMode simply stays Desktop. Never let a failed interop break rendering.
+        try
+        {
+            if (firstRender && ResponsiveMode == MbxResponsiveMode.Auto)
+            {
+                _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/MudShell/js/mudshell-layout.js");
+                if (_disposed) return;
+                _self = DotNetObjectReference.Create(this);
+                _viewportObserver = await _module.InvokeAsync<IJSObjectReference>(
+                    "observeShellMode", _self, nameof(OnViewportModeChanged));
+            }
+
+            if (_module is null) return;
+
+            var wantTrap = IsTablet && ContextPanelExpanded && ContextPanelContent is not null;
+            if (wantTrap && _contextTrap is null && _contextRef.Context is not null)
+            {
+                _contextTrap = await _module.InvokeAsync<IJSObjectReference>("trapFocus", _contextRef);
+            }
+            else if (!wantTrap && _contextTrap is not null)
+            {
+                await ReleaseContextTrapAsync();
+            }
+        }
+        catch (Exception)
+        {
+            // Best-effort interop (see above).
+        }
+    }
+
+    /// <summary>Called by the viewport observer (<c>mudshell-layout.js</c>) with <c>desktop</c>, <c>tablet</c> or <c>mobile</c>.</summary>
+    [JSInvokable]
+    public async Task OnViewportModeChanged(string mode)
+    {
+        if (_disposed) return;
+
+        var next = mode switch
+        {
+            "mobile" => MbxShellMode.Mobile,
+            "tablet" => MbxShellMode.Tablet,
+            _ => MbxShellMode.Desktop,
+        };
+        if (next == ShellMode) return;
+
+        ShellMode = next;
+
+        // Level-2 is an overlay/sheet outside desktop: start closed rather than covering the content.
+        if (next != MbxShellMode.Desktop && ContextPanelExpanded)
+        {
+            ContextPanelExpanded = false;
+            await ContextPanelExpandedChanged.InvokeAsync(false);
+        }
+
+        await ShellModeChanged.InvokeAsync(next);
+        StateHasChanged();
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        if (!IsTablet || !ContextPanelExpanded) return;
+        _ = InvokeAsync(CloseContextOverlay);
+    }
+
+    private async Task CloseContextOverlay()
+    {
+        if (!ContextPanelExpanded) return;
+        ContextPanelExpanded = false;
+        await ContextPanelExpandedChanged.InvokeAsync(false);
+        StateHasChanged();
+    }
+
+    private async Task HandleRootKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key is "Escape" or "Esc" && IsTablet && ContextPanelExpanded)
+        {
+            await CloseContextOverlay();
+        }
+    }
+
+    private Task HandleMobileMenuClick() => MobileMenuClicked.InvokeAsync();
+
+    private async Task ReleaseContextTrapAsync()
+    {
+        var trap = _contextTrap;
+        _contextTrap = null;
+        if (trap is null) return;
+        try
+        {
+            await trap.InvokeVoidAsync("release");
+            await trap.DisposeAsync();
+        }
+        catch (Exception)
+        {
+            // Circuit already gone: nothing left to restore.
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        Nav.LocationChanged -= OnLocationChanged;
+
+        await ReleaseContextTrapAsync();
+        try
+        {
+            if (_viewportObserver is not null)
+            {
+                await _viewportObserver.InvokeVoidAsync("dispose");
+                await _viewportObserver.DisposeAsync();
+            }
+            if (_module is not null) await _module.DisposeAsync();
+        }
+        catch (Exception)
+        {
+            // Circuit already gone.
+        }
+        _self?.Dispose();
+    }
 
     // ── Public API (consumed by child components via CascadingParameter) ──────
 

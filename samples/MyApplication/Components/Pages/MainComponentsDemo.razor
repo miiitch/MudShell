@@ -3,7 +3,7 @@
 @rendermode InteractiveServer
 
 <PageTitle>Page composition — MudShell</PageTitle>
-<MudStack Spacing="3" Class="pa-4" data-testid="composition-demo">
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack" data-testid="composition-demo">
     <ShowcaseHeader FamilyId="composition" />
     <MdsMainToolbar>
         <MudTooltip Text="Add a sample item">
@@ -62,7 +62,7 @@
         <MudText Typo="Typo.caption">&lt;MdsMainPart Title="Results" IsLoading="loading" Error="error" OnRetry="Reload"&gt;...&lt;/MdsMainPart&gt;</MudText>
         <p>The toolbar contains actions. List page filters belong on a separate row.</p>
     </ShowcaseDetails>
-</MudStack>
+</MudContainer>
 
 @code {
     private int _counter;

@@ -1,6 +1,6 @@
 @namespace MyApplication.Client.Components
 
-<MudStack Spacing="4" Class="pa-4">
+<div class="mbx-stack">
     @* Render mode badge *@
     <MudChip T="string" Icon="@BadgeIcon" Color="@ModeColor">@RenderModeName</MudChip>
 
@@ -61,7 +61,7 @@
         }
     </MdsMainSection>
 
-</MudStack>
+</div>
 
 @code {
     [Parameter] public string RenderModeName { get; set; } = "Unknown";

@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 
 <PageTitle>Components — MudShell</PageTitle>
-<MudStack Spacing="3" Class="pa-4" data-testid="showcase-catalog">
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack" data-testid="showcase-catalog">
     <MdsPageHeader Title="Find the right building block." BreadcrumbItems="@_breadcrumbs" />
     <p>Browse by use case. Every component is listed by name.</p>
     <MudTextField T="string" Value="@_query" ValueChanged="@(value => _query = value)" Immediate
@@ -34,7 +34,7 @@
     {
         <MdsMainEmptyState Title="No matching components" Description="Try a component name or another use case." />
     }
-</MudStack>
+</MudContainer>
 
 @code {
     private string _query = "";

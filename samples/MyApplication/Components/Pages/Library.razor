@@ -2,7 +2,7 @@
 @page "/examples/library"
 @rendermode InteractiveServer
 
-<MudStack Spacing="3" Class="pa-4">
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack">
     <MdsPageHeader Title="Library" BreadcrumbItems="@_breadcrumbs" />
     <MdsMainToolbar>
         <MudTooltip Text="Add a sample document">
@@ -30,7 +30,7 @@
         </MdsMainEmptyState>
     }
     <ShowcaseDetails FamilyId="documents" />
-</MudStack>
+</MudContainer>
 
 @code {
     private string _selectedTab = "all";

@@ -57,6 +57,7 @@
                                  Size="Size.Small"
                                  Color="Color.Inherit"
                                  title="Collapse/expand context panel"
+                                 data-testid="context-panel-toggle"
                                  OnClick="@(() => _shell.ToggleContextPanel())" />
               </MudStack>
               <MdsContextNavPanel Tree="@_navTree" IsExpanded="@_contextPanelExpanded" IsExpandedChanged="@(v => _contextPanelExpanded = v)" OnSortChanged="@HandleContextSortDemoSortChanged" />

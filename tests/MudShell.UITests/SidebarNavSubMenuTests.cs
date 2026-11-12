@@ -13,7 +13,7 @@ public class SidebarNavSubMenuTests : PlaywrightTestBase
 
     private async Task GotoAndExpandGroupAsync()
     {
-        await Page.GotoAsync("/components/navigation", new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle });
+        await Page.GotoAsync("/demo", new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle });
 
         var toggle = Page.GetByTestId(GroupTestId);
         await Assertions.Expect(toggle).ToBeVisibleAsync();

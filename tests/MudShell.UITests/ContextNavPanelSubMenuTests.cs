@@ -34,7 +34,7 @@ public class ContextNavPanelSubMenuTests : PlaywrightTestBase
 
     private async Task GotoDemoAsync()
     {
-        await Page.GotoAsync("/components/navigation", new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle });
+        await Page.GotoAsync("/demo", new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle });
         await Page.GetByTestId("context-events").Locator("summary").ClickAsync();
     }
 

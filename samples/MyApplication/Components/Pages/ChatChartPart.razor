@@ -1,13 +1,10 @@
-<MudPaper Outlined="true" Class="pa-3" data-testid="chat-part-chart">
-    <MudText Typo="Typo.subtitle2">@Payload.Title</MudText>
+<MdsMainPart Title="@Payload.Title" data-testid="chat-part-chart">
     @foreach (var (label, value) in Payload.Values)
     {
-        <div class="d-flex align-center gap-2">
-            <MudText Typo="Typo.caption" Style="width: 64px">@label</MudText>
-            <MudProgressLinear Value="@value" Max="100" Color="Color.Primary" Class="flex-grow-1" />
-        </div>
+        <MudText Typo="Typo.caption">@label</MudText>
+        <MudProgressLinear Value="@value" Max="100" Color="Color.Primary" />
     }
-</MudPaper>
+</MdsMainPart>
 
 @code {
     public sealed record ChartData(string Title, IReadOnlyList<(string Label, double Value)> Values);

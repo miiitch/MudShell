@@ -1,117 +1,41 @@
 @page "/"
 @rendermode InteractiveServer
-@using MudShell.Components.Scheduler
-@inject NavigationManager Nav
 
-<PageTitle>Home</PageTitle>
-
-<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack">
-<MudStack Class="mbx-stack">
-    <MudStack Row="true" Justify="Justify.FlexEnd">
-        <MudIconButton Icon="@Icons.Material.Outlined.Tune" Color="Color.Inherit" Size="Size.Small" />
-    </MudStack>
-
-    <MudText Typo="Typo.h4">
-        Great to see you again, Michel.<br />
-        What's the latest?
-    </MudText>
-
-    <MdsChatBar Placeholder="@("Message Copilot or @mention a tab")"
-                MaxWidth="100%"
-                @bind-Value="_chatMessage">
-        <Actions>
-            <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Inherit" />
-            <MudButton Variant="Variant.Text" Color="Color.Inherit" Size="Size.Small"
-                       EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
-                       Class="text-none">Smart</MudButton>
-            <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Size="Size.Small" Color="Color.Inherit" />
-        </Actions>
-    </MdsChatBar>
-
-    <MudPaper Outlined="true" Class="pa-4">
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mds-u-inline-title">
-            <MudIcon Icon="@Icons.Material.Outlined.Devices" Size="Size.Small" />
-            <MudText Typo="Typo.subtitle1">Blazor render modes</MudText>
+<PageTitle>MudShell — Showcase</PageTitle>
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack" data-testid="showcase-home">
+    <MdsMainSection Title="Building blocks. Consistent interfaces."
+                    Description="Navigation, workspaces, data and conversation: explore the building blocks, then discover how to combine them."
+                    AccentBorderSides="MbxAccentBorderSides.None">
+        <MudStack Row Wrap="Wrap.Wrap" Spacing="2">
+            <MdsMainButton Href="/components" DataTestId="explore-components">Explore components</MdsMainButton>
+            <MdsMainButton Href="/examples" Variant="Variant.Outlined" DataTestId="explore-examples">View examples</MdsMainButton>
         </MudStack>
-
-        <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="1" Class="mt-2">
-            <MudButton Variant="Variant.Outlined" Color="Color.Default"
-                       OnClick="@(() => Nav.NavigateTo("/modes/ssr", true))"
-                       StartIcon="@Icons.Material.Outlined.Article">
-                Static SSR
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="/modes/server"
-                       StartIcon="@Icons.Material.Outlined.Hub">
-                Interactive Server
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Success" Href="/modes/wasm"
-                       StartIcon="@Icons.Material.Outlined.Memory">
-                Auto (WASM)
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Warning" Href="/modes/auto"
-                       StartIcon="@Icons.Material.Outlined.AutoMode">
-                Interactive Auto
-            </MudButton>
+    </MdsMainSection>
+    <MudText Typo="Typo.h5">Explore component families</MudText>
+    <MudGrid Spacing="3">
+        @foreach (var family in ShowcaseCatalog.Families)
+        {
+            <MudItem xs="12" md="6" lg="4">
+                <MdsMainPart Title="@family.Title" Icon="@family.Icon" Subtitle="@family.Description"
+                             AccentBorderSides="MbxAccentBorderSides.None">
+                    <MudStack Row>
+                        <MdsMainButton Href="@family.Href" Variant="Variant.Text" DataTestId="@($"home-family-{family.Id}")">Explore components</MdsMainButton>
+                    </MudStack>
+                </MdsMainPart>
+            </MudItem>
+        }
+    </MudGrid>
+    <MdsMainPart Title="A workspace built with MudShell" Subtitle="See the components working together in a complete example."
+                 AccentBorderSides="MbxAccentBorderSides.None">
+        <MdsStatStrip>
+            <MdsStatTile Label="Resources" Value="128" />
+            <MdsStatTile Label="Compliance" Value="84%" />
+            <MdsStatTile Label="Needs review" Value="7" />
+        </MdsStatStrip>
+        <MudStack Row Wrap="Wrap.Wrap">
+            <MdsMainButton Href="/examples/workspace/detail" Variant="Variant.Text"
+                           EndIcon="@Icons.Material.Outlined.ArrowForward">Open the detail example</MdsMainButton>
+            <MdsMainButton Href="/examples" Variant="Variant.Text">Discover examples</MdsMainButton>
         </MudStack>
-
-        <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/modes"
-                   EndIcon="@Icons.Material.Filled.ArrowForward"
-                   Class="mt-1 text-none">
-            View all combinations
-        </MudButton>
-    </MudPaper>
-
-    <MudPaper Outlined="true" Class="pa-4">
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mds-u-inline-title">
-            <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" Size="Size.Small" />
-            <MudText Typo="Typo.subtitle1">This week</MudText>
-        </MudStack>
-        <MdsScheduler TItem="HomeAppointment"
-                      Class="mt-2"
-                      Items="_appointments"
-                      StartProperty="@nameof(HomeAppointment.Start)"
-                      EndProperty="@nameof(HomeAppointment.End)"
-                      TextProperty="@nameof(HomeAppointment.Title)"
-                      View="MdsSchedulerView.Week" />
-    </MudPaper>
-
-    <MudPaper Outlined="true" Class="pa-4">
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mds-u-inline-title">
-            <MudIcon Icon="@Icons.Material.Outlined.TableChart" Size="Size.Small" />
-            <MudText Typo="Typo.subtitle2">Quick access</MudText>
-        </MudStack>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/europe-cities"
-                   StartIcon="@Icons.Material.Outlined.TravelExplore" Class="text-none">
-            Open Europe Cities dashboard
-        </MudButton>
-    </MudPaper>
-</MudStack>
- </MudContainer>
-
-@code {
-    private string _chatMessage = string.Empty;
-
-    private List<HomeAppointment> _appointments = [];
-
-    protected override void OnInitialized()
-    {
-        var monday = DateTime.Today.AddDays(-(((int)DateTime.Today.DayOfWeek + 6) % 7));
-
-        _appointments =
-        [
-            new() { Title = "Stand-up équipe", Start = monday.AddHours(9), End = monday.AddHours(9).AddMinutes(15) },
-            new() { Title = "Revue d'architecture", Start = monday.AddDays(1).AddHours(14), End = monday.AddDays(1).AddHours(15) },
-            new() { Title = "Atelier Blazor", Start = monday.AddDays(2).AddHours(10), End = monday.AddDays(2).AddHours(12) },
-            new() { Title = "Déjeuner client", Start = monday.AddDays(3).AddHours(12), End = monday.AddDays(3).AddHours(13).AddMinutes(30) },
-            new() { Title = "Rétrospective", Start = monday.AddDays(4).AddHours(16), End = monday.AddDays(4).AddHours(17) },
-        ];
-    }
-
-    public sealed class HomeAppointment
-    {
-        public string Title { get; set; } = string.Empty;
-        public DateTime Start { get; set; }
-        public DateTime End { get; set; }
-    }
-}
+    </MdsMainPart>
+</MudContainer>

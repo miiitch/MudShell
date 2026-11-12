@@ -38,16 +38,10 @@
 </MdsAppShell>
 
 @* Mobile level-1 bar lives outside the shell so it stays pinned to the bottom edge. *@
-@if (_shellMode == MdsAppShell.MbxShellMode.Mobile)
+@if (_shellMode == MdsAppShell.MbxShellMode.Mobile && !_hideLayoutBottomBar)
 {
     <MdsBottomNav @ref="_mobileNav" Tree="@_navTree" />
 }
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
 
 @code {
     private MdsAppShell _shell = default!;
@@ -55,31 +49,35 @@
     private MdsBottomNav? _mobileNav;
     private bool _sidebarExpanded = false;
     private bool _showContextPanel;
+    private bool _hideLayoutBottomBar;
     private bool _contextPanelExpanded = true;
     private RenderFragment? ContextPanel => _showContextPanel
         ? @<div>
-              <div style="display:flex; justify-content:flex-end; align-items:center; height:40px; padding:0 8px;">
+              <MudStack Row Justify="Justify.FlexEnd" AlignItems="AlignItems.Center" Class="px-2">
                   <MudIconButton Icon="@(_contextPanelExpanded ? Icons.Material.Outlined.KeyboardDoubleArrowLeft : Icons.Material.Outlined.KeyboardDoubleArrowRight)"
                                  Size="Size.Small"
                                  Color="Color.Inherit"
-                                 Style="margin:0;"
                                  title="Collapse/expand context panel"
+                                 data-testid="context-panel-toggle"
                                  OnClick="@(() => _shell.ToggleContextPanel())" />
-              </div>
+              </MudStack>
               <MdsContextNavPanel Tree="@_navTree" IsExpanded="@_contextPanelExpanded" IsExpandedChanged="@(v => _contextPanelExpanded = v)" OnSortChanged="@HandleContextSortDemoSortChanged" />
               @if (_contextPanelExpanded)
               {
-                  <MudSimpleTable Dense="true" Hover="true" Class="pa-2" data-testid="context-nav-sort-demo-log">
-                      <thead>
-                          <tr><th>Event</th></tr>
-                      </thead>
-                      <tbody>
-                          @foreach (var entry in _contextSortDemoLog)
-                          {
-                              <tr><td>@entry</td></tr>
-                          }
-                      </tbody>
-                  </MudSimpleTable>
+                  <details class="pa-2" data-testid="context-events">
+                      <summary>Events</summary>
+                      <MudSimpleTable Dense="true" Hover="true" data-testid="context-nav-sort-demo-log">
+                          <thead>
+                              <tr><th>Event</th></tr>
+                          </thead>
+                          <tbody>
+                              @foreach (var entry in _contextSortDemoLog)
+                              {
+                                  <tr><td>@entry</td></tr>
+                              }
+                          </tbody>
+                      </MudSimpleTable>
+                  </details>
               }
           </div>
         : null;
@@ -323,6 +321,9 @@
             || path.StartsWith("/main-components", StringComparison.OrdinalIgnoreCase)
             || path.StartsWith("/demo", StringComparison.OrdinalIgnoreCase)
             || path.StartsWith("/modes", StringComparison.OrdinalIgnoreCase);
+
+        // The mobile drilldown demo brings its own bottom bar; the layout bar would overlay it.
+        _hideLayoutBottomBar = path.StartsWith("/components/navigation/mobile", StringComparison.OrdinalIgnoreCase);
 
         var isBgRoute = path.EndsWith("/bg", StringComparison.OrdinalIgnoreCase);
         ThemeState.SetBackgroundMode(isBgRoute

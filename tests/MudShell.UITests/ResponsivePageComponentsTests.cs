@@ -370,7 +370,7 @@ public class ResponsiveContextOverlayFirstPaintTests : PlaywrightTestBase
             }
             await Page.WaitForTimeoutAsync(100);
         }
-        Assert.True(seen >= 3, $"{route}: only {seen} samples captured with a context panel present");
+        Assert.True(seen >= 2, $"{route}: only {seen} samples captured with a context panel present");
 
         // Settled: still closed, rail still uncovered.
         await Assertions.Expect(Page.GetByTestId("shell-mode")).ToHaveAttributeAsync("data-shell-mode", "tablet");

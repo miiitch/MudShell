@@ -1,0 +1,21 @@
+<details id="details">
+    <summary>Usage and technical details</summary>
+    <div class="pa-4">
+        <MudStack Spacing="1" Class="mb-3">
+            @foreach (var component in Family.Components)
+            {
+                <MudText Typo="Typo.caption">@component</MudText>
+            }
+        </MudStack>
+        @ChildContent
+        <MudLink Href="@DocumentationUrl" Target="_blank">Component documentation</MudLink>
+        <span class="mx-2">·</span><MudLink Href="/technical">Integration and compatibility</MudLink>
+    </div>
+</details>
+
+@code {
+    [Parameter, EditorRequired] public string FamilyId { get; set; } = "";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    private ShowcaseCatalog.Family Family => ShowcaseCatalog.Families.Single(f => f.Id == FamilyId);
+    private string DocumentationUrl => "https://github.com/miiitch/MudShell/tree/main/src/docs/components";
+}

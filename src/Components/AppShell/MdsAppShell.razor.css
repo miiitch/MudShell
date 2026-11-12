@@ -159,6 +159,7 @@
 /* ── MudMainContent flex layout ──────────────────────────────────────── */
 ::deep .mud-main-content.mbx-main-outer {
     display: flex;
+    position: relative;
     flex-direction: row;
     padding: 0;
     height: 100%;
@@ -181,6 +182,19 @@
 .mbx-context-panel.mbx-context-panel-collapsed {
     width: var(--mbx-context-panel-collapsed-width, 72px);
     min-width: var(--mbx-context-panel-collapsed-width, 72px);
+}
+
+@media (max-width: 959px) {
+    .mbx-context-panel.mbx-context-panel-expanded {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        max-width: 100%;
+        min-width: 0;
+        z-index: 5;
+        box-shadow: 8px 0 24px rgba(0, 0, 0, .25);
+    }
 }
 
 /* ── Main content area ───────────────────────────────────────────────── */
@@ -477,4 +491,29 @@
     ::deep .mbx-main-outer {
         transition: none !important;
     }
+}
+
+/* Narrow tiers: the context panel starts closed and has no visible toggle of its own. This button
+   sits in the top-right corner of the main area and opens it. It is out of flow, so it never adds
+   a block to the page. */
+.mbx-context-trigger {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--mbx-radius-md);
+    background: transparent;
+    color: var(--mud-palette-text-secondary);
+    cursor: pointer;
+}
+
+.mbx-context-trigger:hover {
+    background: var(--mud-palette-action-default-hover);
 }

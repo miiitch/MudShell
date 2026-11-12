@@ -118,6 +118,43 @@ _shell.ToggleContextPanel();
 
 ## Recommended page layout pattern (sample app)
 
+The sample is an English-language UI showcase, with technical material kept separate:
+
+| Entry | Content |
+| --- | --- |
+| `/` | Introduction and entry points |
+| `/components` | Searchable catalogue: navigation, page composition, layouts, documents, conversation, data |
+| `/examples` | Complete list/detail, library, weather and city screens |
+| `/technical` | Integration, appearance and Blazor render-mode scenarios |
+
+Each component family has a live demo and collapsible usage details. The navigation
+demo at `/components/navigation` includes two independent contextual submenus and a
+sidebar specimen with pinned items, removal and drag-and-drop. Event logs are
+collapsed by default. `/components/navigation/mobile` demonstrates both mobile navs.
+
+**Appearance**, at the bottom of the sidebar even when collapsed, selects an existing
+theme preset, light/dark mode, background and density. These settings are shared
+across in-app navigation; the showcase does not expose custom color editing.
+Historical demo URLs remain available as aliases. Background and render-mode
+variants are compatibility scenarios, not additional catalogue entries.
+
+The sample has no stylesheets or inline CSS. Pages compose MudShell components
+and MudBlazor controls using their public parameters and built-in utilities.
+Layout fixes belong in MudShell, not in sample-specific overrides.
+
+`MdsMainSection` and `MdsMainPart` use neutral theme text for titles and
+supporting copy by default. `TitleColor` remains available for intentional
+accent headings; `Color.Secondary` is a brand accent, not muted text.
+
+Run the sample with `dotnet run --project samples\MyApplication` and run UI tests
+against the running instance using `PLAYWRIGHT_TEST_BASE_URL` (default
+`http://localhost:5265`):
+
+```powershell
+$env:PLAYWRIGHT_TEST_BASE_URL = "http://localhost:5265"
+dotnet test tests\MudShell.UITests\MudShell.UITests.csproj
+```
+
 For pages with actions and filters, use this structure:
 
 1. **Top action bar** with `MdsMainToolbar` (primary actions on the left, UI config on the right with `MudSpacer`).

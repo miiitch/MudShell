@@ -5,13 +5,12 @@
 <MudIconButton Icon="@(ThemeState.IsDarkMode ? Icons.Material.Outlined.LightMode : Icons.Material.Outlined.DarkMode)"
                Size="Size.Small" Color="Color.Inherit"
                title="@(ThemeState.IsDarkMode ? "Light mode" : "Dark mode")"
-               OnClick="@(() => ThemeState.SetDarkMode(!ThemeState.IsDarkMode))"
-               Style="flex-shrink:0;" />
+               OnClick="@(() => ThemeState.SetDarkMode(!ThemeState.IsDarkMode))" />
 <MudIconButton Icon="@Icons.Material.Outlined.ColorLens"
                Size="Size.Small" Color="Color.Inherit"
                title="Theme and background"
-               OnClick="@OpenThemeDialog"
-               Style="flex-shrink:0; margin-left:0;" />
+               data-testid="open-appearance"
+               OnClick="@OpenThemeDialog" />
 
 @code {
     private Task OpenThemeDialog() =>

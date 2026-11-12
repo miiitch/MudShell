@@ -1,46 +1,42 @@
-﻿@namespace MyApplication.Client.Components
+@namespace MyApplication.Client.Components
 
-<div class="table-showcase">
-
-    @* Render mode badge *@
-    <div class="showcase-badge showcase-badge-@BadgeColor">
-        <MudIcon Icon="@BadgeIcon" Size="Size.Small" />
-        <span>@RenderModeName</span>
-    </div>
-
-    @* Table — fixed header, internal scroll only *@
-    <div class="table-container">
-        <MudTable Items="@_people" Hover="true" Striped="true" Dense="true"
-                  FixedHeader="true" Height="100%"
-                  Style="height:100%;">
-            <HeaderContent>
-                <MudTh>Nom</MudTh>
-                <MudTh>Email</MudTh>
-                <MudTh Class="hide-on-mobile">Rôle</MudTh>
-                <MudTh Class="hide-on-mobile">Ville</MudTh>
-                <MudTh>Statut</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Nom">@context.Name</MudTd>
-                <MudTd DataLabel="Email">@context.Email</MudTd>
-                <MudTd DataLabel="Rôle" Class="hide-on-mobile">@context.Role</MudTd>
-                <MudTd DataLabel="Ville" Class="hide-on-mobile">@context.City</MudTd>
-                <MudTd DataLabel="Statut">
-                    <MudChip T="string" Size="Size.Small"
-                             Color="@(context.IsActive ? Color.Success : Color.Default)">
-                        @(context.IsActive ? "Actif" : "Inactif")
-                    </MudChip>
-                </MudTd>
-            </RowTemplate>
-        </MudTable>
-    </div>
-
-</div>
+<MdsFillLayout>
+    <Bands>
+        <MudChip T="string" Icon="@BadgeIcon" Color="@ModeColor">@RenderModeName</MudChip>
+    </Bands>
+    <Body>
+        <MdsFillRegion>
+            <MudTable Items="@_people" Hover="true" Striped="true" Dense="true"
+                      FixedHeader="true" Height="100%" Breakpoint="Breakpoint.Sm">
+                <HeaderContent>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Email</MudTh>
+                    <MudTh>Role</MudTh>
+                    <MudTh>City</MudTh>
+                    <MudTh>Status</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Name">@context.Name</MudTd>
+                    <MudTd DataLabel="Email">@context.Email</MudTd>
+                    <MudTd DataLabel="Role">@context.Role</MudTd>
+                    <MudTd DataLabel="City">@context.City</MudTd>
+                    <MudTd DataLabel="Status">
+                        <MudChip T="string" Size="Size.Small"
+                                 Color="@(context.IsActive ? Color.Success : Color.Default)">
+                            @(context.IsActive ? "Active" : "Inactive")
+                        </MudChip>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MdsFillRegion>
+    </Body>
+</MdsFillLayout>
 
 @code {
     [Parameter] public string RenderModeName { get; set; } = "Unknown";
     [Parameter] public string BadgeColor     { get; set; } = "default";
     [Parameter] public string BadgeIcon      { get; set; } = Icons.Material.Outlined.Info;
+    private Color ModeColor => BadgeColor switch { "server" => Color.Info, "wasm" => Color.Success, "auto" => Color.Warning, _ => Color.Default };
 
     private record Person(string Name, string Email, string Role, string City, bool IsActive);
 
@@ -53,7 +49,7 @@
                                   "Ugo", "Valérie", "William", "Xavier", "Yasmine", "Zoé" };
         var lastNames  = new[] { "Martin", "Bernard", "Dubois", "Thomas", "Robert", "Richard", "Petit", "Durand", "Leroy", "Moreau",
                                   "Simon", "Laurent", "Lefebvre", "Michel", "Garcia", "David", "Bertrand", "Roux", "Vincent", "Fournier" };
-        var roles      = new[] { "Développeur", "Designer", "Chef de projet", "Analyste", "DevOps", "Product Owner", "QA", "Data Engineer", "Architecte", "Support" };
+        var roles      = new[] { "Developer", "Designer", "Project manager", "Analyst", "DevOps", "Product Owner", "QA", "Data Engineer", "Architect", "Support" };
         var cities     = new[] { "Paris", "Lyon", "Marseille", "Toulouse", "Bordeaux", "Nantes", "Lille", "Strasbourg", "Montpellier", "Rennes" };
 
         var people = new Person[50];
@@ -71,4 +67,3 @@
         return people;
     }
 }
-

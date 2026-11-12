@@ -1,55 +1,47 @@
 @namespace MyApplication.Client.Components
 
-<div class="showcase-wrap mbx-stack">
+<div class="mbx-stack">
     @* Render mode badge *@
-    <div class="showcase-badge showcase-badge-@BadgeColor">
-        <MudIcon Icon="@BadgeIcon" Size="Size.Small" />
-        <span>@RenderModeName</span>
-    </div>
+    <MudChip T="string" Icon="@BadgeIcon" Color="@ModeColor">@RenderModeName</MudChip>
 
     @* Interactivity proof — counter *@
-    <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">✅ Preuve d'interactivité</MudText>
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+    <MdsMainSection Title="Interactivity check">
+        <MudStack Row AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Spacing="3">
             <MudButton Variant="Variant.Filled" Color="Color.Primary"
-                       OnClick="@(() => _count++)"
-                       Style="border-radius:12px; text-transform:none;">
-                Cliquer
+                       OnClick="@(() => _count++)">
+                Click
             </MudButton>
-            <MudText>Clics : <strong>@_count</strong></MudText>
+            <MudText>Clicks: <strong>@_count</strong></MudText>
             @if (_count > 0)
             {
-                <MudChip T="string" Color="Color.Success" Size="Size.Small">Interactif ✓</MudChip>
+                <MudChip T="string" Color="Color.Success" Size="Size.Small">Interactive ✓</MudChip>
             }
-        </div>
-    </section>
+        </MudStack>
+    </MdsMainSection>
 
     @* ChatBar *@
-    <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsChatBar</MudText>
-        <MdsChatBar Placeholder="@("Tapez un message pour tester le bind…")"
+    <MdsMainSection Title="MdsChatBar">
+        <MdsChatBar Placeholder="@("Type a message to test binding…")"
                     @bind-Value="_chatValue" />
         @if (!string.IsNullOrEmpty(_chatValue))
         {
-            <MudText Typo="Typo.caption" Style="margin-top:6px; color: var(--mud-palette-text-secondary);">
-                Valeur liée : @_chatValue
+            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                Bound value: @_chatValue
             </MudText>
         }
-    </section>
+    </MdsMainSection>
 
     @* FilterTabBar *@
-    <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsFilterTabBar</MudText>
+    <MdsMainSection Title="MdsFilterTabBar">
         <MdsFilterTabBar T="string" @bind-Value="_tab" Items="@_tabs" />
-        <MudText Typo="Typo.caption" Style="margin-top:6px; color: var(--mud-palette-text-secondary);">
-            Onglet sélectionné : @_tab
+        <MudText Typo="Typo.caption" Color="Color.Secondary">
+            Selected tab: @_tab
         </MudText>
-    </section>
+    </MdsMainSection>
 
     @* DocumentCards *@
-    <section class="showcase-section">
-        <MudText Typo="Typo.subtitle1" Class="showcase-section-title">MdsDocumentCard</MudText>
-        <MudGrid Spacing="4">
+    <MdsMainSection Title="MdsDocumentCard">
+        <MudGrid Spacing="3">
             @foreach (var card in _cards)
             {
                 <MudItem xs="12" sm="6" md="4">
@@ -63,11 +55,11 @@
         </MudGrid>
         @if (_lastCard is not null)
         {
-            <MudText Typo="Typo.caption" Style="margin-top:8px; color: var(--mud-palette-text-secondary);">
-                Dernière carte cliquée : @_lastCard
+            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                Last card clicked: @_lastCard
             </MudText>
         }
-    </section>
+    </MdsMainSection>
 
 </div>
 
@@ -75,6 +67,7 @@
     [Parameter] public string RenderModeName { get; set; } = "Unknown";
     [Parameter] public string BadgeColor     { get; set; } = "default";
     [Parameter] public string BadgeIcon      { get; set; } = Icons.Material.Outlined.Info;
+    private Color ModeColor => BadgeColor switch { "server" => Color.Info, "wasm" => Color.Success, "auto" => Color.Warning, _ => Color.Default };
 
     private int     _count     = 0;
     private string  _chatValue = string.Empty;
@@ -85,16 +78,16 @@
     [
         new("images",   "Images"),
         new("pages",    "Pages"),
-        new("rapports", "Rapports"),
+        new("reports", "Reports"),
     ];
 
     private readonly (string Icon, string Type, string Title, string Desc)[] _cards =
     [
         (Icons.Material.Outlined.Description, "Page",    "Things to do in Tokyo",
          "Tokyo offers a vibrant mix of traditional culture and modern attractions."),
-        (Icons.Material.Outlined.BarChart,    "Rapport", "Rapport Q3",
-         "Analyse des métriques d'engagement utilisateur sur le trimestre."),
-        (Icons.Material.Outlined.Image,       "Image",   "Aperçu du projet",
-         "Maquette haute fidélité pour la page d'accueil de l'application."),
+        (Icons.Material.Outlined.BarChart,    "Report", "Q3 report",
+         "Analysis of user engagement metrics for the quarter."),
+        (Icons.Material.Outlined.Image,       "Image",   "Project preview",
+         "High-fidelity mockup of the application home page."),
     ];
 }

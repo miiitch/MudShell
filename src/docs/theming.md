@@ -9,9 +9,9 @@ using MudShell.Theme;
 
 MudTheme theme = MbxTheme.CreateTheme(); // default preset
 MudTheme limeTheme = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Lime);
-MudTheme rubyTheme = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Ruby);
+MudTheme crimsonTheme = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Crimson);
 MudTheme saffronTheme = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Saffron);
-MudTheme azureTheme = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Azure);
+MudTheme cobaltTheme = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.Cobalt);
 MudTheme magmaMist = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.MagmaMist);
 MudTheme fernGreen = MbxTheme.CreateTheme(MbxTheme.MbxThemePreset.FernGreen);
 MudTheme customTheme = MbxTheme.CreateThemeFromPrimary("#6f63ff");

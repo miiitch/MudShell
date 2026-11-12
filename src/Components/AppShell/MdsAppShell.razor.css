@@ -492,3 +492,28 @@
         transition: none !important;
     }
 }
+
+/* Narrow tiers: the context panel starts closed and has no visible toggle of its own. This button
+   sits in the top-right corner of the main area and opens it. It is out of flow, so it never adds
+   a block to the page. */
+.mbx-context-trigger {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--mbx-radius-md);
+    background: transparent;
+    color: var(--mud-palette-text-secondary);
+    cursor: pointer;
+}
+
+.mbx-context-trigger:hover {
+    background: var(--mud-palette-action-default-hover);
+}

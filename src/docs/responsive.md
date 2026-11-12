@@ -34,6 +34,7 @@ MudShell follows **MudBlazor's breakpoints** (Material Design):
 
 ### Accessibility
 - The overlay and the sheet use `role="dialog"` and `aria-modal="true"`. Focus moves into them and stays there, Esc closes them, and focus returns to the element that opened them.
+- The tablet and mobile overlay starts at the edge of the icon rail. It does not follow a custom sidebar width: the rail is fixed at 56 px on tablet.
 - Touch targets are at least 44 px.
 - Slide transitions are disabled under `prefers-reduced-motion: reduce`.
 

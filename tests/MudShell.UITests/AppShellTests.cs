@@ -24,7 +24,7 @@ public class AppShellTests : PlaywrightTestBase
         await Assertions.Expect(panel).ToHaveClassAsync(new Regex("mbx-context-panel-collapsed"));
         var main = Page.Locator(".mbx-main");
         var collapsedMain = await main.BoundingBoxAsync();
-        await Page.GetByTestId("context-panel-toggle").EvaluateAsync("el => el.click()");
+        await Page.GetByTestId("open-context-panel").ClickAsync();
         await Assertions.Expect(panel).ToHaveClassAsync(new Regex("mbx-context-panel-expanded"));
         var panelPosition = await panel.EvaluateAsync<string>("el => getComputedStyle(el).position");
         Assert.Contains(panelPosition, new[] { "absolute", "fixed" });

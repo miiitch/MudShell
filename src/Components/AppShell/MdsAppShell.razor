@@ -48,6 +48,14 @@
                     </aside>
                 }
                 <div class="mbx-main @(ContextPanelContent is not null ? "mbx-main-with-context" : "")">
+                    @if (ContextPanelContent is not null && ShellMode != MbxShellMode.Desktop)
+                    {
+                        <button type="button" class="mbx-context-trigger" data-testid="open-context-panel"
+                                title="Open the context panel" aria-label="Open the context panel"
+                                @onclick="() => ToggleContextPanel()">
+                            <MudIcon Icon="@Icons.Material.Outlined.ViewSidebar" Size="Size.Small" />
+                        </button>
+                    }
                     <div class="mbx-main-inner">
                         @ChildContent
                     </div>

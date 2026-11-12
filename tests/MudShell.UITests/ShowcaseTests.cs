@@ -206,7 +206,7 @@ public class ShowcaseTests : PlaywrightTestBase
         await Assertions.Expect(Page.GetByText("A region that fills its tab", new() { Exact = true })).ToBeVisibleAsync();
     });
 
-    [Fact(Skip = "Layout clash: main's MainLayout bottom nav overlays the drilldown demo on mobile (elementFromPoint hits nav-home). Re-enable when the demo page hides the layout bar.")]
+    [Fact]
     public Task MobileNavigation_DrillsDownBeforeNavigatingAndOffersSimpleBar() => RunAsync(
         nameof(MobileNavigation_DrillsDownBeforeNavigatingAndOffersSimpleBar), async () =>
     {
@@ -214,7 +214,7 @@ public class ShowcaseTests : PlaywrightTestBase
         await Page.GotoAsync("/components/navigation/mobile", new() { WaitUntil = WaitUntilState.NetworkIdle });
         var demo = Page.GetByTestId("mobile-drilldown-demo");
         await demo.GetByRole(AriaRole.Button, new() { Name = "Components", Exact = true }).ClickAsync();
-        var panel = demo.Locator(".mbx-mobile-drilldown-panel");
+        var panel = Page.GetByTestId("context-sheet");
         await Assertions.Expect(panel).ToBeVisibleAsync();
         await panel.GetByText("Documents and filters", new() { Exact = true }).ClickAsync();
         await Assertions.Expect(Page).ToHaveURLAsync(new Regex("/components/navigation/mobile$"));

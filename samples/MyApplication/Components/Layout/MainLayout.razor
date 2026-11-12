@@ -38,7 +38,7 @@
 </MdsAppShell>
 
 @* Mobile level-1 bar lives outside the shell so it stays pinned to the bottom edge. *@
-@if (_shellMode == MdsAppShell.MbxShellMode.Mobile)
+@if (_shellMode == MdsAppShell.MbxShellMode.Mobile && !_hideLayoutBottomBar)
 {
     <MdsBottomNav @ref="_mobileNav" Tree="@_navTree" />
 }
@@ -49,6 +49,7 @@
     private MdsBottomNav? _mobileNav;
     private bool _sidebarExpanded = false;
     private bool _showContextPanel;
+    private bool _hideLayoutBottomBar;
     private bool _contextPanelExpanded = true;
     private RenderFragment? ContextPanel => _showContextPanel
         ? @<div>
@@ -320,6 +321,9 @@
             || path.StartsWith("/main-components", StringComparison.OrdinalIgnoreCase)
             || path.StartsWith("/demo", StringComparison.OrdinalIgnoreCase)
             || path.StartsWith("/modes", StringComparison.OrdinalIgnoreCase);
+
+        // The mobile drilldown demo brings its own bottom bar; the layout bar would overlay it.
+        _hideLayoutBottomBar = path.StartsWith("/components/navigation/mobile", StringComparison.OrdinalIgnoreCase);
 
         var isBgRoute = path.EndsWith("/bg", StringComparison.OrdinalIgnoreCase);
         ThemeState.SetBackgroundMode(isBgRoute

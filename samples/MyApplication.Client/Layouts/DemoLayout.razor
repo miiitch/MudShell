@@ -31,11 +31,10 @@
                     OnToggle="@HandleToggle"
                     PrimaryItems="@_navItems">
             <LogoContent>
-                <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Medium"
-                         Style="background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #7e6fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 28px; flex-shrink:0;" />
+                <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Medium" Color="Color.Primary" />
                 @if (_expanded)
                 {
-                    <span style="font-size:17px; font-weight:600; white-space:nowrap;">Copilot</span>
+                    <MudText Typo="Typo.h6">Copilot</MudText>
                 }
             </LogoContent>
             <BottomContent>
@@ -45,9 +44,9 @@
                                OnClick="@OpenThemeDialog" />
                 @if (_expanded)
                 {
-                    <span style="font-size:13px; color:var(--mud-palette-text-secondary);">
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">
                         Thème et fond
-                    </span>
+                    </MudText>
                 }
             </BottomContent>
         </MdsSidebar>
@@ -71,14 +70,13 @@
     private bool _contextPanelExpanded = true;
     private RenderFragment? ContextPanel => _showContextPanel
         ? @<div>
-              <div style="display:flex; justify-content:flex-end; align-items:center; height:40px; padding:0 8px;">
+              <MudStack Row Justify="Justify.FlexEnd" AlignItems="AlignItems.Center" Class="px-2">
                   <MudIconButton Icon="@(_contextPanelExpanded ? Icons.Material.Outlined.KeyboardDoubleArrowLeft : Icons.Material.Outlined.KeyboardDoubleArrowRight)"
                                  Size="Size.Small"
                                  Color="Color.Inherit"
-                                 Style="margin:0;"
                                  title="Réduire/agrandir le panneau contextuel"
                                  OnClick="@(() => _shell.ToggleContextPanel())" />
-              </div>
+              </MudStack>
               <MdsContextNavPanel Tree="@_libraryContextTree" IsExpanded="@_contextPanelExpanded" IsExpandedChanged="@(v => _contextPanelExpanded = v)" />
           </div>
         : null;

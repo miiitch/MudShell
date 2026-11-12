@@ -58,14 +58,13 @@
     private bool _contextPanelExpanded = true;
     private RenderFragment? ContextPanel => _showContextPanel
         ? @<div>
-              <div style="display:flex; justify-content:flex-end; align-items:center; height:40px; padding:0 8px;">
+              <MudStack Row Justify="Justify.FlexEnd" AlignItems="AlignItems.Center" Class="px-2">
                   <MudIconButton Icon="@(_contextPanelExpanded ? Icons.Material.Outlined.KeyboardDoubleArrowLeft : Icons.Material.Outlined.KeyboardDoubleArrowRight)"
                                  Size="Size.Small"
                                  Color="Color.Inherit"
-                                 Style="margin:0;"
                                  title="Collapse/expand context panel"
                                  OnClick="@(() => _shell.ToggleContextPanel())" />
-              </div>
+              </MudStack>
               <MdsContextNavPanel Tree="@_navTree" IsExpanded="@_contextPanelExpanded" IsExpandedChanged="@(v => _contextPanelExpanded = v)" OnSortChanged="@HandleContextSortDemoSortChanged" />
               @if (_contextPanelExpanded)
               {

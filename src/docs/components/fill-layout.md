@@ -13,6 +13,7 @@ Layout blocks own sizing and scrolling, content blocks never do. Compose a page 
 | `Header` | `RenderFragment?` | `null` | Fixed band at the top. `flex-shrink: 0` |
 | `Bands` | `RenderFragment?` | `null` | Fixed bands under the header. Each child stays on one row (no wrap) and overflows horizontally |
 | `Body` | `RenderFragment?` | `null` | Remaining space (`flex: 1 1 0; min-height: 0; overflow: hidden`) |
+| `Footer` | `RenderFragment?` | `null` | Optional fixed content below the body, such as a chat composer or action bar |
 | `ChildContent` | `RenderFragment?` | `null` | Alias of `Body` when no `<Body>` slot is given |
 | `Class` | `string?` | `null` | Extra CSS class on the root |
 | `AdditionalAttributes` | `IReadOnlyDictionary<string, object>?` | `null` | Splatted onto the root element |
@@ -33,6 +34,10 @@ Layout blocks own sizing and scrolling, content blocks never do. Compose a page 
   </Body>
 </MdsFillLayout>
 ```
+
+For a conversation, put `MdsChatTranscript` in `Body` and `MdsChatComposer` in
+`Footer`. The layout reserves the composer's natural height without viewport
+calculations or application CSS.
 
 ## Inside `MdsAppShell`
 

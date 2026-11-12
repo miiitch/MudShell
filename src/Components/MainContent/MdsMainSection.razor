@@ -18,7 +18,7 @@
                 </div>
                 @if (!string.IsNullOrWhiteSpace(Description))
                 {
-                    <MudText Typo="Typo.body2" Color="Color.Secondary">@Description</MudText>
+                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@Description</MudText>
                 }
                 <MudDivider />
             </MudStack>
@@ -28,7 +28,7 @@
         {
             <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="py-6">
                 <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-                <MudText Color="Color.Secondary">@LoadingText</MudText>
+                <MudText Class="mud-text-secondary">@LoadingText</MudText>
             </MudStack>
         }
         else
@@ -46,7 +46,7 @@
     [Parameter] public string? Title { get; set; }
     [Parameter] public string? Description { get; set; }
     [Parameter] public string? Icon { get; set; }
-    [Parameter] public Color TitleColor { get; set; } = Color.Primary;
+    [Parameter] public Color TitleColor { get; set; } = Color.Default;
     [Parameter] public bool IsLoading { get; set; }
     [Parameter] public string LoadingText { get; set; } = "Loading...";
     [Parameter] public RenderFragment? HeaderRight { get; set; }

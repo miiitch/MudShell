@@ -10,24 +10,23 @@
                 Tree="@Tree">
 
         <LogoContent>
-            <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Medium"
-                     Style="background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #7e6fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 28px; flex-shrink:0;" />
+            <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Size="Size.Medium" Color="Color.Primary" />
             @if (IsExpanded)
             {
-                <span class="nav-app-title">Copilot</span>
+                <MudText Typo="Typo.h6">Copilot</MudText>
             }
         </LogoContent>
 
         <BottomContent>
-            <MudAvatar Size="Size.Small" Style="cursor: pointer; background: var(--mud-palette-gray-light); flex-shrink: 0;">
+            <MudAvatar Size="Size.Small">
                 <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" />
             </MudAvatar>
             @if (IsExpanded)
             {
-                <div class="nav-profile-info">
-                    <span class="nav-profile-name">Michel</span>
-                    <span class="nav-profile-sub">Microsoft 365</span>
-                </div>
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.body2">Michel</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">Microsoft 365</MudText>
+                </MudStack>
                 <ThemeActions />
             }
         </BottomContent>

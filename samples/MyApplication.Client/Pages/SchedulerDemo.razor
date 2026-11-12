@@ -40,7 +40,7 @@
     private readonly DialogOptions _dialogOptions = new() { MaxWidth = MaxWidth.Small, FullWidth = true };
 
     private readonly RenderFragment<SchedulerBooking> BookingTemplate = booking =>
-        @<MudText Typo="Typo.body2" Style="font-weight: 600;">@booking.Title</MudText>;
+        @<MudText Typo="Typo.body2" Class="font-weight-bold">@booking.Title</MudText>;
 
     private List<SchedulerBooking> _bookings = [];
     private DateTime? _selectedDate = DateTime.Today;

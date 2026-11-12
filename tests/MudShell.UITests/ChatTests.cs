@@ -6,6 +6,32 @@ namespace MudShell.UITests;
 /// <summary>Covers the chat demo on "/chat": landing, composer keyboard handling, streaming and stop.</summary>
 public class ChatTests : PlaywrightTestBase
 {
+    [Theory]
+    [InlineData(390)]
+    [InlineData(1280)]
+    public Task Transcript_ScrollsWithoutMovingComposer(int width) => RunAsync(
+        $"{nameof(Transcript_ScrollsWithoutMovingComposer)}_{width}", async () =>
+    {
+        await Page.SetViewportSizeAsync(width, 900);
+        await OpenAsync();
+        await Page.GetByTestId("chat-input").FillAsync(
+            string.Join(" ", Enumerable.Repeat("Explain scrolling transcripts in detail.", 10)));
+        await Page.GetByTestId("chat-input").PressAsync("Enter");
+        await Assertions.Expect(Page.GetByTestId("chat-part-chart")).ToBeVisibleAsync(new() { Timeout = 30000 });
+
+        var composer = Page.Locator(".mds-fill-layout-footer");
+        var before = await composer.BoundingBoxAsync();
+        Assert.True(before!.Height > 0);
+        Assert.InRange(before.Y + before.Height, 0, 900);
+        var scroll = Page.Locator(".mds-chat-transcript-scroll");
+        Assert.True(await scroll.EvaluateAsync<bool>("el => el.scrollHeight > el.clientHeight"));
+        await scroll.EvaluateAsync("el => el.scrollTop = 0");
+        var after = await composer.BoundingBoxAsync();
+        Assert.Equal(before.Y, after!.Y);
+        Assert.True(await Page.Locator(".mbx-main-inner")
+            .EvaluateAsync<bool>("el => el.scrollHeight <= el.clientHeight + 1"));
+    });
+
     private async Task OpenAsync()
     {
         await Page.GotoAsync("/chat");

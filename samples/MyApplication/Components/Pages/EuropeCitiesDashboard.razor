@@ -1,4 +1,5 @@
 @page "/europe-cities"
+@page "/examples/cities"
 @rendermode InteractiveServer
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack">
@@ -12,23 +13,12 @@
     </MdsPageHeader>
 
     <MdsMainPart Title="Business Widgets">
-        <HeaderActions>
-            <MudStack Row="true" Spacing="1">
-                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.FilterList">Filters</MudButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.Download">Export</MudButton>
-            </MudStack>
-        </HeaderActions>
         <ChildContent>
             <MudGrid Spacing="2">
                 @foreach (var widget in _widgets)
                 {
                     <MudItem xs="12" sm="6" lg="3">
-                        <MudStack AlignItems="AlignItems.Start" Spacing="0" Class="pa-3"
-                                  Style="background:var(--mud-palette-background-grey); border-radius:8px;">
-                            <MudText Typo="Typo.caption" Color="Color.Secondary">@widget.Label</MudText>
-                            <MudText Typo="Typo.h4">@widget.Value</MudText>
-                            <MudText Typo="Typo.caption" Color="Color.Success">@widget.Trend</MudText>
-                        </MudStack>
+                        <MdsStatTile Label="@widget.Label" Value="@widget.Value" Delta="@widget.Trend" DeltaTone="MbxDeltaTone.Positive" />
                     </MudItem>
                 }
             </MudGrid>
@@ -102,7 +92,7 @@
 @code {
     private readonly List<BreadcrumbItem> _breadcrumbItems =
     [
-        new("Home", href: "/")
+        new("Examples", href: "/examples")
     ];
 
     private readonly WidgetItem[] _widgets =
@@ -232,4 +222,3 @@
         _selectedRegion = null;
     }
 }
-

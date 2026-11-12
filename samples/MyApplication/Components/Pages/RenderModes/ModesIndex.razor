@@ -2,20 +2,22 @@
 @rendermode InteractiveServer
 @inject NavigationManager Nav
 
-<PageTitle>Render Modes</PageTitle>
+<PageTitle>Blazor compatibility</PageTitle>
 
-<MdsPageHeader Title="Render Modes">
+<MdsPageHeader Title="Blazor compatibility">
+    <StartContent><div></div></StartContent>
     <EndContent>
         <MudChip T="string" Color="Color.Default" Size="Size.Small">4 modes x variants</MudChip>
     </EndContent>
 </MdsPageHeader>
 
-<MudStack Class="mbx-stack">
+<MudStack Spacing="3" Class="px-4 pb-6">
     <MudText Typo="Typo.body1" Color="Color.Secondary">
-        This section shows that the <strong>MudShell</strong> library works
-        across every Blazor render mode. Each mode has two variants:
-        <strong>palette</strong> background (solid dark), <strong>image</strong> background,
-        plus <strong>grid</strong> and <strong>table</strong> layouts (no page scrolling).
+        These technical scenarios use the same components. They are not
+        additional catalogue categories. The legacy WebAssembly routes
+        currently use <strong>InteractiveAuto</strong>: Server on first launch,
+        then client-side execution when resources are available.
+        Adjust theme and density through <strong>Appearance</strong> in the sidebar.
     </MudText>
 
     <MudGrid Spacing="3">
@@ -88,8 +90,8 @@
             "Interactive components over SignalR. Execution stays on the server.",
             "/modes/server", true, false),
         new(Icons.Material.Outlined.Memory,
-            "Interactive Auto (WASM)",
-            "Starts in Server mode, then switches to WASM. Code runs on the client.",
+            "Auto — WebAssembly scenario",
+            "Legacy /wasm route, configured with InteractiveAuto and WebAssembly client loading.",
             "/modes/wasm", true, false),
         new(Icons.Material.Outlined.AutoMode,
             "Interactive Auto",

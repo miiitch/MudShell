@@ -83,7 +83,7 @@ public class SidebarNavSubMenuTests : PlaywrightTestBase
         nameof(SubMenu_CompactDensity_StillSupportsBeforeAndAfterDrops), async () =>
     {
         await GotoAndExpandGroupAsync();
-        await Page.GetByTestId("open-appearance").ClickAsync();
+        await Page.GetByTestId("open-appearance").Filter(new() { Visible = true }).ClickAsync();
         await Page.GetByTestId("theme-density").ClickAsync();
         await Page.GetByRole(AriaRole.Dialog).GetByRole(AriaRole.Button, new() { Name = "Close" }).ClickAsync();
         await Assertions.Expect(Page.Locator(".mbx-density-compact")).ToBeVisibleAsync();

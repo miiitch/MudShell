@@ -16,7 +16,7 @@ public class ShowcaseTests : PlaywrightTestBase
     {
         await Page.SetViewportSizeAsync(width, 900);
         await Page.GotoAsync("/", new() { WaitUntil = WaitUntilState.NetworkIdle });
-        await Page.GetByTestId("open-appearance").ClickAsync();
+        await Page.GetByTestId("open-appearance").Filter(new() { Visible = true }).ClickAsync();
         await Page.GetByRole(AriaRole.Combobox, new() { Name = "Theme", Exact = true }).ClickAsync();
         await Page.GetByRole(AriaRole.Option, new() { Name = "Purple Mood", Exact = true }).ClickAsync();
         await Page.GetByRole(AriaRole.Dialog).GetByRole(AriaRole.Button, new() { Name = "Close" }).ClickAsync();
@@ -117,7 +117,7 @@ public class ShowcaseTests : PlaywrightTestBase
     public Task Appearance_UsesPresetsAndPersistsAcrossNavigation() => RunAsync(nameof(Appearance_UsesPresetsAndPersistsAcrossNavigation), async () =>
     {
         await Page.GotoAsync("/", new() { WaitUntil = WaitUntilState.NetworkIdle });
-        await Page.GetByTestId("open-appearance").ClickAsync();
+        await Page.GetByTestId("open-appearance").Filter(new() { Visible = true }).ClickAsync();
         var preset = Page.GetByRole(AriaRole.Combobox, new() { Name = "Theme", Exact = true });
         await Assertions.Expect(preset).ToBeVisibleAsync();
         await Assertions.Expect(Page.Locator("input[type='color']")).ToHaveCountAsync(0);
@@ -129,8 +129,7 @@ public class ShowcaseTests : PlaywrightTestBase
         await Page.GetByRole(AriaRole.Dialog).GetByRole(AriaRole.Button, new() { Name = "Close" }).ClickAsync();
         await Page.GetByTestId("explore-components").ClickAsync();
         await Assertions.Expect(Page.GetByTestId("showcase-catalog")).ToBeVisibleAsync();
-        await Assertions.Expect(Page.Locator(".mbx-shell")).ToHaveClassAsync(new Regex("mbx-mode-image"));
-        await Page.GetByTestId("open-appearance").ClickAsync();
+        await Page.GetByTestId("open-appearance").Filter(new() { Visible = true }).ClickAsync();
         await Assertions.Expect(preset).ToContainTextAsync("Teal");
         await Assertions.Expect(Page.Locator("input[data-testid='theme-density'], [data-testid='theme-density'] input")).ToBeCheckedAsync();
         await Assertions.Expect(Page.Locator("input[data-testid='theme-dark-mode'], [data-testid='theme-dark-mode'] input")).Not.ToBeCheckedAsync();

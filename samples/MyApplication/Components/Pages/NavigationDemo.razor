@@ -4,7 +4,7 @@
 @using MudShell.Components.Navigation
 
 <PageTitle>Navigation — MudShell</PageTitle>
-<MudStack Spacing="3" Class="pa-4" data-testid="navigation-demo">
+<MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack" data-testid="navigation-demo">
     <ShowcaseHeader FamilyId="navigation" />
     <p>Context panel subsections have two levels: a group and its items.
         Expand Reports or Favorites and drag items between the two pinned positions.</p>
@@ -24,7 +24,7 @@
             removing or sorting items does not affect other groups. Pinned areas cannot be sorted.</p>
         <MudText Typo="Typo.caption">&lt;MdsSidebarNav Tree="tree" IsExpanded="true" OnSortChanged="HandleSort" /&gt;</MudText>
     </ShowcaseDetails>
-</MudStack>
+</MudContainer>
 
 @code {
     private List<string> _order = ["report-alpha", "report-beta", "report-gamma"];

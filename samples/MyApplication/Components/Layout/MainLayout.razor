@@ -43,12 +43,6 @@
     <MdsBottomNav @ref="_mobileNav" Tree="@_navTree" />
 }
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
-
 @code {
     private MdsAppShell _shell = default!;
     private MdsAppShell.MbxShellMode _shellMode = MdsAppShell.MbxShellMode.Desktop;
@@ -68,17 +62,20 @@
               <MdsContextNavPanel Tree="@_navTree" IsExpanded="@_contextPanelExpanded" IsExpandedChanged="@(v => _contextPanelExpanded = v)" OnSortChanged="@HandleContextSortDemoSortChanged" />
               @if (_contextPanelExpanded)
               {
-                  <MudSimpleTable Dense="true" Hover="true" Class="pa-2" data-testid="context-nav-sort-demo-log">
-                      <thead>
-                          <tr><th>Event</th></tr>
-                      </thead>
-                      <tbody>
-                          @foreach (var entry in _contextSortDemoLog)
-                          {
-                              <tr><td>@entry</td></tr>
-                          }
-                      </tbody>
-                  </MudSimpleTable>
+                  <details class="pa-2" data-testid="context-events">
+                      <summary>Events</summary>
+                      <MudSimpleTable Dense="true" Hover="true" data-testid="context-nav-sort-demo-log">
+                          <thead>
+                              <tr><th>Event</th></tr>
+                          </thead>
+                          <tbody>
+                              @foreach (var entry in _contextSortDemoLog)
+                              {
+                                  <tr><td>@entry</td></tr>
+                              }
+                          </tbody>
+                      </MudSimpleTable>
+                  </details>
               }
           </div>
         : null;

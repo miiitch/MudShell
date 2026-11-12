@@ -3,7 +3,7 @@
 @rendermode InteractiveServer
 
 <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="mbx-stack">
-    <MdsPageHeader Title="Library" BreadcrumbItems="@_breadcrumbs" />
+    <MdsPageHeader Title="Library" />
     <MdsMainToolbar>
         <MudTooltip Text="Add a sample document">
             <MudIconButton Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Outlined.Add"
@@ -12,7 +12,7 @@
         <MudSpacer />
         <MudText Typo="Typo.caption">@_pages.Count sample documents</MudText>
     </MdsMainToolbar>
-    <MudTextField T="string" @bind-Value="_query" Immediate Label="Search documents" Class="mb-3" />
+    <MudTextField T="string" @bind-Value="_query" Immediate Label="Search documents" />
     <MdsFilterTabBar T="string" Items="@_tabs" @bind-Value="_selectedTab" />
     <MudGrid>
         @foreach (var doc in Visible)
@@ -35,7 +35,6 @@
 @code {
     private string _selectedTab = "all";
     private string _query = "";
-    private readonly List<BreadcrumbItem> _breadcrumbs = [new("Examples", "/examples")];
     private readonly MbxTabItem<string>[] _tabs = [new("all", "All"), new("Page", "Pages"), new("Report", "Reports"), new("Image", "Images")];
     private readonly List<PageItem> _pages =
     [

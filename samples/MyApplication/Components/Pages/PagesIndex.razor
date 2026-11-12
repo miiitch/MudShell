@@ -6,7 +6,7 @@
     <MdsPageHeader Title="Find the right building block." BreadcrumbItems="@_breadcrumbs" />
     <p>Browse by use case. Every component is listed by name.</p>
     <MudTextField T="string" Value="@_query" ValueChanged="@(value => _query = value)" Immediate
-                  Label="Search for a family or component" data-testid="catalog-search" Class="mb-5" />
+                  Label="Search for a family or component" data-testid="catalog-search" />
     <MudGrid>
         @foreach (var family in Matches)
         {

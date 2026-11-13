@@ -61,12 +61,12 @@ jobs:
 
       # Exchanges the job's OIDC token for a temporary NuGet API key. Matches the trusted publishing
       # policy on nuget.org (owner miiitch, repo MudShell, workflow publish.yml, environment release).
-      # The NuGet profile user name is read from the repository variable NUGET_USER.
+      # The NuGet profile user name is read from the secret NUGET_USER of the release environment.
       - name: NuGet login (trusted publishing)
         id: nuget_login
         uses: NuGet/login@v1
         with:
-          user: ${{ vars.NUGET_USER }}
+          user: ${{ secrets.NUGET_USER }}
 
       - name: Push to NuGet.org
         env:

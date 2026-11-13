@@ -10,6 +10,11 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     environment: release
+    # id-token: write lets GitHub issue an OIDC token that NuGet.org exchanges for a short-lived API key
+    # (NuGet trusted publishing). No long-lived NUGET_API_KEY secret is needed.
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       # Full history so the tag's ancestry can be checked below.
@@ -54,5 +59,16 @@ jobs:
           }
           Write-Host "Assembly version matches the tag."
 
+      # Exchanges the job's OIDC token for a temporary NuGet API key. Matches the trusted publishing
+      # policy on nuget.org (owner miiitch, repo MudShell, workflow publish.yml, environment release).
+      # The NuGet profile user name is read from the repository variable NUGET_USER.
+      - name: NuGet login (trusted publishing)
+        id: nuget_login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
       - name: Push to NuGet.org
-        run: dotnet nuget push "./artifacts/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        env:
+          NUGET_API_KEY: ${{ steps.nuget_login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push "./artifacts/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate

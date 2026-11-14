@@ -1,0 +1,6 @@
+.mds-chat-input {
+    flex: none;
+    display: flex;
+    justify-content: center;
+    padding: var(--mbx-space-3, 12px) var(--mbx-space-4, 16px) var(--mbx-space-4, 16px);
+}

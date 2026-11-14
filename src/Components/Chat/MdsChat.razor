@@ -1,0 +1,53 @@
+@namespace MudShell.Components.Chat
+@using Microsoft.AspNetCore.Components.AI
+
+@* Thin entry point: the AgentBoundary creates the AgentContext that MdsChatSurface and its children consume. *@
+<AgentBoundary Agent="Agent">
+    <MdsChatSurface Owner="this" />
+</AgentBoundary>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>The agent driving the conversation. Create it from an <c>IChatClient</c> and dispose it with the page.</summary>
+    [Parameter, EditorRequired] public UIAgent Agent { get; set; } = default!;
+
+    /// <summary>Content above the conversation (title bar, model picker…).</summary>
+    [Parameter] public RenderFragment? Header { get; set; }
+
+    /// <summary>
+    /// Replaces the default landing shown while the conversation is empty. When null, an <see cref="MdsChatLanding"/>
+    /// is built from <see cref="Greeting"/>, <see cref="Subtitle"/>, <see cref="Icon"/> and <see cref="Prompts"/>.
+    /// </summary>
+    [Parameter] public RenderFragment? WelcomeContent { get; set; }
+
+    [Parameter] public string? Greeting { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public RenderFragment? Icon { get; set; }
+
+    /// <summary>Suggested prompts on the landing; a click sends the text to the agent.</summary>
+    [Parameter] public IEnumerable<string>? Prompts { get; set; }
+
+    /// <summary>
+    /// Custom renderers: put <c>BlockRenderer&lt;TBlock&gt;</c> elements here. They are registered after MudShell's
+    /// defaults, so they win for the block types they match.
+    /// </summary>
+    [Parameter] public RenderFragment? MessageListContent { get; set; }
+
+    [Parameter] public string? Placeholder { get; set; } = "Ask anything…";
+
+    /// <summary>Slot at the start of the input's action row (e.g. "+" menu).</summary>
+    [Parameter] public RenderFragment? InputActions { get; set; }
+
+    /// <summary>Slot just before Send/Stop (e.g. mic).</summary>
+    [Parameter] public RenderFragment? InputEndActions { get; set; }
+
+    [Parameter] public int? MaxLength { get; set; }
+
+    /// <summary>CSS max-width of the conversation column. Defaults to 48rem; use "100%" for full width.</summary>
+    [Parameter] public string MaxWidth { get; set; } = "48rem";
+
+    [Parameter] public string? Class { get; set; }
+}

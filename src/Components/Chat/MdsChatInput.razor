@@ -1,0 +1,42 @@
+@namespace MudShell.Components.Chat
+@using Microsoft.AspNetCore.Components.AI
+@implements IDisposable
+
+<div class="mds-chat-input" @attributes="AdditionalAttributes">
+    <MdsChatComposer @bind-Value="_draft" OnSend="SendAsync" OnStop="StopAsync" IsBusy="IsBusy"
+                     Placeholder="@Placeholder" MaxLength="MaxLength" MaxWidth="var(--mds-chat-max-width, 48rem)"
+                     Actions="Actions" EndActions="EndActions" />
+</div>
+
+@code {
+    private IDisposable? _statusSubscription;
+    private string? _draft = "";
+
+    [CascadingParameter] public AgentContext Context { get; set; } = default!;
+
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public int? MaxLength { get; set; }
+    [Parameter] public RenderFragment? Actions { get; set; }
+    [Parameter] public RenderFragment? EndActions { get; set; }
+
+    /// <summary>A turn is running: Send turns into Stop.</summary>
+    private bool IsBusy => Context.Status is ConversationStatus.Streaming;
+
+    protected override void OnInitialized() =>
+        _statusSubscription = Context.RegisterOnStatusChanged(_ => InvokeAsync(StateHasChanged));
+
+    // The turn is not awaited: the composer clears right away and failures surface through AgentContext.Status/Error.
+    private Task SendAsync(string text)
+    {
+        _ = Context.SendMessageAsync(text);
+        return Task.CompletedTask;
+    }
+
+    private Task StopAsync() => Context.CancelAsync();
+
+    public void Dispose() => _statusSubscription?.Dispose();
+}

@@ -17,9 +17,11 @@ public class ChatTests : PlaywrightTestBase
         await Page.GetByTestId("chat-input").FillAsync(
             string.Join(" ", Enumerable.Repeat("Explain scrolling transcripts in detail.", 10)));
         await Page.GetByTestId("chat-input").PressAsync("Enter");
-        await Assertions.Expect(Page.GetByTestId("chat-part-chart")).ToBeVisibleAsync(new() { Timeout = 30000 });
+        // Measure once the turn is over: the composer shrinks back after the long draft is sent.
+        await Assertions.Expect(Page.GetByTestId("chat-stop")).ToBeVisibleAsync();
+        await Assertions.Expect(Page.GetByTestId("chat-stop")).ToHaveCountAsync(0, new() { Timeout = 60000 });
 
-        var composer = Page.Locator(".mds-fill-layout-footer");
+        var composer = Page.Locator(".mds-chat-input");
         var before = await composer.BoundingBoxAsync();
         Assert.True(before!.Height > 0);
         Assert.InRange(before.Y + before.Height, 0, 900);
@@ -53,7 +55,7 @@ public class ChatTests : PlaywrightTestBase
 
         await input.PressAsync("Enter");
 
-        await Assertions.Expect(Page.GetByTestId("chat-message-user")).ToContainTextAsync("line two");
+        await Assertions.Expect(Page.Locator(".sc-ai-message--user")).ToContainTextAsync("line two");
         await Assertions.Expect(input).ToHaveValueAsync("");
     }
 
@@ -64,7 +66,7 @@ public class ChatTests : PlaywrightTestBase
 
         await Page.GetByTestId("chat-prompt-0").ClickAsync();
 
-        await Assertions.Expect(Page.GetByTestId("chat-message-user")).ToContainTextAsync("Summarise my week");
+        await Assertions.Expect(Page.Locator(".sc-ai-message--user")).ToContainTextAsync("Show my usage");
     }
 
     [Fact]
@@ -77,7 +79,7 @@ public class ChatTests : PlaywrightTestBase
 
         var stop = Page.GetByTestId("chat-stop");
         await Assertions.Expect(stop).ToBeVisibleAsync();
-        await Assertions.Expect(Page.GetByTestId("chat-message-assistant")).ToContainTextAsync("You asked");
+        await Assertions.Expect(Page.Locator(".sc-ai-message--assistant")).ToContainTextAsync("You asked");
 
         await stop.ClickAsync();
 
@@ -94,16 +96,47 @@ public class ChatTests : PlaywrightTestBase
     }
 
     [Fact]
-    public async Task Should_RenderRegisteredPartComponent_And_FallbackForUnknownKind()
+    public async Task Should_RenderCustomBlockRenderer_ForUsageToolCall()
     {
         await OpenAsync();
         var input = Page.GetByTestId("chat-input");
-        await input.FillAsync("hi");
+        await input.FillAsync("show my usage");
         await input.PressAsync("Enter");
 
+        // The page's own BlockRenderer overrides MudShell's default tool-call card.
         await Assertions.Expect(Page.GetByTestId("chat-part-chart")).ToBeVisibleAsync(new() { Timeout = 30000 });
-        await Assertions.Expect(Page.Locator("[data-part-kind='unknown-kind']"))
-            .ToContainTextAsync("Unregistered kinds use the fallback.");
+        await Assertions.Expect(Page.GetByTestId("chat-tool-call")).ToHaveCountAsync(0);
+        await Assertions.Expect(Page.GetByTestId("chat-reasoning")).ToHaveCountAsync(1);
+    }
+
+    [Fact]
+    public async Task Should_AskForApproval_And_ContinueAfterApprove()
+    {
+        await OpenAsync();
+        var input = Page.GetByTestId("chat-input");
+        await input.FillAsync("please delete it");
+        await input.PressAsync("Enter");
+
+        var approval = Page.GetByTestId("chat-approval");
+        await Assertions.Expect(approval).ToBeVisibleAsync(new() { Timeout = 30000 });
+        await Page.GetByTestId("chat-approve").ClickAsync();
+
+        await Assertions.Expect(approval).ToHaveAttributeAsync("data-status", "approved");
+        await Assertions.Expect(Page.Locator(".sc-ai-message--assistant")).ToContainTextAsync("report was deleted");
+    }
+
+    [Fact]
+    public async Task Should_NotRunTool_When_ApprovalRejected()
+    {
+        await OpenAsync();
+        var input = Page.GetByTestId("chat-input");
+        await input.FillAsync("please delete it");
+        await input.PressAsync("Enter");
+
+        await Assertions.Expect(Page.GetByTestId("chat-approval")).ToBeVisibleAsync(new() { Timeout = 30000 });
+        await Page.GetByTestId("chat-reject").ClickAsync();
+
+        await Assertions.Expect(Page.Locator(".sc-ai-message--assistant")).ToContainTextAsync("nothing was deleted");
     }
 
     [Fact]
@@ -121,10 +154,14 @@ public class ChatTests : PlaywrightTestBase
         var input = panel.GetByTestId("chat-input");
         await input.FillAsync("from the corner");
         await input.PressAsync("Enter");
-        await Assertions.Expect(panel.GetByTestId("floating-message")).ToContainTextAsync("from the corner");
+        await Assertions.Expect(panel.Locator(".sc-ai-message--user")).ToContainTextAsync("from the corner");
 
         await panel.PressAsync("Escape");
         await Assertions.Expect(panel).ToBeHiddenAsync();
         await Assertions.Expect(fab).ToBeVisibleAsync();
+
+        // The conversation lives in the agent and the panel stays mounted: reopening shows it again.
+        await fab.ClickAsync();
+        await Assertions.Expect(panel.Locator(".sc-ai-message--user")).ToContainTextAsync("from the corner");
     }
 }

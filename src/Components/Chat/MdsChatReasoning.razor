@@ -1,0 +1,23 @@
+@namespace MudShell.Components.Chat
+@using Microsoft.AspNetCore.Components.AI
+
+<details class="mds-chat-reasoning" data-testid="chat-reasoning" @attributes="AdditionalAttributes" open="@(Block.LifecycleState != BlockLifecycleState.Inactive)">
+    <summary class="mds-chat-reasoning-summary">
+        <MudIcon Icon="@Icons.Material.Filled.Psychology" Size="Size.Small" />
+        <span>@Label</span>
+        @if (Block.LifecycleState == BlockLifecycleState.Active)
+        {
+            <span class="mds-chat-reasoning-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        }
+    </summary>
+    <div class="mds-chat-reasoning-text">@Block.Text</div>
+</details>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter, EditorRequired] public MdsChatReasoningBlock Block { get; set; } = default!;
+    [Parameter] public string Label { get; set; } = "Reasoning";
+}

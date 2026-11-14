@@ -1,31 +1,30 @@
 @namespace MudShell.Components.Chat
 
 <div class="@RootClass" @attributes="AdditionalAttributes">
-    @if (IsOpen)
-    {
-        <section class="mds-chat-floating-panel"
-                 style="@PanelStyle"
-                 role="dialog"
-                 aria-label="@Title"
-                 tabindex="-1"
-                 data-testid="@MbxTestId.ChatFloatingPanel"
-                 @onkeydown="HandleKeyDown">
-            <header class="mds-chat-floating-header">
-                <span class="mds-chat-floating-title">@Title</span>
-                <span class="mds-chat-floating-spacer"></span>
-                @HeaderActions
-                <MudIconButton Icon="@Icons.Material.Filled.Close"
-                               Size="Size.Small"
-                               Color="Color.Inherit"
-                               aria-label="@CloseLabel"
-                               title="@CloseLabel"
-                               data-testid="@MbxTestId.ChatFloatingClose"
-                               OnClick="CloseAsync" />
-            </header>
-            <div class="mds-chat-floating-body">@ChildContent</div>
-        </section>
-    }
-    else
+    @* Always rendered, hidden while closed, so the chat inside keeps its conversation. *@
+    <section class="mds-chat-floating-panel"
+             hidden="@(!IsOpen)"
+             style="@PanelStyle"
+             role="dialog"
+             aria-label="@Title"
+             tabindex="-1"
+             data-testid="@MbxTestId.ChatFloatingPanel"
+             @onkeydown="HandleKeyDown">
+        <header class="mds-chat-floating-header">
+            <span class="mds-chat-floating-title">@Title</span>
+            <span class="mds-chat-floating-spacer"></span>
+            @HeaderActions
+            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                           Size="Size.Small"
+                           Color="Color.Inherit"
+                           aria-label="@CloseLabel"
+                           title="@CloseLabel"
+                           data-testid="@MbxTestId.ChatFloatingClose"
+                           OnClick="CloseAsync" />
+        </header>
+        <div class="mds-chat-floating-body">@ChildContent</div>
+    </section>
+    @if (!IsOpen)
     {
         <button type="button"
                 class="mds-chat-floating-fab"
@@ -51,7 +50,7 @@
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
-    /// <summary>The chat to show in the panel, typically an <see cref="MdsChatTranscript"/> above an <see cref="MdsChatComposer"/>.</summary>
+    /// <summary>The chat to show in the panel, typically an <see cref="MdsChat"/>. It stays mounted while the panel is closed, so its state is kept.</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     [Parameter] public bool IsOpen { get; set; }

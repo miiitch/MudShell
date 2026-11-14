@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- .NET 10 SDK
+- .NET 11 SDK
 - A Blazor Server or WebAssembly project
 
 ## Step 1 — Add the project reference

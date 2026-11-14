@@ -1,0 +1,43 @@
+/* Maps the package's --sc-ai-* design tokens onto MudBlazor palette variables and the shell's --mbx-* tokens.
+   Custom properties inherit into the package's own markup, so no ::deep is needed. The doubled class beats the
+   package's .sc-ai-root regardless of stylesheet order. */
+.sc-ai-root.mds-chat-surface {
+    --sc-ai-font-family: inherit;
+    --sc-ai-color-bg: transparent;
+    --sc-ai-color-surface: var(--mud-palette-surface);
+    --sc-ai-color-surface-hover: color-mix(in srgb, var(--mud-palette-text-primary) 6%, var(--mud-palette-surface));
+    --sc-ai-color-text: var(--mud-palette-text-primary);
+    --sc-ai-color-text-secondary: var(--mud-palette-text-secondary);
+    --sc-ai-color-text-on-accent: var(--mud-palette-primary-text);
+    --sc-ai-color-accent: var(--mud-palette-primary);
+    --sc-ai-color-accent-hover: color-mix(in srgb, var(--mud-palette-primary) 85%, var(--mud-palette-text-primary));
+    --sc-ai-color-border: var(--mud-palette-lines-default);
+    --sc-ai-color-success: var(--mud-palette-success);
+    --sc-ai-color-error: var(--mud-palette-error);
+    --sc-ai-color-error-bg: color-mix(in srgb, var(--mud-palette-error) 14%, var(--mud-palette-surface));
+    --sc-ai-color-bubble-user: color-mix(in srgb, var(--mud-palette-primary) 22%, var(--mud-palette-surface));
+    --sc-ai-color-bubble-user-text: var(--mud-palette-text-primary);
+    --sc-ai-color-bubble-assistant: transparent;
+    --sc-ai-color-bubble-assistant-text: var(--mud-palette-text-primary);
+    --sc-ai-border-radius-lg: var(--mbx-radius-lg, 16px);
+    --sc-ai-max-width: var(--mds-chat-max-width, 48rem);
+}
+
+.mds-chat-surface {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    color: var(--mud-palette-text-primary);
+}
+
+.mds-chat-surface ::deep .mds-chat-surface-transcript {
+    flex: 1;
+    min-height: 0;
+}
+
+/* Assistant output flows on the page (no bubble chrome, full column width); only the user's message is a bubble. */
+.mds-chat-surface ::deep .sc-ai-message--assistant .sc-ai-message__bubble {
+    max-width: 100%;
+    padding-inline: 0;
+}

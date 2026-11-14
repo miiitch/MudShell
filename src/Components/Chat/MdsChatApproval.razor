@@ -1,0 +1,43 @@
+@namespace MudShell.Components.Chat
+@using Microsoft.AspNetCore.Components.AI
+@using System.Text.Json
+
+<div class="mds-chat-approval" data-testid="chat-approval" data-status="@Block.Status.ToString().ToLowerInvariant()" role="group" aria-label="@Title" @attributes="AdditionalAttributes">
+    <div class="mds-chat-approval-header">
+        <MudIcon Icon="@Icons.Material.Filled.GppMaybe" Size="Size.Small" />
+        <span>@Title</span>
+        <span class="mds-chat-approval-tool">@Block.ToolName</span>
+    </div>
+    @if (Block.Arguments is { Count: > 0 })
+    {
+        <pre class="mds-chat-approval-args">@JsonSerializer.Serialize(Block.Arguments, Json)</pre>
+    }
+    @if (Block.Status == ApprovalStatus.Pending)
+    {
+        <div class="mds-chat-approval-actions">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" data-testid="chat-approve"
+                       OnClick="@(() => Block.Approve())">@ApproveLabel</MudButton>
+            <MudButton Variant="Variant.Outlined" Size="Size.Small" data-testid="chat-reject"
+                       OnClick="@(() => Block.Reject())">@RejectLabel</MudButton>
+        </div>
+    }
+    else
+    {
+        <div class="mds-chat-approval-status">@(Block.Status == ApprovalStatus.Approved ? ApprovedLabel : RejectedLabel)</div>
+    }
+</div>
+
+@code {
+    private static readonly JsonSerializerOptions Json = new() { WriteIndented = true };
+
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter, EditorRequired] public FunctionApprovalBlock Block { get; set; } = default!;
+    [Parameter] public string Title { get; set; } = "Approval required";
+    [Parameter] public string ApproveLabel { get; set; } = "Approve";
+    [Parameter] public string RejectLabel { get; set; } = "Reject";
+    [Parameter] public string ApprovedLabel { get; set; } = "Approved";
+    [Parameter] public string RejectedLabel { get; set; } = "Rejected";
+}

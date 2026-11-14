@@ -1,13 +1,22 @@
-<MdsMainPart Title="@Payload.Title" data-testid="chat-part-chart">
-    @foreach (var (label, value) in Payload.Values)
+@using System.Text.Json
+
+<MdsMainPart Title="Tokens per second" data-testid="chat-part-chart">
+    @foreach (var p in Points)
     {
-        <MudText Typo="Typo.caption">@label</MudText>
-        <MudProgressLinear Value="@value" Max="100" Color="Color.Primary" />
+        <MudText Typo="Typo.caption">@p.Label</MudText>
+        <MudProgressLinear Value="@p.Value" Max="100" Color="Color.Primary" />
     }
 </MdsMainPart>
 
 @code {
-    public sealed record ChartData(string Title, IReadOnlyList<(string Label, double Value)> Values);
+    public sealed record Point(string Label, double Value);
 
-    [Parameter, EditorRequired] public ChartData Payload { get; set; } = default!;
+    private static readonly JsonSerializerOptions Options = new(JsonSerializerDefaults.Web);
+
+    [Parameter, EditorRequired] public FunctionInvocationContentBlock Block { get; set; } = default!;
+
+    // The tool result is whatever the agent produced: an object in-process, a JsonElement over AG-UI.
+    private IReadOnlyList<Point> Points => Block.Result?.Result is { } r
+        ? JsonSerializer.SerializeToElement(r).Deserialize<List<Point>>(Options) ?? []
+        : [];
 }

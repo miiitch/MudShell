@@ -81,22 +81,4 @@ public class ChatComposerTests
         // Then
         Assert.True(cut.Find($"[data-testid='{MbxTestId.ChatSend}']").HasAttribute("disabled"));
     }
-
-    [Fact]
-    public void Should_RenderStreamedText_After_Flush()
-    {
-        // Given
-        using var context = NewContext();
-        var cut = context.RenderComponent<MdsChatStream>(p => p.Add(c => c.IsStreaming, true));
-        Assert.Contains("Thinking", cut.Markup);
-
-        // When
-        cut.Instance.Append("Hello ");
-        cut.Instance.Append("world");
-        cut.InvokeAsync(() => cut.Instance.CompleteAsync()).Wait();
-
-        // Then
-        Assert.Contains("Hello world", cut.Markup);
-        Assert.DoesNotContain("Thinking", cut.Markup);
-    }
 }

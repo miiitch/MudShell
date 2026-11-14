@@ -33,6 +33,21 @@ public class AdditionalAttributesTests
         return data;
     }
 
+    /// <summary>
+    /// Components that cannot render from a bare attribute: they need an agent or an agent-produced block.
+    /// ChatAgentTests covers MdsChat's forwarding; the block components are only rendered by MdsChat.
+    /// </summary>
+    private static readonly HashSet<string> RequiresAgent =
+        ["MdsChat", "MdsChatInput", "MdsChatToolCall", "MdsChatApproval", "MdsChatReasoning"];
+
+    public static TheoryData<Type> RenderableComponents()
+    {
+        var data = new TheoryData<Type>();
+        foreach (var type in DiscoverComponents().Where(t => !RequiresAgent.Contains(t.Name)))
+            data.Add(type);
+        return data;
+    }
+
     /// <summary>Every component declares the splat parameter.</summary>
     [Theory]
     [MemberData(nameof(AllComponents))]
@@ -56,7 +71,7 @@ public class AdditionalAttributesTests
 
     /// <summary>Every component forwards an undeclared attribute to its rendered markup.</summary>
     [Theory]
-    [MemberData(nameof(AllComponents))]
+    [MemberData(nameof(RenderableComponents))]
     public void Should_RenderUndeclaredAttribute_When_ConsumerPassesOne(Type componentType)
     {
         // Given
@@ -108,7 +123,10 @@ public class AdditionalAttributesTests
                            && type.Name.StartsWith("Mds", StringComparison.Ordinal)
                            // MdsScheduler wraps RadzenScheduler, which cannot finish its first render under bUnit,
                            // and it requires its mapping parameters. Its attribute forwarding is covered by the UI tests.
-                           && !type.Name.StartsWith("MdsScheduler", StringComparison.Ordinal))
+                           && !type.Name.StartsWith("MdsScheduler", StringComparison.Ordinal)
+                           // Plumbing inside MdsChat: it only renders under an AgentBoundary, and MdsChat forwards
+                           // the consumer's attributes through it.
+                           && type.Name != "MdsChatSurface")
             .OrderBy(type => type.Name, StringComparer.Ordinal);
 
     /// <summary>Closes an open generic component over <see cref="string"/> so it can be rendered.</summary>

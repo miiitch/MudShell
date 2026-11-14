@@ -9,16 +9,3 @@ public enum MdsChatPosition
     /// <summary>Inline end (right in LTR) — typically the user.</summary>
     End
 }
-
-/// <summary>Visual treatment of a message bubble.</summary>
-public enum MdsChatBubbleVariant
-{
-    /// <summary>Tinted filled bubble.</summary>
-    Filled,
-
-    /// <summary>Transparent bubble with a border.</summary>
-    Outlined,
-
-    /// <summary>No bubble chrome: content flows on the page (assistant-style).</summary>
-    Plain
-}

@@ -9,7 +9,7 @@
 - 🌲 Unified hierarchical navigation with `MbxNavTree` (`MdsSidebarNav`, `MdsContextNavPanel`, `MbxMobileDrilldownNav`)
 - 🖥️ Desktop-first shell with collapsible sidebar navigation
 - 💬 `MdsChatBar` — glassmorphism input bar
-- 🤖 Chat set — `MdsChatComposer`, `MdsChatTranscript`, `MdsChatMessage`, `MdsChatStream`, `MdsChatLanding`
+- 🤖 Chat set — `MdsChat` (agent-driven, on `Microsoft.AspNetCore.Components.AI`), `MdsChatComposer`, `MdsChatTranscript`, `MdsChatLanding`, `MdsChatFloating`
 - 🃏 `MdsDocumentCard`, `MdsFilterTabBar`, `MdsPageHeader`
 - 🧩 Main-content primitives (`MdsMainToolbar`, `MdsMainSection`, `MdsMainPart`, `MdsMainEmptyState`)
 - 📐 Fill-layout blocks — `MdsFillLayout`, `MdsFillRegion`, `MdsSplitPane`, `MdsTabbedFill` (full-screen pages, only leaf regions scroll)

@@ -1,0 +1,41 @@
+.mds-chat-tool {
+    margin-block: 8px;
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: var(--mbx-radius-md, 10px);
+    background: color-mix(in srgb, var(--mud-palette-text-primary) 4%, var(--mud-palette-surface));
+    font-size: 0.875rem;
+}
+
+.mds-chat-tool-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.mds-chat-tool-summary::-webkit-details-marker { display: none; }
+
+.mds-chat-tool-name { font-weight: 600; font-family: var(--mud-typography-default-family, inherit); }
+.mds-chat-tool-status { margin-inline-start: auto; color: var(--mud-palette-text-secondary); }
+
+.mds-chat-tool-detail { padding: 0 12px 10px; }
+
+.mds-chat-tool-label {
+    margin-block: 6px 2px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--mud-palette-text-secondary);
+}
+
+.mds-chat-tool pre {
+    margin: 0;
+    padding: 8px 10px;
+    overflow-x: auto;
+    border-radius: 8px;
+    background: var(--mud-palette-surface);
+    border: 1px solid var(--mud-palette-lines-default);
+    font-size: 0.8125rem;
+}

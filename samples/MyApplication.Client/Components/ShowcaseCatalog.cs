@@ -24,7 +24,7 @@ public static class ShowcaseCatalog
             ["MdsDocumentCard", "MdsFilterTabBar"]),
         new("conversation", "Conversation and assistants", "From the first message to a streamed response.",
             Icons.Material.Outlined.Chat, "/components/conversation",
-            ["MdsChatBar", "MdsChatLanding", "MdsChatComposer", "MdsChatTranscript", "MdsChatMessage", "MdsChatStream", "MdsChatThinking", "MdsChatPartRenderer", "MdsChatFloating"]),
+            ["MdsChat", "MdsChatBar", "MdsChatLanding", "MdsChatComposer", "MdsChatTranscript", "MdsChatToolCall", "MdsChatApproval", "MdsChatReasoning", "MdsChatFloating"]),
         new("data", "Metrics and data", "Read values, trends and distributions.",
             Icons.Material.Outlined.BarChart, "/components/data",
             ["MdsStatTile", "MdsStatStrip", "MdsDistributionBar", "MdsSparkline", "MdsRunStrip"])

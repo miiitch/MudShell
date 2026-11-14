@@ -1,0 +1,54 @@
+@namespace MudShell.Components.Chat
+@using Microsoft.AspNetCore.Components.AI
+@implements IDisposable
+
+<div class="@RootClass" style="--mds-chat-max-width: @Owner.MaxWidth" @attributes="Owner.AdditionalAttributes">
+    @Owner.Header
+    <MdsChatTranscript data-testid="chat-transcript" Class="mds-chat-surface-transcript">
+        <MessageList>
+            <ChildContent>
+                @* Defaults are registered inline, before MessageListContent: with BlockRenderer the most recent registration wins,
+                   and a nested component would register after its siblings. *@
+                <BlockRenderer TBlock="FunctionInvocationContentBlock" Context="block">
+                    <MdsChatToolCall Block="block" />
+                </BlockRenderer>
+                <BlockRenderer TBlock="FunctionApprovalBlock" Context="block">
+                    <MdsChatApproval Block="block" />
+                </BlockRenderer>
+                <BlockRenderer TBlock="MdsChatReasoningBlock" Context="block">
+                    <MdsChatReasoning Block="block" />
+                </BlockRenderer>
+                @Owner.MessageListContent
+            </ChildContent>
+            <EmptyContent>
+                @if (Owner.WelcomeContent is not null)
+                {
+                    @Owner.WelcomeContent
+                }
+                else
+                {
+                    <MdsChatLanding Greeting="@Owner.Greeting" Subtitle="@Owner.Subtitle" Icon="@Owner.Icon"
+                                    Prompts="@Owner.Prompts" OnPromptSelected="SendAsync" data-testid="chat-landing" />
+                }
+            </EmptyContent>
+        </MessageList>
+    </MdsChatTranscript>
+    <MdsChatInput Placeholder="@Owner.Placeholder" MaxLength="Owner.MaxLength" Actions="Owner.InputActions" EndActions="Owner.InputEndActions" />
+</div>
+
+@code {
+    private IDisposable? _statusSubscription;
+
+    [CascadingParameter] public AgentContext Context { get; set; } = default!;
+
+    [Parameter, EditorRequired] public MdsChat Owner { get; set; } = default!;
+
+    private string RootClass => $"mds-chat-surface sc-ai-root {Owner.Class}".Trim();
+
+    protected override void OnInitialized() =>
+        _statusSubscription = Context.RegisterOnStatusChanged(_ => InvokeAsync(StateHasChanged));
+
+    private Task SendAsync(string text) => Context.SendMessageAsync(text);
+
+    public void Dispose() => _statusSubscription?.Dispose();
+}

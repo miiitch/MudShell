@@ -1,32 +1,24 @@
 @page "/chat-floating"
 @page "/components/conversation/floating"
 @rendermode InteractiveServer
+@implements IDisposable
 
 <PageTitle>Floating chat</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="px-4 pb-4 pt-0">
     <ShowcaseHeader FamilyId="conversation" />
     <MudText Typo="Typo.h5">Floating assistant</MudText>
-    <MudText Typo="Typo.body2" Color="Color.Secondary">Open the assistant with the button at the bottom of the window. Escape closes it without losing messages.</MudText>
+    <MudText Typo="Typo.body2" Color="Color.Secondary">Open the assistant with the button at the bottom of the window. Escape closes it; the conversation lives in the agent, so it survives closing.</MudText>
     <ShowcaseDetails FamilyId="conversation" />
 </MudContainer>
 
 <MdsChatFloating @bind-IsOpen="_open" Title="Assistant" Height="520px">
-    <MdsChatTranscript>
-        @foreach (var line in _lines)
-        {
-            <MdsChatMessage Position="MdsChatPosition.End" data-testid="floating-message">@line</MdsChatMessage>
-        }
-    </MdsChatTranscript>
-    <div class="px-3">
-        <MdsChatComposer @bind-Value="_draft" OnSend="Send" MaxWidth="100%" Placeholder="Ask anything…" />
-    </div>
+    <MdsChat Agent="_agent" MaxWidth="100%" Greeting="How can I help?" />
 </MdsChatFloating>
 
 @code {
     private bool _open;
-    private string? _draft = "";
-    private readonly List<string> _lines = [];
+    private readonly UIAgent _agent = new(new FakeChatClient(), options => options.AddMdsReasoning());
 
-    private void Send(string text) => _lines.Add(text);
+    public void Dispose() => _agent.Dispose();
 }

@@ -1,0 +1,51 @@
+@namespace MudShell.Components.Chat
+@using Microsoft.AspNetCore.Components.AI
+@using System.Text.Json
+
+<details class="mds-chat-tool" data-testid="chat-tool-call" @attributes="AdditionalAttributes" data-state="@(Block.HasResult ? "done" : "running")">
+    <summary class="mds-chat-tool-summary">
+        @if (Block.HasResult)
+        {
+            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Small" Color="Color.Success" />
+        }
+        else
+        {
+            <MudProgressCircular Indeterminate="true" Size="Size.Small" Style="width:16px;height:16px" />
+        }
+        <span class="mds-chat-tool-name">@Block.ToolName</span>
+        <span class="mds-chat-tool-status">@(Block.HasResult ? DoneLabel : RunningLabel)</span>
+    </summary>
+    <div class="mds-chat-tool-detail">
+        @if (Block.Arguments is { Count: > 0 })
+        {
+            <div class="mds-chat-tool-label">@ArgumentsLabel</div>
+            <pre>@Format(Block.Arguments)</pre>
+        }
+        @if (Block.HasResult)
+        {
+            <div class="mds-chat-tool-label">@ResultLabel</div>
+            <pre>@Format(Block.Result)</pre>
+        }
+    </div>
+</details>
+
+@code {
+    private static readonly JsonSerializerOptions Json = new() { WriteIndented = true };
+
+    /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter, EditorRequired] public FunctionInvocationContentBlock Block { get; set; } = default!;
+    [Parameter] public string RunningLabel { get; set; } = "Running…";
+    [Parameter] public string DoneLabel { get; set; } = "Done";
+    [Parameter] public string ArgumentsLabel { get; set; } = "Arguments";
+    [Parameter] public string ResultLabel { get; set; } = "Result";
+
+    private static string Format(object? value)
+    {
+        if (value is string s) { return s; }
+        try { return JsonSerializer.Serialize(value, Json); }
+        catch (NotSupportedException) { return value?.ToString() ?? ""; }
+    }
+}

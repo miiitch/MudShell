@@ -3,8 +3,20 @@
 export function initComposer(textarea, dotnet) {
     const resize = () => {
         textarea.style.height = 'auto';
-        textarea.style.height = `${textarea.scrollHeight}px`;
+        // Hidden (display: none, e.g. a closed floating panel) reports 0: keep 'auto' rather than collapsing to 0px.
+        const height = textarea.scrollHeight;
+        if (height > 0) textarea.style.height = `${height}px`;
     };
+
+    // Re-measure when the textarea first becomes visible or changes width (wrapping changes the height).
+    let lastWidth = textarea.clientWidth;
+    const observer = new ResizeObserver(() => {
+        if (textarea.clientWidth !== lastWidth) {
+            lastWidth = textarea.clientWidth;
+            resize();
+        }
+    });
+    observer.observe(textarea);
 
     const onInput = () => resize();
 
@@ -27,6 +39,7 @@ export function initComposer(textarea, dotnet) {
         setValue: (v) => { textarea.value = v; resize(); },
         focus: () => textarea.focus(),
         dispose: () => {
+            observer.disconnect();
             textarea.removeEventListener('input', onInput);
             textarea.removeEventListener('keydown', onKeyDown);
         }

@@ -30,6 +30,8 @@
     outline-offset: 3px;
 }
 
+.mds-chat-floating-panel[hidden] { display: none; }
+
 .mds-chat-floating-panel {
     display: flex;
     flex-direction: column;

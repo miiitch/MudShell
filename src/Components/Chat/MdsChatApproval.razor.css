@@ -1,0 +1,25 @@
+.mds-chat-approval {
+    margin-block: 8px;
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, var(--mud-palette-warning) 60%, var(--mud-palette-lines-default));
+    border-radius: var(--mbx-radius-md, 10px);
+    background: color-mix(in srgb, var(--mud-palette-warning) 10%, var(--mud-palette-surface));
+}
+
+.mds-chat-approval-header { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.mds-chat-approval-tool { margin-inline-start: auto; font-weight: 400; color: var(--mud-palette-text-secondary); }
+
+.mds-chat-approval-args {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    overflow-x: auto;
+    border-radius: 8px;
+    background: var(--mud-palette-surface);
+    border: 1px solid var(--mud-palette-lines-default);
+    font-size: 0.8125rem;
+}
+
+.mds-chat-approval-actions { display: flex; gap: 8px; margin-top: 10px; }
+.mds-chat-approval-status { margin-top: 8px; font-size: 0.8125rem; color: var(--mud-palette-text-secondary); }
+.mds-chat-approval[data-status="approved"] .mds-chat-approval-status { color: var(--mud-palette-success); }
+.mds-chat-approval[data-status="rejected"] .mds-chat-approval-status { color: var(--mud-palette-error); }

@@ -14,6 +14,7 @@ public sealed class ThemeState
     public MdsAppShell.MbxBackgroundMode BackgroundMode { get; private set; } = MdsAppShell.MbxBackgroundMode.Palette;
     public string? BackgroundImageUrl { get; private set; }
     public MdsDensity Density { get; private set; } = MdsDensity.Comfortable;
+    public MdsColorRoles ColorRoles { get; private set; } = MdsColorRoles.Unified;
 
     public IReadOnlyList<MbxTheme.PresetInfo> Presets => MbxTheme.Presets;
 
@@ -66,6 +67,15 @@ public sealed class ThemeState
             return;
 
         Density = density;
+        Changed?.Invoke();
+    }
+
+    public void SetColorRoles(MdsColorRoles colorRoles)
+    {
+        if (ColorRoles == colorRoles)
+            return;
+
+        ColorRoles = colorRoles;
         Changed?.Invoke();
     }
 

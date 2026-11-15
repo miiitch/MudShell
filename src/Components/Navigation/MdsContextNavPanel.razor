@@ -5,7 +5,7 @@
 @using MudShell.Components.Navigation.State
 @inject NavigationManager Nav
 
-<div class="mbx-context-nav-panel @(IsExpanded ? "mbx-context-nav-panel-expanded" : "mbx-context-nav-panel-collapsed") @Class" @attributes="AdditionalAttributes">
+<div class="mbx-context-nav-panel @(IsExpanded ? "mbx-context-nav-panel-expanded" : "mbx-context-nav-panel-collapsed") @Class @(HasAccent ? "mbx-context-accented" : "")" style="@AccentStyle" @attributes="AdditionalAttributes">
     @if (_state.ContextPanelNodes.Count == 0)
     {
         <MudText Typo="Typo.caption" Color="Color.Secondary" Class="pa-2">No contextual navigation</MudText>
@@ -120,6 +120,15 @@
     /// <summary>Raised with <c>true</c> when a click on a collapsed parent entry asks the panel to open.</summary>
     [Parameter] public EventCallback<bool> IsExpandedChanged { get; set; }
     [Parameter] public string? Class                 { get; set; }
+
+    /// <summary>
+    /// Optional CSS color of the section this panel belongs to. The active entry and the hover background use it
+    /// instead of the shell's interactive color.
+    /// </summary>
+    [Parameter] public string? Accent                { get; set; }
+
+    private bool HasAccent => !string.IsNullOrWhiteSpace(Accent);
+    private string? AccentStyle => HasAccent ? $"--mbx-section-accent:{Accent!.Trim()};" : null;
 
     /// <summary>Invoked after a drag-and-drop reorder inside the sortable segment of a group.</summary>
     [Parameter] public EventCallback<MbxNavSortChangedArgs> OnSortChanged { get; set; }

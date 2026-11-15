@@ -61,7 +61,7 @@
 }
 
 ::deep .mbx-bottom-nav-item.mbx-bottom-nav-item-active {
-    color: var(--mud-palette-primary);
+    color: var(--mbx-interactive, var(--mud-palette-primary));
     background-color: var(--mbx-subtle-bg, color-mix(in srgb, var(--mud-palette-primary) 10%, transparent));
 }
 
@@ -222,7 +222,7 @@
 }
 
 .mbx-nav-sheet-item.mbx-nav-sheet-item-active {
-    color: var(--mud-palette-primary);
+    color: var(--mbx-interactive, var(--mud-palette-primary));
     background-color: var(--mbx-subtle-bg, color-mix(in srgb, var(--mud-palette-primary) 10%, transparent));
 }
 

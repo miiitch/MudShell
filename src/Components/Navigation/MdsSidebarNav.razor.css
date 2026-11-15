@@ -21,7 +21,7 @@
 
 .mbx-sidebar-nav-host ::deep .mbx-sidebar-nav .mud-nav-link.mbx-nav-link-active,
 .mbx-sidebar-nav-host ::deep .mbx-sidebar-nav .mud-nav-link.active {
-    color: var(--mud-palette-primary) !important;
+    color: var(--mbx-interactive, var(--mud-palette-primary)) !important;
     background-color: var(--mbx-nav-hover-bg) !important;
 }
 
@@ -72,7 +72,7 @@
 }
 
 .mbx-sidebar-nav-icon-link.mbx-sidebar-nav-icon-link-active {
-    color: var(--mud-palette-primary);
+    color: var(--mbx-interactive, var(--mud-palette-primary));
     background-color: var(--mbx-subtle-bg);
 }
 

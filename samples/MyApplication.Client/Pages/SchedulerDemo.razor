@@ -51,7 +51,9 @@
 
     protected override void OnInitialized()
     {
-        var monday = DateTime.Today.AddDays(-(((int)DateTime.Today.DayOfWeek + 6) % 7));
+        // The week view starts on Sunday (en-US), so take the Monday of that Sunday-to-Saturday week:
+        // on a Sunday the ISO Monday is in the week before and the bookings would be off screen.
+        var monday = DateTime.Today.AddDays(1 - (int)DateTime.Today.DayOfWeek);
 
         _bookings =
         [

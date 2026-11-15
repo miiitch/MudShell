@@ -13,6 +13,12 @@
     scrollbar-width: thin;
 }
 
+/* Section accent (Accent parameter): re-point the interactive tokens for this panel only. */
+.mbx-context-nav-panel.mbx-context-accented {
+    --mbx-interactive: var(--mbx-section-accent);
+    --mbx-nav-hover-bg: color-mix(in srgb, var(--mbx-section-accent) 14%, transparent);
+}
+
 .mbx-context-nav-panel.mbx-context-nav-panel-collapsed {
     align-items: center;
     padding-left: 0;
@@ -45,7 +51,7 @@
 }
 
 ::deep .mbx-context-collapsed-link-active {
-    color: var(--mud-palette-primary);
+    color: var(--mbx-interactive, var(--mud-palette-primary));
     background-color: var(--mbx-nav-hover-bg);
 }
 
@@ -67,7 +73,7 @@
 }
 
 ::deep .mbx-context-mud-nav .mud-nav-item.mbx-context-nav-active .mud-nav-link {
-    color: var(--mud-palette-primary) !important;
+    color: var(--mbx-interactive, var(--mud-palette-primary)) !important;
     background-color: var(--mbx-nav-hover-bg) !important;
 }
 

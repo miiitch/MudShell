@@ -399,6 +399,74 @@ public static class MbxTheme
         };
 
     /// <summary>
+    /// Creates a theme from explicit role colors for both modes. Unlike the presets, nothing is derived from the
+    /// primary and no contrast correction is applied: each color is used as given.
+    /// </summary>
+    public static MudTheme CreateTheme(MbxThemeDefinition definition)
+    {
+        ArgumentNullException.ThrowIfNull(definition);
+
+        var darkPalette = new PaletteDark
+        {
+            TextDisabled = ToRgba(ParseHex(definition.Dark.TextPrimary), 0.25),
+            ActionDisabled = "#9a9a9a4d",
+            ActionDisabledBackground = "#5a60744d",
+        };
+        ApplyDefinition(darkPalette, definition.Dark, towards: White);
+
+        var lightPalette = new PaletteLight
+        {
+            Black = ToHex(ParseHex(definition.Light.TextPrimary)),
+        };
+        ApplyDefinition(lightPalette, definition.Light, towards: Black);
+
+        return new MudTheme
+        {
+            PaletteDark = darkPalette,
+            PaletteLight = lightPalette,
+            LayoutProperties = new LayoutProperties(),
+        };
+    }
+
+    /// <summary>Fills a palette from explicit role colors. <paramref name="towards"/> is the color neutral fills lean to (white in dark mode, black in light mode).</summary>
+    private static void ApplyDefinition(Palette palette, MbxPaletteDefinition colors, HexColor towards)
+    {
+        ArgumentNullException.ThrowIfNull(colors);
+
+        var primary = ParseHex(colors.Primary);
+        var secondary = ParseHex(colors.Secondary);
+        var surface = ParseHex(colors.Surface);
+        var page = ParseHex(colors.PageBackground);
+        var navigation = ParseHex(colors.NavigationBackground);
+        var textPrimary = ToHex(ParseHex(colors.TextPrimary));
+        var textSecondary = ToHex(ParseHex(colors.TextSecondary));
+        var border = ToHex(ParseHex(colors.Border));
+
+        palette.Primary = ToHex(primary);
+        palette.PrimaryContrastText = ToHex(BestContrastText(primary));
+        palette.Secondary = ToHex(secondary);
+        palette.SecondaryContrastText = ToHex(BestContrastText(secondary));
+        palette.Surface = ToHex(surface);
+        palette.Background = ToHex(ParseHex(colors.Background));
+        palette.BackgroundGray = ToHex(page);
+        palette.DrawerBackground = ToHex(navigation);
+        palette.AppbarBackground = ToRgba(Mix(navigation, surface, 0.60), 0.90);
+        palette.AppbarText = textPrimary;
+        palette.TextPrimary = textPrimary;
+        palette.TextSecondary = textSecondary;
+        palette.DrawerText = textPrimary;
+        palette.DrawerIcon = textSecondary;
+        palette.ActionDefault = textSecondary;
+        palette.GrayLight = ToHex(Mix(page, towards, 0.08));
+        palette.GrayLighter = ToHex(Mix(surface, towards, 0.06));
+        palette.LinesDefault = border;
+        palette.TableLines = border;
+        palette.Divider = border;
+        palette.OverlayLight = ToRgba(surface, 0.60);
+        ApplyStatusColors(palette, ParseHex(colors.Info), ParseHex(colors.Success), ParseHex(colors.Warning), ParseHex(colors.Error));
+    }
+
+    /// <summary>
     /// Creates a theme from one primary color and derives secondary tokens.
     /// Light mode keeps the center close to white with a color tint.
     /// Dark mode uses a readable progression where sidebar is lighter than center.

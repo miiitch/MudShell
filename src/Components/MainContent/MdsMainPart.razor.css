@@ -13,7 +13,7 @@
 }
 
 ::deep .mds-main-part-hoverable:hover {
-    outline-color: color-mix(in srgb, var(--mds-part-hover-color, var(--mud-palette-primary)) 55%, transparent);
+    outline-color: color-mix(in srgb, var(--mds-part-hover-color, var(--mbx-interactive, var(--mud-palette-primary))) 55%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

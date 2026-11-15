@@ -49,7 +49,7 @@
 .mds-split-handle:hover::after,
 .mds-split-handle:focus-visible::after,
 .mds-split-handle.mds-split-dragging::after {
-    background: var(--mud-palette-primary);
+    background: var(--mbx-interactive, var(--mud-palette-primary));
 }
 
 .mds-split-handle:focus-visible {
@@ -73,7 +73,7 @@
 .mds-split-toggle:hover,
 .mds-split-toggle:focus-visible {
     color: var(--mud-palette-text-primary);
-    border-color: var(--mud-palette-primary);
+    border-color: var(--mbx-interactive, var(--mud-palette-primary));
 }
 
 .mds-split-handle .mds-split-toggle {

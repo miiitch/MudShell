@@ -5,7 +5,7 @@
 @inject IJSRuntime JS
 <CascadingValue Value="this">
 <CascadingValue Name="MbxShellMode" Value="ShellMode">
-    <div class="mbx-shell @ModeClass @ThemeClass @ContextLayoutClass @DensityClass @ResponsiveClass"
+    <div class="mbx-shell @ModeClass @ThemeClass @ContextLayoutClass @DensityClass @ColorRolesClass @ResponsiveClass"
          style="@_shellStyle"
          data-testid="shell-mode"
          data-shell-mode="@ShellModeName"
@@ -110,6 +110,13 @@
     [Parameter] public bool                  IsDarkMode       { get; set; } = true;
     [Parameter] public EventCallback<bool>   IsDarkModeChanged { get; set; }
     [Parameter] public MdsDensity            Density          { get; set; } = MdsDensity.Comfortable;
+
+    /// <summary>
+    /// How the theme colours are shared out. <c>Unified</c> (default) tints interactive states and card surfaces
+    /// with the primary; <c>Split</c> keeps the primary for the main action and uses the secondary for
+    /// hover, selection, active navigation and focus.
+    /// </summary>
+    [Parameter] public MdsColorRoles         ColorRoles       { get; set; } = MdsColorRoles.Unified;
     [Parameter] public bool                  ContextPanelExpanded { get; set; } = true;
     [Parameter] public EventCallback<bool>   ContextPanelExpandedChanged { get; set; }
     [Parameter] public int                   ContextPanelWidth { get; set; } = 288;
@@ -149,6 +156,7 @@
     private string ThemeClass => IsDarkMode ? "" : "mbx-light";
     private string ContextLayoutClass => ContextPanelContent is null ? "mbx-no-context-panel" : "mbx-has-context-panel";
     private string DensityClass => Density == MdsDensity.Compact ? "mbx-density-compact" : "";
+    private string ColorRolesClass => ColorRoles == MdsColorRoles.Split ? "mbx-roles-split" : "";
     private string ResponsiveClass => ResponsiveMode == MbxResponsiveMode.Desktop ? "mbx-responsive-desktop" : "";
     private int SidebarWidthPx => Math.Max(SidebarWidth, 120);
     private int SidebarCollapsedWidthPx => Math.Max(Math.Min(SidebarCollapsedWidth, SidebarWidthPx), 40);

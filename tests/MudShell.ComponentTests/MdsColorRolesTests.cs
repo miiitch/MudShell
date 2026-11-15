@@ -64,6 +64,18 @@ public class MdsColorRolesTests
         Assert.Contains("var(--mud-palette-secondary", split);
     }
 
+    [Fact]
+    public void ShellCss_Should_RecolourNativeTabsAndLinks_OnlyInSplitMode()
+    {
+        var css = ComponentCss("AppShell", "MdsAppShell.razor.css");
+
+        Assert.Matches(@"\.mbx-shell\.mbx-roles-split ::deep \.mud-tabs-tabbar:not\([^)]*\) \.mud-tab\.mud-tab-active", css);
+        Assert.Matches(@"\.mbx-shell\.mbx-roles-split ::deep \.mud-tabs-tabbar:not\([^)]*\) \.mud-tab-slider", css);
+        Assert.Contains(".mbx-shell.mbx-roles-split ::deep .mud-link.mud-primary-text", css);
+        // Nothing outside the split class may restyle MudBlazor's tabs or links.
+        Assert.DoesNotMatch(@"(?m)^(?!\.mbx-shell\.mbx-roles-split).*\.mud-(tab-active|tab-slider|link\.)", css);
+    }
+
     [Theory]
     [InlineData("Sidebar", "MdsSidebar.razor.css")]
     [InlineData("Navigation", "MdsSidebarNav.razor.css")]

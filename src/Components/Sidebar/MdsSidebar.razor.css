@@ -113,6 +113,26 @@
     background-color: var(--mbx-subtle-bg);
 }
 
+/* ── Section accent (MbxNavItem.Accent) ──────────────────────────────
+   The entry carries --mbx-nav-item-accent: its icon takes that color at rest, on hover and when
+   active, and the active background is tinted with it instead of the shell's interactive color. */
+::deep .mbx-sidebar-icon-link.mbx-nav-item-accented,
+::deep .mbx-sidebar-icon-link.mbx-nav-item-accented:hover {
+    color: var(--mbx-nav-item-accent);
+}
+
+::deep .mbx-sidebar-icon-link.mbx-nav-item-accented.mbx-sidebar-icon-link-active {
+    background-color: color-mix(in srgb, var(--mbx-nav-item-accent) 16%, transparent);
+}
+
+::deep .mbx-sidebar-mud-nav .mud-nav-item.mbx-nav-item-accented .mud-nav-link .mud-nav-link-icon {
+    color: var(--mbx-nav-item-accent) !important;
+}
+
+::deep .mbx-sidebar-mud-nav .mud-nav-item.mbx-nav-item-accented.mbx-nav-link-active .mud-nav-link {
+    background-color: color-mix(in srgb, var(--mbx-nav-item-accent) 16%, transparent) !important;
+}
+
 /* ── Divider ─────────────────────────────────────────────────────────── */
 .mbx-nav-divider {
     width: 28px !important;

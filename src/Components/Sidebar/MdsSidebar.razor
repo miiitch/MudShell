@@ -38,7 +38,8 @@
                                     IconColor="Color.Inherit"
                                     Match="NavLinkMatch.All"
                                     ActiveClass=""
-                                    Class="@(IsActive(item.ActiveHref ?? item.Href) ? "mbx-nav-link-active" : "")">
+                                    Class="@ExpandedItemClass(item)"
+                                    Style="@AccentStyle(item)">
                             @item.Label
                         </MudNavLink>
                     }
@@ -52,7 +53,8 @@
                         @if (item.Href != null)
                         {
                             <NavLink href="@item.Href"
-                                     class="@($"mbx-sidebar-icon-link {(IsActive(item.ActiveHref ?? item.Href) ? "mbx-sidebar-icon-link-active" : "")}")"
+                                     class="@CollapsedItemClass(item)"
+                                     style="@AccentStyle(item)"
                                      Match="NavLinkMatch.All"
                                      ActiveClass=""
                                      @onclick="() => OnItemClick.InvokeAsync(item)">
@@ -85,7 +87,8 @@
                                     IconColor="Color.Inherit"
                                     Match="NavLinkMatch.All"
                                     ActiveClass=""
-                                    Class="@(IsActive(item.ActiveHref ?? item.Href) ? "mbx-nav-link-active" : "")">
+                                    Class="@ExpandedItemClass(item)"
+                                    Style="@AccentStyle(item)">
                             @item.Label
                         </MudNavLink>
                     }
@@ -99,7 +102,8 @@
                         @if (item.Href != null)
                         {
                             <NavLink href="@item.Href"
-                                     class="@($"mbx-sidebar-icon-link {(IsActive(item.ActiveHref ?? item.Href) ? "mbx-sidebar-icon-link-active" : "")}")"
+                                     class="@CollapsedItemClass(item)"
+                                     style="@AccentStyle(item)"
                                      Match="NavLinkMatch.All"
                                      ActiveClass="">
                                 <MudIcon Icon="@item.Icon" Size="Size.Small" />
@@ -127,6 +131,21 @@
 </div>
 
 @code {
+    private const string AccentedClass = "mbx-nav-item-accented";
+
+    private static bool HasAccent(MbxNavItem item) => !string.IsNullOrWhiteSpace(item.Accent);
+
+    private static string? AccentStyle(MbxNavItem item) =>
+        HasAccent(item) ? $"--mbx-nav-item-accent:{item.Accent!.Trim()};" : null;
+
+    private string ExpandedItemClass(MbxNavItem item) =>
+        (IsActive(item.ActiveHref ?? item.Href) ? "mbx-nav-link-active " : "") + (HasAccent(item) ? AccentedClass : "");
+
+    private string CollapsedItemClass(MbxNavItem item) =>
+        "mbx-sidebar-icon-link"
+        + (IsActive(item.ActiveHref ?? item.Href) ? " mbx-sidebar-icon-link-active" : "")
+        + (HasAccent(item) ? " " + AccentedClass : "");
+
     /// <summary>Undeclared attributes, splatted onto the root element (e.g. <c>data-testid</c>, ARIA attributes).</summary>
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }

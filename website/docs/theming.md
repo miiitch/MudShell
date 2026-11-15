@@ -62,11 +62,25 @@ secondary colours every interactive state, and card surfaces are no longer tinte
 <MdsAppShell ColorRoles="MdsColorRoles.Split" ...>
 ```
 
+In `Split` mode the shell also recolours the native MudBlazor states that default to the primary: the active tab and
+its slider, and default-colour links. A tab bar or link given an explicit `Color` keeps it. Content rendered outside the
+shell (dialogs, popovers) is not affected.
+
 Components read the interactive colour from one token, which you can also set yourself:
 
 | Variable | Usage |
 |---|---|
 | `--mbx-interactive` | Hover, selection, active navigation, focus ring. Primary by default, secondary with `Split`. |
+
+### Section accent
+
+A rail entry can carry the colour of its section, and the context panel of that section can take the same colour for
+its active entry and hover background. Entries without an accent keep the interactive colour.
+
+```razor
+<MdsSidebar PrimaryItems="@(new[] { new MbxNavItem(Icons.Material.Outlined.Inventory2, "CMDB", "/cmdb", Accent: "#60A5FA") })" />
+<MdsContextNavPanel Tree="@tree" Accent="#60A5FA" />
+```
 
 ## Dark theme usage
 

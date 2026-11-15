@@ -79,6 +79,21 @@
     --mbx-content-surface:      var(--mud-palette-surface, #121212);
 }
 
+/* Native (unwrapped) MudBlazor controls whose default state is drawn in the primary: the active tab
+   and its slider, and default-colour links. They follow the interactive color like MudShell's own
+   components. A tab bar or link given an explicit Color keeps it. */
+.mbx-shell.mbx-roles-split ::deep .mud-tabs-tabbar:not(.mud-tabs-tabbar-primary, .mud-tabs-tabbar-secondary, .mud-tabs-tabbar-tertiary, .mud-tabs-tabbar-info, .mud-tabs-tabbar-success, .mud-tabs-tabbar-warning, .mud-tabs-tabbar-error, .mud-tabs-tabbar-dark) .mud-tab.mud-tab-active {
+    color: var(--mbx-interactive);
+}
+
+.mbx-shell.mbx-roles-split ::deep .mud-tabs-tabbar:not(.mud-tabs-tabbar-primary, .mud-tabs-tabbar-secondary, .mud-tabs-tabbar-tertiary, .mud-tabs-tabbar-info, .mud-tabs-tabbar-success, .mud-tabs-tabbar-warning, .mud-tabs-tabbar-error, .mud-tabs-tabbar-dark) .mud-tab-slider {
+    background: var(--mbx-interactive);
+}
+
+.mbx-shell.mbx-roles-split ::deep .mud-link.mud-primary-text {
+    color: var(--mbx-interactive) !important;
+}
+
 /* ── Density: compact ─────────────────────────────────────────────────
    Shrinks the shared spacing tokens (consumed via var(--mbx-space-N)) plus
    a handful of hardcoded pixel values that were never tokenized. Purely

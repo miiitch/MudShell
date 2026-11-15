@@ -83,7 +83,7 @@
 
 ::deep .mbx-sidebar-mud-nav .mud-nav-item.mbx-nav-link-active .mud-nav-link,
 ::deep .mbx-sidebar-mud-nav .mud-nav-link.active {
-    color: var(--mud-palette-primary) !important;
+    color: var(--mbx-interactive, var(--mud-palette-primary)) !important;
     background-color: var(--mbx-subtle-bg) !important;
 }
 
@@ -109,7 +109,7 @@
 }
 
 ::deep .mbx-sidebar-icon-link.mbx-sidebar-icon-link-active {
-    color: var(--mud-palette-primary);
+    color: var(--mbx-interactive, var(--mud-palette-primary));
     background-color: var(--mbx-subtle-bg);
 }
 

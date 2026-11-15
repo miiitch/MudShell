@@ -45,7 +45,7 @@
 }
 
 ::deep .mbx-context-collapsed-link-active {
-    color: var(--mud-palette-primary);
+    color: var(--mbx-interactive, var(--mud-palette-primary));
     background-color: var(--mbx-nav-hover-bg);
 }
 
@@ -67,7 +67,7 @@
 }
 
 ::deep .mbx-context-mud-nav .mud-nav-item.mbx-context-nav-active .mud-nav-link {
-    color: var(--mud-palette-primary) !important;
+    color: var(--mbx-interactive, var(--mud-palette-primary)) !important;
     background-color: var(--mbx-nav-hover-bg) !important;
 }
 

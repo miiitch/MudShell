@@ -37,7 +37,7 @@
 
 .mbx-filter-tabs ::deep .mud-toggle-item.mud-toggle-item-selected {
     background: var(--mbx-subtle-bg-hover);
-    color: var(--mud-palette-primary);
+    color: var(--mbx-interactive, var(--mud-palette-primary));
 }
 
 /* Tablet and mobile: when the pills do not fit, the row scrolls and shows a thin scrollbar so a partly

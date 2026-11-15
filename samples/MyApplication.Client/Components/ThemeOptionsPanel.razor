@@ -46,6 +46,15 @@
                    Label="@(IsCompactDensity ? "Compact" : "Comfortable")" />
     </MudStack>
 
+    <MudStack>
+        <MudSwitch T="bool"
+                   Color="Color.Primary"
+                   Value="@IsSplitColorRoles"
+                   ValueChanged="@OnColorRolesChanged"
+                   data-testid="theme-color-roles"
+                   Label="@(IsSplitColorRoles ? "Split colour roles" : "Unified colour roles")" />
+    </MudStack>
+
 </MudStack>
 
 @code {
@@ -73,6 +82,11 @@
 
     private void OnDensityChanged(bool compact) =>
         ThemeState.SetDensity(compact ? MdsDensity.Compact : MdsDensity.Comfortable);
+
+    private bool IsSplitColorRoles => ThemeState.ColorRoles == MdsColorRoles.Split;
+
+    private void OnColorRolesChanged(bool split) =>
+        ThemeState.SetColorRoles(split ? MdsColorRoles.Split : MdsColorRoles.Unified);
 
     public void Dispose() => ThemeState.Changed -= OnThemeChanged;
 }

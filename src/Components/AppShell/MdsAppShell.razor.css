@@ -18,10 +18,13 @@
     --mbx-radius-md:              14px;
     --mbx-radius-lg:              18px;
     --mbx-radius-xl:              22px;
+    /* Colour of interactive states (hover, selection, active navigation, focus ring). Follows the
+       primary by default; the split colour roles (.mbx-roles-split) point it at the secondary. */
+    --mbx-interactive:            var(--mud-palette-primary, #594AE2);
     --mbx-content-surface:        color-mix(in srgb, var(--mud-palette-primary, #594AE2) 6%, var(--mud-palette-surface, #121212));
-    --mbx-content-surface-hover:  color-mix(in srgb, var(--mud-palette-primary, #594AE2) 12%, var(--mbx-content-surface));
+    --mbx-content-surface-hover:  color-mix(in srgb, var(--mbx-interactive) 12%, var(--mbx-content-surface));
     --mbx-content-border:         color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 70%, var(--mud-palette-surface, #121212));
-    --mbx-focus-ring:             color-mix(in srgb, var(--mud-palette-primary, #594AE2) 56%, transparent);
+    --mbx-focus-ring:             color-mix(in srgb, var(--mbx-interactive) 56%, transparent);
     /* Left/right gutter of the page area (.mbx-main-inner): the one edge shared by the page header and every block. */
     --mbx-page-gutter:            var(--mbx-space-4);
     --mbx-main-content-padding:   var(--mbx-page-gutter);
@@ -36,13 +39,13 @@
     --mbx-chat-bg:                color-mix(in srgb, var(--mud-palette-surface, #121212) 92%, transparent);
     --mbx-chat-border:            color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 55%, transparent);
     --mbx-chat-shadow:            0 8px 32px color-mix(in srgb, var(--mud-palette-overlay-light, rgba(0, 0, 0, 0.6)) 58%, transparent);
-    --mbx-nav-hover-bg:           color-mix(in srgb, var(--mud-palette-primary, #594AE2) 14%, transparent);
+    --mbx-nav-hover-bg:           color-mix(in srgb, var(--mbx-interactive) 14%, transparent);
     --mbx-sidebar-glass-sm:       rgba(10, 10, 22, 0.30);
     --mbx-sidebar-glass-lg:       rgba(10, 10, 22, 0.82);
     --mbx-sidebar-glass-border:   rgba(255, 255, 255, 0.08);
-    --mbx-subtle-bg:              color-mix(in srgb, var(--mud-palette-primary, #594AE2) 10%, transparent);
-    --mbx-subtle-bg-hover:        color-mix(in srgb, var(--mud-palette-primary, #594AE2) 16%, transparent);
-    --mbx-sidebar-separator:      color-mix(in srgb, var(--mud-palette-primary, #594AE2) 22%, transparent);
+    --mbx-subtle-bg:              color-mix(in srgb, var(--mbx-interactive) 10%, transparent);
+    --mbx-subtle-bg-hover:        color-mix(in srgb, var(--mbx-interactive) 16%, transparent);
+    --mbx-sidebar-separator:      color-mix(in srgb, var(--mbx-interactive) 22%, transparent);
 
     height: 100vh;
     width: 100vw;
@@ -56,15 +59,24 @@
     --mbx-chat-bg:                color-mix(in srgb, var(--mud-palette-surface, #ffffff) 96%, transparent);
     --mbx-chat-border:            color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 70%, transparent);
     --mbx-chat-shadow:            0 4px 24px color-mix(in srgb, var(--mud-palette-overlay-light, rgba(0, 0, 0, 0.2)) 24%, transparent);
-    --mbx-nav-hover-bg:           color-mix(in srgb, var(--mud-palette-primary, #594AE2) 9%, transparent);
+    --mbx-nav-hover-bg:           color-mix(in srgb, var(--mbx-interactive) 9%, transparent);
     --mbx-sidebar-glass-sm:       rgba(188, 207, 240, 0.40);
     --mbx-sidebar-glass-lg:       rgba(224, 234, 251, 0.82);
     --mbx-sidebar-glass-border:   rgba(107, 136, 186, 0.24);
-    --mbx-subtle-bg:              color-mix(in srgb, var(--mud-palette-primary, #594AE2) 7%, transparent);
-    --mbx-subtle-bg-hover:        color-mix(in srgb, var(--mud-palette-primary, #594AE2) 12%, transparent);
+    --mbx-subtle-bg:              color-mix(in srgb, var(--mbx-interactive) 7%, transparent);
+    --mbx-subtle-bg-hover:        color-mix(in srgb, var(--mbx-interactive) 12%, transparent);
     --mbx-content-surface:        color-mix(in srgb, var(--mud-palette-surface, #ffffff) 98%, var(--mud-palette-background, #f8f9fc));
-    --mbx-content-surface-hover:  color-mix(in srgb, var(--mud-palette-primary, #594AE2) 8%, var(--mbx-content-surface));
-    --mbx-sidebar-separator:      color-mix(in srgb, var(--mud-palette-primary, #594AE2) 30%, transparent);
+    --mbx-content-surface-hover:  color-mix(in srgb, var(--mbx-interactive) 8%, var(--mbx-content-surface));
+    --mbx-sidebar-separator:      color-mix(in srgb, var(--mbx-interactive) 30%, transparent);
+}
+
+/* ── Colour roles: split ──────────────────────────────────────────────
+   Opt-in (MdsAppShell ColorRoles="MdsColorRoles.Split"). The primary keeps the main action; every
+   interactive state moves to the secondary and card surfaces lose their primary tint, so the
+   primary no longer colours the whole page. The default (no class) render path is untouched. */
+.mbx-shell.mbx-roles-split {
+    --mbx-interactive:          var(--mud-palette-secondary, #594AE2);
+    --mbx-content-surface:      var(--mud-palette-surface, #121212);
 }
 
 /* ── Density: compact ─────────────────────────────────────────────────
@@ -261,6 +273,10 @@
 .mbx-shell.mbx-mode-image.mbx-light {
     --mbx-content-surface: color-mix(in srgb, var(--mud-palette-primary, #594AE2) 4%, var(--mud-palette-surface, #ffffff));
     --mbx-content-border: color-mix(in srgb, var(--mud-palette-lines-default, #e0e0e0) 68%, transparent);
+}
+
+.mbx-shell.mbx-mode-image.mbx-roles-split {
+    --mbx-content-surface: var(--mud-palette-surface, #121212);
 }
 
 .mbx-shell.mbx-mode-image ::deep .mud-drawer.mbx-sidebar {

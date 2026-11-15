@@ -93,7 +93,7 @@
 }
 
 .mds-stat-tile-tile.mds-stat-tile-clickable:hover {
-    border-color: var(--mud-palette-primary);
+    border-color: var(--mbx-interactive, var(--mud-palette-primary));
 }
 
 .mds-stat-tile-clickable:focus-visible {

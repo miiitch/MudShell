@@ -8,7 +8,8 @@ public static class MbxNavStateResolver
         MbxNavTree? tree,
         string? currentUri,
         IReadOnlySet<string>? extraExpandedNodeIds = null,
-        bool singleExpandLevel2 = true)
+        bool singleExpandLevel2 = true,
+        IReadOnlySet<string>? collapsedNodeIds = null)
     {
         if (tree is null || tree.Roots.Count == 0)
             return MbxNavState.Empty;
@@ -32,7 +33,7 @@ public static class MbxNavStateResolver
 
         foreach (var root in tree.Roots.Where(r => r.Visible))
         {
-            ApplyDefaultExpanded(root, expanded, depth: 1);
+            ApplyDefaultExpanded(root, expanded, collapsedNodeIds, depth: 1);
         }
 
         foreach (var ancestor in activePathNodes.Take(activePathNodes.Count - 1))
@@ -114,18 +115,27 @@ public static class MbxNavStateResolver
         return owner?.Children.Where(c => c.Visible).ToList() ?? [];
     }
 
-    private static void ApplyDefaultExpanded(MbxNavNode node, HashSet<string> expanded, int depth)
+    /// <summary>
+    /// Applies the node's declared default. A node the user collapsed (listed in <paramref name="collapsedNodeIds"/>)
+    /// keeps its default from being re-applied, so the collapse survives a re-created panel.
+    /// </summary>
+    private static void ApplyDefaultExpanded(
+        MbxNavNode node,
+        HashSet<string> expanded,
+        IReadOnlySet<string>? collapsedNodeIds,
+        int depth)
     {
         if (!node.Visible)
             return;
 
         var isExpanded = node.Expanded ?? node.DefaultExpanded;
-        if (isExpanded && depth < 3)
+        var isUserCollapsed = collapsedNodeIds?.Contains(node.Id) ?? false;
+        if (isExpanded && !isUserCollapsed && depth < 3)
             expanded.Add(node.Id);
 
         foreach (var child in node.Children.Where(c => c.Visible))
         {
-            ApplyDefaultExpanded(child, expanded, depth + 1);
+            ApplyDefaultExpanded(child, expanded, collapsedNodeIds, depth + 1);
         }
     }
 

@@ -133,11 +133,29 @@
     /// <summary>Invoked after a drag-and-drop reorder inside the sortable segment of a group.</summary>
     [Parameter] public EventCallback<MbxNavSortChangedArgs> OnSortChanged { get; set; }
 
+    /// <summary>
+    /// Optional host-owned set of expanded node ids. The panel reads and writes this instance in place, so the
+    /// open state of nav groups survives the panel being re-created (for example by a host that re-creates it on
+    /// every navigation). When <c>null</c>, the panel keeps its own private set.
+    /// </summary>
+    [Parameter] public HashSet<string>? ExpandedNodeIds { get; set; }
+
+    /// <summary>
+    /// Optional host-owned set of node ids the user has collapsed. It is needed next to <see cref="ExpandedNodeIds"/>
+    /// so that a group declared <c>DefaultExpanded</c> and closed by the user stays closed when the panel is
+    /// re-created. When <c>null</c>, the panel keeps its own private set.
+    /// </summary>
+    [Parameter] public HashSet<string>? CollapsedNodeIds { get; set; }
+
     private MbxNavState _state = MbxNavState.Empty;
     private HashSet<string> _expanded = new(StringComparer.Ordinal);
+    private HashSet<string> _collapsed = new(StringComparer.Ordinal);
 
     protected override void OnInitialized()
     {
+        if (ExpandedNodeIds is not null) _expanded = ExpandedNodeIds;
+        if (CollapsedNodeIds is not null) _collapsed = CollapsedNodeIds;
+
         Nav.LocationChanged += OnLocationChanged;
         RecomputeState();
     }
@@ -156,7 +174,8 @@
             Tree,
             CurrentUri ?? Nav.Uri,
             _expanded,
-            singleExpandLevel2: SingleExpandedLevel2);
+            singleExpandLevel2: SingleExpandedLevel2,
+            collapsedNodeIds: _collapsed);
     }
 
     private void HandleGroupExpandedChanged(MbxNavNode node, bool isExpanded)
@@ -166,8 +185,16 @@
             _expanded.RemoveWhere(id => _state.ContextPanelNodes.Any(n => n.Id == id && n.Children.Count > 0));
         }
 
-        if (isExpanded) _expanded.Add(node.Id);
-        else _expanded.Remove(node.Id);
+        if (isExpanded)
+        {
+            _expanded.Add(node.Id);
+            _collapsed.Remove(node.Id);
+        }
+        else
+        {
+            _expanded.Remove(node.Id);
+            _collapsed.Add(node.Id);
+        }
 
         if (!string.IsNullOrWhiteSpace(node.Href))
             Nav.NavigateTo(node.Href);
@@ -179,6 +206,7 @@
     {
         if (node.Disabled) return;
         _expanded.Add(node.Id);
+        _collapsed.Remove(node.Id);
         RecomputeState();
         await IsExpandedChanged.InvokeAsync(true);
         if (!string.IsNullOrWhiteSpace(node.Href))

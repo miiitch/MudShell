@@ -1,0 +1,27 @@
+.mds-attention-block {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mbx-space-2, 8px);
+}
+
+.mds-attention-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mbx-space-1, 4px);
+    padding: 2px var(--mbx-space-2, 8px);
+    border: 1px solid currentColor;
+    border-radius: var(--mbx-radius-sm, 10px);
+    background: color-mix(in srgb, currentColor 8%, transparent);
+    font-size: 0.8125rem;
+}
+
+.mds-attention-item a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.mds-attention-item a:hover { text-decoration: underline; }
+.mds-attention-default { color: var(--mud-palette-text-secondary); }
+.mds-attention-success { color: var(--mud-palette-success); }
+.mds-attention-warning { color: var(--mud-palette-warning); }
+.mds-attention-danger { color: var(--mud-palette-error); }

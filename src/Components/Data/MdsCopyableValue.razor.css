@@ -1,0 +1,39 @@
+.mds-copyable-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.mds-copyable-value-text {
+    display: inline-flex;
+    min-width: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+}
+
+.mds-copyable-value a {
+    color: var(--mud-palette-primary);
+    text-decoration: none;
+}
+
+.mds-copyable-value a:hover { text-decoration: underline; }
+
+.mds-copyable-value-head {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mds-copyable-value-tail { flex: 0 0 auto; }
+
+.mds-copyable-value-full {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}

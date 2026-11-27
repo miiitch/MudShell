@@ -39,6 +39,7 @@ In your app's `_Imports.razor`:
 @using MudShell.Components.FilterTabBar
 @using MudShell.Components.MainContent
 @using MudShell.Components.PageHeader
+@using MudShell.Components.Data
 ```
 
 ## Step 4 — Add MudBlazor providers

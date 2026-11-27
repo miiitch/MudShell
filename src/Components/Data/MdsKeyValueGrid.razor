@@ -1,0 +1,65 @@
+@namespace MudShell.Components.Data
+
+<dl class="@RootClass" @attributes="AdditionalAttributes">
+    @if (Items is not null)
+    {
+        @foreach (var item in Items)
+        {
+            <div class="mds-key-value-row">
+                <dt class="mds-key-value-key">@item.Key</dt>
+                <dd class="@ValueClass(item)">
+                    @if (item.Content is not null)
+                    {
+                        @item.Content
+                    }
+                    else if (!string.IsNullOrWhiteSpace(item.Href))
+                    {
+                        <MudLink Href="@item.Href">@item.Value</MudLink>
+                    }
+                    else
+                    {
+                        @(string.IsNullOrEmpty(item.Value) ? "—" : item.Value)
+                    }
+                </dd>
+            </div>
+        }
+    }
+</dl>
+
+@code {
+    /// <summary>Undeclared attributes, splatted onto the root element.</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter] public IEnumerable<MbxKeyValue>? Items { get; set; }
+
+    /// <summary>Number of columns, clamped to one or two.</summary>
+    [Parameter] public int Columns { get; set; } = 1;
+
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass
+    {
+        get
+        {
+            var parts = new List<string>
+            {
+                "mds-key-value-grid",
+                $"mds-key-value-grid-cols-{Math.Clamp(Columns, 1, 2)}",
+            };
+            if (!string.IsNullOrWhiteSpace(Class))
+                parts.Add(Class);
+            return string.Join(' ', parts);
+        }
+    }
+
+    private static string ValueClass(MbxKeyValue item)
+    {
+        var parts = new List<string> { "mds-key-value-value" };
+        if (item.Mono)
+            parts.Add("mds-key-value-mono");
+        if (item.Tone != MbxTone.Default)
+            parts.Add($"mds-tone-{item.Tone.ToString().ToLowerInvariant()}");
+        return string.Join(' ', parts);
+    }
+}

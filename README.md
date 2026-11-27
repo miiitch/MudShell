@@ -13,7 +13,7 @@
 - 🃏 `MdsDocumentCard`, `MdsFilterTabBar`, `MdsPageHeader`
 - 🧩 Main-content primitives (`MdsMainToolbar`, `MdsMainSection`, `MdsMainPart`, `MdsMainEmptyState`)
 - 📐 Fill-layout blocks — `MdsFillLayout`, `MdsFillRegion`, `MdsSplitPane`, `MdsTabbedFill` (full-screen pages, only leaf regions scroll)
-- 📊 Data blocks — `MdsStatTile`/`MdsStatStrip`, `MdsDistributionBar`, `MdsSparkline`, `MdsRunStrip`; nav badges on `MbxNavNode.Badge`
+- 📊 Data blocks — `MdsStatTile`/`MdsStatStrip`, `MdsDistributionBar`, `MdsSparkline`, `MdsRunStrip`, `MdsKeyValueGrid`, `MdsCopyableValue`, `MdsAttentionBlock`; nav badges on `MbxNavNode.Badge`
 - All components use **scoped CSS** — zero global style pollution
 
 ## Quick start
@@ -49,6 +49,7 @@ builder.Services.AddMudShell();
 @using MudShell.Components.FilterTabBar
 @using MudShell.Components.MainContent
 @using MudShell.Components.PageHeader
+@using MudShell.Components.Data
 ```
 
 ### 4. Add MudBlazor providers to your root component
@@ -167,6 +168,7 @@ For a full page blueprint and MudBlazor migration guidance, see the dedicated do
 
 ## Documentation
 
+- [Component catalogue](src/docs/COMPONENTS.md)
 - [Getting started](src/docs/getting-started.md)
 - [MudBlazor integration](src/docs/mudblazor-integration.md)
 - [Page blueprint](src/docs/page-blueprint.md)

@@ -1,0 +1,85 @@
+@namespace MudShell.Components.Data
+@inject IJSRuntime JavaScript
+@inject ISnackbar Snackbar
+
+<span class="@RootClass" @attributes="AdditionalAttributes">
+    <MudTooltip Text="@Value" RootStyle="min-width:0;display:flex;flex:0 1 auto;">
+        @if (!string.IsNullOrWhiteSpace(Href))
+        {
+            <a class="@ValueClass" href="@Href">@ValueContent</a>
+        }
+        else
+        {
+            <span class="@ValueClass">@ValueContent</span>
+        }
+    </MudTooltip>
+    <MudTooltip Text="@(_copied ? "Copied" : CopyLabel)" RootStyle="flex:0 0 auto;display:flex;">
+        <MudIconButton Icon="@(_copied ? Icons.Material.Filled.Check : Icons.Material.Filled.ContentCopy)"
+                       Size="Size.Small"
+                       aria-label="@CopyLabel"
+                       OnClick="@CopyAsync" />
+    </MudTooltip>
+</span>
+
+@code {
+    private const int MinLengthToCut = 28;
+    private const int TailLength = 14;
+    private bool _copied;
+
+    /// <summary>Undeclared attributes, splatted onto the root element.</summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter, EditorRequired] public string Value { get; set; } = string.Empty;
+    [Parameter] public string CopyLabel { get; set; } = "Copy to clipboard";
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public string? Class { get; set; }
+
+    private string RootClass => string.IsNullOrWhiteSpace(Class)
+        ? "mds-copyable-value"
+        : $"mds-copyable-value {Class}";
+
+    private const string ValueClass = "mds-copyable-value-text";
+
+    private RenderFragment ValueContent => @<text>
+        <span class="mds-copyable-value-full">@Value</span>
+        <span class="mds-copyable-value-head" aria-hidden="true">@Head</span>
+        @if (Tail.Length > 0)
+        {
+            <span class="mds-copyable-value-tail" aria-hidden="true">@Tail</span>
+        }
+    </text>;
+
+    private int CutAt
+    {
+        get
+        {
+            if (Value.Length < MinLengthToCut)
+                return Value.Length;
+
+            var slash = Value.LastIndexOf('/');
+            return slash > 0 && Value.Length - slash <= TailLength + 8
+                ? slash
+                : Value.Length - TailLength;
+        }
+    }
+
+    private string Head => Value[..CutAt];
+    private string Tail => Value[CutAt..];
+
+    private async Task CopyAsync()
+    {
+        try
+        {
+            await JavaScript.InvokeVoidAsync("navigator.clipboard.writeText", Value);
+            _copied = true;
+            StateHasChanged();
+            await Task.Delay(TimeSpan.FromMilliseconds(1500));
+            _copied = false;
+        }
+        catch (JSException)
+        {
+            Snackbar.Add("Clipboard access was denied; copy the value manually.", Severity.Warning);
+        }
+    }
+}

@@ -70,6 +70,8 @@ public class AdditionalAttributesTests
         {
             builder.OpenComponent(0, closed);
             builder.AddAttribute(1, ProbeAttribute, ProbeValue);
+            if (closed == typeof(Components.Data.MdsAttentionBlock))
+                builder.AddAttribute(2, "Items", new[] { new Components.Data.MbxAttentionItem("Probe", 1) });
             builder.CloseComponent();
         });
 

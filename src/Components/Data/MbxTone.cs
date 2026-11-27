@@ -51,3 +51,29 @@ public enum MbxRunOutcome
 /// <param name="Outcome">Run outcome.</param>
 /// <param name="Tooltip">Tooltip text; defaults to the outcome name.</param>
 public sealed record MbxRun(MbxRunOutcome Outcome, string? Tooltip = null);
+
+/// <summary>One labelled value in <c>MdsKeyValueGrid</c>.</summary>
+/// <param name="Key">Short label displayed above the value.</param>
+/// <param name="Value">Plain-text value, used when <paramref name="Content"/> is not supplied.</param>
+/// <param name="Tone">Optional semantic state tone.</param>
+/// <param name="Mono">Whether to display the value in a monospace font.</param>
+/// <param name="Href">Optional destination for a linked plain-text value.</param>
+/// <param name="Content">Optional rich value that takes precedence over <paramref name="Value"/> and <paramref name="Href"/>.</param>
+public sealed record MbxKeyValue(
+    string Key,
+    string? Value,
+    MbxTone Tone = MbxTone.Default,
+    bool Mono = false,
+    string? Href = null,
+    Microsoft.AspNetCore.Components.RenderFragment? Content = null);
+
+/// <summary>One generic counted item displayed by <c>MdsAttentionBlock</c>.</summary>
+/// <param name="Label">Description of the item.</param>
+/// <param name="Count">Count shown alongside the label; non-positive values are omitted.</param>
+/// <param name="Tone">Semantic state tone.</param>
+/// <param name="Href">Optional destination for the item.</param>
+public sealed record MbxAttentionItem(
+    string Label,
+    int Count,
+    MbxTone Tone = MbxTone.Warning,
+    string? Href = null);
